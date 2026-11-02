@@ -9,8 +9,8 @@
         "github_raw": "https://raw.githubusercontent.com/{REPO}/main/badges/",
         "statically": "https://cdn.statically.io/gh/{REPO}/main/badges/"
     },
-    "css_library": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.css",
-    "js_sdk": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.js",
+    "css_library": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/ff-badges.css",
+    "js_sdk": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/ff-badges.js",
     "badges": [
         {
             "id": "official-v-badge",
@@ -40,11 +40,11 @@
                 "influencer"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL01.png",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL01.png",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL01.png"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL01.png",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL01.png"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL01.png"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png"
         },
         {
             "id": "diamond-partner",
@@ -73,11 +73,11 @@
                 "purple"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL03.png",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL03.png",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL03.png"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL03.png",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL03.png"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL03.png"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png"
         },
         {
             "id": "esports-pro-crown",
@@ -106,11 +106,11 @@
                 "tournament"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_ESPORTS01.png",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_ESPORTS01.png",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_ESPORTS01.png"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_ESPORTS01.png"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png"
         },
         {
             "id": "official-staff-gm",
@@ -139,11 +139,11 @@
                 "red"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_GM01.png",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_GM01.png",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_GM01.png"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_GM01.png",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_GM01.png",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_GM01.png"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_GM01.png"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_GM01.png"
         },
         {
             "id": "craftland-creator",
@@ -173,11 +173,11 @@
                 "cyan"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/craftland.png",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/craftland.png",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/craftland.png"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/craftland.png",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/craftland.png",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/craftland.png"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/craftland.png"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/craftland.png"
         },
         {
             "id": "emerging-creator",
@@ -206,11 +206,11 @@
                 "creator"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL02.png",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL02.png",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL02.png"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL02.png",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL02.png",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL02.png"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL02.png"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL02.png"
         },
         {
             "id": "vbadge-classic",
@@ -238,11 +238,11 @@
                 "legacy"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.png",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/vbadge.png",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/vbadge.png"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.png",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/vbadge.png",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/vbadge.png"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.png"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.png"
         },
         {
             "id": "vbadge-vector",
@@ -270,11 +270,11 @@
                 "hd"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.svg",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/vbadge.svg",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/vbadge.svg"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.svg",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/vbadge.svg",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/vbadge.svg"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.svg"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.svg"
         },
         {
             "id": "moderator-shield",
@@ -302,11 +302,11 @@
                 "guard"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/verified-badge.svg",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/verified-badge.svg",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/verified-badge.svg"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/verified-badge.svg",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/verified-badge.svg",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/verified-badge.svg"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/verified-badge.svg"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/verified-badge.svg"
         },
         {
             "id": "pro-player-text",
@@ -391,11 +391,11 @@
                 "battle"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/badge_alive_teal.png",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/badge_alive_teal.png",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/badge_alive_teal.png"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_alive_teal.png",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/badge_alive_teal.png",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_alive_teal.png"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/badge_alive_teal.png"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_alive_teal.png"
         },
         {
             "id": "hud-kill-maroon",
@@ -423,11 +423,11 @@
                 "elimination"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/badge_kill_maroon.png",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/badge_kill_maroon.png",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/badge_kill_maroon.png"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/badge_kill_maroon.png"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png"
         },
         {
             "id": "neon-stream-badge",
@@ -455,11 +455,11 @@
                 "badge"
             ],
             "cdn_urls": {
-                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/neon_live_stream_badge.png",
-                "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/neon_live_stream_badge.png",
-                "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/neon_live_stream_badge.png"
+                "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/neon_live_stream_badge.png",
+                "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/neon_live_stream_badge.png",
+                "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/neon_live_stream_badge.png"
             },
-            "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/neon_live_stream_badge.png"
+            "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/neon_live_stream_badge.png"
         }
     ]
 }

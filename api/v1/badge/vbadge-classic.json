@@ -26,10 +26,10 @@
             "legacy"
         ],
         "cdn_urls": {
-            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.png",
-            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/vbadge.png",
-            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/vbadge.png"
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/vbadge.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/vbadge.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.png"
     }
 }

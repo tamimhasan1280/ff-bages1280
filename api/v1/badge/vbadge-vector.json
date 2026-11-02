@@ -26,10 +26,10 @@
             "hd"
         ],
         "cdn_urls": {
-            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.svg",
-            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/vbadge.svg",
-            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/vbadge.svg"
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.svg",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/vbadge.svg",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/vbadge.svg"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.svg"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.svg"
     }
 }

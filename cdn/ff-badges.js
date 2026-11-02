@@ -6,7 +6,7 @@
 (function(window, document) {
     'use strict';
 
-    const DEFAULT_REPO = 'tamim1280/freefire-badges-cdn';
+    const DEFAULT_REPO = 'tamimhasan1280/ff-bages1280';
     const CDN_TEMPLATES = {
         jsdelivr: 'https://cdn.jsdelivr.net/gh/{REPO}@main/badges/',
         github_raw: 'https://raw.githubusercontent.com/{REPO}/main/badges/',

@@ -11,10 +11,10 @@ Include the universal stylesheet & JavaScript SDK directly into any HTML or web 
 
 ```html
 <!-- 1. Universal Animated Badge Stylesheet -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/ff-badges.css">
 
 <!-- 2. Zero-Dependency Web Component SDK -->
-<script src="https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/ff-badges.js"></script>
 ```
 
 ---
@@ -33,8 +33,8 @@ Use the custom `<ff-badge>` tag anywhere in your HTML:
 If you prefer zero JavaScript, copy the native CSS mask light-sweep snippet:
 ```html
 <span class="ff-shape-badge ff-glow-gold" style="position:relative;width:34px;height:34px;display:inline-flex;">
-  <img src="https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL01.png" alt="OFFICIAL V BAGE">
-  <span class="ff-badge-shine" style="-webkit-mask-image:url('https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL01.png');mask-image:url('https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL01.png');">
+  <img src="https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png" alt="OFFICIAL V BAGE">
+  <span class="ff-badge-shine" style="-webkit-mask-image:url('https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png');mask-image:url('https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png');">
     <span class="ff-badge-shine-beam"></span>
   </span>
 </span>
@@ -43,7 +43,7 @@ If you prefer zero JavaScript, copy the native CSS mask light-sweep snippet:
 ### 3. JSON REST API
 Fetch the full badge catalog, priorities, and CDN URLs directly in your backend (PHP, Node.js, Python, Flutter, Go):
 ```javascript
-fetch('https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/api/badges.json')
+fetch('https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/api/badges.json')
   .then(res => res.json())
   .then(data => {
     console.log(data.badges);
@@ -78,10 +78,7 @@ Follow these simple steps in PowerShell or Command Prompt:
 
 ```bash
 cd "F:\users\Pictures\Downloads\ff all vages"
-git init -b main
-git add .
-git commit -m "feat: Free Fire Badges Monster CDN & API v2.0.0"
-git remote add origin https://github.com/<your-username>/ff-all-vages.git
+git remote add origin https://github.com/tamimhasan1280/ff-bages1280.git
 git push -u origin main
 ```
 

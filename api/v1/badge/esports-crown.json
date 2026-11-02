@@ -27,10 +27,10 @@
             "tournament"
         ],
         "cdn_urls": {
-            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_ESPORTS01.png",
-            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_ESPORTS01.png",
-            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_ESPORTS01.png"
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_ESPORTS01.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png"
     }
 }
