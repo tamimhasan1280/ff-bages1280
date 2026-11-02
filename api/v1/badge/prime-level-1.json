@@ -1,0 +1,32 @@
+{
+    "status": "success",
+    "item": {
+        "id": "120000010180",
+        "slug": "prime-level-1",
+        "icon_id": "Icon_FF_Prime_Level_01",
+        "name": "Free Fire Prime Level 1",
+        "title": "Prime Level 1 (Bronze Recruit Insignia)",
+        "rarity": "RARE",
+        "rarity_color": "#CD7F32",
+        "rarity_class": "rare",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_prime_icon_01.png",
+        "glow_color": "rgba(205, 127, 50, 0.65)",
+        "hex_glow": "#CD7F32",
+        "priority": 810000,
+        "default_size": 44,
+        "type": "prime_image",
+        "prime_level": 1,
+        "description": "Free Fire Prime Level 1 bronze insignia. Clean authentic vector crest representing entry into the Garena Free Fire Prime System.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_01.png', 1, '44px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_01.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_01.png"
+    }
+}

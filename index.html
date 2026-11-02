@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Orbitron, Rajdhani, Fira Code, Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@600;700&family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Free Fire Prime Badges CSS (100% Transparent, No Background) -->
+    <link rel="stylesheet" href="cdn/prime-badge.css">
 
     <style>
         body {
@@ -77,7 +79,7 @@
         }
 
         .item-preview-box {
-            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.15) 0%, rgba(10, 12, 24, 0.95) 75%);
+            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.12) 0%, rgba(10, 12, 24, 0.95) 75%);
             border-radius: 12px;
             position: relative;
         }
@@ -126,15 +128,15 @@
                     <i class="fas fa-book-bookmark text-xs"></i>
                     <span>Items Library</span>
                 </button>
+                <a href="#prime-system" onclick="document.getElementById('catSelect').value='prime'; applyFilters();" class="px-4 py-2 rounded-xl text-xs font-semibold text-yellow-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
+                    <i class="fas fa-shield-halved text-xs"></i>
+                    <span>Prime Level (1-8)</span>
+                </a>
                 <a href="#player-inspector" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
                     <i class="fas fa-user-astronaut text-xs"></i>
                     <span>Player Inspector</span>
                 </a>
-                <a href="#ai-master" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
-                    <i class="fas fa-robot text-xs"></i>
-                    <span>AI Master Prompt</span>
-                </a>
-                <a href="https://github.com/tamimhasan1280/ff-bages1280" target="_blank" class="px-4 py-2 rounded-xl text-xs font-semibold text-amber-400 hover:text-amber-300 hover:bg-white/5 transition flex items-center gap-2">
+                <a href="admin.php" class="px-4 py-2 rounded-xl text-xs font-semibold text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 border border-amber-400/20 transition flex items-center gap-2">
                     <i class="fas fa-crown text-xs"></i>
                     <span>Admin Panel</span>
                 </a>
@@ -152,21 +154,18 @@
                     <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
                         <i class="fab fa-telegram text-xs"></i>
                     </a>
-                    <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
-                        <i class="fab fa-facebook text-xs"></i>
-                    </a>
                 </div>
 
                 <!-- Admin Profile Pill -->
-                <div class="flex items-center gap-2 bg-[#12162b] px-3 py-1.5 rounded-2xl border border-white/10">
+                <a href="admin.php" class="flex items-center gap-2 bg-[#12162b] hover:bg-[#1a203f] px-3 py-1.5 rounded-2xl border border-white/10 transition">
                     <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center font-bold text-white text-xs">
                         A
                     </div>
                     <div class="hidden sm:block text-left leading-tight">
                         <div class="text-xs font-bold text-white">Admin</div>
-                        <div class="text-[9px] text-gray-400 font-medium">Super Admin</div>
+                        <div class="text-[9px] text-gray-400 font-medium">Studio Access</div>
                     </div>
-                </div>
+                </a>
             </div>
 
         </div>
@@ -186,7 +185,7 @@
                         TURKY HUB - FF Items EXPLORER
                     </h1>
                     <p class="text-xs sm:text-sm text-gray-400 font-rajdhani tracking-wider mt-0.5">
-                        <span class="text-white font-bold" id="itemCountDisplay">34,211 items available</span> | Infinite Auto-Scroll Active
+                        <span class="text-white font-bold" id="itemCountDisplay"><?= count($master_badges) ?> items available</span> | Infinite Auto-Scroll Active
                     </p>
                 </div>
             </div>
@@ -196,9 +195,9 @@
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     OB55 Engine Active
                 </span>
-                <a href="https://github.com/<?= $repo_name ?>" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold flex items-center gap-2 transition">
-                    <i class="fab fa-github text-yellow-400"></i>
-                    <span class="hidden sm:inline">GitHub Repository</span>
+                <a href="admin.php" class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-yellow-300 border border-yellow-500/30 text-xs font-bold flex items-center gap-2 transition">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add Badge in Admin</span>
                 </a>
             </div>
         </section>
@@ -209,7 +208,7 @@
             <!-- Full Width Search Input -->
             <div class="relative">
                 <i class="fas fa-search absolute left-4 top-3.5 text-gray-500 text-sm"></i>
-                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search by Item Name, ID, or Keywords (e.g. mp40, bundle, gloo, 120000000080)..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-11 pr-4 py-3 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-rose-500 transition shadow-inner">
+                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search by Item Name, ID, or Keywords (e.g. prime, level 8, 120000010880)..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-11 pr-4 py-3 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-rose-500 transition shadow-inner">
             </div>
 
             <!-- Filters Row: Categories, Patches, Rarities, Apply Button -->
@@ -219,6 +218,7 @@
                 <div class="relative">
                     <select id="catSelect" onchange="applyFilters()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-2.5 text-xs text-gray-200 focus:outline-none focus:border-rose-500 appearance-none cursor-pointer">
                         <option value="all">All Categories</option>
+                        <option value="prime">Prime System (Free Fire Prime Lvl 1-8)</option>
                         <option value="official">Official Partner (KOL)</option>
                         <option value="vip">Crystal VIP Partner</option>
                         <option value="esports">Competitive & Esports</option>
@@ -284,10 +284,10 @@
                 <i class="fas fa-xmark"></i>
             </button>
 
-            <!-- Preview Stage -->
+            <!-- Preview Stage (Transparent, No Background) -->
             <div class="w-48 h-48 mx-auto rounded-2xl bg-[#090b18] border border-white/5 relative flex items-center justify-center overflow-hidden shadow-inner">
-                <div id="modalAura" class="absolute inset-0 bg-gradient-to-tr from-purple-600/20 via-transparent to-pink-500/20 pointer-events-none"></div>
-                <div id="modalItemPreview" class="relative z-10 scale-125 flex items-center justify-center">
+                <div id="modalAura" class="absolute inset-0 bg-gradient-to-tr from-purple-600/15 via-transparent to-pink-500/15 pointer-events-none"></div>
+                <div id="modalItemPreview" class="relative z-10 flex items-center justify-center w-full h-full p-2">
                     <!-- Image or Animation injected here -->
                 </div>
             </div>
@@ -304,7 +304,7 @@
                 <div class="bg-[#090b18] border border-white/5 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
                     <span class="text-[#f97316] font-bold text-xs tracking-wide">Item ID:</span>
                     <div class="flex items-center gap-2">
-                        <span id="modalItemId" class="text-emerald-400 font-mono font-bold text-xs tracking-wider">120000000080</span>
+                        <span id="modalItemId" class="text-emerald-400 font-mono font-bold text-xs tracking-wider">120000010880</span>
                         <button type="button" onclick="copyModalId()" class="bg-[#1b1f3b] hover:bg-[#282f56] text-gray-200 hover:text-white px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition">
                             <i class="fas fa-copy text-[10px]"></i> <span>Copy</span>
                         </button>
@@ -314,19 +314,19 @@
                 <!-- Icon ID Row -->
                 <div class="bg-[#090b18] border border-white/5 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
                     <span class="text-[#f97316] font-bold text-xs tracking-wide">Icon ID:</span>
-                    <span id="modalIconId" class="text-emerald-400 font-mono text-xs">Icon_FF_KOL_VBadge_Gold</span>
+                    <span id="modalIconId" class="text-emerald-400 font-mono text-xs">Icon_FF_Prime_Level_08</span>
                 </div>
 
                 <!-- Rarity Row -->
                 <div class="flex items-center justify-between px-2 py-1">
                     <span class="text-gray-400 font-medium">Rarity:</span>
-                    <span id="modalRarity" class="text-white font-extrabold uppercase tracking-wider">PURPLE</span>
+                    <span id="modalRarity" class="text-white font-extrabold uppercase tracking-wider">MYTHIC</span>
                 </div>
 
                 <!-- Category Row -->
                 <div class="flex items-center justify-between px-2 py-1">
                     <span class="text-gray-400 font-medium">Category:</span>
-                    <span id="modalCategory" class="text-white font-medium">Official Partner</span>
+                    <span id="modalCategory" class="text-white font-medium">Prime System</span>
                 </div>
 
                 <!-- Patch / Tag Row -->
@@ -398,6 +398,266 @@
         // Dataset loaded from JSON
         const itemsData = [
     {
+        "id": "120000010180",
+        "slug": "prime-level-1",
+        "icon_id": "Icon_FF_Prime_Level_01",
+        "name": "Free Fire Prime Level 1",
+        "title": "Prime Level 1 (Bronze Recruit Insignia)",
+        "rarity": "RARE",
+        "rarity_color": "#CD7F32",
+        "rarity_class": "rare",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_prime_icon_01.png",
+        "glow_color": "rgba(205, 127, 50, 0.65)",
+        "hex_glow": "#CD7F32",
+        "priority": 810000,
+        "default_size": 44,
+        "type": "prime_image",
+        "prime_level": 1,
+        "description": "Free Fire Prime Level 1 bronze insignia. Clean authentic vector crest representing entry into the Garena Free Fire Prime System.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_01.png', 1, '44px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_01.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_01.png"
+    },
+    {
+        "id": "120000010280",
+        "slug": "prime-level-2",
+        "icon_id": "Icon_FF_Prime_Level_02",
+        "name": "Free Fire Prime Level 2",
+        "title": "Prime Level 2 (Silver Scout Crest)",
+        "rarity": "RARE",
+        "rarity_color": "#C0C0C0",
+        "rarity_class": "rare",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_prime_icon_02.png",
+        "glow_color": "rgba(192, 192, 192, 0.7)",
+        "hex_glow": "#C0C0C0",
+        "priority": 820000,
+        "default_size": 44,
+        "type": "prime_image",
+        "prime_level": 2,
+        "description": "Free Fire Prime Level 2 silver rank insignia for seasoned battle survivors and verified account holders.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_02.png', 2, '44px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_02.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_02.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_02.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_02.png"
+    },
+    {
+        "id": "120000010380",
+        "slug": "prime-level-3",
+        "icon_id": "Icon_FF_Prime_Level_03",
+        "name": "Free Fire Prime Level 3",
+        "title": "Prime Level 3 (Gold Vanguard)",
+        "rarity": "EPIC",
+        "rarity_color": "#EAB308",
+        "rarity_class": "epic",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_prime_icon_03.png",
+        "glow_color": "rgba(234, 179, 8, 0.75)",
+        "hex_glow": "#EAB308",
+        "priority": 830000,
+        "default_size": 44,
+        "type": "prime_image",
+        "prime_level": 3,
+        "description": "Free Fire Prime Level 3 gold vanguard crest awarded for consistent battle performance, tier upgrades, and platform patronage.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_03.png', 3, '44px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_03.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_03.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_03.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_03.png"
+    },
+    {
+        "id": "120000010480",
+        "slug": "prime-level-4",
+        "icon_id": "Icon_FF_Prime_Level_04",
+        "name": "Free Fire Prime Level 4",
+        "title": "Prime Level 4 (Cyan Crystal Aura)",
+        "rarity": "EPIC",
+        "rarity_color": "#06B6D4",
+        "rarity_class": "epic",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_prime_icon_04.png",
+        "glow_color": "rgba(6, 182, 212, 0.85)",
+        "hex_glow": "#06B6D4",
+        "priority": 840000,
+        "default_size": 46,
+        "type": "prime_image",
+        "prime_level": 4,
+        "description": "Free Fire Prime Level 4 with cyan breathing aura glow and transparent drop-shadow contours emitting directly from the badge.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_04.png', 4, '46px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_04.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_04.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_04.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_04.png"
+    },
+    {
+        "id": "120000010580",
+        "slug": "prime-level-5",
+        "icon_id": "Icon_FF_Prime_Level_05",
+        "name": "Free Fire Prime Level 5",
+        "title": "Prime Level 5 (Radiant Gold Halo)",
+        "rarity": "EPIC",
+        "rarity_color": "#F59E0B",
+        "rarity_class": "epic",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_prime_icon_05.png",
+        "glow_color": "rgba(245, 158, 11, 0.85)",
+        "hex_glow": "#F59E0B",
+        "priority": 850000,
+        "default_size": 46,
+        "type": "prime_image",
+        "prime_level": 5,
+        "description": "Free Fire Prime Level 5 with animated radiant halo pulse, breathing core aura, and soft wing expansion.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_05.png', 5, '46px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_05.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_05.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_05.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_05.png"
+    },
+    {
+        "id": "120000010680",
+        "slug": "prime-level-6",
+        "icon_id": "Icon_FF_Prime_Level_06",
+        "name": "Free Fire Prime Level 6",
+        "title": "Prime Level 6 (Amber Flame Wings)",
+        "rarity": "LEGENDARY",
+        "rarity_color": "#F97316",
+        "rarity_class": "legendary",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_prime_icon_06.png",
+        "glow_color": "rgba(249, 115, 22, 0.9)",
+        "hex_glow": "#F97316",
+        "priority": 860000,
+        "default_size": 48,
+        "type": "prime_image",
+        "prime_level": 6,
+        "description": "Free Fire Prime Level 6 with amber flame contour aura, dual-frequency breathing, and energetic wing pulses.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_06.png', 6, '48px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_06.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_06.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_06.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_06.png"
+    },
+    {
+        "id": "120000010780",
+        "slug": "prime-level-7",
+        "icon_id": "Icon_FF_Prime_Level_07",
+        "name": "Free Fire Prime Level 7",
+        "title": "Prime Level 7 (Grandmaster Mythic Sparkle)",
+        "rarity": "MYTHIC",
+        "rarity_color": "#EAB308",
+        "rarity_class": "mythic",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_prime_icon_07.png",
+        "glow_color": "rgba(234, 179, 8, 0.95)",
+        "hex_glow": "#EAB308",
+        "priority": 870000,
+        "default_size": 50,
+        "type": "prime_image",
+        "prime_level": 7,
+        "description": "Free Fire Prime Level 7 Grandmaster crest with organic center gem glint twinkle, mythic golden wings, and celestial breathing glow.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_07.png', 7, '50px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_07.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_07.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_07.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_07.png"
+    },
+    {
+        "id": "120000010880",
+        "slug": "prime-level-8",
+        "icon_id": "Icon_FF_Prime_Level_08",
+        "name": "Free Fire Prime Level 8",
+        "title": "Prime Level 8 (Supreme God Tier Ascending Energy)",
+        "rarity": "MYTHIC",
+        "rarity_color": "#FFD700",
+        "rarity_class": "mythic",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_prime_icon_08.png",
+        "glow_color": "rgba(255, 215, 0, 1)",
+        "hex_glow": "#FFD700",
+        "priority": 880000,
+        "default_size": 54,
+        "type": "prime_image",
+        "prime_level": 8,
+        "description": "Free Fire Prime Level 8 Supreme pinnacle insignia. Features authentic right-to-upward ascending golden energy beam, periodic gem glint sparkle, and multi-tier drop-shadow aura.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_08.png', 8, '54px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_08.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_08.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_prime_icon_08.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_08.png"
+    },
+    {
+        "id": "120000010980",
+        "slug": "prime-profile-title",
+        "icon_id": "Icon_FF_Prime_ProfileTitle_Gold",
+        "name": "Prime Profile Title Emblem",
+        "title": "Official Prime Profile Title Header Tag",
+        "rarity": "MYTHIC",
+        "rarity_color": "#FFD700",
+        "rarity_class": "mythic",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_profile_title_prime.png",
+        "glow_color": "rgba(255, 215, 0, 0.9)",
+        "hex_glow": "#FFD700",
+        "priority": 805000,
+        "default_size": 48,
+        "type": "image",
+        "description": "Special golden Prime title emblem displayed prominently on top profile cards of verified Free Fire Prime players.",
+        "fn_call": "generate_ff_badge_html('ff_ui_profile_title_prime.png', 'Prime Profile Title Emblem', 'rgba(255, 215, 0, 0.9)', 'top-right', '48px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_profile_title_prime.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_profile_title_prime.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_profile_title_prime.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_profile_title_prime.png"
+    },
+    {
         "id": "120000000080",
         "slug": "official-v",
         "icon_id": "Icon_FF_KOL01_VBadge_Gold",
@@ -418,8 +678,12 @@
         "type": "image",
         "description": "The authentic Free Fire partner influencer verification badge with gold light-sweep beam.",
         "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL01.png', 'OFFICIAL V BAGE', 'rgba(255, 215, 0, 0.85)', 'top-right', '34px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png",
-        "local_url": "badges/FF_UI_Badge_KOL01.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL01.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png"
     },
     {
         "id": "120000000180",
@@ -442,8 +706,12 @@
         "type": "image",
         "description": "Prestigious violet diamond partner badge for elite server patrons and top-tier partners.",
         "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL03.png', 'FF Diamond Partner', 'rgba(168, 85, 247, 0.85)', 'top-right', '34px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png",
-        "local_url": "badges/FF_UI_Badge_KOL03.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL03.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL03.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png"
     },
     {
         "id": "120000000280",
@@ -466,8 +734,12 @@
         "type": "image",
         "description": "Official crown badge designated for esports champions, tournament MVPs, and verified pro contenders.",
         "fn_call": "generate_ff_badge_html('FF_UI_Badge_ESPORTS01.png', 'FF Esports PRO Crown', 'rgba(251, 191, 36, 0.85)', 'top-right', '34px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
-        "local_url": "badges/FF_UI_Badge_ESPORTS01.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png"
     },
     {
         "id": "120000000380",
@@ -490,8 +762,12 @@
         "type": "image",
         "description": "Crimson Garena server moderator and administrator badge symbolizing platform authority.",
         "fn_call": "generate_ff_badge_html('FF_UI_Badge_GM01.png', 'FF Official Staff / GM', 'rgba(239, 68, 68, 0.85)', 'top-right', '34px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_GM01.png",
-        "local_url": "badges/FF_UI_Badge_GM01.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_GM01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_GM01.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_GM01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_GM01.png"
     },
     {
         "id": "120000000480",
@@ -514,8 +790,12 @@
         "type": "image",
         "description": "Cyan cube badge awarded to certified Craftland map designers, builders, and creative architects.",
         "fn_call": "generate_ff_badge_html('craftland.png', 'FF Craftland Creator', 'rgba(6, 182, 212, 0.85)', 'top-right', '34px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/craftland.png",
-        "local_url": "badges/craftland.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/craftland.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/craftland.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/craftland.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/craftland.png"
     },
     {
         "id": "120000000580",
@@ -538,8 +818,12 @@
         "type": "image",
         "description": "Emerald lightning badge for verified up-and-coming gaming streamers and content creators.",
         "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL02.png', 'FF Emerging Creator', 'rgba(16, 185, 129, 0.85)', 'top-right', '34px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL02.png",
-        "local_url": "badges/FF_UI_Badge_KOL02.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL02.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL02.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL02.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL02.png"
     },
     {
         "id": "120000000680",
@@ -562,8 +846,12 @@
         "type": "image",
         "description": "The timeless golden V-Badge that started influencer verification across the Free Fire ecosystem.",
         "fn_call": "generate_ff_badge_html('vbadge.png', 'Classic Gold V-Badge', 'rgba(255, 215, 0, 0.85)', 'in-line', '32px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.png",
-        "local_url": "badges/vbadge.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/vbadge.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/vbadge.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.png"
     },
     {
         "id": "120000000780",
@@ -586,8 +874,12 @@
         "type": "image",
         "description": "Infinitely scalable SVG vector V-badge engineered for high-DPI displays and responsive banners.",
         "fn_call": "generate_ff_badge_html('vbadge.svg', 'Vector SVG V-Badge', 'rgba(255, 215, 0, 0.85)', 'in-line', '30px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.svg",
-        "local_url": "badges/vbadge.svg"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.svg",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/vbadge.svg",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/vbadge.svg"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.svg"
     },
     {
         "id": "120000000880",
@@ -611,8 +903,12 @@
         "svg_code": "<svg viewBox=\"0 0 24 24\" fill=\"none\" style=\"width:100%;height:100%;animation:pulse_gold 2s infinite ease-in-out;\"><path d=\"M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z\" fill=\"url(#mod_grad)\"/><path d=\"M10 15.5l-3.5-3.5 1.41-1.41L10 12.67l5.59-5.59L17 8.5 10 15.5z\" fill=\"#000\"/><defs><linearGradient id=\"mod_grad\" x1=\"4\" y1=\"2\" x2=\"20\" y2=\"22\" gradientUnits=\"userSpaceOnUse\"><stop stop-color=\"#FFE000\"/><stop offset=\"1\" stop-color=\"#799F0C\"/></linearGradient></defs></svg>",
         "description": "Golden shield with verify checkmark for community moderators, tournament referees, and arbiters.",
         "fn_call": "render_verified_badge([$badge], $settings, 5, 'header');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/verified-badge.svg",
-        "local_url": "badges/verified-badge.svg"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/verified-badge.svg",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/verified-badge.svg",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/verified-badge.svg"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/verified-badge.svg"
     },
     {
         "id": "120000000980",
@@ -636,8 +932,8 @@
         "text_code": "<span class=\"pro-badge\" style=\"font-family:Orbitron,sans-serif;font-weight:900;font-size:13px;letter-spacing:1px;color:#f9d423;animation:fire_text 2s infinite alternate;text-transform:uppercase;\">PRO</span>",
         "description": "Cyberpunk Orbitron typography with blazing molten-fire animated glow for competitive pro players.",
         "fn_call": "render_verified_badge([$badge], $settings, 4, 'inline');",
-        "cdn_url": "",
-        "local_url": ""
+        "cdn_urls": [],
+        "direct_url": ""
     },
     {
         "id": "120000001080",
@@ -661,8 +957,8 @@
         "svg_code": "<svg viewBox=\"0 0 24 24\" style=\"width:100%;height:100%;animation:glow_legend 2.5s infinite ease-in-out;\"><defs><linearGradient id=\"leg_grad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#8e2de2\"/><stop offset=\"1\" stop-color=\"#4a00e0\"/></linearGradient></defs><path fill=\"url(#leg_grad)\" d=\"M12 .5L4.5 9l7.5 14.5L19.5 9L12 .5zm0 2.31L17.5 9H6.5L12 2.81z\"/></svg>",
         "description": "Prismatic diamond with rotating gradient and purple cosmic aura reserved for legendary performers.",
         "fn_call": "render_verified_badge([$badge], $settings, 3, 'header');",
-        "cdn_url": "",
-        "local_url": ""
+        "cdn_urls": [],
+        "direct_url": ""
     },
     {
         "id": "120000001180",
@@ -685,8 +981,12 @@
         "type": "image",
         "description": "Free Fire in-game battle interface alive survivor badge icon.",
         "fn_call": "generate_ff_badge_html('badge_alive_teal.png', 'HUD Alive Survivor', 'rgba(20, 184, 166, 0.85)', 'in-line', '26px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_alive_teal.png",
-        "local_url": "badges/badge_alive_teal.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_alive_teal.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/badge_alive_teal.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_alive_teal.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_alive_teal.png"
     },
     {
         "id": "120000001280",
@@ -709,8 +1009,12 @@
         "type": "image",
         "description": "Free Fire in-game battle interface elimination kill badge icon.",
         "fn_call": "generate_ff_badge_html('badge_kill_maroon.png', 'HUD Kill Elimination', 'rgba(225, 29, 72, 0.85)', 'in-line', '26px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png",
-        "local_url": "badges/badge_kill_maroon.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png"
     },
     {
         "id": "120000001380",
@@ -733,8 +1037,12 @@
         "type": "image",
         "description": "Futuristic neon gaming broadcast badge designed for top live streaming partners.",
         "fn_call": "generate_ff_badge_html('neon_live_stream_badge.png', 'Neon Gaming Streamer', 'rgba(139, 92, 246, 0.9)', 'top-right', '38px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/neon_live_stream_badge.png",
-        "local_url": "badges/neon_live_stream_badge.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/neon_live_stream_badge.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/neon_live_stream_badge.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/neon_live_stream_badge.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/neon_live_stream_badge.png"
     },
     {
         "id": "120000001480",
@@ -757,8 +1065,12 @@
         "type": "image",
         "description": "Supreme Gold V-Badge surrounded with high-energy radiant lightning corona aura.",
         "fn_call": "generate_ff_badge_html('vbadge_prime.png', 'Prime Aura V-Badge', 'rgba(255, 215, 0, 0.9)', 'top-right', '36px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge_prime.png",
-        "local_url": "badges/vbadge_prime.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge_prime.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/vbadge_prime.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/vbadge_prime.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge_prime.png"
     },
     {
         "id": "120000001580",
@@ -781,8 +1093,12 @@
         "type": "image",
         "description": "Special tier level 8 commemorative golden emblem badge.",
         "fn_call": "generate_ff_badge_html('icon_badge_8.png', 'Special Level 8 Elite', 'rgba(234, 179, 8, 0.85)', 'in-line', '32px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/icon_badge_8.png",
-        "local_url": "badges/icon_badge_8.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/icon_badge_8.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/icon_badge_8.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/icon_badge_8.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/icon_badge_8.png"
     },
     {
         "id": "120000001680",
@@ -805,8 +1121,12 @@
         "type": "image",
         "description": "Official Free Fire ranked match token used to exchange for elite rewards in the Rank Store.",
         "fn_call": "generate_ff_badge_html('FF_UI_Badge_ESPORTS01.png', 'Rank Token', 'rgba(59, 130, 246, 0.85)', 'in-line', '34px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
-        "local_url": "badges/FF_UI_Badge_ESPORTS01.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png"
     },
     {
         "id": "120000001780",
@@ -829,8 +1149,12 @@
         "type": "image",
         "description": "Use this voucher to upgrade to the Advanced rewards in the Clash Squad Championship Cup.",
         "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL03.png', 'Clash Squad Cup Upgrade Voucher', 'rgba(168, 85, 247, 0.85)', 'in-line', '34px');",
-        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png",
-        "local_url": "badges/FF_UI_Badge_KOL03.png"
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL03.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL03.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png"
     }
 ];
         let currentItem = null;
@@ -848,13 +1172,24 @@
             }
 
             container.innerHTML = list.map(item => {
-                const isImage = item.type === 'image';
+                const isPrime = item.type === 'prime_image' || !!item.prime_level;
                 const fileUrl = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
                 const localUrl = item.file ? 'badges/' + item.file : '';
-                const rarityColor = item.rarity_color || '#A855F7';
                 
                 let previewHtml = '';
-                if (isImage && item.file) {
+                if (isPrime) {
+                    const lvl = item.prime_level || 1;
+                    const hasStream = (lvl === 8);
+                    const hasGlint = (lvl >= 7);
+                    previewHtml = `
+                        <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:58px;height:58px;">
+                            <div class="ff-core-aura"></div>
+                            ${hasStream ? '<div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>' : ''}
+                            <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
+                            ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
+                        </div>
+                    `;
+                } else if (item.type === 'image' && item.file) {
                     previewHtml = `
                         <span class="ff-shape-badge" style="width:42px;height:42px;filter:drop-shadow(0 0 6px ${item.glow_color || 'rgba(255,215,0,0.8)'});">
                             <img src="${localUrl}" onerror="this.src='${fileUrl}'" alt="${item.name}" style="width:100%;height:100%;object-fit:contain;display:block;">
@@ -889,9 +1224,9 @@
                             <span class="text-[10px] text-gray-500 font-mono font-medium">${item.patch || 'OB55'}</span>
                         </div>
 
-                        <!-- Center Preview Box -->
+                        <!-- Center Preview Box (No Background, Pure Transparent) -->
                         <div class="item-preview-box h-28 sm:h-32 flex items-center justify-center p-2 mb-3 rounded-xl border border-white/5 relative overflow-hidden group-hover:border-purple-500/30 transition">
-                            <div class="scale-100 group-hover:scale-125 transition-transform duration-300">
+                            <div class="scale-100 group-hover:scale-115 transition-transform duration-300 flex items-center justify-center">
                                 ${previewHtml}
                             </div>
                         </div>
@@ -928,7 +1263,6 @@
             const rarity = document.getElementById('raritySelect').value;
 
             const filtered = itemsData.filter(item => {
-                // Search match
                 const matchQuery = !q || 
                     item.name.toLowerCase().includes(q) || 
                     item.id.toLowerCase().includes(q) || 
@@ -936,13 +1270,8 @@
                     item.icon_id.toLowerCase().includes(q) || 
                     item.category.toLowerCase().includes(q);
 
-                // Cat match
                 const matchCat = (cat === 'all') || (item.category_slug === cat);
-
-                // Patch match
                 const matchPatch = (patch === 'all') || (item.patch_slug === patch);
-
-                // Rarity match
                 const matchRarity = (rarity === 'all') || (item.rarity.toUpperCase() === rarity.toUpperCase());
 
                 return matchQuery && matchCat && matchPatch && matchRarity;
@@ -980,9 +1309,21 @@
             const fileUrl = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
             const localUrl = item.file ? 'badges/' + item.file : '';
 
-            if (item.type === 'image' && item.file) {
+            if (item.type === 'prime_image' || item.prime_level) {
+                const lvl = item.prime_level || 1;
+                const hasStream = (lvl === 8);
+                const hasGlint = (lvl >= 7);
                 previewContainer.innerHTML = `
-                    <span class="ff-shape-badge" style="width:64px;height:64px;filter:drop-shadow(0 0 10px ${item.glow_color || 'rgba(255,215,0,0.8)'});">
+                    <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl} scale-125" style="width:90px;height:90px;">
+                        <div class="ff-core-aura"></div>
+                        ${hasStream ? '<div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>' : ''}
+                        <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
+                        ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
+                    </div>
+                `;
+            } else if (item.type === 'image' && item.file) {
+                previewContainer.innerHTML = `
+                    <span class="ff-shape-badge" style="width:72px;height:72px;filter:drop-shadow(0 0 10px ${item.glow_color || 'rgba(255,215,0,0.8)'});">
                         <img src="${localUrl}" onerror="this.src='${fileUrl}'" alt="${item.name}" style="width:100%;height:100%;object-fit:contain;display:block;">
                         <span style="position:absolute;inset:0;pointer-events:none;overflow:hidden;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                             <span style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.2) 44%,rgba(255,255,255,0.95) 50%,rgba(255,255,255,0.2) 56%,transparent 65%);animation:ff_shape_sweep 2.6s infinite linear;mix-blend-mode:screen;display:block;"></span>
@@ -990,7 +1331,7 @@
                     </span>
                 `;
             } else if (item.type === 'svg_code') {
-                previewContainer.innerHTML = `<div style="width:54px;height:54px;display:flex;align-items:center;justify-content:center;">${item.svg_code}</div>`;
+                previewContainer.innerHTML = `<div style="width:58px;height:58px;display:flex;align-items:center;justify-content:center;">${item.svg_code}</div>`;
             } else if (item.type === 'text_code') {
                 previewContainer.innerHTML = `<div class="scale-150">${item.text_code}</div>`;
             }

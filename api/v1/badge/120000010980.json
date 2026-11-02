@@ -1,0 +1,31 @@
+{
+    "status": "success",
+    "item": {
+        "id": "120000010980",
+        "slug": "prime-profile-title",
+        "icon_id": "Icon_FF_Prime_ProfileTitle_Gold",
+        "name": "Prime Profile Title Emblem",
+        "title": "Official Prime Profile Title Header Tag",
+        "rarity": "MYTHIC",
+        "rarity_color": "#FFD700",
+        "rarity_class": "mythic",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "ff_ui_profile_title_prime.png",
+        "glow_color": "rgba(255, 215, 0, 0.9)",
+        "hex_glow": "#FFD700",
+        "priority": 805000,
+        "default_size": 48,
+        "type": "image",
+        "description": "Special golden Prime title emblem displayed prominently on top profile cards of verified Free Fire Prime players.",
+        "fn_call": "generate_ff_badge_html('ff_ui_profile_title_prime.png', 'Prime Profile Title Emblem', 'rgba(255, 215, 0, 0.9)', 'top-right', '48px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_profile_title_prime.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_profile_title_prime.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_profile_title_prime.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_profile_title_prime.png"
+    }
+}

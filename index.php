@@ -25,6 +25,8 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Orbitron, Rajdhani, Fira Code, Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@600;700&family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Free Fire Prime Badges CSS (100% Transparent, No Background) -->
+    <link rel="stylesheet" href="cdn/prime-badge.css">
 
     <style>
         body {
@@ -89,7 +91,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
         }
 
         .item-preview-box {
-            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.15) 0%, rgba(10, 12, 24, 0.95) 75%);
+            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.12) 0%, rgba(10, 12, 24, 0.95) 75%);
             border-radius: 12px;
             position: relative;
         }
@@ -138,15 +140,15 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     <i class="fas fa-book-bookmark text-xs"></i>
                     <span>Items Library</span>
                 </button>
+                <a href="#prime-system" onclick="document.getElementById('catSelect').value='prime'; applyFilters();" class="px-4 py-2 rounded-xl text-xs font-semibold text-yellow-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
+                    <i class="fas fa-shield-halved text-xs"></i>
+                    <span>Prime Level (1-8)</span>
+                </a>
                 <a href="#player-inspector" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
                     <i class="fas fa-user-astronaut text-xs"></i>
                     <span>Player Inspector</span>
                 </a>
-                <a href="#ai-master" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
-                    <i class="fas fa-robot text-xs"></i>
-                    <span>AI Master Prompt</span>
-                </a>
-                <a href="https://github.com/tamimhasan1280/ff-bages1280" target="_blank" class="px-4 py-2 rounded-xl text-xs font-semibold text-amber-400 hover:text-amber-300 hover:bg-white/5 transition flex items-center gap-2">
+                <a href="admin.php" class="px-4 py-2 rounded-xl text-xs font-semibold text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 border border-amber-400/20 transition flex items-center gap-2">
                     <i class="fas fa-crown text-xs"></i>
                     <span>Admin Panel</span>
                 </a>
@@ -164,21 +166,18 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
                         <i class="fab fa-telegram text-xs"></i>
                     </a>
-                    <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
-                        <i class="fab fa-facebook text-xs"></i>
-                    </a>
                 </div>
 
                 <!-- Admin Profile Pill -->
-                <div class="flex items-center gap-2 bg-[#12162b] px-3 py-1.5 rounded-2xl border border-white/10">
+                <a href="admin.php" class="flex items-center gap-2 bg-[#12162b] hover:bg-[#1a203f] px-3 py-1.5 rounded-2xl border border-white/10 transition">
                     <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center font-bold text-white text-xs">
                         A
                     </div>
                     <div class="hidden sm:block text-left leading-tight">
                         <div class="text-xs font-bold text-white">Admin</div>
-                        <div class="text-[9px] text-gray-400 font-medium">Super Admin</div>
+                        <div class="text-[9px] text-gray-400 font-medium">Studio Access</div>
                     </div>
-                </div>
+                </a>
             </div>
 
         </div>
@@ -198,7 +197,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                         TURKY HUB - FF Items EXPLORER
                     </h1>
                     <p class="text-xs sm:text-sm text-gray-400 font-rajdhani tracking-wider mt-0.5">
-                        <span class="text-white font-bold" id="itemCountDisplay">34,211 items available</span> | Infinite Auto-Scroll Active
+                        <span class="text-white font-bold" id="itemCountDisplay"><?= count($master_badges) ?> items available</span> | Infinite Auto-Scroll Active
                     </p>
                 </div>
             </div>
@@ -208,9 +207,9 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     OB55 Engine Active
                 </span>
-                <a href="https://github.com/<?= $repo_name ?>" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold flex items-center gap-2 transition">
-                    <i class="fab fa-github text-yellow-400"></i>
-                    <span class="hidden sm:inline">GitHub Repository</span>
+                <a href="admin.php" class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-yellow-300 border border-yellow-500/30 text-xs font-bold flex items-center gap-2 transition">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add Badge in Admin</span>
                 </a>
             </div>
         </section>
@@ -221,7 +220,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             <!-- Full Width Search Input -->
             <div class="relative">
                 <i class="fas fa-search absolute left-4 top-3.5 text-gray-500 text-sm"></i>
-                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search by Item Name, ID, or Keywords (e.g. mp40, bundle, gloo, 120000000080)..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-11 pr-4 py-3 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-rose-500 transition shadow-inner">
+                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search by Item Name, ID, or Keywords (e.g. prime, level 8, 120000010880)..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-11 pr-4 py-3 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-rose-500 transition shadow-inner">
             </div>
 
             <!-- Filters Row: Categories, Patches, Rarities, Apply Button -->
@@ -231,6 +230,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <div class="relative">
                     <select id="catSelect" onchange="applyFilters()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-2.5 text-xs text-gray-200 focus:outline-none focus:border-rose-500 appearance-none cursor-pointer">
                         <option value="all">All Categories</option>
+                        <option value="prime">Prime System (Free Fire Prime Lvl 1-8)</option>
                         <option value="official">Official Partner (KOL)</option>
                         <option value="vip">Crystal VIP Partner</option>
                         <option value="esports">Competitive & Esports</option>
@@ -296,10 +296,10 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <i class="fas fa-xmark"></i>
             </button>
 
-            <!-- Preview Stage -->
+            <!-- Preview Stage (Transparent, No Background) -->
             <div class="w-48 h-48 mx-auto rounded-2xl bg-[#090b18] border border-white/5 relative flex items-center justify-center overflow-hidden shadow-inner">
-                <div id="modalAura" class="absolute inset-0 bg-gradient-to-tr from-purple-600/20 via-transparent to-pink-500/20 pointer-events-none"></div>
-                <div id="modalItemPreview" class="relative z-10 scale-125 flex items-center justify-center">
+                <div id="modalAura" class="absolute inset-0 bg-gradient-to-tr from-purple-600/15 via-transparent to-pink-500/15 pointer-events-none"></div>
+                <div id="modalItemPreview" class="relative z-10 flex items-center justify-center w-full h-full p-2">
                     <!-- Image or Animation injected here -->
                 </div>
             </div>
@@ -316,7 +316,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <div class="bg-[#090b18] border border-white/5 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
                     <span class="text-[#f97316] font-bold text-xs tracking-wide">Item ID:</span>
                     <div class="flex items-center gap-2">
-                        <span id="modalItemId" class="text-emerald-400 font-mono font-bold text-xs tracking-wider">120000000080</span>
+                        <span id="modalItemId" class="text-emerald-400 font-mono font-bold text-xs tracking-wider">120000010880</span>
                         <button type="button" onclick="copyModalId()" class="bg-[#1b1f3b] hover:bg-[#282f56] text-gray-200 hover:text-white px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition">
                             <i class="fas fa-copy text-[10px]"></i> <span>Copy</span>
                         </button>
@@ -326,19 +326,19 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <!-- Icon ID Row -->
                 <div class="bg-[#090b18] border border-white/5 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
                     <span class="text-[#f97316] font-bold text-xs tracking-wide">Icon ID:</span>
-                    <span id="modalIconId" class="text-emerald-400 font-mono text-xs">Icon_FF_KOL_VBadge_Gold</span>
+                    <span id="modalIconId" class="text-emerald-400 font-mono text-xs">Icon_FF_Prime_Level_08</span>
                 </div>
 
                 <!-- Rarity Row -->
                 <div class="flex items-center justify-between px-2 py-1">
                     <span class="text-gray-400 font-medium">Rarity:</span>
-                    <span id="modalRarity" class="text-white font-extrabold uppercase tracking-wider">PURPLE</span>
+                    <span id="modalRarity" class="text-white font-extrabold uppercase tracking-wider">MYTHIC</span>
                 </div>
 
                 <!-- Category Row -->
                 <div class="flex items-center justify-between px-2 py-1">
                     <span class="text-gray-400 font-medium">Category:</span>
-                    <span id="modalCategory" class="text-white font-medium">Official Partner</span>
+                    <span id="modalCategory" class="text-white font-medium">Prime System</span>
                 </div>
 
                 <!-- Patch / Tag Row -->
@@ -424,13 +424,24 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             }
 
             container.innerHTML = list.map(item => {
-                const isImage = item.type === 'image';
+                const isPrime = item.type === 'prime_image' || !!item.prime_level;
                 const fileUrl = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
                 const localUrl = item.file ? 'badges/' + item.file : '';
-                const rarityColor = item.rarity_color || '#A855F7';
                 
                 let previewHtml = '';
-                if (isImage && item.file) {
+                if (isPrime) {
+                    const lvl = item.prime_level || 1;
+                    const hasStream = (lvl === 8);
+                    const hasGlint = (lvl >= 7);
+                    previewHtml = `
+                        <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:58px;height:58px;">
+                            <div class="ff-core-aura"></div>
+                            ${hasStream ? '<div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>' : ''}
+                            <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
+                            ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
+                        </div>
+                    `;
+                } else if (item.type === 'image' && item.file) {
                     previewHtml = `
                         <span class="ff-shape-badge" style="width:42px;height:42px;filter:drop-shadow(0 0 6px ${item.glow_color || 'rgba(255,215,0,0.8)'});">
                             <img src="${localUrl}" onerror="this.src='${fileUrl}'" alt="${item.name}" style="width:100%;height:100%;object-fit:contain;display:block;">
@@ -465,9 +476,9 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                             <span class="text-[10px] text-gray-500 font-mono font-medium">${item.patch || 'OB55'}</span>
                         </div>
 
-                        <!-- Center Preview Box -->
+                        <!-- Center Preview Box (No Background, Pure Transparent) -->
                         <div class="item-preview-box h-28 sm:h-32 flex items-center justify-center p-2 mb-3 rounded-xl border border-white/5 relative overflow-hidden group-hover:border-purple-500/30 transition">
-                            <div class="scale-100 group-hover:scale-125 transition-transform duration-300">
+                            <div class="scale-100 group-hover:scale-115 transition-transform duration-300 flex items-center justify-center">
                                 ${previewHtml}
                             </div>
                         </div>
@@ -504,7 +515,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             const rarity = document.getElementById('raritySelect').value;
 
             const filtered = itemsData.filter(item => {
-                // Search match
                 const matchQuery = !q || 
                     item.name.toLowerCase().includes(q) || 
                     item.id.toLowerCase().includes(q) || 
@@ -512,13 +522,8 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     item.icon_id.toLowerCase().includes(q) || 
                     item.category.toLowerCase().includes(q);
 
-                // Cat match
                 const matchCat = (cat === 'all') || (item.category_slug === cat);
-
-                // Patch match
                 const matchPatch = (patch === 'all') || (item.patch_slug === patch);
-
-                // Rarity match
                 const matchRarity = (rarity === 'all') || (item.rarity.toUpperCase() === rarity.toUpperCase());
 
                 return matchQuery && matchCat && matchPatch && matchRarity;
@@ -556,9 +561,21 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             const fileUrl = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
             const localUrl = item.file ? 'badges/' + item.file : '';
 
-            if (item.type === 'image' && item.file) {
+            if (item.type === 'prime_image' || item.prime_level) {
+                const lvl = item.prime_level || 1;
+                const hasStream = (lvl === 8);
+                const hasGlint = (lvl >= 7);
                 previewContainer.innerHTML = `
-                    <span class="ff-shape-badge" style="width:64px;height:64px;filter:drop-shadow(0 0 10px ${item.glow_color || 'rgba(255,215,0,0.8)'});">
+                    <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl} scale-125" style="width:90px;height:90px;">
+                        <div class="ff-core-aura"></div>
+                        ${hasStream ? '<div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>' : ''}
+                        <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
+                        ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
+                    </div>
+                `;
+            } else if (item.type === 'image' && item.file) {
+                previewContainer.innerHTML = `
+                    <span class="ff-shape-badge" style="width:72px;height:72px;filter:drop-shadow(0 0 10px ${item.glow_color || 'rgba(255,215,0,0.8)'});">
                         <img src="${localUrl}" onerror="this.src='${fileUrl}'" alt="${item.name}" style="width:100%;height:100%;object-fit:contain;display:block;">
                         <span style="position:absolute;inset:0;pointer-events:none;overflow:hidden;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                             <span style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.2) 44%,rgba(255,255,255,0.95) 50%,rgba(255,255,255,0.2) 56%,transparent 65%);animation:ff_shape_sweep 2.6s infinite linear;mix-blend-mode:screen;display:block;"></span>
@@ -566,7 +583,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     </span>
                 `;
             } else if (item.type === 'svg_code') {
-                previewContainer.innerHTML = `<div style="width:54px;height:54px;display:flex;align-items:center;justify-content:center;">${item.svg_code}</div>`;
+                previewContainer.innerHTML = `<div style="width:58px;height:58px;display:flex;align-items:center;justify-content:center;">${item.svg_code}</div>`;
             } else if (item.type === 'text_code') {
                 previewContainer.innerHTML = `<div class="scale-150">${item.text_code}</div>`;
             }

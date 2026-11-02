@@ -1,6 +1,6 @@
 /**
- * Free Fire Badges & V-Badges Master Client SDK & Web Component v2.5.0
- * Ultra-fast CDN delivery, interactive Web Component, and instant DOM injection.
+ * Free Fire Badges & V-Badges Master Client SDK & Web Component v3.0.0
+ * Ultra-fast CDN delivery, interactive Web Component, Prime System (Lvl 1-8), and instant DOM injection.
  * Supports 12...80 IDs and Free Fire Items Explorer
  * (c) Free Fire Badges CDN Project - MIT License
  */
@@ -20,6 +20,366 @@
 
     // Master Registry of Free Fire Badges & Items (Indexed by ID and Slug)
     const BADGES_DATABASE = {
+    "prime-level-1": {
+        "id": "120000010180",
+        "slug": "prime-level-1",
+        "icon_id": "Icon_FF_Prime_Level_01",
+        "name": "Free Fire Prime Level 1",
+        "title": "Prime Level 1 (Bronze Recruit Insignia)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_01.png",
+        "glowColor": "rgba(205, 127, 50, 0.65)",
+        "hexGlow": "#CD7F32",
+        "priority": 810000,
+        "defaultSize": 44,
+        "rarity": "RARE",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 1,
+        "description": "Free Fire Prime Level 1 bronze insignia. Clean authentic vector crest representing entry into the Garena Free Fire Prime System.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_01.png', 1, '44px');"
+    },
+    "120000010180": {
+        "id": "120000010180",
+        "slug": "prime-level-1",
+        "icon_id": "Icon_FF_Prime_Level_01",
+        "name": "Free Fire Prime Level 1",
+        "title": "Prime Level 1 (Bronze Recruit Insignia)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_01.png",
+        "glowColor": "rgba(205, 127, 50, 0.65)",
+        "hexGlow": "#CD7F32",
+        "priority": 810000,
+        "defaultSize": 44,
+        "rarity": "RARE",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 1,
+        "description": "Free Fire Prime Level 1 bronze insignia. Clean authentic vector crest representing entry into the Garena Free Fire Prime System.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_01.png', 1, '44px');"
+    },
+    "prime-level-2": {
+        "id": "120000010280",
+        "slug": "prime-level-2",
+        "icon_id": "Icon_FF_Prime_Level_02",
+        "name": "Free Fire Prime Level 2",
+        "title": "Prime Level 2 (Silver Scout Crest)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_02.png",
+        "glowColor": "rgba(192, 192, 192, 0.7)",
+        "hexGlow": "#C0C0C0",
+        "priority": 820000,
+        "defaultSize": 44,
+        "rarity": "RARE",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 2,
+        "description": "Free Fire Prime Level 2 silver rank insignia for seasoned battle survivors and verified account holders.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_02.png', 2, '44px');"
+    },
+    "120000010280": {
+        "id": "120000010280",
+        "slug": "prime-level-2",
+        "icon_id": "Icon_FF_Prime_Level_02",
+        "name": "Free Fire Prime Level 2",
+        "title": "Prime Level 2 (Silver Scout Crest)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_02.png",
+        "glowColor": "rgba(192, 192, 192, 0.7)",
+        "hexGlow": "#C0C0C0",
+        "priority": 820000,
+        "defaultSize": 44,
+        "rarity": "RARE",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 2,
+        "description": "Free Fire Prime Level 2 silver rank insignia for seasoned battle survivors and verified account holders.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_02.png', 2, '44px');"
+    },
+    "prime-level-3": {
+        "id": "120000010380",
+        "slug": "prime-level-3",
+        "icon_id": "Icon_FF_Prime_Level_03",
+        "name": "Free Fire Prime Level 3",
+        "title": "Prime Level 3 (Gold Vanguard)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_03.png",
+        "glowColor": "rgba(234, 179, 8, 0.75)",
+        "hexGlow": "#EAB308",
+        "priority": 830000,
+        "defaultSize": 44,
+        "rarity": "EPIC",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 3,
+        "description": "Free Fire Prime Level 3 gold vanguard crest awarded for consistent battle performance, tier upgrades, and platform patronage.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_03.png', 3, '44px');"
+    },
+    "120000010380": {
+        "id": "120000010380",
+        "slug": "prime-level-3",
+        "icon_id": "Icon_FF_Prime_Level_03",
+        "name": "Free Fire Prime Level 3",
+        "title": "Prime Level 3 (Gold Vanguard)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_03.png",
+        "glowColor": "rgba(234, 179, 8, 0.75)",
+        "hexGlow": "#EAB308",
+        "priority": 830000,
+        "defaultSize": 44,
+        "rarity": "EPIC",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 3,
+        "description": "Free Fire Prime Level 3 gold vanguard crest awarded for consistent battle performance, tier upgrades, and platform patronage.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_03.png', 3, '44px');"
+    },
+    "prime-level-4": {
+        "id": "120000010480",
+        "slug": "prime-level-4",
+        "icon_id": "Icon_FF_Prime_Level_04",
+        "name": "Free Fire Prime Level 4",
+        "title": "Prime Level 4 (Cyan Crystal Aura)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_04.png",
+        "glowColor": "rgba(6, 182, 212, 0.85)",
+        "hexGlow": "#06B6D4",
+        "priority": 840000,
+        "defaultSize": 46,
+        "rarity": "EPIC",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 4,
+        "description": "Free Fire Prime Level 4 with cyan breathing aura glow and transparent drop-shadow contours emitting directly from the badge.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_04.png', 4, '46px');"
+    },
+    "120000010480": {
+        "id": "120000010480",
+        "slug": "prime-level-4",
+        "icon_id": "Icon_FF_Prime_Level_04",
+        "name": "Free Fire Prime Level 4",
+        "title": "Prime Level 4 (Cyan Crystal Aura)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_04.png",
+        "glowColor": "rgba(6, 182, 212, 0.85)",
+        "hexGlow": "#06B6D4",
+        "priority": 840000,
+        "defaultSize": 46,
+        "rarity": "EPIC",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 4,
+        "description": "Free Fire Prime Level 4 with cyan breathing aura glow and transparent drop-shadow contours emitting directly from the badge.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_04.png', 4, '46px');"
+    },
+    "prime-level-5": {
+        "id": "120000010580",
+        "slug": "prime-level-5",
+        "icon_id": "Icon_FF_Prime_Level_05",
+        "name": "Free Fire Prime Level 5",
+        "title": "Prime Level 5 (Radiant Gold Halo)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_05.png",
+        "glowColor": "rgba(245, 158, 11, 0.85)",
+        "hexGlow": "#F59E0B",
+        "priority": 850000,
+        "defaultSize": 46,
+        "rarity": "EPIC",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 5,
+        "description": "Free Fire Prime Level 5 with animated radiant halo pulse, breathing core aura, and soft wing expansion.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_05.png', 5, '46px');"
+    },
+    "120000010580": {
+        "id": "120000010580",
+        "slug": "prime-level-5",
+        "icon_id": "Icon_FF_Prime_Level_05",
+        "name": "Free Fire Prime Level 5",
+        "title": "Prime Level 5 (Radiant Gold Halo)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_05.png",
+        "glowColor": "rgba(245, 158, 11, 0.85)",
+        "hexGlow": "#F59E0B",
+        "priority": 850000,
+        "defaultSize": 46,
+        "rarity": "EPIC",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 5,
+        "description": "Free Fire Prime Level 5 with animated radiant halo pulse, breathing core aura, and soft wing expansion.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_05.png', 5, '46px');"
+    },
+    "prime-level-6": {
+        "id": "120000010680",
+        "slug": "prime-level-6",
+        "icon_id": "Icon_FF_Prime_Level_06",
+        "name": "Free Fire Prime Level 6",
+        "title": "Prime Level 6 (Amber Flame Wings)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_06.png",
+        "glowColor": "rgba(249, 115, 22, 0.9)",
+        "hexGlow": "#F97316",
+        "priority": 860000,
+        "defaultSize": 48,
+        "rarity": "LEGENDARY",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 6,
+        "description": "Free Fire Prime Level 6 with amber flame contour aura, dual-frequency breathing, and energetic wing pulses.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_06.png', 6, '48px');"
+    },
+    "120000010680": {
+        "id": "120000010680",
+        "slug": "prime-level-6",
+        "icon_id": "Icon_FF_Prime_Level_06",
+        "name": "Free Fire Prime Level 6",
+        "title": "Prime Level 6 (Amber Flame Wings)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_06.png",
+        "glowColor": "rgba(249, 115, 22, 0.9)",
+        "hexGlow": "#F97316",
+        "priority": 860000,
+        "defaultSize": 48,
+        "rarity": "LEGENDARY",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 6,
+        "description": "Free Fire Prime Level 6 with amber flame contour aura, dual-frequency breathing, and energetic wing pulses.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_06.png', 6, '48px');"
+    },
+    "prime-level-7": {
+        "id": "120000010780",
+        "slug": "prime-level-7",
+        "icon_id": "Icon_FF_Prime_Level_07",
+        "name": "Free Fire Prime Level 7",
+        "title": "Prime Level 7 (Grandmaster Mythic Sparkle)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_07.png",
+        "glowColor": "rgba(234, 179, 8, 0.95)",
+        "hexGlow": "#EAB308",
+        "priority": 870000,
+        "defaultSize": 50,
+        "rarity": "MYTHIC",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 7,
+        "description": "Free Fire Prime Level 7 Grandmaster crest with organic center gem glint twinkle, mythic golden wings, and celestial breathing glow.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_07.png', 7, '50px');"
+    },
+    "120000010780": {
+        "id": "120000010780",
+        "slug": "prime-level-7",
+        "icon_id": "Icon_FF_Prime_Level_07",
+        "name": "Free Fire Prime Level 7",
+        "title": "Prime Level 7 (Grandmaster Mythic Sparkle)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_07.png",
+        "glowColor": "rgba(234, 179, 8, 0.95)",
+        "hexGlow": "#EAB308",
+        "priority": 870000,
+        "defaultSize": 50,
+        "rarity": "MYTHIC",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 7,
+        "description": "Free Fire Prime Level 7 Grandmaster crest with organic center gem glint twinkle, mythic golden wings, and celestial breathing glow.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_07.png', 7, '50px');"
+    },
+    "prime-level-8": {
+        "id": "120000010880",
+        "slug": "prime-level-8",
+        "icon_id": "Icon_FF_Prime_Level_08",
+        "name": "Free Fire Prime Level 8",
+        "title": "Prime Level 8 (Supreme God Tier Ascending Energy)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_08.png",
+        "glowColor": "rgba(255, 215, 0, 1)",
+        "hexGlow": "#FFD700",
+        "priority": 880000,
+        "defaultSize": 54,
+        "rarity": "MYTHIC",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 8,
+        "description": "Free Fire Prime Level 8 Supreme pinnacle insignia. Features authentic right-to-upward ascending golden energy beam, periodic gem glint sparkle, and multi-tier drop-shadow aura.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_08.png', 8, '54px');"
+    },
+    "120000010880": {
+        "id": "120000010880",
+        "slug": "prime-level-8",
+        "icon_id": "Icon_FF_Prime_Level_08",
+        "name": "Free Fire Prime Level 8",
+        "title": "Prime Level 8 (Supreme God Tier Ascending Energy)",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_prime_icon_08.png",
+        "glowColor": "rgba(255, 215, 0, 1)",
+        "hexGlow": "#FFD700",
+        "priority": 880000,
+        "defaultSize": 54,
+        "rarity": "MYTHIC",
+        "patch": "OB55",
+        "type": "prime_image",
+        "prime_level": 8,
+        "description": "Free Fire Prime Level 8 Supreme pinnacle insignia. Features authentic right-to-upward ascending golden energy beam, periodic gem glint sparkle, and multi-tier drop-shadow aura.",
+        "fn_call": "generate_ff_prime_badge_html('ff_ui_prime_icon_08.png', 8, '54px');"
+    },
+    "prime-profile-title": {
+        "id": "120000010980",
+        "slug": "prime-profile-title",
+        "icon_id": "Icon_FF_Prime_ProfileTitle_Gold",
+        "name": "Prime Profile Title Emblem",
+        "title": "Official Prime Profile Title Header Tag",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_profile_title_prime.png",
+        "glowColor": "rgba(255, 215, 0, 0.9)",
+        "hexGlow": "#FFD700",
+        "priority": 805000,
+        "defaultSize": 48,
+        "rarity": "MYTHIC",
+        "patch": "OB55",
+        "type": "image",
+        "prime_level": null,
+        "description": "Special golden Prime title emblem displayed prominently on top profile cards of verified Free Fire Prime players.",
+        "fn_call": "generate_ff_badge_html('ff_ui_profile_title_prime.png', 'Prime Profile Title Emblem', 'rgba(255, 215, 0, 0.9)', 'top-right', '48px');"
+    },
+    "120000010980": {
+        "id": "120000010980",
+        "slug": "prime-profile-title",
+        "icon_id": "Icon_FF_Prime_ProfileTitle_Gold",
+        "name": "Prime Profile Title Emblem",
+        "title": "Official Prime Profile Title Header Tag",
+        "category": "Prime System",
+        "category_slug": "prime",
+        "file": "ff_ui_profile_title_prime.png",
+        "glowColor": "rgba(255, 215, 0, 0.9)",
+        "hexGlow": "#FFD700",
+        "priority": 805000,
+        "defaultSize": 48,
+        "rarity": "MYTHIC",
+        "patch": "OB55",
+        "type": "image",
+        "prime_level": null,
+        "description": "Special golden Prime title emblem displayed prominently on top profile cards of verified Free Fire Prime players.",
+        "fn_call": "generate_ff_badge_html('ff_ui_profile_title_prime.png', 'Prime Profile Title Emblem', 'rgba(255, 215, 0, 0.9)', 'top-right', '48px');"
+    },
     "official-v": {
         "id": "120000000080",
         "slug": "official-v",
@@ -27,6 +387,7 @@
         "name": "OFFICIAL V BAGE",
         "title": "Official Influencer V-Badge",
         "category": "Official Partner (KOL)",
+        "category_slug": "official",
         "file": "FF_UI_Badge_KOL01.png",
         "glowColor": "rgba(255, 215, 0, 0.85)",
         "hexGlow": "#FFD700",
@@ -35,7 +396,9 @@
         "rarity": "MYTHIC",
         "patch": "OB55",
         "type": "image",
-        "description": "The authentic Free Fire partner influencer verification badge with gold light-sweep beam."
+        "prime_level": null,
+        "description": "The authentic Free Fire partner influencer verification badge with gold light-sweep beam.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL01.png', 'OFFICIAL V BAGE', 'rgba(255, 215, 0, 0.85)', 'top-right', '34px');"
     },
     "120000000080": {
         "id": "120000000080",
@@ -44,6 +407,7 @@
         "name": "OFFICIAL V BAGE",
         "title": "Official Influencer V-Badge",
         "category": "Official Partner (KOL)",
+        "category_slug": "official",
         "file": "FF_UI_Badge_KOL01.png",
         "glowColor": "rgba(255, 215, 0, 0.85)",
         "hexGlow": "#FFD700",
@@ -52,7 +416,9 @@
         "rarity": "MYTHIC",
         "patch": "OB55",
         "type": "image",
-        "description": "The authentic Free Fire partner influencer verification badge with gold light-sweep beam."
+        "prime_level": null,
+        "description": "The authentic Free Fire partner influencer verification badge with gold light-sweep beam.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL01.png', 'OFFICIAL V BAGE', 'rgba(255, 215, 0, 0.85)', 'top-right', '34px');"
     },
     "diamond-partner": {
         "id": "120000000180",
@@ -61,6 +427,7 @@
         "name": "FF Diamond Partner",
         "title": "Diamond Partner / Elite VIP",
         "category": "Crystal VIP Partner",
+        "category_slug": "vip",
         "file": "FF_UI_Badge_KOL03.png",
         "glowColor": "rgba(168, 85, 247, 0.85)",
         "hexGlow": "#A855F7",
@@ -69,7 +436,9 @@
         "rarity": "MYTHIC",
         "patch": "OB55",
         "type": "image",
-        "description": "Prestigious violet diamond partner badge for elite server patrons and top-tier partners."
+        "prime_level": null,
+        "description": "Prestigious violet diamond partner badge for elite server patrons and top-tier partners.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL03.png', 'FF Diamond Partner', 'rgba(168, 85, 247, 0.85)', 'top-right', '34px');"
     },
     "120000000180": {
         "id": "120000000180",
@@ -78,6 +447,7 @@
         "name": "FF Diamond Partner",
         "title": "Diamond Partner / Elite VIP",
         "category": "Crystal VIP Partner",
+        "category_slug": "vip",
         "file": "FF_UI_Badge_KOL03.png",
         "glowColor": "rgba(168, 85, 247, 0.85)",
         "hexGlow": "#A855F7",
@@ -86,7 +456,9 @@
         "rarity": "MYTHIC",
         "patch": "OB55",
         "type": "image",
-        "description": "Prestigious violet diamond partner badge for elite server patrons and top-tier partners."
+        "prime_level": null,
+        "description": "Prestigious violet diamond partner badge for elite server patrons and top-tier partners.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL03.png', 'FF Diamond Partner', 'rgba(168, 85, 247, 0.85)', 'top-right', '34px');"
     },
     "esports-crown": {
         "id": "120000000280",
@@ -95,6 +467,7 @@
         "name": "FF Esports PRO Crown",
         "title": "Verified Competitor & Tournament Champion Crown",
         "category": "Competitive & Esports",
+        "category_slug": "esports",
         "file": "FF_UI_Badge_ESPORTS01.png",
         "glowColor": "rgba(251, 191, 36, 0.85)",
         "hexGlow": "#FBBF24",
@@ -103,7 +476,9 @@
         "rarity": "LEGENDARY",
         "patch": "OB55",
         "type": "image",
-        "description": "Official crown badge designated for esports champions, tournament MVPs, and verified pro contenders."
+        "prime_level": null,
+        "description": "Official crown badge designated for esports champions, tournament MVPs, and verified pro contenders.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_ESPORTS01.png', 'FF Esports PRO Crown', 'rgba(251, 191, 36, 0.85)', 'top-right', '34px');"
     },
     "120000000280": {
         "id": "120000000280",
@@ -112,6 +487,7 @@
         "name": "FF Esports PRO Crown",
         "title": "Verified Competitor & Tournament Champion Crown",
         "category": "Competitive & Esports",
+        "category_slug": "esports",
         "file": "FF_UI_Badge_ESPORTS01.png",
         "glowColor": "rgba(251, 191, 36, 0.85)",
         "hexGlow": "#FBBF24",
@@ -120,7 +496,9 @@
         "rarity": "LEGENDARY",
         "patch": "OB55",
         "type": "image",
-        "description": "Official crown badge designated for esports champions, tournament MVPs, and verified pro contenders."
+        "prime_level": null,
+        "description": "Official crown badge designated for esports champions, tournament MVPs, and verified pro contenders.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_ESPORTS01.png', 'FF Esports PRO Crown', 'rgba(251, 191, 36, 0.85)', 'top-right', '34px');"
     },
     "gm-staff": {
         "id": "120000000380",
@@ -129,6 +507,7 @@
         "name": "FF Official Staff / GM",
         "title": "Garena Official Staff, Admin & Server Moderator",
         "category": "Administration & Authority",
+        "category_slug": "staff",
         "file": "FF_UI_Badge_GM01.png",
         "glowColor": "rgba(239, 68, 68, 0.85)",
         "hexGlow": "#EF4444",
@@ -137,7 +516,9 @@
         "rarity": "LEGENDARY",
         "patch": "OB55",
         "type": "image",
-        "description": "Crimson Garena server moderator and administrator badge symbolizing platform authority."
+        "prime_level": null,
+        "description": "Crimson Garena server moderator and administrator badge symbolizing platform authority.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_GM01.png', 'FF Official Staff / GM', 'rgba(239, 68, 68, 0.85)', 'top-right', '34px');"
     },
     "120000000380": {
         "id": "120000000380",
@@ -146,6 +527,7 @@
         "name": "FF Official Staff / GM",
         "title": "Garena Official Staff, Admin & Server Moderator",
         "category": "Administration & Authority",
+        "category_slug": "staff",
         "file": "FF_UI_Badge_GM01.png",
         "glowColor": "rgba(239, 68, 68, 0.85)",
         "hexGlow": "#EF4444",
@@ -154,7 +536,9 @@
         "rarity": "LEGENDARY",
         "patch": "OB55",
         "type": "image",
-        "description": "Crimson Garena server moderator and administrator badge symbolizing platform authority."
+        "prime_level": null,
+        "description": "Crimson Garena server moderator and administrator badge symbolizing platform authority.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_GM01.png', 'FF Official Staff / GM', 'rgba(239, 68, 68, 0.85)', 'top-right', '34px');"
     },
     "craftland-creator": {
         "id": "120000000480",
@@ -163,6 +547,7 @@
         "name": "FF Craftland Creator",
         "title": "Craftland Map Architect & Certified Creator",
         "category": "Creators & Architects",
+        "category_slug": "creator",
         "file": "craftland.png",
         "glowColor": "rgba(6, 182, 212, 0.85)",
         "hexGlow": "#06B6D4",
@@ -171,7 +556,9 @@
         "rarity": "EPIC",
         "patch": "OB55",
         "type": "image",
-        "description": "Cyan cube badge awarded to certified Craftland map designers, builders, and creative architects."
+        "prime_level": null,
+        "description": "Cyan cube badge awarded to certified Craftland map designers, builders, and creative architects.",
+        "fn_call": "generate_ff_badge_html('craftland.png', 'FF Craftland Creator', 'rgba(6, 182, 212, 0.85)', 'top-right', '34px');"
     },
     "120000000480": {
         "id": "120000000480",
@@ -180,6 +567,7 @@
         "name": "FF Craftland Creator",
         "title": "Craftland Map Architect & Certified Creator",
         "category": "Creators & Architects",
+        "category_slug": "creator",
         "file": "craftland.png",
         "glowColor": "rgba(6, 182, 212, 0.85)",
         "hexGlow": "#06B6D4",
@@ -188,7 +576,9 @@
         "rarity": "EPIC",
         "patch": "OB55",
         "type": "image",
-        "description": "Cyan cube badge awarded to certified Craftland map designers, builders, and creative architects."
+        "prime_level": null,
+        "description": "Cyan cube badge awarded to certified Craftland map designers, builders, and creative architects.",
+        "fn_call": "generate_ff_badge_html('craftland.png', 'FF Craftland Creator', 'rgba(6, 182, 212, 0.85)', 'top-right', '34px');"
     },
     "emerging-streamer": {
         "id": "120000000580",
@@ -197,6 +587,7 @@
         "name": "FF Emerging Creator",
         "title": "Rising Streamer & Tier-2 Partner Badge",
         "category": "Rising Creators",
+        "category_slug": "creator",
         "file": "FF_UI_Badge_KOL02.png",
         "glowColor": "rgba(16, 185, 129, 0.85)",
         "hexGlow": "#10B981",
@@ -205,7 +596,9 @@
         "rarity": "EPIC",
         "patch": "OB55",
         "type": "image",
-        "description": "Emerald lightning badge for verified up-and-coming gaming streamers and content creators."
+        "prime_level": null,
+        "description": "Emerald lightning badge for verified up-and-coming gaming streamers and content creators.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL02.png', 'FF Emerging Creator', 'rgba(16, 185, 129, 0.85)', 'top-right', '34px');"
     },
     "120000000580": {
         "id": "120000000580",
@@ -214,6 +607,7 @@
         "name": "FF Emerging Creator",
         "title": "Rising Streamer & Tier-2 Partner Badge",
         "category": "Rising Creators",
+        "category_slug": "creator",
         "file": "FF_UI_Badge_KOL02.png",
         "glowColor": "rgba(16, 185, 129, 0.85)",
         "hexGlow": "#10B981",
@@ -222,7 +616,9 @@
         "rarity": "EPIC",
         "patch": "OB55",
         "type": "image",
-        "description": "Emerald lightning badge for verified up-and-coming gaming streamers and content creators."
+        "prime_level": null,
+        "description": "Emerald lightning badge for verified up-and-coming gaming streamers and content creators.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL02.png', 'FF Emerging Creator', 'rgba(16, 185, 129, 0.85)', 'top-right', '34px');"
     },
     "vbadge-classic": {
         "id": "120000000680",
@@ -231,6 +627,7 @@
         "name": "Classic Gold V-Badge",
         "title": "Classic Free Fire Verified V-Badge",
         "category": "Legacy & Classics",
+        "category_slug": "legacy",
         "file": "vbadge.png",
         "glowColor": "rgba(255, 215, 0, 0.85)",
         "hexGlow": "#FFD700",
@@ -239,7 +636,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "image",
-        "description": "The timeless golden V-Badge that started influencer verification across the Free Fire ecosystem."
+        "prime_level": null,
+        "description": "The timeless golden V-Badge that started influencer verification across the Free Fire ecosystem.",
+        "fn_call": "generate_ff_badge_html('vbadge.png', 'Classic Gold V-Badge', 'rgba(255, 215, 0, 0.85)', 'in-line', '32px');"
     },
     "120000000680": {
         "id": "120000000680",
@@ -248,6 +647,7 @@
         "name": "Classic Gold V-Badge",
         "title": "Classic Free Fire Verified V-Badge",
         "category": "Legacy & Classics",
+        "category_slug": "legacy",
         "file": "vbadge.png",
         "glowColor": "rgba(255, 215, 0, 0.85)",
         "hexGlow": "#FFD700",
@@ -256,7 +656,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "image",
-        "description": "The timeless golden V-Badge that started influencer verification across the Free Fire ecosystem."
+        "prime_level": null,
+        "description": "The timeless golden V-Badge that started influencer verification across the Free Fire ecosystem.",
+        "fn_call": "generate_ff_badge_html('vbadge.png', 'Classic Gold V-Badge', 'rgba(255, 215, 0, 0.85)', 'in-line', '32px');"
     },
     "vbadge-vector": {
         "id": "120000000780",
@@ -265,6 +667,7 @@
         "name": "Vector SVG V-Badge",
         "title": "Ultra High Definition Vector V-Badge",
         "category": "Vector & Scalable",
+        "category_slug": "vector",
         "file": "vbadge.svg",
         "glowColor": "rgba(255, 215, 0, 0.85)",
         "hexGlow": "#FFD700",
@@ -273,7 +676,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "image",
-        "description": "Infinitely scalable SVG vector V-badge engineered for high-DPI displays and responsive banners."
+        "prime_level": null,
+        "description": "Infinitely scalable SVG vector V-badge engineered for high-DPI displays and responsive banners.",
+        "fn_call": "generate_ff_badge_html('vbadge.svg', 'Vector SVG V-Badge', 'rgba(255, 215, 0, 0.85)', 'in-line', '30px');"
     },
     "120000000780": {
         "id": "120000000780",
@@ -282,6 +687,7 @@
         "name": "Vector SVG V-Badge",
         "title": "Ultra High Definition Vector V-Badge",
         "category": "Vector & Scalable",
+        "category_slug": "vector",
         "file": "vbadge.svg",
         "glowColor": "rgba(255, 215, 0, 0.85)",
         "hexGlow": "#FFD700",
@@ -290,7 +696,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "image",
-        "description": "Infinitely scalable SVG vector V-badge engineered for high-DPI displays and responsive banners."
+        "prime_level": null,
+        "description": "Infinitely scalable SVG vector V-badge engineered for high-DPI displays and responsive banners.",
+        "fn_call": "generate_ff_badge_html('vbadge.svg', 'Vector SVG V-Badge', 'rgba(255, 215, 0, 0.85)', 'in-line', '30px');"
     },
     "moderator-shield": {
         "id": "120000000880",
@@ -299,6 +707,7 @@
         "name": "MODERETOR Shield",
         "title": "Verified Community Guardian Shield",
         "category": "Security & Moderation",
+        "category_slug": "security",
         "file": "verified-badge.svg",
         "glowColor": "rgba(255, 215, 0, 0.9)",
         "hexGlow": "#FFE000",
@@ -307,7 +716,9 @@
         "rarity": "EPIC",
         "patch": "OB55",
         "type": "svg_code",
+        "prime_level": null,
         "description": "Golden shield with verify checkmark for community moderators, tournament referees, and arbiters.",
+        "fn_call": "render_verified_badge([$badge], $settings, 5, 'header');",
         "svgCode": "<svg viewBox=\"0 0 24 24\" fill=\"none\" style=\"width:100%;height:100%;animation:pulse_gold 2s infinite ease-in-out;\"><path d=\"M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z\" fill=\"url(#mod_grad)\"/><path d=\"M10 15.5l-3.5-3.5 1.41-1.41L10 12.67l5.59-5.59L17 8.5 10 15.5z\" fill=\"#000\"/><defs><linearGradient id=\"mod_grad\" x1=\"4\" y1=\"2\" x2=\"20\" y2=\"22\" gradientUnits=\"userSpaceOnUse\"><stop stop-color=\"#FFE000\"/><stop offset=\"1\" stop-color=\"#799F0C\"/></linearGradient></defs></svg>"
     },
     "120000000880": {
@@ -317,6 +728,7 @@
         "name": "MODERETOR Shield",
         "title": "Verified Community Guardian Shield",
         "category": "Security & Moderation",
+        "category_slug": "security",
         "file": "verified-badge.svg",
         "glowColor": "rgba(255, 215, 0, 0.9)",
         "hexGlow": "#FFE000",
@@ -325,7 +737,9 @@
         "rarity": "EPIC",
         "patch": "OB55",
         "type": "svg_code",
+        "prime_level": null,
         "description": "Golden shield with verify checkmark for community moderators, tournament referees, and arbiters.",
+        "fn_call": "render_verified_badge([$badge], $settings, 5, 'header');",
         "svgCode": "<svg viewBox=\"0 0 24 24\" fill=\"none\" style=\"width:100%;height:100%;animation:pulse_gold 2s infinite ease-in-out;\"><path d=\"M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z\" fill=\"url(#mod_grad)\"/><path d=\"M10 15.5l-3.5-3.5 1.41-1.41L10 12.67l5.59-5.59L17 8.5 10 15.5z\" fill=\"#000\"/><defs><linearGradient id=\"mod_grad\" x1=\"4\" y1=\"2\" x2=\"20\" y2=\"22\" gradientUnits=\"userSpaceOnUse\"><stop stop-color=\"#FFE000\"/><stop offset=\"1\" stop-color=\"#799F0C\"/></linearGradient></defs></svg>"
     },
     "pro-player": {
@@ -335,6 +749,7 @@
         "name": "PRO-PLYER Fire Text",
         "title": "Animated Fire Text Pro Player",
         "category": "Rank & Competitive",
+        "category_slug": "rank",
         "file": "",
         "glowColor": "rgba(249, 212, 35, 0.9)",
         "hexGlow": "#F9D423",
@@ -343,7 +758,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "text_code",
+        "prime_level": null,
         "description": "Cyberpunk Orbitron typography with blazing molten-fire animated glow for competitive pro players.",
+        "fn_call": "render_verified_badge([$badge], $settings, 4, 'inline');",
         "textCode": "<span class=\"pro-badge\" style=\"font-family:Orbitron,sans-serif;font-weight:900;font-size:13px;letter-spacing:1px;color:#f9d423;animation:fire_text 2s infinite alternate;text-transform:uppercase;\">PRO</span>"
     },
     "120000000980": {
@@ -353,6 +770,7 @@
         "name": "PRO-PLYER Fire Text",
         "title": "Animated Fire Text Pro Player",
         "category": "Rank & Competitive",
+        "category_slug": "rank",
         "file": "",
         "glowColor": "rgba(249, 212, 35, 0.9)",
         "hexGlow": "#F9D423",
@@ -361,7 +779,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "text_code",
+        "prime_level": null,
         "description": "Cyberpunk Orbitron typography with blazing molten-fire animated glow for competitive pro players.",
+        "fn_call": "render_verified_badge([$badge], $settings, 4, 'inline');",
         "textCode": "<span class=\"pro-badge\" style=\"font-family:Orbitron,sans-serif;font-weight:900;font-size:13px;letter-spacing:1px;color:#f9d423;animation:fire_text 2s infinite alternate;text-transform:uppercase;\">PRO</span>"
     },
     "legendary-diamond": {
@@ -371,6 +791,7 @@
         "name": "Legendary Mystic Diamond",
         "title": "Mystic Purple Aura Diamond",
         "category": "Exclusive Tier",
+        "category_slug": "exclusive",
         "file": "",
         "glowColor": "rgba(168, 85, 247, 0.95)",
         "hexGlow": "#8E2DE2",
@@ -379,7 +800,9 @@
         "rarity": "MYTHIC",
         "patch": "OB55",
         "type": "svg_code",
+        "prime_level": null,
         "description": "Prismatic diamond with rotating gradient and purple cosmic aura reserved for legendary performers.",
+        "fn_call": "render_verified_badge([$badge], $settings, 3, 'header');",
         "svgCode": "<svg viewBox=\"0 0 24 24\" style=\"width:100%;height:100%;animation:glow_legend 2.5s infinite ease-in-out;\"><defs><linearGradient id=\"leg_grad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#8e2de2\"/><stop offset=\"1\" stop-color=\"#4a00e0\"/></linearGradient></defs><path fill=\"url(#leg_grad)\" d=\"M12 .5L4.5 9l7.5 14.5L19.5 9L12 .5zm0 2.31L17.5 9H6.5L12 2.81z\"/></svg>"
     },
     "120000001080": {
@@ -389,6 +812,7 @@
         "name": "Legendary Mystic Diamond",
         "title": "Mystic Purple Aura Diamond",
         "category": "Exclusive Tier",
+        "category_slug": "exclusive",
         "file": "",
         "glowColor": "rgba(168, 85, 247, 0.95)",
         "hexGlow": "#8E2DE2",
@@ -397,7 +821,9 @@
         "rarity": "MYTHIC",
         "patch": "OB55",
         "type": "svg_code",
+        "prime_level": null,
         "description": "Prismatic diamond with rotating gradient and purple cosmic aura reserved for legendary performers.",
+        "fn_call": "render_verified_badge([$badge], $settings, 3, 'header');",
         "svgCode": "<svg viewBox=\"0 0 24 24\" style=\"width:100%;height:100%;animation:glow_legend 2.5s infinite ease-in-out;\"><defs><linearGradient id=\"leg_grad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#8e2de2\"/><stop offset=\"1\" stop-color=\"#4a00e0\"/></linearGradient></defs><path fill=\"url(#leg_grad)\" d=\"M12 .5L4.5 9l7.5 14.5L19.5 9L12 .5zm0 2.31L17.5 9H6.5L12 2.81z\"/></svg>"
     },
     "hud-alive": {
@@ -407,6 +833,7 @@
         "name": "HUD Alive Survivor",
         "title": "In-game Alive Players HUD Badge",
         "category": "In-game HUD",
+        "category_slug": "hud",
         "file": "badge_alive_teal.png",
         "glowColor": "rgba(20, 184, 166, 0.85)",
         "hexGlow": "#14B8A6",
@@ -415,7 +842,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "image",
-        "description": "Free Fire in-game battle interface alive survivor badge icon."
+        "prime_level": null,
+        "description": "Free Fire in-game battle interface alive survivor badge icon.",
+        "fn_call": "generate_ff_badge_html('badge_alive_teal.png', 'HUD Alive Survivor', 'rgba(20, 184, 166, 0.85)', 'in-line', '26px');"
     },
     "120000001180": {
         "id": "120000001180",
@@ -424,6 +853,7 @@
         "name": "HUD Alive Survivor",
         "title": "In-game Alive Players HUD Badge",
         "category": "In-game HUD",
+        "category_slug": "hud",
         "file": "badge_alive_teal.png",
         "glowColor": "rgba(20, 184, 166, 0.85)",
         "hexGlow": "#14B8A6",
@@ -432,7 +862,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "image",
-        "description": "Free Fire in-game battle interface alive survivor badge icon."
+        "prime_level": null,
+        "description": "Free Fire in-game battle interface alive survivor badge icon.",
+        "fn_call": "generate_ff_badge_html('badge_alive_teal.png', 'HUD Alive Survivor', 'rgba(20, 184, 166, 0.85)', 'in-line', '26px');"
     },
     "hud-kill": {
         "id": "120000001280",
@@ -441,6 +873,7 @@
         "name": "HUD Kill Elimination",
         "title": "In-game Elimination HUD Badge",
         "category": "In-game HUD",
+        "category_slug": "hud",
         "file": "badge_kill_maroon.png",
         "glowColor": "rgba(225, 29, 72, 0.85)",
         "hexGlow": "#E11D48",
@@ -449,7 +882,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "image",
-        "description": "Free Fire in-game battle interface elimination kill badge icon."
+        "prime_level": null,
+        "description": "Free Fire in-game battle interface elimination kill badge icon.",
+        "fn_call": "generate_ff_badge_html('badge_kill_maroon.png', 'HUD Kill Elimination', 'rgba(225, 29, 72, 0.85)', 'in-line', '26px');"
     },
     "120000001280": {
         "id": "120000001280",
@@ -458,6 +893,7 @@
         "name": "HUD Kill Elimination",
         "title": "In-game Elimination HUD Badge",
         "category": "In-game HUD",
+        "category_slug": "hud",
         "file": "badge_kill_maroon.png",
         "glowColor": "rgba(225, 29, 72, 0.85)",
         "hexGlow": "#E11D48",
@@ -466,7 +902,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "image",
-        "description": "Free Fire in-game battle interface elimination kill badge icon."
+        "prime_level": null,
+        "description": "Free Fire in-game battle interface elimination kill badge icon.",
+        "fn_call": "generate_ff_badge_html('badge_kill_maroon.png', 'HUD Kill Elimination', 'rgba(225, 29, 72, 0.85)', 'in-line', '26px');"
     },
     "neon-stream": {
         "id": "120000001380",
@@ -475,6 +913,7 @@
         "name": "Neon Gaming Streamer",
         "title": "Neon Live Stream Gaming Badge",
         "category": "Special Editions",
+        "category_slug": "special",
         "file": "neon_live_stream_badge.png",
         "glowColor": "rgba(139, 92, 246, 0.9)",
         "hexGlow": "#8B5CF6",
@@ -483,7 +922,9 @@
         "rarity": "LEGENDARY",
         "patch": "OB55",
         "type": "image",
-        "description": "Futuristic neon gaming broadcast badge designed for top live streaming partners."
+        "prime_level": null,
+        "description": "Futuristic neon gaming broadcast badge designed for top live streaming partners.",
+        "fn_call": "generate_ff_badge_html('neon_live_stream_badge.png', 'Neon Gaming Streamer', 'rgba(139, 92, 246, 0.9)', 'top-right', '38px');"
     },
     "120000001380": {
         "id": "120000001380",
@@ -492,6 +933,7 @@
         "name": "Neon Gaming Streamer",
         "title": "Neon Live Stream Gaming Badge",
         "category": "Special Editions",
+        "category_slug": "special",
         "file": "neon_live_stream_badge.png",
         "glowColor": "rgba(139, 92, 246, 0.9)",
         "hexGlow": "#8B5CF6",
@@ -500,7 +942,9 @@
         "rarity": "LEGENDARY",
         "patch": "OB55",
         "type": "image",
-        "description": "Futuristic neon gaming broadcast badge designed for top live streaming partners."
+        "prime_level": null,
+        "description": "Futuristic neon gaming broadcast badge designed for top live streaming partners.",
+        "fn_call": "generate_ff_badge_html('neon_live_stream_badge.png', 'Neon Gaming Streamer', 'rgba(139, 92, 246, 0.9)', 'top-right', '38px');"
     },
     "prime-vbadge": {
         "id": "120000001480",
@@ -509,6 +953,7 @@
         "name": "Prime Aura V-Badge",
         "title": "Prime Radiant Influencer V-Badge",
         "category": "Special Editions",
+        "category_slug": "special",
         "file": "vbadge_prime.png",
         "glowColor": "rgba(255, 215, 0, 0.9)",
         "hexGlow": "#FFD700",
@@ -517,7 +962,9 @@
         "rarity": "MYTHIC",
         "patch": "OB55",
         "type": "image",
-        "description": "Supreme Gold V-Badge surrounded with high-energy radiant lightning corona aura."
+        "prime_level": null,
+        "description": "Supreme Gold V-Badge surrounded with high-energy radiant lightning corona aura.",
+        "fn_call": "generate_ff_badge_html('vbadge_prime.png', 'Prime Aura V-Badge', 'rgba(255, 215, 0, 0.9)', 'top-right', '36px');"
     },
     "120000001480": {
         "id": "120000001480",
@@ -526,6 +973,7 @@
         "name": "Prime Aura V-Badge",
         "title": "Prime Radiant Influencer V-Badge",
         "category": "Special Editions",
+        "category_slug": "special",
         "file": "vbadge_prime.png",
         "glowColor": "rgba(255, 215, 0, 0.9)",
         "hexGlow": "#FFD700",
@@ -534,7 +982,9 @@
         "rarity": "MYTHIC",
         "patch": "OB55",
         "type": "image",
-        "description": "Supreme Gold V-Badge surrounded with high-energy radiant lightning corona aura."
+        "prime_level": null,
+        "description": "Supreme Gold V-Badge surrounded with high-energy radiant lightning corona aura.",
+        "fn_call": "generate_ff_badge_html('vbadge_prime.png', 'Prime Aura V-Badge', 'rgba(255, 215, 0, 0.9)', 'top-right', '36px');"
     },
     "special-badge-8": {
         "id": "120000001580",
@@ -543,6 +993,7 @@
         "name": "Special Level 8 Elite",
         "title": "Special Tier Level 8 Emblem",
         "category": "Special Editions",
+        "category_slug": "special",
         "file": "icon_badge_8.png",
         "glowColor": "rgba(234, 179, 8, 0.85)",
         "hexGlow": "#EAB308",
@@ -551,7 +1002,9 @@
         "rarity": "EPIC",
         "patch": "OB55",
         "type": "image",
-        "description": "Special tier level 8 commemorative golden emblem badge."
+        "prime_level": null,
+        "description": "Special tier level 8 commemorative golden emblem badge.",
+        "fn_call": "generate_ff_badge_html('icon_badge_8.png', 'Special Level 8 Elite', 'rgba(234, 179, 8, 0.85)', 'in-line', '32px');"
     },
     "120000001580": {
         "id": "120000001580",
@@ -560,6 +1013,7 @@
         "name": "Special Level 8 Elite",
         "title": "Special Tier Level 8 Emblem",
         "category": "Special Editions",
+        "category_slug": "special",
         "file": "icon_badge_8.png",
         "glowColor": "rgba(234, 179, 8, 0.85)",
         "hexGlow": "#EAB308",
@@ -568,7 +1022,9 @@
         "rarity": "EPIC",
         "patch": "OB55",
         "type": "image",
-        "description": "Special tier level 8 commemorative golden emblem badge."
+        "prime_level": null,
+        "description": "Special tier level 8 commemorative golden emblem badge.",
+        "fn_call": "generate_ff_badge_html('icon_badge_8.png', 'Special Level 8 Elite', 'rgba(234, 179, 8, 0.85)', 'in-line', '32px');"
     },
     "rank-token": {
         "id": "120000001680",
@@ -577,6 +1033,7 @@
         "name": "Rank Token",
         "title": "Ranked Season Exchange Token",
         "category": "Exchange Tokens",
+        "category_slug": "tokens",
         "file": "FF_UI_Badge_ESPORTS01.png",
         "glowColor": "rgba(59, 130, 246, 0.85)",
         "hexGlow": "#3B82F6",
@@ -585,7 +1042,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "image",
-        "description": "Official Free Fire ranked match token used to exchange for elite rewards in the Rank Store."
+        "prime_level": null,
+        "description": "Official Free Fire ranked match token used to exchange for elite rewards in the Rank Store.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_ESPORTS01.png', 'Rank Token', 'rgba(59, 130, 246, 0.85)', 'in-line', '34px');"
     },
     "120000001680": {
         "id": "120000001680",
@@ -594,6 +1053,7 @@
         "name": "Rank Token",
         "title": "Ranked Season Exchange Token",
         "category": "Exchange Tokens",
+        "category_slug": "tokens",
         "file": "FF_UI_Badge_ESPORTS01.png",
         "glowColor": "rgba(59, 130, 246, 0.85)",
         "hexGlow": "#3B82F6",
@@ -602,7 +1062,9 @@
         "rarity": "RARE",
         "patch": "OB55",
         "type": "image",
-        "description": "Official Free Fire ranked match token used to exchange for elite rewards in the Rank Store."
+        "prime_level": null,
+        "description": "Official Free Fire ranked match token used to exchange for elite rewards in the Rank Store.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_ESPORTS01.png', 'Rank Token', 'rgba(59, 130, 246, 0.85)', 'in-line', '34px');"
     },
     "cs-cup-voucher": {
         "id": "120000001780",
@@ -611,6 +1073,7 @@
         "name": "Clash Squad Cup Upgrade Voucher",
         "title": "Clash Squad Cup Advanced Reward Voucher",
         "category": "Misc",
+        "category_slug": "misc",
         "file": "FF_UI_Badge_KOL03.png",
         "glowColor": "rgba(168, 85, 247, 0.85)",
         "hexGlow": "#A855F7",
@@ -619,7 +1082,9 @@
         "rarity": "PURPLE",
         "patch": "OB55",
         "type": "image",
-        "description": "Use this voucher to upgrade to the Advanced rewards in the Clash Squad Championship Cup."
+        "prime_level": null,
+        "description": "Use this voucher to upgrade to the Advanced rewards in the Clash Squad Championship Cup.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL03.png', 'Clash Squad Cup Upgrade Voucher', 'rgba(168, 85, 247, 0.85)', 'in-line', '34px');"
     },
     "120000001780": {
         "id": "120000001780",
@@ -628,6 +1093,7 @@
         "name": "Clash Squad Cup Upgrade Voucher",
         "title": "Clash Squad Cup Advanced Reward Voucher",
         "category": "Misc",
+        "category_slug": "misc",
         "file": "FF_UI_Badge_KOL03.png",
         "glowColor": "rgba(168, 85, 247, 0.85)",
         "hexGlow": "#A855F7",
@@ -636,13 +1102,15 @@
         "rarity": "PURPLE",
         "patch": "OB55",
         "type": "image",
-        "description": "Use this voucher to upgrade to the Advanced rewards in the Clash Squad Championship Cup."
+        "prime_level": null,
+        "description": "Use this voucher to upgrade to the Advanced rewards in the Clash Squad Championship Cup.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL03.png', 'Clash Squad Cup Upgrade Voucher', 'rgba(168, 85, 247, 0.85)', 'in-line', '34px');"
     }
 };
 
     // Public SDK API
     const FFBadges = {
-        version: '2.5.0',
+        version: '3.0.0',
 
         setRepo: function(repo) {
             activeRepo = repo;
@@ -692,7 +1160,6 @@
         },
 
         list: function() {
-            // Deduplicate unique badges
             const seen = new Set();
             const result = [];
             for (const k in BADGES_DATABASE) {
@@ -721,6 +1188,26 @@
                 posStyle = 'position:absolute;bottom:-4px;right:-4px;z-index:25;';
             } else if (position === 'bottom-left') {
                 posStyle = 'position:absolute;bottom:-4px;left:-4px;z-index:25;';
+            }
+
+            // Prime System Badge Render (Authentic Free Fire VFX)
+            if (b.type === 'prime_image' || b.prime_level) {
+                const lvl = b.prime_level || 1;
+                const imgUrl = this.getImageUrl(b.file);
+                const hasStream = (lvl === 8);
+                const hasGlint = (lvl >= 7);
+
+                return '<div class="ff-prime-badge-wrap ff-prime-lvl-' + lvl + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';user-select:none;" title="' + b.title + '">
+' +
+                       '  <div class="ff-core-aura"></div>
+' +
+                       (hasStream ? '  <div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>
+' : '') +
+                       '  <img src="' + imgUrl + '" class="ff-badge-img" alt="' + b.name + '">
+' +
+                       (hasGlint ? '  <div class="ff-gem-glint"></div>
+' : '') +
+                       '</div>';
             }
 
             if (b.type === 'svg_code') {
