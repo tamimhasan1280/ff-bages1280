@@ -147,21 +147,40 @@ $js_code = <<<JSEOF
             if (b.type === 'prime_image' || b.prime_level) {
                 const lvl = b.prime_level || 1;
                 const imgUrl = this.getImageUrl(b.file);
-                const hasStream = (lvl === 8);
                 const hasGlint = (lvl >= 7);
-                const hasSparks = (lvl >= 6);
+                const hasShine = (lvl >= 4);
+                const hasStars = (lvl >= 4);
 
-                let sparksHtml = '';
-                if (hasSparks) {
-                    sparksHtml = '<div class="ff-prime-sparks-layer"><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span></div>';
+                let starsHtml = '';
+                if (hasStars) {
+                    let starList = [];
+                    if (lvl === 8) {
+                        starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8'];
+                    } else if (lvl === 7) {
+                        starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-6', 'star-pos-7'];
+                    } else if (lvl === 6) {
+                        starList = ['star-pos-1', 'star-pos-2', 'star-pos-4', 'star-pos-5', 'star-pos-6'];
+                    } else if (lvl === 5) {
+                        starList = ['star-pos-1', 'star-pos-2', 'star-pos-6', 'star-pos-7'];
+                    } else if (lvl === 4) {
+                        starList = ['star-pos-1', 'star-pos-2'];
+                    }
+                    const starDots = starList.map(pos => '<div class="ff-star-burst ' + pos + '"><span class="star-core"></span></div>').join('');
+                    starsHtml = '  <div class="ff-prime-stars-layer">' + starDots + '</div>\n';
+                }
+
+                let shineHtml = '';
+                if (hasShine) {
+                    shineHtml = '  <span class="ff-badge-shine" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url(\'' + imgUrl + '\');mask-image:url(\'' + imgUrl + '\');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">\n' +
+                                '    <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.22) 44%,rgba(255,255,255,0.98) 50%,rgba(255,255,255,0.22) 56%,transparent 65%);animation:ff_shape_sweep ' + speed + ' infinite linear;mix-blend-mode:screen;display:block;"></span>\n' +
+                                '  </span>\n';
                 }
 
                 return '<div class="ff-prime-badge-wrap ff-prime-lvl-' + lvl + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';user-select:none;" title="' + b.title + '">\n' +
-                       '  <div class="ff-core-aura"></div>\n' +
-                       (hasStream ? '  <div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>\n' : '') +
+                       starsHtml +
                        '  <img src="' + imgUrl + '" class="ff-badge-img" alt="' + b.name + '">\n' +
+                       shineHtml +
                        (hasGlint ? '  <div class="ff-gem-glint"></div>\n' : '') +
-                       sparksHtml +
                        '</div>';
             }
 
@@ -659,17 +678,31 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 let previewHtml = '';
                 if (isPrime) {
                     const lvl = item.prime_level || 1;
-                    const hasStream = (lvl === 8);
                     const hasGlint = (lvl >= 7);
-                    const hasSparks = (lvl >= 6);
+                    const hasShine = (lvl >= 4);
+                    const hasStars = (lvl >= 4);
+
+                    let starList = [];
+                    if (lvl === 8) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8'];
+                    else if (lvl === 7) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-6', 'star-pos-7'];
+                    else if (lvl === 6) starList = ['star-pos-1', 'star-pos-2', 'star-pos-4', 'star-pos-5', 'star-pos-6'];
+                    else if (lvl === 5) starList = ['star-pos-1', 'star-pos-2', 'star-pos-6', 'star-pos-7'];
+                    else if (lvl === 4) starList = ['star-pos-1', 'star-pos-2'];
+
+                    const starsHtml = hasStars ? `<div class="ff-prime-stars-layer">${starList.map(p => `<div class="ff-star-burst ${p}"><span class="star-core"></span></div>`).join('')}</div>` : '';
+
+                    const shineHtml = hasShine ? `
+                        <span class="ff-badge-shine" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                            <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.22) 44%,rgba(255,255,255,0.98) 50%,rgba(255,255,255,0.22) 56%,transparent 65%);animation:ff_shape_sweep 2.6s infinite linear;mix-blend-mode:screen;display:block;"></span>
+                        </span>
+                    ` : '';
 
                     previewHtml = `
                         <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:64px;height:64px;">
-                            <div class="ff-core-aura"></div>
-                            ${hasStream ? '<div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>' : ''}
+                            ${starsHtml}
                             <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
+                            ${shineHtml}
                             ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
-                            ${hasSparks ? '<div class="ff-prime-sparks-layer"><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span></div>' : ''}
                         </div>
                     `;
                 } else if (item.type === 'image' && item.file) {
@@ -792,17 +825,31 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
             if (item.type === 'prime_image' || item.prime_level) {
                 const lvl = item.prime_level || 1;
-                const hasStream = (lvl === 8);
                 const hasGlint = (lvl >= 7);
-                const hasSparks = (lvl >= 6);
+                const hasShine = (lvl >= 4);
+                const hasStars = (lvl >= 4);
+
+                let starList = [];
+                if (lvl === 8) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8'];
+                else if (lvl === 7) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-6', 'star-pos-7'];
+                else if (lvl === 6) starList = ['star-pos-1', 'star-pos-2', 'star-pos-4', 'star-pos-5', 'star-pos-6'];
+                else if (lvl === 5) starList = ['star-pos-1', 'star-pos-2', 'star-pos-6', 'star-pos-7'];
+                else if (lvl === 4) starList = ['star-pos-1', 'star-pos-2'];
+
+                const starsHtml = hasStars ? `<div class="ff-prime-stars-layer">${starList.map(p => `<div class="ff-star-burst ${p}"><span class="star-core"></span></div>`).join('')}</div>` : '';
+
+                const shineHtml = hasShine ? `
+                    <span class="ff-badge-shine" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                        <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.22) 44%,rgba(255,255,255,0.98) 50%,rgba(255,255,255,0.22) 56%,transparent 65%);animation:ff_shape_sweep 2.6s infinite linear;mix-blend-mode:screen;display:block;"></span>
+                    </span>
+                ` : '';
 
                 previewContainer.innerHTML = `
                     <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl} scale-125" style="width:110px;height:110px;">
-                        <div class="ff-core-aura"></div>
-                        ${hasStream ? '<div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>' : ''}
+                        ${starsHtml}
                         <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
+                        ${shineHtml}
                         ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
-                        ${hasSparks ? '<div class="ff-prime-sparks-layer"><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span></div>' : ''}
                     </div>
                 `;
             } else if (item.type === 'image' && item.file) {
@@ -926,4 +973,32 @@ $html_content = str_replace(
 $html_content = preg_replace('/<\?php.*?\?>/s', '', $html_content);
 file_put_contents(__DIR__ . '/index.html', $html_content);
 
-echo "index.php, index.html, and cdn/ff-badges.js re-generated with 1:1 Free Fire Prime VFX!\n";
+// 4. BUNDLE cdn/prime-badge.bundle.js
+$css_content = file_get_contents(__DIR__ . '/cdn/prime-badge.css');
+$js_content = file_get_contents(__DIR__ . '/cdn/prime-badge.js');
+$css_json = json_encode($css_content);
+$bundle_code = <<<BUN
+/**
+ * Free Fire Prime System - All-in-One Zero-Load CDN Web Component
+ * 100% Transparent Background - Pure Client-Side Zero Server Load
+ */
+(function(window, document) {
+  'use strict';
+
+  // 1. Auto-inject Transparent CSS Stylesheet into <head>
+  const css = {$css_json};
+  if (!document.getElementById('ff-prime-badge-styles')) {
+    const styleEl = document.createElement('style');
+    styleEl.id = 'ff-prime-badge-styles';
+    styleEl.textContent = css;
+    document.head.appendChild(styleEl);
+  }
+
+  // 2. Prime Badge Logic
+  {$js_content}
+
+})(typeof window !== 'undefined' ? window : this, typeof document !== 'undefined' ? document : {});
+BUN;
+file_put_contents(__DIR__ . '/cdn/prime-badge.bundle.js', $bundle_code);
+
+echo "index.php, index.html, cdn/ff-badges.js, and cdn/prime-badge.bundle.js re-generated with 1:1 Free Fire Prime VFX!\n";

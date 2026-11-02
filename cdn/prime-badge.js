@@ -35,44 +35,54 @@
         this.wrapper.style.height = this.size;
       }
 
-      // 1. Core Aura (Levels 4 to 8)
+      // 1. Dazzling Popping Stars Layer (Levels 4 to 8)
       if (this.level >= 4) {
-        const aura = document.createElement('div');
-        aura.className = 'ff-core-aura';
-        this.wrapper.appendChild(aura);
+        const starsLayer = document.createElement('div');
+        starsLayer.className = 'ff-prime-stars-layer';
+        
+        let starList = [];
+        if (this.level === 8) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8'];
+        else if (this.level === 7) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-6', 'star-pos-7'];
+        else if (this.level === 6) starList = ['star-pos-1', 'star-pos-2', 'star-pos-4', 'star-pos-5', 'star-pos-6'];
+        else if (this.level === 5) starList = ['star-pos-1', 'star-pos-2', 'star-pos-6', 'star-pos-7'];
+        else if (this.level === 4) starList = ['star-pos-1', 'star-pos-2'];
+
+        starList.forEach(pos => {
+          const star = document.createElement('div');
+          star.className = `ff-star-burst ${pos}`;
+          const core = document.createElement('span');
+          core.className = 'star-core';
+          star.appendChild(core);
+          starsLayer.appendChild(star);
+        });
+        this.wrapper.appendChild(starsLayer);
       }
 
-      // 2. Micro-Embers Canvas (Levels 6 to 8)
-      if (this.level >= 6) {
-        this.canvas = document.createElement('canvas');
-        this.canvas.className = 'ff-particle-canvas';
-        this.wrapper.appendChild(this.canvas);
-        this.ctx = this.canvas.getContext('2d');
-      }
-
-      // 3. Badge Image (Level 1 to 8)
+      // 2. Badge Silhouette Image (Level 1 to 8)
       const fileName = `ff_ui_prime_icon_0${this.level}.png`;
+      const fileFullPath = `${this.assetPath}${fileName}`;
       this.img = document.createElement('img');
-      this.img.src = `${this.assetPath}${fileName}`;
+      this.img.src = fileFullPath;
       this.img.alt = `Free Fire Prime Level ${this.level}`;
       this.img.className = 'ff-badge-img';
       this.wrapper.appendChild(this.img);
 
-      // 4. Natural Gem Specular Glint (Levels 7 & 8)
+      // 3. In-Game Verify Badge Metallic Sheen Sweep (Levels 4 to 8)
+      if (this.level >= 4) {
+        const shine = document.createElement('span');
+        shine.className = 'ff-badge-shine';
+        shine.style.cssText = `position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileFullPath}');mask-image:url('${fileFullPath}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;`;
+        const beam = document.createElement('span');
+        beam.className = 'ff-badge-shine-beam';
+        shine.appendChild(beam);
+        this.wrapper.appendChild(shine);
+      }
+
+      // 4. Center Gem Specular Glint (Levels 7 & 8)
       if (this.level >= 7) {
         const glint = document.createElement('div');
         glint.className = 'ff-gem-glint';
         this.wrapper.appendChild(glint);
-      }
-
-      // 5. Ascending Golden Energy Stream (Level 8: Right-to-Upward flowing beam)
-      if (this.level >= 8) {
-        const stream = document.createElement('div');
-        stream.className = 'ff-energy-stream';
-        const beam = document.createElement('div');
-        beam.className = 'ff-energy-beam';
-        stream.appendChild(beam);
-        this.wrapper.appendChild(stream);
       }
 
       this.container.appendChild(this.wrapper);

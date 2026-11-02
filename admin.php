@@ -615,7 +615,6 @@ $suggested_id = generate_ff_id();
                                     <div class="w-12 h-12 rounded-xl bg-[#090b18] border border-white/5 flex items-center justify-center p-1 relative">
                                         <?php if ($isPrime): ?>
                                             <div class="ff-prime-badge-wrap ff-prime-lvl-<?= $b['prime_level'] ?? 1 ?>" style="width:36px;height:36px;">
-                                                <div class="ff-core-aura"></div>
                                                 <img src="<?= $local_file ?>" onerror="this.src='<?= $img_cdn ?>'" class="ff-badge-img">
                                             </div>
                                         <?php elseif (!empty($b['file'])): ?>

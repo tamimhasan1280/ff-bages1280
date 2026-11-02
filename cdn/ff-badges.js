@@ -1191,26 +1191,47 @@
             if (b.type === 'prime_image' || b.prime_level) {
                 const lvl = b.prime_level || 1;
                 const imgUrl = this.getImageUrl(b.file);
-                const hasStream = (lvl === 8);
                 const hasGlint = (lvl >= 7);
-                const hasSparks = (lvl >= 6);
+                const hasShine = (lvl >= 4);
+                const hasStars = (lvl >= 4);
 
-                let sparksHtml = '';
-                if (hasSparks) {
-                    sparksHtml = '<div class="ff-prime-sparks-layer"><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span></div>';
+                let starsHtml = '';
+                if (hasStars) {
+                    let starList = [];
+                    if (lvl === 8) {
+                        starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8'];
+                    } else if (lvl === 7) {
+                        starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-6', 'star-pos-7'];
+                    } else if (lvl === 6) {
+                        starList = ['star-pos-1', 'star-pos-2', 'star-pos-4', 'star-pos-5', 'star-pos-6'];
+                    } else if (lvl === 5) {
+                        starList = ['star-pos-1', 'star-pos-2', 'star-pos-6', 'star-pos-7'];
+                    } else if (lvl === 4) {
+                        starList = ['star-pos-1', 'star-pos-2'];
+                    }
+                    const starDots = starList.map(pos => '<div class="ff-star-burst ' + pos + '"><span class="star-core"></span></div>').join('');
+                    starsHtml = '  <div class="ff-prime-stars-layer">' + starDots + '</div>
+';
+                }
+
+                let shineHtml = '';
+                if (hasShine) {
+                    shineHtml = '  <span class="ff-badge-shine" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url(\'' + imgUrl + '\');mask-image:url(\'' + imgUrl + '\');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+' +
+                                '    <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.22) 44%,rgba(255,255,255,0.98) 50%,rgba(255,255,255,0.22) 56%,transparent 65%);animation:ff_shape_sweep ' + speed + ' infinite linear;mix-blend-mode:screen;display:block;"></span>
+' +
+                                '  </span>
+';
                 }
 
                 return '<div class="ff-prime-badge-wrap ff-prime-lvl-' + lvl + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';user-select:none;" title="' + b.title + '">
 ' +
-                       '  <div class="ff-core-aura"></div>
-' +
-                       (hasStream ? '  <div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>
-' : '') +
+                       starsHtml +
                        '  <img src="' + imgUrl + '" class="ff-badge-img" alt="' + b.name + '">
 ' +
+                       shineHtml +
                        (hasGlint ? '  <div class="ff-gem-glint"></div>
 ' : '') +
-                       sparksHtml +
                        '</div>';
             }
 
