@@ -1,0 +1,36 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "diamond-partner",
+        "db_id": 25,
+        "slug": "diamond-partner",
+        "name": "FF Diamond Partner",
+        "title": "Diamond Partner / Elite VIP",
+        "category": "Crystal VIP Partner",
+        "category_slug": "vip",
+        "file": "FF_UI_Badge_KOL03.png",
+        "glow_color": "rgba(168, 85, 247, 0.85)",
+        "hex_glow": "#A855F7",
+        "priority": 1500000,
+        "default_size": 34,
+        "offset_x": -4,
+        "offset_y": -4,
+        "default_position": "top-right",
+        "animation": "ff_shape_sweep 2.4s infinite linear",
+        "rarity": "Crystal VIP",
+        "description": "Prestigious violet diamond partner badge for elite server patrons and top-tier partners.",
+        "tags": [
+            "diamond",
+            "vip",
+            "crystal",
+            "partner",
+            "purple"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL03.png",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL03.png",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL03.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL03.png"
+    }
+}

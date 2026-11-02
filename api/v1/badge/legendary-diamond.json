@@ -1,0 +1,31 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "legendary-diamond",
+        "db_id": 3,
+        "slug": "legendary-diamond",
+        "name": "Legendary",
+        "title": "Mystic Purple Aura Diamond",
+        "category": "Exclusive Tier",
+        "category_slug": "exclusive",
+        "file": "",
+        "glow_color": "rgba(168, 85, 247, 0.95)",
+        "hex_glow": "#8E2DE2",
+        "priority": 95,
+        "default_size": 24,
+        "offset_x": -2,
+        "offset_y": -2,
+        "default_position": "in-line",
+        "animation": "glow_legend 2.5s infinite ease-in-out",
+        "rarity": "Mythic Legend",
+        "description": "Prismatic diamond with rotating gradient and purple cosmic aura.",
+        "tags": [
+            "legendary",
+            "diamond",
+            "purple",
+            "mystic"
+        ],
+        "cdn_urls": [],
+        "direct_url": null
+    }
+}

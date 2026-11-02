@@ -1,0 +1,32 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "pro-player-text",
+        "db_id": 4,
+        "slug": "pro-player",
+        "name": "PRO-PLYER",
+        "title": "Animated Fire Text Pro Player",
+        "category": "Rank & Competitive",
+        "category_slug": "rank",
+        "file": "",
+        "glow_color": "rgba(249, 212, 35, 0.9)",
+        "hex_glow": "#F9D423",
+        "priority": 1000,
+        "default_size": 16,
+        "offset_x": 0,
+        "offset_y": 0,
+        "default_position": "in-line",
+        "animation": "fire_text 2.0s infinite alternate",
+        "rarity": "Competitive Tier",
+        "description": "Cyberpunk Orbitron typography with blazing molten-fire text glow.",
+        "tags": [
+            "pro",
+            "fire",
+            "text",
+            "ranked",
+            "glow"
+        ],
+        "cdn_urls": [],
+        "direct_url": null
+    }
+}

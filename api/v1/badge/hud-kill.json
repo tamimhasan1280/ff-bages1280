@@ -1,0 +1,35 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "hud-kill-maroon",
+        "db_id": 302,
+        "slug": "hud-kill",
+        "name": "HUD Kill Maroon",
+        "title": "In-game Elimination HUD Badge",
+        "category": "In-game HUD",
+        "category_slug": "hud",
+        "file": "badge_kill_maroon.png",
+        "glow_color": "rgba(225, 29, 72, 0.85)",
+        "hex_glow": "#E11D48",
+        "priority": 500,
+        "default_size": 26,
+        "offset_x": -2,
+        "offset_y": -2,
+        "default_position": "in-line",
+        "animation": "none",
+        "rarity": "In-Game HUD",
+        "description": "Free Fire in-game battle interface elimination kill badge icon.",
+        "tags": [
+            "hud",
+            "kill",
+            "maroon",
+            "elimination"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/badge_kill_maroon.png",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/badge_kill_maroon.png",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/badge_kill_maroon.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/badge_kill_maroon.png"
+    }
+}

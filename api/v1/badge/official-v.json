@@ -1,0 +1,37 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "official-v-badge",
+        "db_id": 2,
+        "slug": "official-v",
+        "name": "OFFICIAL V BAGE",
+        "title": "Official Influencer V-Badge",
+        "category": "Official Partner & Influencer (KOL)",
+        "category_slug": "official",
+        "file": "FF_UI_Badge_KOL01.png",
+        "glow_color": "rgba(255, 215, 0, 0.85)",
+        "hex_glow": "#FFD700",
+        "priority": 2000000,
+        "default_size": 34,
+        "offset_x": -4,
+        "offset_y": -4,
+        "default_position": "top-right",
+        "animation": "ff_shape_sweep 2.6s infinite linear",
+        "rarity": "Mythic Partner",
+        "description": "The authentic Free Fire partner influencer verification badge with gold light-sweep beam.",
+        "tags": [
+            "vbadge",
+            "official",
+            "partner",
+            "kol",
+            "freefire",
+            "influencer"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL01.png",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL01.png"
+    }
+}

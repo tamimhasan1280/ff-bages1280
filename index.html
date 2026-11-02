@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire V-Badges Monster CDN & API Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cdn/ff-badges.css">
+    <script src="cdn/ff-badges.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #090a16;
+            color: #e2e8f0;
+        }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
+        .cyber-card {
+            background: rgba(16, 17, 36, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .cyber-card:hover {
+            border-color: rgba(234, 179, 8, 0.35);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px -5px rgba(234, 179, 8, 0.15);
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF6B7 0%, #F6416C 100%, #F1CA74 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-yellow-500 selection:text-black">
+
+    <!-- Top Banner & Notification Bar -->
+    <header class="border-b border-gray-800 bg-[#0d0e1f]/90 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-yellow-500 to-amber-300 p-0.5 shadow-lg shadow-yellow-500/20">
+                    <div class="w-full h-full bg-[#0d0e1f] rounded-[10px] flex items-center justify-center">
+                        <ff-badge name="official-v" size="26" position="inline"></ff-badge>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-black font-orbitron tracking-wider text-white flex items-center gap-2">
+                        FF BADGES <span class="text-xs px-2 py-0.5 rounded-full bg-yellow-400 text-black font-bold uppercase tracking-widest font-mono">CDN & API</span>
+                    </h1>
+                    <p class="text-[11px] text-gray-400 font-rajdhani tracking-wider">UNIVERSAL FREE FIRE VERIFICATION ASSET HUB v2.0</p>
+                </div>
+            </div>
+
+            <!-- CDN Provider Selector -->
+            <div class="flex items-center gap-2">
+                <div class="hidden sm:flex items-center bg-[#15172e] border border-gray-700/60 rounded-xl p-1 text-xs font-mono">
+                    <span class="px-2 text-gray-400 text-[10px] uppercase font-bold">CDN:</span>
+                    <button type="button" onclick="switchCDN('jsdelivr')" id="cdn_btn_jsdelivr" class="px-2.5 py-1 rounded-lg bg-yellow-400 text-black font-bold transition">jsDelivr</button>
+                    <button type="button" onclick="switchCDN('statically')" id="cdn_btn_statically" class="px-2.5 py-1 rounded-lg text-gray-400 hover:text-white transition">Statically</button>
+                    <button type="button" onclick="switchCDN('github_raw')" id="cdn_btn_github_raw" class="px-2.5 py-1 rounded-lg text-gray-400 hover:text-white transition">Raw</button>
+                    <button type="button" onclick="switchCDN('local')" id="cdn_btn_local" class="px-2.5 py-1 rounded-lg text-gray-400 hover:text-white transition">Local</button>
+                </div>
+                <a href="https://github.com/tamim1280/freefire-badges-cdn" target="_blank" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold flex items-center gap-2 transition">
+                    <i class="fab fa-github text-sm"></i> <span class="hidden md:inline">GitHub</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10 w-full">
+
+        <!-- Hero Section -->
+        <section class="cyber-card rounded-3xl p-6 sm:p-10 relative overflow-hidden border border-yellow-500/20 shadow-2xl">
+            <div class="absolute -right-20 -top-20 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-8 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 text-xs font-bold uppercase tracking-widest font-mono">
+                        <i class="fas fa-bolt text-yellow-400"></i> Universal Animated Badge CDN & API Engine
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-black font-orbitron tracking-tight text-white leading-tight">
+                        FREE FIRE <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500">V-BADGES</span> REPOSITORY
+                    </h2>
+                    <p class="text-sm sm:text-base text-gray-300 leading-relaxed max-w-2xl">
+                        Deploy authentic Free Fire partner badges, tournament champion crowns, GM staff pins, and creator badges to any website, mobile app, or backend via global CDN with signature light-sweep animations and zero server bandwidth load.
+                    </p>
+
+                    <!-- Quick Code Snippet Box -->
+                    <div class="pt-2 flex flex-wrap gap-3 items-center">
+                        <div class="bg-black/60 border border-gray-800 rounded-xl px-3.5 py-2 font-mono text-xs text-yellow-300 flex items-center gap-3">
+                            <span class="text-gray-500">&lt;link&gt;</span>
+                            <span>https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.css</span>
+                            <button onclick="copySnippet('https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.css', this)" class="text-gray-400 hover:text-white" title="Copy URL">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <a href="#playground" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-500 text-black font-bold text-xs uppercase tracking-wider hover:opacity-95 shadow-lg shadow-yellow-500/20 transition flex items-center gap-2">
+                            <i class="fas fa-play"></i> Live Playground
+                        </a>
+                        <a href="api/badges.json" target="_blank" class="px-5 py-2.5 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 text-purple-200 font-bold text-xs uppercase tracking-wider transition flex items-center gap-2">
+                            <i class="fas fa-code"></i> JSON API
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Showcase Animated Badge Hologram -->
+                <div class="lg:col-span-4 flex justify-center">
+                    <div class="relative p-8 rounded-2xl bg-[#090a18] border border-yellow-500/30 shadow-2xl flex flex-col items-center justify-center gap-4 group">
+                        <div class="relative w-28 h-28 flex items-center justify-center">
+                            <div class="absolute inset-0 bg-yellow-400/20 rounded-full blur-xl animate-pulse"></div>
+                            <div id="heroLiveBadge">
+                                <ff-badge name="official-v" size="84" position="inline"></ff-badge>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <span class="font-orbitron font-extrabold text-sm text-white tracking-wider block" id="heroBadgeName">OFFICIAL V BAGE</span>
+                            <span class="text-[11px] font-mono text-yellow-400">2,000,000 PRIORITY &bull; MYTHIC</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters & Category Navigation -->
+        <section class="space-y-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 custom-scroll" id="categoryTabs">
+                    <button onclick="filterCategory('all')" class="cat-btn active px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-yellow-400 text-black transition" data-cat="all">All Badges</button>
+                    <button onclick="filterCategory('official')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="official">Official Partners</button>
+                    <button onclick="filterCategory('esports')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="esports">Esports & Pro</button>
+                    <button onclick="filterCategory('vip')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="vip">VIP Partners</button>
+                    <button onclick="filterCategory('staff')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="staff">Staff & GM</button>
+                    <button onclick="filterCategory('creator')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="creator">Creators & Maps</button>
+                    <button onclick="filterCategory('hud')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="hud">HUD & UI</button>
+                </div>
+
+                <div class="relative w-full md:w-72">
+                    <i class="fas fa-search absolute left-3.5 top-3 text-gray-500 text-xs"></i>
+                    <input type="text" id="badgeSearchInput" oninput="searchBadges(this.value)" placeholder="Search by name, ID or rarity..." class="w-full bg-[#12132b] border border-gray-700 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400 transition">
+                </div>
+            </div>
+
+            <!-- Badges Matrix Grid -->
+            <div id="badgesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                <!-- Injected via JavaScript from API data -->
+            </div>
+        </section>
+
+        <!-- Interactive Avatar Playground & Customizer -->
+        <section id="playground" class="cyber-card rounded-3xl p-6 sm:p-8 space-y-6 border border-gray-800">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                <div>
+                    <h3 class="text-xl font-black font-orbitron text-white flex items-center gap-2">
+                        <i class="fas fa-gamepad text-yellow-400"></i> Interactive Avatar & Badge Playground
+                    </h3>
+                    <p class="text-xs text-gray-400 mt-1">Test how any badge renders on different avatar shapes, sizes, and positions with live CSS animation.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Left: Controls -->
+                <div class="lg:col-span-7 space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">Select Badge:</label>
+                            <select id="playBadgeSelect" onchange="updatePlayground()" class="w-full bg-[#0d0e1f] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">Badge Position:</label>
+                            <select id="playPositionSelect" onchange="updatePlayground()" class="w-full bg-[#0d0e1f] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400">
+                                <option value="top-right">Top Right (Default Avatar)</option>
+                                <option value="top-left">Top Left</option>
+                                <option value="bottom-right">Bottom Right</option>
+                                <option value="bottom-left">Bottom Left</option>
+                                <option value="inline">Inline Next to Name</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <div class="flex items-center justify-between text-xs font-bold text-gray-300 mb-1">
+                                <span>Badge Size</span>
+                                <span id="playSizeVal" class="text-yellow-400 font-mono">34px</span>
+                            </div>
+                            <input type="range" id="playSizeSlider" min="16" max="64" value="34" oninput="updatePlayground()" class="w-full accent-yellow-400 cursor-pointer">
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between text-xs font-bold text-gray-300 mb-1">
+                                <span>Sweep Speed</span>
+                                <span id="playSpeedVal" class="text-yellow-400 font-mono">2.6s</span>
+                            </div>
+                            <input type="range" id="playSpeedSlider" min="0.8" max="5.0" step="0.2" value="2.6" oninput="updatePlayground()" class="w-full accent-yellow-400 cursor-pointer">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">Avatar Shape:</label>
+                            <select id="playShapeSelect" onchange="updatePlayground()" class="w-full bg-[#0d0e1f] border border-gray-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400">
+                                <option value="rounded-2xl">Rounded Square</option>
+                                <option value="rounded-full">Circle</option>
+                                <option value="rounded-none">Sharp Square</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Generated HTML Snippet Area -->
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between text-xs font-bold text-gray-400">
+                            <span>Ready-to-use HTML/CSS:</span>
+                            <button onclick="copyPlaygroundCode()" class="text-yellow-400 hover:text-yellow-300 flex items-center gap-1">
+                                <i class="fas fa-copy"></i> <span id="copyPlayText">Copy Code</span>
+                            </button>
+                        </div>
+                        <textarea id="playCodeSnippet" readonly rows="4" class="w-full bg-[#0a0b16] border border-gray-800 rounded-xl p-3 font-mono text-[11px] text-gray-300 focus:outline-none custom-scroll"></textarea>
+                    </div>
+                </div>
+
+                <!-- Right: Visual Preview Card -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="w-full max-w-sm bg-[#121329] border border-gray-700/80 rounded-2xl p-6 shadow-2xl space-y-4">
+                        <div class="text-[10px] uppercase font-bold text-gray-400 tracking-wider flex items-center justify-between">
+                            <span>Live Player Nameplate Preview</span>
+                            <span class="text-green-400 font-mono flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span> Live</span>
+                        </div>
+
+                        <div class="flex items-center gap-3.5 bg-black/40 p-3.5 rounded-xl border border-white/5">
+                            <!-- Avatar with Badge Container -->
+                            <div id="playAvatarWrap" class="relative w-14 h-14 shrink-0 transition-all">
+                                <img src="assets/images/avatar_902000001.png" id="playAvatarImg" class="w-full h-full object-cover rounded-2xl border-2 border-yellow-400/80 shadow-md">
+                                <div id="playBadgeSlot"></div>
+                            </div>
+
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <h4 class="font-bold text-sm text-white truncate font-orbitron">BÉªá´˜ÊŸoÊ™â”Š1280</h4>
+                                    <div id="playInlineBadgeSlot"></div>
+                                </div>
+                                <p class="text-xs text-gray-400 font-mono">UID: 204918231</p>
+                                <span class="text-[9px] px-1.5 py-0.2 rounded bg-yellow-400/20 text-yellow-300 font-bold uppercase">PRO VERIFIED</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Reference & Integration Guide -->
+        <section class="cyber-card rounded-3xl p-6 sm:p-8 space-y-6 border border-gray-800">
+            <h3 class="text-xl font-black font-orbitron text-white flex items-center gap-2">
+                <i class="fas fa-book text-yellow-400"></i> Integration & Developer Guide
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Option 1: Web Component -->
+                <div class="bg-[#0f1022] border border-gray-800 rounded-2xl p-5 space-y-3">
+                    <span class="text-xs font-bold text-yellow-400 uppercase tracking-widest font-mono">Method 1 (Easiest)</span>
+                    <h4 class="font-bold text-sm text-white">Custom Web Component</h4>
+                    <p class="text-xs text-gray-400">Include the JS SDK and use the custom HTML tag anywhere:</p>
+                    <pre class="bg-black/60 p-3 rounded-xl text-[11px] font-mono text-emerald-400 overflow-x-auto custom-scroll">&lt;script src="https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.js"&gt;&lt;/script&gt;
+
+&lt;ff-badge name="official-v" size="34"&gt;&lt;/ff-badge&gt;</pre>
+                </div>
+
+                <!-- Option 2: Pure CSS Snippet -->
+                <div class="bg-[#0f1022] border border-gray-800 rounded-2xl p-5 space-y-3">
+                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest font-mono">Method 2 (Zero JS)</span>
+                    <h4 class="font-bold text-sm text-white">Pure CSS & Mask</h4>
+                    <p class="text-xs text-gray-400">Include the stylesheet and copy the ready animated HTML snippet with CSS mask sweep.</p>
+                    <pre class="bg-black/60 p-3 rounded-xl text-[11px] font-mono text-cyan-400 overflow-x-auto custom-scroll">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.css"&gt;</pre>
+                </div>
+
+                <!-- Option 3: REST API -->
+                <div class="bg-[#0f1022] border border-gray-800 rounded-2xl p-5 space-y-3">
+                    <span class="text-xs font-bold text-purple-400 uppercase tracking-widest font-mono">Method 3 (Backend/App)</span>
+                    <h4 class="font-bold text-sm text-white">JSON REST API</h4>
+                    <p class="text-xs text-gray-400">Fetch metadata, priorities, and direct CDN URLs via standard fetch:</p>
+                    <pre class="bg-black/60 p-3 rounded-xl text-[11px] font-mono text-purple-400 overflow-x-auto custom-scroll">fetch('https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/api/badges.json')
+  .then(res => res.json())
+  .then(data => console.log(data.badges));</pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-[#090a18] py-8 text-center text-xs text-gray-500 space-y-2">
+        <p class="font-rajdhani text-sm text-gray-400">Free Fire V-Badges Monster CDN & API &bull; Built with precision for competitive esports platforms.</p>
+        <p class="font-mono text-[11px]">Deployable anywhere &bull; GitHub Open Source &bull; MIT License</p>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-yellow-400 text-black px-4 py-2.5 rounded-xl font-bold text-xs shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none z-50">
+        <i class="fas fa-check-circle"></i> <span id="toastMsg">Copied!</span>
+    </div>
+
+    <!-- Master UI Controller Script -->
+    <script>
+        let allBadges = [];
+        let currentCDN = 'jsdelivr';
+        let currentCategory = 'all';
+
+        // Load data on start
+        fetch('api/badges.json')
+            .then(res => res.json())
+            .then(data => {
+                allBadges = data.badges;
+                renderBadgesGrid();
+                populatePlaygroundOptions();
+                updatePlayground();
+            })
+            .catch(err => {
+                console.error("Local fetch failed, falling back to embedded database", err);
+                if (window.FFBadges) {
+                    allBadges = window.FFBadges.list();
+                    renderBadgesGrid();
+                    populatePlaygroundOptions();
+                    updatePlayground();
+                }
+            });
+
+        function switchCDN(type) {
+            currentCDN = type;
+            ['jsdelivr', 'statically', 'github_raw', 'local'].forEach(id => {
+                const btn = document.getElementById('cdn_btn_' + id);
+                if (btn) {
+                    if (id === type) {
+                        btn.className = 'px-2.5 py-1 rounded-lg bg-yellow-400 text-black font-bold transition';
+                    } else {
+                        btn.className = 'px-2.5 py-1 rounded-lg text-gray-400 hover:text-white transition';
+                    }
+                }
+            });
+
+            if (type === 'local') {
+                FFBadges.setCDN('badges/');
+            } else {
+                FFBadges.setCDN(type);
+            }
+
+            renderBadgesGrid();
+            updatePlayground();
+            showToast('CDN switched to ' + type.toUpperCase());
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                if (btn.getAttribute('data-cat') === cat) {
+                    btn.className = 'cat-btn active px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-yellow-400 text-black transition';
+                } else {
+                    btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition';
+                }
+            });
+            renderBadgesGrid();
+        }
+
+        function searchBadges(q) {
+            renderBadgesGrid(q.toLowerCase().trim());
+        }
+
+        function renderBadgesGrid(query = '') {
+            const grid = document.getElementById('badgesGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const filtered = allBadges.filter(b => {
+                const matchCat = (currentCategory === 'all') || (b.category_slug === currentCategory);
+                const matchQuery = !query || b.name.toLowerCase().includes(query) || b.title.toLowerCase().includes(query) || (b.tags && b.tags.some(t => t.includes(query)));
+                return matchCat && matchQuery;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="col-span-full py-12 text-center text-gray-500 font-mono text-sm">No badges matched your filter.</div>';
+                return;
+            }
+
+            filtered.forEach(b => {
+                const card = document.createElement('div');
+                card.className = 'cyber-card rounded-2xl p-5 flex flex-col justify-between space-y-4';
+
+                const badgeHtml = FFBadges.render(b.slug || b.id, { size: b.default_size || 34, position: 'inline' });
+                const imgUrl = b.file ? FFBadges.getImageUrl(b.file) : '';
+
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-gray-300 uppercase">${b.rarity || 'Badge'}</span>
+                            <span class="text-[10px] font-mono text-yellow-400">Pri: ${b.priority}</span>
+                        </div>
+
+                        <!-- Live Badge Stage -->
+                        <div class="h-20 bg-black/40 rounded-xl border border-white/5 flex items-center justify-center p-2 relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-yellow-400/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            ${badgeHtml}
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-sm text-white font-orbitron truncate">${b.name}</h4>
+                            <p class="text-[11px] text-gray-400 line-clamp-2 mt-0.5">${b.description || b.title}</p>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pt-2 border-t border-gray-800/80 space-y-2">
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            ${b.file ? `
+                                <button onclick="copySnippet('${imgUrl}', this)" class="px-2.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white font-semibold text-[11px] flex items-center justify-center gap-1.5 transition">
+                                    <i class="fas fa-link text-[10px]"></i> <span>CDN URL</span>
+                                </button>
+                            ` : `
+                                <button onclick="copySnippet('${b.svg_code || ''}', this)" class="px-2.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white font-semibold text-[11px] flex items-center justify-center gap-1.5 transition">
+                                    <i class="fas fa-code text-[10px]"></i> <span>Copy SVG</span>
+                                </button>
+                            `}
+                            <button onclick="copyBadgeSnippet('${b.slug || b.id}')" class="px-2.5 py-1.5 rounded-lg bg-yellow-400/10 hover:bg-yellow-400/20 text-yellow-400 font-semibold text-[11px] flex items-center justify-center gap-1.5 transition">
+                                <i class="fas fa-code text-[10px]"></i> <span>HTML Code</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function populatePlaygroundOptions() {
+            const select = document.getElementById('playBadgeSelect');
+            if (!select) return;
+            select.innerHTML = '';
+            allBadges.forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = b.slug || b.id;
+                opt.textContent = b.name + ' (' + (b.rarity || 'Badge') + ')';
+                select.appendChild(opt);
+            });
+        }
+
+        function updatePlayground() {
+            const selBadge = document.getElementById('playBadgeSelect').value;
+            const pos = document.getElementById('playPositionSelect').value;
+            const size = document.getElementById('playSizeSlider').value;
+            const speed = document.getElementById('playSpeedSlider').value;
+            const shape = document.getElementById('playShapeSelect').value;
+
+            document.getElementById('playSizeVal').textContent = size + 'px';
+            document.getElementById('playSpeedVal').textContent = speed + 's';
+
+            // Update Avatar Frame
+            const avatarImg = document.getElementById('playAvatarImg');
+            avatarImg.className = 'w-full h-full object-cover ' + shape + ' border-2 border-yellow-400/80 shadow-md';
+
+            // Clear previous slots
+            const slotAvatar = document.getElementById('playBadgeSlot');
+            const slotInline = document.getElementById('playInlineBadgeSlot');
+            slotAvatar.innerHTML = '';
+            slotInline.innerHTML = '';
+
+            const badgeCode = FFBadges.render(selBadge, {
+                size: parseInt(size),
+                position: pos,
+                speed: speed + 's'
+            });
+
+            if (pos === 'inline') {
+                slotInline.innerHTML = badgeCode;
+            } else {
+                slotAvatar.innerHTML = badgeCode;
+            }
+
+            // Update snippet
+            document.getElementById('playCodeSnippet').value = badgeCode;
+        }
+
+        function copyPlaygroundCode() {
+            const code = document.getElementById('playCodeSnippet').value;
+            copySnippet(code);
+        }
+
+        function copyBadgeSnippet(slug) {
+            const code = FFBadges.render(slug, { size: 34, position: 'inline' });
+            copySnippet(code);
+        }
+
+        function copySnippet(text, btn = null) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard!');
+            });
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            t.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                t.classList.add('translate-y-20', 'opacity-0');
+            }, 2200);
+        }
+    </script>
+</body>
+</html>

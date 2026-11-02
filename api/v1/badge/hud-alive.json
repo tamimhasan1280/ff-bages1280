@@ -1,0 +1,35 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "hud-alive-teal",
+        "db_id": 301,
+        "slug": "hud-alive",
+        "name": "HUD Alive Teal",
+        "title": "In-game Alive Players HUD Badge",
+        "category": "In-game HUD",
+        "category_slug": "hud",
+        "file": "badge_alive_teal.png",
+        "glow_color": "rgba(20, 184, 166, 0.85)",
+        "hex_glow": "#14B8A6",
+        "priority": 500,
+        "default_size": 26,
+        "offset_x": -2,
+        "offset_y": -2,
+        "default_position": "in-line",
+        "animation": "none",
+        "rarity": "In-Game HUD",
+        "description": "Free Fire in-game battle interface alive survivor badge icon.",
+        "tags": [
+            "hud",
+            "alive",
+            "teal",
+            "battle"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/badge_alive_teal.png",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/badge_alive_teal.png",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/badge_alive_teal.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/badge_alive_teal.png"
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "moderator-shield",
+        "db_id": 5,
+        "slug": "moderator-shield",
+        "name": "MODERETOR",
+        "title": "Verified Community Guardian Shield",
+        "category": "Security & Moderation",
+        "category_slug": "security",
+        "file": "verified-badge.svg",
+        "glow_color": "rgba(255, 215, 0, 0.9)",
+        "hex_glow": "#FFE000",
+        "priority": 10000,
+        "default_size": 22,
+        "offset_x": -2,
+        "offset_y": -2,
+        "default_position": "in-line",
+        "animation": "pulse_gold 2.0s infinite ease-in-out",
+        "rarity": "Shield Guardian",
+        "description": "Golden shield with verify checkmark for community moderators and arbiters.",
+        "tags": [
+            "moderator",
+            "shield",
+            "security",
+            "guard"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/verified-badge.svg",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/verified-badge.svg",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/verified-badge.svg"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/verified-badge.svg"
+    }
+}

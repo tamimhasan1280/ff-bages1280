@@ -1,0 +1,35 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "vbadge-classic",
+        "db_id": 201,
+        "slug": "vbadge-classic",
+        "name": "Classic Gold V-Badge",
+        "title": "Classic Free Fire Verified V-Badge",
+        "category": "Legacy & Classics",
+        "category_slug": "legacy",
+        "file": "vbadge.png",
+        "glow_color": "rgba(255, 215, 0, 0.85)",
+        "hex_glow": "#FFD700",
+        "priority": 75000,
+        "default_size": 32,
+        "offset_x": -4,
+        "offset_y": -4,
+        "default_position": "in-line",
+        "animation": "ff_shape_sweep 2.6s infinite linear",
+        "rarity": "Classic Legacy",
+        "description": "The timeless golden V-Badge that started it all.",
+        "tags": [
+            "classic",
+            "vbadge",
+            "gold",
+            "legacy"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.png",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/vbadge.png",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/vbadge.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.png"
+    }
+}

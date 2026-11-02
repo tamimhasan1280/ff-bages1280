@@ -1,0 +1,36 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "official-staff-gm",
+        "db_id": 22,
+        "slug": "gm-staff",
+        "name": "FF Official Staff / GM",
+        "title": "Garena Official Staff, Admin & Server Moderator",
+        "category": "Administration & Authority",
+        "category_slug": "staff",
+        "file": "FF_UI_Badge_GM01.png",
+        "glow_color": "rgba(239, 68, 68, 0.85)",
+        "hex_glow": "#EF4444",
+        "priority": 90000,
+        "default_size": 34,
+        "offset_x": -4,
+        "offset_y": -4,
+        "default_position": "top-right",
+        "animation": "ff_shape_sweep 2.0s infinite linear",
+        "rarity": "Official Authority",
+        "description": "Crimson Garena server moderator and administrator badge symbolizing platform authority.",
+        "tags": [
+            "gm",
+            "staff",
+            "admin",
+            "moderator",
+            "red"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_GM01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_GM01.png",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_GM01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_GM01.png"
+    }
+}

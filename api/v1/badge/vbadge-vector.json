@@ -1,0 +1,35 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "vbadge-vector",
+        "db_id": 202,
+        "slug": "vbadge-vector",
+        "name": "Vector SVG V-Badge",
+        "title": "Ultra High Definition Vector V-Badge",
+        "category": "Vector & Scalable",
+        "category_slug": "vector",
+        "file": "vbadge.svg",
+        "glow_color": "rgba(255, 215, 0, 0.85)",
+        "hex_glow": "#FFD700",
+        "priority": 70000,
+        "default_size": 30,
+        "offset_x": -4,
+        "offset_y": -4,
+        "default_position": "in-line",
+        "animation": "pulse_gold 2.0s infinite ease-in-out",
+        "rarity": "Vector Scalable",
+        "description": "Infinitely scalable SVG vector V-badge for 4K and Retina displays.",
+        "tags": [
+            "svg",
+            "vector",
+            "scalable",
+            "hd"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.svg",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/vbadge.svg",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/vbadge.svg"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/vbadge.svg"
+    }
+}

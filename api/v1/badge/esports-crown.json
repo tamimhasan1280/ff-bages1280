@@ -1,0 +1,36 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "esports-pro-crown",
+        "db_id": 21,
+        "slug": "esports-crown",
+        "name": "FF Esports PRO Crown",
+        "title": "Verified Competitor & Tournament Champion Crown",
+        "category": "Competitive & Esports",
+        "category_slug": "esports",
+        "file": "FF_UI_Badge_ESPORTS01.png",
+        "glow_color": "rgba(251, 191, 36, 0.85)",
+        "hex_glow": "#FBBF24",
+        "priority": 95000,
+        "default_size": 34,
+        "offset_x": -4,
+        "offset_y": -4,
+        "default_position": "top-right",
+        "animation": "ff_shape_sweep 2.2s infinite linear",
+        "rarity": "Tournament Champion",
+        "description": "Official crown badge designated for esports champions, tournament MVPs, and verified pro contenders.",
+        "tags": [
+            "esports",
+            "crown",
+            "pro",
+            "champion",
+            "tournament"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_ESPORTS01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_ESPORTS01.png",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_ESPORTS01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_ESPORTS01.png"
+    }
+}

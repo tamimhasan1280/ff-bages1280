@@ -1,0 +1,37 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "craftland-creator",
+        "db_id": 23,
+        "slug": "craftland-creator",
+        "name": "FF Craftland Creator",
+        "title": "Craftland Map Architect & Certified Creator",
+        "category": "Creators & Architects",
+        "category_slug": "creator",
+        "file": "craftland.png",
+        "glow_color": "rgba(6, 182, 212, 0.85)",
+        "hex_glow": "#06B6D4",
+        "priority": 85000,
+        "default_size": 34,
+        "offset_x": -4,
+        "offset_y": -4,
+        "default_position": "top-right",
+        "animation": "ff_shape_sweep 2.8s infinite linear",
+        "rarity": "Master Architect",
+        "description": "Cyan cube badge awarded to certified Craftland map designers, builders, and creative architects.",
+        "tags": [
+            "craftland",
+            "cube",
+            "map",
+            "creator",
+            "builder",
+            "cyan"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/craftland.png",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/craftland.png",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/craftland.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/craftland.png"
+    }
+}

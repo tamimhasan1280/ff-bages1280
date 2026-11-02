@@ -1,0 +1,36 @@
+{
+    "status": "success",
+    "badge": {
+        "id": "emerging-creator",
+        "db_id": 24,
+        "slug": "emerging-streamer",
+        "name": "FF Emerging Creator",
+        "title": "Rising Streamer & Tier-2 Partner Badge",
+        "category": "Rising Creators & Streamers",
+        "category_slug": "creator",
+        "file": "FF_UI_Badge_KOL02.png",
+        "glow_color": "rgba(16, 185, 129, 0.85)",
+        "hex_glow": "#10B981",
+        "priority": 80000,
+        "default_size": 34,
+        "offset_x": -4,
+        "offset_y": -4,
+        "default_position": "top-right",
+        "animation": "ff_shape_sweep 2.6s infinite linear",
+        "rarity": "Rising Talent",
+        "description": "Emerald lightning badge for verified up-and-coming gaming streamers and content creators.",
+        "tags": [
+            "emerging",
+            "streamer",
+            "emerald",
+            "green",
+            "creator"
+        ],
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL02.png",
+            "github_raw": "https://raw.githubusercontent.com/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL02.png",
+            "statically": "https://cdn.statically.io/gh/tamim1280/freefire-badges-cdn/main/badges/FF_UI_Badge_KOL02.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/badges/FF_UI_Badge_KOL02.png"
+    }
+}
