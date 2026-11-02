@@ -1,0 +1,31 @@
+{
+    "status": "success",
+    "item": {
+        "id": "120000001280",
+        "slug": "hud-kill",
+        "icon_id": "Icon_FF_HUD_Elimination_KillMaroon",
+        "name": "HUD Kill Elimination",
+        "title": "In-game Elimination HUD Badge",
+        "rarity": "RARE",
+        "rarity_color": "#E11D48",
+        "rarity_class": "rare",
+        "category": "In-game HUD",
+        "category_slug": "hud",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "badge_kill_maroon.png",
+        "glow_color": "rgba(225, 29, 72, 0.85)",
+        "hex_glow": "#E11D48",
+        "priority": 500,
+        "default_size": 26,
+        "type": "image",
+        "description": "Free Fire in-game battle interface elimination kill badge icon.",
+        "fn_call": "generate_ff_badge_html('badge_kill_maroon.png', 'HUD Kill Elimination', 'rgba(225, 29, 72, 0.85)', 'in-line', '26px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png"
+    }
+}

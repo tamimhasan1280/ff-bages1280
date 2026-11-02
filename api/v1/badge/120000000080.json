@@ -1,0 +1,31 @@
+{
+    "status": "success",
+    "item": {
+        "id": "120000000080",
+        "slug": "official-v",
+        "icon_id": "Icon_FF_KOL01_VBadge_Gold",
+        "name": "OFFICIAL V BAGE",
+        "title": "Official Influencer V-Badge",
+        "rarity": "MYTHIC",
+        "rarity_color": "#EAB308",
+        "rarity_class": "mythic",
+        "category": "Official Partner (KOL)",
+        "category_slug": "official",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "FF_UI_Badge_KOL01.png",
+        "glow_color": "rgba(255, 215, 0, 0.85)",
+        "hex_glow": "#FFD700",
+        "priority": 2000000,
+        "default_size": 34,
+        "type": "image",
+        "description": "The authentic Free Fire partner influencer verification badge with gold light-sweep beam.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL01.png', 'OFFICIAL V BAGE', 'rgba(255, 215, 0, 0.85)', 'top-right', '34px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL01.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png"
+    }
+}

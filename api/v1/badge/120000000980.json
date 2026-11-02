@@ -1,0 +1,28 @@
+{
+    "status": "success",
+    "item": {
+        "id": "120000000980",
+        "slug": "pro-player",
+        "icon_id": "Icon_FF_ProPlayer_FireText",
+        "name": "PRO-PLYER Fire Text",
+        "title": "Animated Fire Text Pro Player",
+        "rarity": "RARE",
+        "rarity_color": "#F59E0B",
+        "rarity_class": "rare",
+        "category": "Rank & Competitive",
+        "category_slug": "rank",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "",
+        "glow_color": "rgba(249, 212, 35, 0.9)",
+        "hex_glow": "#F9D423",
+        "priority": 1000,
+        "default_size": 16,
+        "type": "text_code",
+        "text_code": "<span class=\"pro-badge\" style=\"font-family:Orbitron,sans-serif;font-weight:900;font-size:13px;letter-spacing:1px;color:#f9d423;animation:fire_text 2s infinite alternate;text-transform:uppercase;\">PRO</span>",
+        "description": "Cyberpunk Orbitron typography with blazing molten-fire animated glow for competitive pro players.",
+        "fn_call": "render_verified_badge([$badge], $settings, 4, 'inline');",
+        "cdn_urls": [],
+        "direct_url": ""
+    }
+}

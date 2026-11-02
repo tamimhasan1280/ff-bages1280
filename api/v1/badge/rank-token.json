@@ -1,0 +1,31 @@
+{
+    "status": "success",
+    "item": {
+        "id": "120000001680",
+        "slug": "rank-token",
+        "icon_id": "Icon_FF_Rank_Token_Exchange",
+        "name": "Rank Token",
+        "title": "Ranked Season Exchange Token",
+        "rarity": "RARE",
+        "rarity_color": "#3B82F6",
+        "rarity_class": "rare",
+        "category": "Exchange Tokens",
+        "category_slug": "tokens",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "FF_UI_Badge_ESPORTS01.png",
+        "glow_color": "rgba(59, 130, 246, 0.85)",
+        "hex_glow": "#3B82F6",
+        "priority": 300,
+        "default_size": 34,
+        "type": "image",
+        "description": "Official Free Fire ranked match token used to exchange for elite rewards in the Rank Store.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_ESPORTS01.png', 'Rank Token', 'rgba(59, 130, 246, 0.85)', 'in-line', '34px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png"
+    }
+}

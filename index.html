@@ -1,514 +1,1105 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free Fire V-Badges Monster CDN & API Hub</title>
+    <title>TURKY HUB - FF Items EXPLORER | OB55 ACTIVE</title>
+    <link rel="icon" type="image/png" href="badges/FF_UI_Badge_KOL01.png">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="cdn/ff-badges.css">
-    <script src="cdn/ff-badges.js"></script>
+    <!-- Google Fonts: Orbitron, Rajdhani, Fira Code, Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@600;700&family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: #090a16;
-            color: #e2e8f0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0b0e1b;
+            color: #f1f5f9;
         }
+
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
         .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
-        .cyber-card {
-            background: rgba(16, 17, 36, 0.75);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        .font-mono-code { font-family: 'Fira Code', monospace; }
+
+        /* Free Fire signature light sweep animation */
+        @keyframes ff_shape_sweep {
+            0% { transform: translate(-100%, -100%) rotate(45deg); }
+            100% { transform: translate(100%, 100%) rotate(45deg); }
         }
-        .cyber-card:hover {
-            border-color: rgba(234, 179, 8, 0.35);
+
+        @keyframes pulse_gold {
+            0%, 100% { filter: drop-shadow(0 0 2px gold) drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
+            50% { filter: drop-shadow(0 0 10px gold) drop-shadow(0 0 16px rgba(255,215,0,0.6)); }
+        }
+
+        @keyframes fire_text {
+            from { text-shadow: 0 0 2px #ff8c00, 0 0 5px #ff4500; }
+            to { text-shadow: 0 0 6px #ff4500, 0 0 14px #ff8c00, 0 0 20px #ff2200; }
+        }
+
+        @keyframes glow_legend {
+            0%, 100% { filter: drop-shadow(0 0 3px #8e2de2) drop-shadow(0 1px 3px rgba(0,0,0,0.9)); }
+            50% { filter: drop-shadow(0 0 12px #a855f7) drop-shadow(0 0 20px rgba(168,85,247,0.7)); }
+        }
+
+        .ff-shape-badge {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent !important;
+            border: none !important;
+            user-select: none;
+            -webkit-user-select: none;
+            vertical-align: middle;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Item Grid Card */
+        .item-card {
+            background: #0e1222;
+            border: 1px solid #1f2544;
+            border-radius: 18px;
+            transition: all 0.25s ease-out;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-card:hover {
+            border-color: rgba(168, 85, 247, 0.5);
             transform: translateY(-4px);
-            box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.7), 0 0 20px -5px rgba(234, 179, 8, 0.15);
+            box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.7), 0 0 20px -4px rgba(168, 85, 247, 0.25);
         }
-        .gold-gradient-text {
-            background: linear-gradient(135deg, #FFF6B7 0%, #F6416C 100%, #F1CA74 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+
+        .item-preview-box {
+            background: radial-gradient(circle at center, rgba(168, 85, 247, 0.15) 0%, rgba(10, 12, 24, 0.95) 75%);
+            border-radius: 12px;
+            position: relative;
         }
+
+        /* Modal Styles */
+        .modal-box {
+            background: #111428;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(168, 85, 247, 0.15);
+        }
+
         .custom-scroll::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.18);
             border-radius: 4px;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-yellow-500 selection:text-black">
+<body class="min-h-screen flex flex-col selection:bg-rose-500 selection:text-white">
 
-    <!-- Top Banner & Notification Bar -->
-    <header class="border-b border-gray-800 bg-[#0d0e1f]/90 sticky top-0 z-50 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+    <!-- Top Navigation Bar (Matching Image 3) -->
+    <header class="border-b border-[#1c2242] bg-[#0c0f20]/95 sticky top-0 z-40 backdrop-blur-md">
+        <div class="max-w-[1720px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+            
+            <!-- Left Brand -->
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-yellow-500 to-amber-300 p-0.5 shadow-lg shadow-yellow-500/20">
-                    <div class="w-full h-full bg-[#0d0e1f] rounded-[10px] flex items-center justify-center">
-                        <ff-badge name="official-v" size="26" position="inline"></ff-badge>
+                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/20">
+                    <i class="fas fa-fire-flame-curved text-white text-base"></i>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="font-extrabold font-orbitron text-white text-base tracking-wider">TURKY HUB</span>
+                    <span class="text-xs text-gray-400 font-medium hidden sm:inline">FF Items</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#122822] text-emerald-400 border border-emerald-500/30 font-bold uppercase tracking-wider">
+                        OB55 ACTIVE
+                    </span>
+                </div>
+            </div>
+
+            <!-- Center Navigation Tabs -->
+            <nav class="hidden md:flex items-center gap-1.5 bg-[#080a15] p-1 rounded-2xl border border-white/5">
+                <button type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/20 flex items-center gap-2">
+                    <i class="fas fa-book-bookmark text-xs"></i>
+                    <span>Items Library</span>
+                </button>
+                <a href="#player-inspector" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
+                    <i class="fas fa-user-astronaut text-xs"></i>
+                    <span>Player Inspector</span>
+                </a>
+                <a href="#ai-master" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
+                    <i class="fas fa-robot text-xs"></i>
+                    <span>AI Master Prompt</span>
+                </a>
+                <a href="https://github.com/tamimhasan1280/ff-bages1280" target="_blank" class="px-4 py-2 rounded-xl text-xs font-semibold text-amber-400 hover:text-amber-300 hover:bg-white/5 transition flex items-center gap-2">
+                    <i class="fas fa-crown text-xs"></i>
+                    <span>Admin Panel</span>
+                </a>
+            </nav>
+
+            <!-- Right Socials & Profile -->
+            <div class="flex items-center gap-3">
+                <div class="hidden lg:flex items-center gap-2 text-gray-400">
+                    <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
+                        <i class="fab fa-discord text-xs"></i>
+                    </a>
+                    <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
+                        <i class="fab fa-youtube text-xs"></i>
+                    </a>
+                    <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
+                        <i class="fab fa-telegram text-xs"></i>
+                    </a>
+                    <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
+                        <i class="fab fa-facebook text-xs"></i>
+                    </a>
+                </div>
+
+                <!-- Admin Profile Pill -->
+                <div class="flex items-center gap-2 bg-[#12162b] px-3 py-1.5 rounded-2xl border border-white/10">
+                    <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center font-bold text-white text-xs">
+                        A
+                    </div>
+                    <div class="hidden sm:block text-left leading-tight">
+                        <div class="text-xs font-bold text-white">Admin</div>
+                        <div class="text-[9px] text-gray-400 font-medium">Super Admin</div>
                     </div>
                 </div>
-                <div>
-                    <h1 class="text-base sm:text-lg font-black font-orbitron tracking-wider text-white flex items-center gap-2">
-                        FF BADGES <span class="text-xs px-2 py-0.5 rounded-full bg-yellow-400 text-black font-bold uppercase tracking-widest font-mono">CDN & API</span>
-                    </h1>
-                    <p class="text-[11px] text-gray-400 font-rajdhani tracking-wider">UNIVERSAL FREE FIRE VERIFICATION ASSET HUB v2.0</p>
-                </div>
             </div>
 
-            <!-- CDN Provider Selector -->
-            <div class="flex items-center gap-2">
-                <div class="hidden sm:flex items-center bg-[#15172e] border border-gray-700/60 rounded-xl p-1 text-xs font-mono">
-                    <span class="px-2 text-gray-400 text-[10px] uppercase font-bold">CDN:</span>
-                    <button type="button" onclick="switchCDN('jsdelivr')" id="cdn_btn_jsdelivr" class="px-2.5 py-1 rounded-lg bg-yellow-400 text-black font-bold transition">jsDelivr</button>
-                    <button type="button" onclick="switchCDN('statically')" id="cdn_btn_statically" class="px-2.5 py-1 rounded-lg text-gray-400 hover:text-white transition">Statically</button>
-                    <button type="button" onclick="switchCDN('github_raw')" id="cdn_btn_github_raw" class="px-2.5 py-1 rounded-lg text-gray-400 hover:text-white transition">Raw</button>
-                    <button type="button" onclick="switchCDN('local')" id="cdn_btn_local" class="px-2.5 py-1 rounded-lg text-gray-400 hover:text-white transition">Local</button>
-                </div>
-                <a href="https://github.com/tamim1280/freefire-badges-cdn" target="_blank" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold flex items-center gap-2 transition">
-                    <i class="fab fa-github text-sm"></i> <span class="hidden md:inline">GitHub</span>
-                </a>
-            </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10 w-full">
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-[1720px] mx-auto px-4 sm:px-6 py-6 space-y-6 w-full">
 
-        <!-- Hero Section -->
-        <section class="cyber-card rounded-3xl p-6 sm:p-10 relative overflow-hidden border border-yellow-500/20 shadow-2xl">
-            <div class="absolute -right-20 -top-20 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                <div class="lg:col-span-8 space-y-4">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-300 text-xs font-bold uppercase tracking-widest font-mono">
-                        <i class="fas fa-bolt text-yellow-400"></i> Universal Animated Badge CDN & API Engine
-                    </div>
-                    <h2 class="text-3xl sm:text-5xl font-black font-orbitron tracking-tight text-white leading-tight">
-                        FREE FIRE <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500">V-BADGES</span> REPOSITORY
-                    </h2>
-                    <p class="text-sm sm:text-base text-gray-300 leading-relaxed max-w-2xl">
-                        Deploy authentic Free Fire partner badges, tournament champion crowns, GM staff pins, and creator badges to any website, mobile app, or backend via global CDN with signature light-sweep animations and zero server bandwidth load.
-                    </p>
-
-                    <!-- Quick Code Snippet Box -->
-                    <div class="pt-2 flex flex-wrap gap-3 items-center">
-                        <div class="bg-black/60 border border-gray-800 rounded-xl px-3.5 py-2 font-mono text-xs text-yellow-300 flex items-center gap-3">
-                            <span class="text-gray-500">&lt;link&gt;</span>
-                            <span>https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.css</span>
-                            <button onclick="copySnippet('https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.css', this)" class="text-gray-400 hover:text-white" title="Copy URL">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                        </div>
-                        <a href="#playground" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-500 text-black font-bold text-xs uppercase tracking-wider hover:opacity-95 shadow-lg shadow-yellow-500/20 transition flex items-center gap-2">
-                            <i class="fas fa-play"></i> Live Playground
-                        </a>
-                        <a href="api/badges.json" target="_blank" class="px-5 py-2.5 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/40 text-purple-200 font-bold text-xs uppercase tracking-wider transition flex items-center gap-2">
-                            <i class="fas fa-code"></i> JSON API
-                        </a>
-                    </div>
+        <!-- Banner / Explorer Header (Matching Image 3) -->
+        <section class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#0d1022] p-5 sm:p-6 rounded-2xl border border-[#1d2342] relative overflow-hidden">
+            <div class="flex items-center gap-3.5 relative z-10">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-rose-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-inner">
+                    <i class="fas fa-cubes"></i>
                 </div>
-
-                <!-- Showcase Animated Badge Hologram -->
-                <div class="lg:col-span-4 flex justify-center">
-                    <div class="relative p-8 rounded-2xl bg-[#090a18] border border-yellow-500/30 shadow-2xl flex flex-col items-center justify-center gap-4 group">
-                        <div class="relative w-28 h-28 flex items-center justify-center">
-                            <div class="absolute inset-0 bg-yellow-400/20 rounded-full blur-xl animate-pulse"></div>
-                            <div id="heroLiveBadge">
-                                <ff-badge name="official-v" size="84" position="inline"></ff-badge>
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <span class="font-orbitron font-extrabold text-sm text-white tracking-wider block" id="heroBadgeName">OFFICIAL V BAGE</span>
-                            <span class="text-[11px] font-mono text-yellow-400">2,000,000 PRIORITY &bull; MYTHIC</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Filters & Category Navigation -->
-        <section class="space-y-4">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 custom-scroll" id="categoryTabs">
-                    <button onclick="filterCategory('all')" class="cat-btn active px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-yellow-400 text-black transition" data-cat="all">All Badges</button>
-                    <button onclick="filterCategory('official')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="official">Official Partners</button>
-                    <button onclick="filterCategory('esports')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="esports">Esports & Pro</button>
-                    <button onclick="filterCategory('vip')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="vip">VIP Partners</button>
-                    <button onclick="filterCategory('staff')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="staff">Staff & GM</button>
-                    <button onclick="filterCategory('creator')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="creator">Creators & Maps</button>
-                    <button onclick="filterCategory('hud')" class="cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition" data-cat="hud">HUD & UI</button>
-                </div>
-
-                <div class="relative w-full md:w-72">
-                    <i class="fas fa-search absolute left-3.5 top-3 text-gray-500 text-xs"></i>
-                    <input type="text" id="badgeSearchInput" oninput="searchBadges(this.value)" placeholder="Search by name, ID or rarity..." class="w-full bg-[#12132b] border border-gray-700 rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-yellow-400 transition">
-                </div>
-            </div>
-
-            <!-- Badges Matrix Grid -->
-            <div id="badgesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                <!-- Injected via JavaScript from API data -->
-            </div>
-        </section>
-
-        <!-- Interactive Avatar Playground & Customizer -->
-        <section id="playground" class="cyber-card rounded-3xl p-6 sm:p-8 space-y-6 border border-gray-800">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-4">
                 <div>
-                    <h3 class="text-xl font-black font-orbitron text-white flex items-center gap-2">
-                        <i class="fas fa-gamepad text-yellow-400"></i> Interactive Avatar & Badge Playground
-                    </h3>
-                    <p class="text-xs text-gray-400 mt-1">Test how any badge renders on different avatar shapes, sizes, and positions with live CSS animation.</p>
+                    <h1 class="text-xl sm:text-2xl font-black font-orbitron tracking-wide text-white flex items-center gap-2">
+                        TURKY HUB - FF Items EXPLORER
+                    </h1>
+                    <p class="text-xs sm:text-sm text-gray-400 font-rajdhani tracking-wider mt-0.5">
+                        <span class="text-white font-bold" id="itemCountDisplay">34,211 items available</span> | Infinite Auto-Scroll Active
+                    </p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                <!-- Left: Controls -->
-                <div class="lg:col-span-7 space-y-5">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">Select Badge:</label>
-                            <select id="playBadgeSelect" onchange="updatePlayground()" class="w-full bg-[#0d0e1f] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400">
-                                <!-- Populated dynamically -->
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">Badge Position:</label>
-                            <select id="playPositionSelect" onchange="updatePlayground()" class="w-full bg-[#0d0e1f] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-yellow-400">
-                                <option value="top-right">Top Right (Default Avatar)</option>
-                                <option value="top-left">Top Left</option>
-                                <option value="bottom-right">Bottom Right</option>
-                                <option value="bottom-left">Bottom Left</option>
-                                <option value="inline">Inline Next to Name</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div>
-                            <div class="flex items-center justify-between text-xs font-bold text-gray-300 mb-1">
-                                <span>Badge Size</span>
-                                <span id="playSizeVal" class="text-yellow-400 font-mono">34px</span>
-                            </div>
-                            <input type="range" id="playSizeSlider" min="16" max="64" value="34" oninput="updatePlayground()" class="w-full accent-yellow-400 cursor-pointer">
-                        </div>
-                        <div>
-                            <div class="flex items-center justify-between text-xs font-bold text-gray-300 mb-1">
-                                <span>Sweep Speed</span>
-                                <span id="playSpeedVal" class="text-yellow-400 font-mono">2.6s</span>
-                            </div>
-                            <input type="range" id="playSpeedSlider" min="0.8" max="5.0" step="0.2" value="2.6" oninput="updatePlayground()" class="w-full accent-yellow-400 cursor-pointer">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-300 mb-1.5 uppercase tracking-wider">Avatar Shape:</label>
-                            <select id="playShapeSelect" onchange="updatePlayground()" class="w-full bg-[#0d0e1f] border border-gray-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-yellow-400">
-                                <option value="rounded-2xl">Rounded Square</option>
-                                <option value="rounded-full">Circle</option>
-                                <option value="rounded-none">Sharp Square</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Generated HTML Snippet Area -->
-                    <div class="space-y-1.5">
-                        <div class="flex items-center justify-between text-xs font-bold text-gray-400">
-                            <span>Ready-to-use HTML/CSS:</span>
-                            <button onclick="copyPlaygroundCode()" class="text-yellow-400 hover:text-yellow-300 flex items-center gap-1">
-                                <i class="fas fa-copy"></i> <span id="copyPlayText">Copy Code</span>
-                            </button>
-                        </div>
-                        <textarea id="playCodeSnippet" readonly rows="4" class="w-full bg-[#0a0b16] border border-gray-800 rounded-xl p-3 font-mono text-[11px] text-gray-300 focus:outline-none custom-scroll"></textarea>
-                    </div>
-                </div>
-
-                <!-- Right: Visual Preview Card -->
-                <div class="lg:col-span-5 flex justify-center">
-                    <div class="w-full max-w-sm bg-[#121329] border border-gray-700/80 rounded-2xl p-6 shadow-2xl space-y-4">
-                        <div class="text-[10px] uppercase font-bold text-gray-400 tracking-wider flex items-center justify-between">
-                            <span>Live Player Nameplate Preview</span>
-                            <span class="text-green-400 font-mono flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span> Live</span>
-                        </div>
-
-                        <div class="flex items-center gap-3.5 bg-black/40 p-3.5 rounded-xl border border-white/5">
-                            <!-- Avatar with Badge Container -->
-                            <div id="playAvatarWrap" class="relative w-14 h-14 shrink-0 transition-all">
-                                <img src="assets/images/avatar_902000001.png" id="playAvatarImg" class="w-full h-full object-cover rounded-2xl border-2 border-yellow-400/80 shadow-md">
-                                <div id="playBadgeSlot"></div>
-                            </div>
-
-                            <div class="min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <h4 class="font-bold text-sm text-white truncate font-orbitron">BÉªá´˜ÊŸoÊ™â”Š1280</h4>
-                                    <div id="playInlineBadgeSlot"></div>
-                                </div>
-                                <p class="text-xs text-gray-400 font-mono">UID: 204918231</p>
-                                <span class="text-[9px] px-1.5 py-0.2 rounded bg-yellow-400/20 text-yellow-300 font-bold uppercase">PRO VERIFIED</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="flex items-center gap-3 relative z-10">
+                <span class="px-3.5 py-1.5 rounded-xl bg-[#0e271f] text-emerald-400 border border-emerald-500/30 text-xs font-semibold flex items-center gap-2 font-mono">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    OB55 Engine Active
+                </span>
+                <a href="https://github.com/<?= $repo_name ?>" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold flex items-center gap-2 transition">
+                    <i class="fab fa-github text-yellow-400"></i>
+                    <span class="hidden sm:inline">GitHub Repository</span>
+                </a>
             </div>
         </section>
 
-        <!-- API Reference & Integration Guide -->
-        <section class="cyber-card rounded-3xl p-6 sm:p-8 space-y-6 border border-gray-800">
-            <h3 class="text-xl font-black font-orbitron text-white flex items-center gap-2">
-                <i class="fas fa-book text-yellow-400"></i> Integration & Developer Guide
-            </h3>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Option 1: Web Component -->
-                <div class="bg-[#0f1022] border border-gray-800 rounded-2xl p-5 space-y-3">
-                    <span class="text-xs font-bold text-yellow-400 uppercase tracking-widest font-mono">Method 1 (Easiest)</span>
-                    <h4 class="font-bold text-sm text-white">Custom Web Component</h4>
-                    <p class="text-xs text-gray-400">Include the JS SDK and use the custom HTML tag anywhere:</p>
-                    <pre class="bg-black/60 p-3 rounded-xl text-[11px] font-mono text-emerald-400 overflow-x-auto custom-scroll">&lt;script src="https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.js"&gt;&lt;/script&gt;
-
-&lt;ff-badge name="official-v" size="34"&gt;&lt;/ff-badge&gt;</pre>
-                </div>
-
-                <!-- Option 2: Pure CSS Snippet -->
-                <div class="bg-[#0f1022] border border-gray-800 rounded-2xl p-5 space-y-3">
-                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest font-mono">Method 2 (Zero JS)</span>
-                    <h4 class="font-bold text-sm text-white">Pure CSS & Mask</h4>
-                    <p class="text-xs text-gray-400">Include the stylesheet and copy the ready animated HTML snippet with CSS mask sweep.</p>
-                    <pre class="bg-black/60 p-3 rounded-xl text-[11px] font-mono text-cyan-400 overflow-x-auto custom-scroll">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/cdn/ff-badges.css"&gt;</pre>
-                </div>
-
-                <!-- Option 3: REST API -->
-                <div class="bg-[#0f1022] border border-gray-800 rounded-2xl p-5 space-y-3">
-                    <span class="text-xs font-bold text-purple-400 uppercase tracking-widest font-mono">Method 3 (Backend/App)</span>
-                    <h4 class="font-bold text-sm text-white">JSON REST API</h4>
-                    <p class="text-xs text-gray-400">Fetch metadata, priorities, and direct CDN URLs via standard fetch:</p>
-                    <pre class="bg-black/60 p-3 rounded-xl text-[11px] font-mono text-purple-400 overflow-x-auto custom-scroll">fetch('https://cdn.jsdelivr.net/gh/tamim1280/freefire-badges-cdn@main/api/badges.json')
-  .then(res => res.json())
-  .then(data => console.log(data.badges));</pre>
-                </div>
+        <!-- Search & Filter Controls (Matching Image 3) -->
+        <section class="bg-[#0e1224] p-4 sm:p-5 rounded-2xl border border-[#1e2444] space-y-4">
+            
+            <!-- Full Width Search Input -->
+            <div class="relative">
+                <i class="fas fa-search absolute left-4 top-3.5 text-gray-500 text-sm"></i>
+                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search by Item Name, ID, or Keywords (e.g. mp40, bundle, gloo, 120000000080)..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-11 pr-4 py-3 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-rose-500 transition shadow-inner">
             </div>
+
+            <!-- Filters Row: Categories, Patches, Rarities, Apply Button -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+                
+                <!-- Category Select -->
+                <div class="relative">
+                    <select id="catSelect" onchange="applyFilters()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-2.5 text-xs text-gray-200 focus:outline-none focus:border-rose-500 appearance-none cursor-pointer">
+                        <option value="all">All Categories</option>
+                        <option value="official">Official Partner (KOL)</option>
+                        <option value="vip">Crystal VIP Partner</option>
+                        <option value="esports">Competitive & Esports</option>
+                        <option value="staff">Administration & Authority</option>
+                        <option value="creator">Creators & Architects</option>
+                        <option value="hud">In-game HUD</option>
+                        <option value="special">Special Editions</option>
+                        <option value="tokens">Exchange Tokens</option>
+                        <option value="misc">Misc Items</option>
+                    </select>
+                    <i class="fas fa-chevron-down absolute right-3.5 top-3.5 text-gray-500 text-[10px] pointer-events-none"></i>
+                </div>
+
+                <!-- Patches / Versions Select -->
+                <div class="relative">
+                    <select id="patchSelect" onchange="applyFilters()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-2.5 text-xs text-gray-200 focus:outline-none focus:border-rose-500 appearance-none cursor-pointer">
+                        <option value="all">All Patches / Versions</option>
+                        <option value="ob55">OB55 (Current)</option>
+                        <option value="ob54">OB54</option>
+                        <option value="legacy">Legacy Editions</option>
+                    </select>
+                    <i class="fas fa-chevron-down absolute right-3.5 top-3.5 text-gray-500 text-[10px] pointer-events-none"></i>
+                </div>
+
+                <!-- Rarities Select -->
+                <div class="relative">
+                    <select id="raritySelect" onchange="applyFilters()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-2.5 text-xs text-gray-200 focus:outline-none focus:border-rose-500 appearance-none cursor-pointer">
+                        <option value="all">All Rarities</option>
+                        <option value="MYTHIC">MYTHIC</option>
+                        <option value="LEGENDARY">LEGENDARY</option>
+                        <option value="EPIC">EPIC</option>
+                        <option value="PURPLE">PURPLE</option>
+                        <option value="RARE">RARE</option>
+                    </select>
+                    <i class="fas fa-chevron-down absolute right-3.5 top-3.5 text-gray-500 text-[10px] pointer-events-none"></i>
+                </div>
+
+                <!-- Apply Filters Button -->
+                <div>
+                    <button type="button" onclick="applyFilters()" class="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition">
+                        <i class="fas fa-sliders text-xs"></i>
+                        <span>Apply Filters</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Grid Cards Section (Matching Image 3) -->
+        <section id="itemsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-3 sm:gap-4">
+            <!-- Cards populated dynamically via JavaScript for superfast filtering and click-to-modal -->
         </section>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-gray-800 bg-[#090a18] py-8 text-center text-xs text-gray-500 space-y-2">
-        <p class="font-rajdhani text-sm text-gray-400">Free Fire V-Badges Monster CDN & API &bull; Built with precision for competitive esports platforms.</p>
-        <p class="font-mono text-[11px]">Deployable anywhere &bull; GitHub Open Source &bull; MIT License</p>
-    </footer>
+    <!-- Modal Dialog (Matching Image 4) -->
+    <div id="itemModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="modal-box w-full max-w-[460px] p-6 sm:p-7 relative my-auto animate-in fade-in zoom-in-95 duration-200">
+            
+            <!-- Close Button (X) -->
+            <button type="button" onclick="closeItemModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#1b1f3b] text-gray-400 hover:text-white flex items-center justify-center text-sm transition">
+                <i class="fas fa-xmark"></i>
+            </button>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-yellow-400 text-black px-4 py-2.5 rounded-xl font-bold text-xs shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none z-50">
-        <i class="fas fa-check-circle"></i> <span id="toastMsg">Copied!</span>
+            <!-- Preview Stage -->
+            <div class="w-48 h-48 mx-auto rounded-2xl bg-[#090b18] border border-white/5 relative flex items-center justify-center overflow-hidden shadow-inner">
+                <div id="modalAura" class="absolute inset-0 bg-gradient-to-tr from-purple-600/20 via-transparent to-pink-500/20 pointer-events-none"></div>
+                <div id="modalItemPreview" class="relative z-10 scale-125 flex items-center justify-center">
+                    <!-- Image or Animation injected here -->
+                </div>
+            </div>
+
+            <!-- Item Name -->
+            <h2 id="modalItemName" class="text-xl font-black text-white text-center mt-5 mb-4 tracking-wide font-orbitron">
+                <!-- Name -->
+            </h2>
+
+            <!-- Metadata List Rows -->
+            <div class="space-y-2 text-xs">
+                
+                <!-- Item ID Row with Copy Button -->
+                <div class="bg-[#090b18] border border-white/5 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
+                    <span class="text-[#f97316] font-bold text-xs tracking-wide">Item ID:</span>
+                    <div class="flex items-center gap-2">
+                        <span id="modalItemId" class="text-emerald-400 font-mono font-bold text-xs tracking-wider">120000000080</span>
+                        <button type="button" onclick="copyModalId()" class="bg-[#1b1f3b] hover:bg-[#282f56] text-gray-200 hover:text-white px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition">
+                            <i class="fas fa-copy text-[10px]"></i> <span>Copy</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Icon ID Row -->
+                <div class="bg-[#090b18] border border-white/5 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
+                    <span class="text-[#f97316] font-bold text-xs tracking-wide">Icon ID:</span>
+                    <span id="modalIconId" class="text-emerald-400 font-mono text-xs">Icon_FF_KOL_VBadge_Gold</span>
+                </div>
+
+                <!-- Rarity Row -->
+                <div class="flex items-center justify-between px-2 py-1">
+                    <span class="text-gray-400 font-medium">Rarity:</span>
+                    <span id="modalRarity" class="text-white font-extrabold uppercase tracking-wider">PURPLE</span>
+                </div>
+
+                <!-- Category Row -->
+                <div class="flex items-center justify-between px-2 py-1">
+                    <span class="text-gray-400 font-medium">Category:</span>
+                    <span id="modalCategory" class="text-white font-medium">Official Partner</span>
+                </div>
+
+                <!-- Patch / Tag Row -->
+                <div class="flex items-center justify-between px-2 py-1">
+                    <span class="text-gray-400 font-medium">Patch / Tag:</span>
+                    <span id="modalPatch" class="text-white font-medium">OB55</span>
+                </div>
+
+                <!-- Description Block -->
+                <div class="pt-1">
+                    <span class="text-gray-400 font-medium block mb-1 px-2">Description:</span>
+                    <div id="modalDescription" class="bg-[#090b18] border border-white/5 rounded-xl p-3 text-gray-300 italic text-xs leading-relaxed">
+                        <!-- Description -->
+                    </div>
+                </div>
+
+                <!-- Developer Logic accordion (PHP function call & CDN url) -->
+                <div class="pt-1">
+                    <button type="button" onclick="toggleDevInfo()" class="w-full text-left text-[11px] font-mono text-amber-400/90 hover:text-amber-300 flex items-center justify-between px-2 py-1">
+                        <span><i class="fas fa-code mr-1"></i> Developer Integration & Logic</span>
+                        <i id="devInfoIcon" class="fas fa-chevron-down text-[10px]"></i>
+                    </button>
+                    <div id="devInfoBlock" class="hidden space-y-2 mt-1.5 bg-[#090b18] p-3 rounded-xl border border-white/5">
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">PHP Logic Call:</span>
+                            <div class="flex items-center gap-1.5">
+                                <code id="modalPhpCall" class="text-[10px] font-mono text-amber-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
+                                <button type="button" onclick="copyText(document.getElementById('modalPhpCall').textContent, 'PHP Call copied!')" class="px-2 py-1 bg-amber-500/20 text-amber-300 rounded text-[10px] shrink-0 hover:bg-amber-500/30">Copy</button>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">Global CDN Image URL:</span>
+                            <div class="flex items-center gap-1.5">
+                                <code id="modalCdnUrl" class="text-[10px] font-mono text-cyan-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
+                                <button type="button" onclick="copyText(document.getElementById('modalCdnUrl').textContent, 'CDN URL copied!')" class="px-2 py-1 bg-cyan-500/20 text-cyan-300 rounded text-[10px] shrink-0 hover:bg-cyan-500/30">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Action Buttons: STRICTLY NO DOWNLOAD BUTTON! Only Share Link and Close (Matching Image 4) -->
+            <div class="flex items-center gap-3 mt-6 pt-2">
+                <button type="button" id="shareLinkBtn" onclick="shareCurrentItem()" class="flex-1 bg-gradient-to-r from-[#ea580c] to-[#f97316] hover:from-[#c2410c] hover:to-[#ea580c] text-white font-bold py-3 px-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 transition">
+                    <i class="fas fa-share-nodes text-sm"></i>
+                    <span>Share Link</span>
+                </button>
+
+                <button type="button" onclick="closeItemModal()" class="bg-[#1e2340] hover:bg-[#282f56] text-gray-300 font-bold py-3 px-6 rounded-2xl transition">
+                    Close
+                </button>
+            </div>
+
+        </div>
     </div>
 
-    <!-- Master UI Controller Script -->
+    <!-- Toast Notification -->
+    <div id="appToast" class="fixed bottom-6 right-6 bg-yellow-400 text-black font-extrabold px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none">
+        <i class="fas fa-check-circle text-base"></i>
+        <span id="appToastMsg">Copied!</span>
+    </div>
+
+    <!-- Master Items Data & Engine Script -->
     <script>
-        let allBadges = [];
-        let currentCDN = 'jsdelivr';
-        let currentCategory = 'all';
+        const REPO_NAME = "tamimhasan1280/ff-bages1280";
+        const CDN_BASE = "https://cdn.jsdelivr.net/gh/" + REPO_NAME + "@main/badges/";
+        
+        // Dataset loaded from JSON
+        const itemsData = [
+    {
+        "id": "120000000080",
+        "slug": "official-v",
+        "icon_id": "Icon_FF_KOL01_VBadge_Gold",
+        "name": "OFFICIAL V BAGE",
+        "title": "Official Influencer V-Badge",
+        "rarity": "MYTHIC",
+        "rarity_color": "#EAB308",
+        "rarity_class": "mythic",
+        "category": "Official Partner (KOL)",
+        "category_slug": "official",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "FF_UI_Badge_KOL01.png",
+        "glow_color": "rgba(255, 215, 0, 0.85)",
+        "hex_glow": "#FFD700",
+        "priority": 2000000,
+        "default_size": 34,
+        "type": "image",
+        "description": "The authentic Free Fire partner influencer verification badge with gold light-sweep beam.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL01.png', 'OFFICIAL V BAGE', 'rgba(255, 215, 0, 0.85)', 'top-right', '34px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png",
+        "local_url": "badges/FF_UI_Badge_KOL01.png"
+    },
+    {
+        "id": "120000000180",
+        "slug": "diamond-partner",
+        "icon_id": "Icon_FF_KOL03_Diamond_VIP",
+        "name": "FF Diamond Partner",
+        "title": "Diamond Partner / Elite VIP",
+        "rarity": "MYTHIC",
+        "rarity_color": "#A855F7",
+        "rarity_class": "mythic",
+        "category": "Crystal VIP Partner",
+        "category_slug": "vip",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "FF_UI_Badge_KOL03.png",
+        "glow_color": "rgba(168, 85, 247, 0.85)",
+        "hex_glow": "#A855F7",
+        "priority": 1500000,
+        "default_size": 34,
+        "type": "image",
+        "description": "Prestigious violet diamond partner badge for elite server patrons and top-tier partners.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL03.png', 'FF Diamond Partner', 'rgba(168, 85, 247, 0.85)', 'top-right', '34px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png",
+        "local_url": "badges/FF_UI_Badge_KOL03.png"
+    },
+    {
+        "id": "120000000280",
+        "slug": "esports-crown",
+        "icon_id": "Icon_FF_Esports_Crown_Gold",
+        "name": "FF Esports PRO Crown",
+        "title": "Verified Competitor & Tournament Champion Crown",
+        "rarity": "LEGENDARY",
+        "rarity_color": "#F97316",
+        "rarity_class": "legendary",
+        "category": "Competitive & Esports",
+        "category_slug": "esports",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "FF_UI_Badge_ESPORTS01.png",
+        "glow_color": "rgba(251, 191, 36, 0.85)",
+        "hex_glow": "#FBBF24",
+        "priority": 95000,
+        "default_size": 34,
+        "type": "image",
+        "description": "Official crown badge designated for esports champions, tournament MVPs, and verified pro contenders.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_ESPORTS01.png', 'FF Esports PRO Crown', 'rgba(251, 191, 36, 0.85)', 'top-right', '34px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
+        "local_url": "badges/FF_UI_Badge_ESPORTS01.png"
+    },
+    {
+        "id": "120000000380",
+        "slug": "gm-staff",
+        "icon_id": "Icon_FF_GM_Staff_Crimson",
+        "name": "FF Official Staff / GM",
+        "title": "Garena Official Staff, Admin & Server Moderator",
+        "rarity": "LEGENDARY",
+        "rarity_color": "#EF4444",
+        "rarity_class": "legendary",
+        "category": "Administration & Authority",
+        "category_slug": "staff",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "FF_UI_Badge_GM01.png",
+        "glow_color": "rgba(239, 68, 68, 0.85)",
+        "hex_glow": "#EF4444",
+        "priority": 90000,
+        "default_size": 34,
+        "type": "image",
+        "description": "Crimson Garena server moderator and administrator badge symbolizing platform authority.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_GM01.png', 'FF Official Staff / GM', 'rgba(239, 68, 68, 0.85)', 'top-right', '34px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_GM01.png",
+        "local_url": "badges/FF_UI_Badge_GM01.png"
+    },
+    {
+        "id": "120000000480",
+        "slug": "craftland-creator",
+        "icon_id": "Icon_FF_Craftland_Architect",
+        "name": "FF Craftland Creator",
+        "title": "Craftland Map Architect & Certified Creator",
+        "rarity": "EPIC",
+        "rarity_color": "#06B6D4",
+        "rarity_class": "epic",
+        "category": "Creators & Architects",
+        "category_slug": "creator",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "craftland.png",
+        "glow_color": "rgba(6, 182, 212, 0.85)",
+        "hex_glow": "#06B6D4",
+        "priority": 85000,
+        "default_size": 34,
+        "type": "image",
+        "description": "Cyan cube badge awarded to certified Craftland map designers, builders, and creative architects.",
+        "fn_call": "generate_ff_badge_html('craftland.png', 'FF Craftland Creator', 'rgba(6, 182, 212, 0.85)', 'top-right', '34px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/craftland.png",
+        "local_url": "badges/craftland.png"
+    },
+    {
+        "id": "120000000580",
+        "slug": "emerging-streamer",
+        "icon_id": "Icon_FF_KOL02_Emerging_Streamer",
+        "name": "FF Emerging Creator",
+        "title": "Rising Streamer & Tier-2 Partner Badge",
+        "rarity": "EPIC",
+        "rarity_color": "#10B981",
+        "rarity_class": "epic",
+        "category": "Rising Creators",
+        "category_slug": "creator",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "FF_UI_Badge_KOL02.png",
+        "glow_color": "rgba(16, 185, 129, 0.85)",
+        "hex_glow": "#10B981",
+        "priority": 80000,
+        "default_size": 34,
+        "type": "image",
+        "description": "Emerald lightning badge for verified up-and-coming gaming streamers and content creators.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL02.png', 'FF Emerging Creator', 'rgba(16, 185, 129, 0.85)', 'top-right', '34px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL02.png",
+        "local_url": "badges/FF_UI_Badge_KOL02.png"
+    },
+    {
+        "id": "120000000680",
+        "slug": "vbadge-classic",
+        "icon_id": "Icon_FF_Classic_Gold_VBadge",
+        "name": "Classic Gold V-Badge",
+        "title": "Classic Free Fire Verified V-Badge",
+        "rarity": "RARE",
+        "rarity_color": "#3B82F6",
+        "rarity_class": "rare",
+        "category": "Legacy & Classics",
+        "category_slug": "legacy",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "vbadge.png",
+        "glow_color": "rgba(255, 215, 0, 0.85)",
+        "hex_glow": "#FFD700",
+        "priority": 75000,
+        "default_size": 32,
+        "type": "image",
+        "description": "The timeless golden V-Badge that started influencer verification across the Free Fire ecosystem.",
+        "fn_call": "generate_ff_badge_html('vbadge.png', 'Classic Gold V-Badge', 'rgba(255, 215, 0, 0.85)', 'in-line', '32px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.png",
+        "local_url": "badges/vbadge.png"
+    },
+    {
+        "id": "120000000780",
+        "slug": "vbadge-vector",
+        "icon_id": "Icon_FF_Vector_SVG_VBadge",
+        "name": "Vector SVG V-Badge",
+        "title": "Ultra High Definition Vector V-Badge",
+        "rarity": "RARE",
+        "rarity_color": "#3B82F6",
+        "rarity_class": "rare",
+        "category": "Vector & Scalable",
+        "category_slug": "vector",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "vbadge.svg",
+        "glow_color": "rgba(255, 215, 0, 0.85)",
+        "hex_glow": "#FFD700",
+        "priority": 70000,
+        "default_size": 30,
+        "type": "image",
+        "description": "Infinitely scalable SVG vector V-badge engineered for high-DPI displays and responsive banners.",
+        "fn_call": "generate_ff_badge_html('vbadge.svg', 'Vector SVG V-Badge', 'rgba(255, 215, 0, 0.85)', 'in-line', '30px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.svg",
+        "local_url": "badges/vbadge.svg"
+    },
+    {
+        "id": "120000000880",
+        "slug": "moderator-shield",
+        "icon_id": "Icon_FF_Moderator_Shield_Gold",
+        "name": "MODERETOR Shield",
+        "title": "Verified Community Guardian Shield",
+        "rarity": "EPIC",
+        "rarity_color": "#EAB308",
+        "rarity_class": "epic",
+        "category": "Security & Moderation",
+        "category_slug": "security",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "verified-badge.svg",
+        "glow_color": "rgba(255, 215, 0, 0.9)",
+        "hex_glow": "#FFE000",
+        "priority": 10000,
+        "default_size": 22,
+        "type": "svg_code",
+        "svg_code": "<svg viewBox=\"0 0 24 24\" fill=\"none\" style=\"width:100%;height:100%;animation:pulse_gold 2s infinite ease-in-out;\"><path d=\"M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z\" fill=\"url(#mod_grad)\"/><path d=\"M10 15.5l-3.5-3.5 1.41-1.41L10 12.67l5.59-5.59L17 8.5 10 15.5z\" fill=\"#000\"/><defs><linearGradient id=\"mod_grad\" x1=\"4\" y1=\"2\" x2=\"20\" y2=\"22\" gradientUnits=\"userSpaceOnUse\"><stop stop-color=\"#FFE000\"/><stop offset=\"1\" stop-color=\"#799F0C\"/></linearGradient></defs></svg>",
+        "description": "Golden shield with verify checkmark for community moderators, tournament referees, and arbiters.",
+        "fn_call": "render_verified_badge([$badge], $settings, 5, 'header');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/verified-badge.svg",
+        "local_url": "badges/verified-badge.svg"
+    },
+    {
+        "id": "120000000980",
+        "slug": "pro-player",
+        "icon_id": "Icon_FF_ProPlayer_FireText",
+        "name": "PRO-PLYER Fire Text",
+        "title": "Animated Fire Text Pro Player",
+        "rarity": "RARE",
+        "rarity_color": "#F59E0B",
+        "rarity_class": "rare",
+        "category": "Rank & Competitive",
+        "category_slug": "rank",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "",
+        "glow_color": "rgba(249, 212, 35, 0.9)",
+        "hex_glow": "#F9D423",
+        "priority": 1000,
+        "default_size": 16,
+        "type": "text_code",
+        "text_code": "<span class=\"pro-badge\" style=\"font-family:Orbitron,sans-serif;font-weight:900;font-size:13px;letter-spacing:1px;color:#f9d423;animation:fire_text 2s infinite alternate;text-transform:uppercase;\">PRO</span>",
+        "description": "Cyberpunk Orbitron typography with blazing molten-fire animated glow for competitive pro players.",
+        "fn_call": "render_verified_badge([$badge], $settings, 4, 'inline');",
+        "cdn_url": "",
+        "local_url": ""
+    },
+    {
+        "id": "120000001080",
+        "slug": "legendary-diamond",
+        "icon_id": "Icon_FF_Legendary_MysticDiamond",
+        "name": "Legendary Mystic Diamond",
+        "title": "Mystic Purple Aura Diamond",
+        "rarity": "MYTHIC",
+        "rarity_color": "#8B5CF6",
+        "rarity_class": "mythic",
+        "category": "Exclusive Tier",
+        "category_slug": "exclusive",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "",
+        "glow_color": "rgba(168, 85, 247, 0.95)",
+        "hex_glow": "#8E2DE2",
+        "priority": 95,
+        "default_size": 24,
+        "type": "svg_code",
+        "svg_code": "<svg viewBox=\"0 0 24 24\" style=\"width:100%;height:100%;animation:glow_legend 2.5s infinite ease-in-out;\"><defs><linearGradient id=\"leg_grad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#8e2de2\"/><stop offset=\"1\" stop-color=\"#4a00e0\"/></linearGradient></defs><path fill=\"url(#leg_grad)\" d=\"M12 .5L4.5 9l7.5 14.5L19.5 9L12 .5zm0 2.31L17.5 9H6.5L12 2.81z\"/></svg>",
+        "description": "Prismatic diamond with rotating gradient and purple cosmic aura reserved for legendary performers.",
+        "fn_call": "render_verified_badge([$badge], $settings, 3, 'header');",
+        "cdn_url": "",
+        "local_url": ""
+    },
+    {
+        "id": "120000001180",
+        "slug": "hud-alive",
+        "icon_id": "Icon_FF_HUD_Survivor_AliveTeal",
+        "name": "HUD Alive Survivor",
+        "title": "In-game Alive Players HUD Badge",
+        "rarity": "RARE",
+        "rarity_color": "#14B8A6",
+        "rarity_class": "rare",
+        "category": "In-game HUD",
+        "category_slug": "hud",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "badge_alive_teal.png",
+        "glow_color": "rgba(20, 184, 166, 0.85)",
+        "hex_glow": "#14B8A6",
+        "priority": 500,
+        "default_size": 26,
+        "type": "image",
+        "description": "Free Fire in-game battle interface alive survivor badge icon.",
+        "fn_call": "generate_ff_badge_html('badge_alive_teal.png', 'HUD Alive Survivor', 'rgba(20, 184, 166, 0.85)', 'in-line', '26px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_alive_teal.png",
+        "local_url": "badges/badge_alive_teal.png"
+    },
+    {
+        "id": "120000001280",
+        "slug": "hud-kill",
+        "icon_id": "Icon_FF_HUD_Elimination_KillMaroon",
+        "name": "HUD Kill Elimination",
+        "title": "In-game Elimination HUD Badge",
+        "rarity": "RARE",
+        "rarity_color": "#E11D48",
+        "rarity_class": "rare",
+        "category": "In-game HUD",
+        "category_slug": "hud",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "badge_kill_maroon.png",
+        "glow_color": "rgba(225, 29, 72, 0.85)",
+        "hex_glow": "#E11D48",
+        "priority": 500,
+        "default_size": 26,
+        "type": "image",
+        "description": "Free Fire in-game battle interface elimination kill badge icon.",
+        "fn_call": "generate_ff_badge_html('badge_kill_maroon.png', 'HUD Kill Elimination', 'rgba(225, 29, 72, 0.85)', 'in-line', '26px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png",
+        "local_url": "badges/badge_kill_maroon.png"
+    },
+    {
+        "id": "120000001380",
+        "slug": "neon-stream",
+        "icon_id": "Icon_FF_Special_NeonStreamer",
+        "name": "Neon Gaming Streamer",
+        "title": "Neon Live Stream Gaming Badge",
+        "rarity": "LEGENDARY",
+        "rarity_color": "#8B5CF6",
+        "rarity_class": "legendary",
+        "category": "Special Editions",
+        "category_slug": "special",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "neon_live_stream_badge.png",
+        "glow_color": "rgba(139, 92, 246, 0.9)",
+        "hex_glow": "#8B5CF6",
+        "priority": 450,
+        "default_size": 38,
+        "type": "image",
+        "description": "Futuristic neon gaming broadcast badge designed for top live streaming partners.",
+        "fn_call": "generate_ff_badge_html('neon_live_stream_badge.png', 'Neon Gaming Streamer', 'rgba(139, 92, 246, 0.9)', 'top-right', '38px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/neon_live_stream_badge.png",
+        "local_url": "badges/neon_live_stream_badge.png"
+    },
+    {
+        "id": "120000001480",
+        "slug": "prime-vbadge",
+        "icon_id": "Icon_FF_Prime_VBadge_Aura",
+        "name": "Prime Aura V-Badge",
+        "title": "Prime Radiant Influencer V-Badge",
+        "rarity": "MYTHIC",
+        "rarity_color": "#EAB308",
+        "rarity_class": "mythic",
+        "category": "Special Editions",
+        "category_slug": "special",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "vbadge_prime.png",
+        "glow_color": "rgba(255, 215, 0, 0.9)",
+        "hex_glow": "#FFD700",
+        "priority": 400,
+        "default_size": 36,
+        "type": "image",
+        "description": "Supreme Gold V-Badge surrounded with high-energy radiant lightning corona aura.",
+        "fn_call": "generate_ff_badge_html('vbadge_prime.png', 'Prime Aura V-Badge', 'rgba(255, 215, 0, 0.9)', 'top-right', '36px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge_prime.png",
+        "local_url": "badges/vbadge_prime.png"
+    },
+    {
+        "id": "120000001580",
+        "slug": "special-badge-8",
+        "icon_id": "Icon_FF_Badge_Level8_Special",
+        "name": "Special Level 8 Elite",
+        "title": "Special Tier Level 8 Emblem",
+        "rarity": "EPIC",
+        "rarity_color": "#EAB308",
+        "rarity_class": "epic",
+        "category": "Special Editions",
+        "category_slug": "special",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "icon_badge_8.png",
+        "glow_color": "rgba(234, 179, 8, 0.85)",
+        "hex_glow": "#EAB308",
+        "priority": 350,
+        "default_size": 32,
+        "type": "image",
+        "description": "Special tier level 8 commemorative golden emblem badge.",
+        "fn_call": "generate_ff_badge_html('icon_badge_8.png', 'Special Level 8 Elite', 'rgba(234, 179, 8, 0.85)', 'in-line', '32px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/icon_badge_8.png",
+        "local_url": "badges/icon_badge_8.png"
+    },
+    {
+        "id": "120000001680",
+        "slug": "rank-token",
+        "icon_id": "Icon_FF_Rank_Token_Exchange",
+        "name": "Rank Token",
+        "title": "Ranked Season Exchange Token",
+        "rarity": "RARE",
+        "rarity_color": "#3B82F6",
+        "rarity_class": "rare",
+        "category": "Exchange Tokens",
+        "category_slug": "tokens",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "FF_UI_Badge_ESPORTS01.png",
+        "glow_color": "rgba(59, 130, 246, 0.85)",
+        "hex_glow": "#3B82F6",
+        "priority": 300,
+        "default_size": 34,
+        "type": "image",
+        "description": "Official Free Fire ranked match token used to exchange for elite rewards in the Rank Store.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_ESPORTS01.png', 'Rank Token', 'rgba(59, 130, 246, 0.85)', 'in-line', '34px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
+        "local_url": "badges/FF_UI_Badge_ESPORTS01.png"
+    },
+    {
+        "id": "120000001780",
+        "slug": "cs-cup-voucher",
+        "icon_id": "Icon_FF_CupMatch_cscup",
+        "name": "Clash Squad Cup Upgrade Voucher",
+        "title": "Clash Squad Cup Advanced Reward Voucher",
+        "rarity": "PURPLE",
+        "rarity_color": "#A855F7",
+        "rarity_class": "purple",
+        "category": "Misc",
+        "category_slug": "misc",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "FF_UI_Badge_KOL03.png",
+        "glow_color": "rgba(168, 85, 247, 0.85)",
+        "hex_glow": "#A855F7",
+        "priority": 250,
+        "default_size": 34,
+        "type": "image",
+        "description": "Use this voucher to upgrade to the Advanced rewards in the Clash Squad Championship Cup.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL03.png', 'Clash Squad Cup Upgrade Voucher', 'rgba(168, 85, 247, 0.85)', 'in-line', '34px');",
+        "cdn_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png",
+        "local_url": "badges/FF_UI_Badge_KOL03.png"
+    }
+];
+        let currentItem = null;
 
-        // Load data on start
-        fetch('api/badges.json')
-            .then(res => res.json())
-            .then(data => {
-                allBadges = data.badges;
-                renderBadgesGrid();
-                populatePlaygroundOptions();
-                updatePlayground();
-            })
-            .catch(err => {
-                console.error("Local fetch failed, falling back to embedded database", err);
-                if (window.FFBadges) {
-                    allBadges = window.FFBadges.list();
-                    renderBadgesGrid();
-                    populatePlaygroundOptions();
-                    updatePlayground();
-                }
-            });
-
-        function switchCDN(type) {
-            currentCDN = type;
-            ['jsdelivr', 'statically', 'github_raw', 'local'].forEach(id => {
-                const btn = document.getElementById('cdn_btn_' + id);
-                if (btn) {
-                    if (id === type) {
-                        btn.className = 'px-2.5 py-1 rounded-lg bg-yellow-400 text-black font-bold transition';
-                    } else {
-                        btn.className = 'px-2.5 py-1 rounded-lg text-gray-400 hover:text-white transition';
-                    }
-                }
-            });
-
-            if (type === 'local') {
-                FFBadges.setCDN('badges/');
-            } else {
-                FFBadges.setCDN(type);
-            }
-
-            renderBadgesGrid();
-            updatePlayground();
-            showToast('CDN switched to ' + type.toUpperCase());
-        }
-
-        function filterCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                if (btn.getAttribute('data-cat') === cat) {
-                    btn.className = 'cat-btn active px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-yellow-400 text-black transition';
-                } else {
-                    btn.className = 'cat-btn px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-gray-800/80 text-gray-300 hover:text-white border border-white/5 transition';
-                }
-            });
-            renderBadgesGrid();
-        }
-
-        function searchBadges(q) {
-            renderBadgesGrid(q.toLowerCase().trim());
-        }
-
-        function renderBadgesGrid(query = '') {
-            const grid = document.getElementById('badgesGrid');
-            if (!grid) return;
-            grid.innerHTML = '';
-
-            const filtered = allBadges.filter(b => {
-                const matchCat = (currentCategory === 'all') || (b.category_slug === currentCategory);
-                const matchQuery = !query || b.name.toLowerCase().includes(query) || b.title.toLowerCase().includes(query) || (b.tags && b.tags.some(t => t.includes(query)));
-                return matchCat && matchQuery;
-            });
-
-            if (filtered.length === 0) {
-                grid.innerHTML = '<div class="col-span-full py-12 text-center text-gray-500 font-mono text-sm">No badges matched your filter.</div>';
+        // Render card HTML
+        function renderCards(list) {
+            const container = document.getElementById('itemsGrid');
+            if (!list || list.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full py-16 text-center text-gray-500 space-y-3">
+                        <i class="fas fa-box-open text-4xl text-gray-600"></i>
+                        <p class="text-sm">No items found matching your filters.</p>
+                    </div>`;
                 return;
             }
 
-            filtered.forEach(b => {
-                const card = document.createElement('div');
-                card.className = 'cyber-card rounded-2xl p-5 flex flex-col justify-between space-y-4';
+            container.innerHTML = list.map(item => {
+                const isImage = item.type === 'image';
+                const fileUrl = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
+                const localUrl = item.file ? 'badges/' + item.file : '';
+                const rarityColor = item.rarity_color || '#A855F7';
+                
+                let previewHtml = '';
+                if (isImage && item.file) {
+                    previewHtml = `
+                        <span class="ff-shape-badge" style="width:42px;height:42px;filter:drop-shadow(0 0 6px ${item.glow_color || 'rgba(255,215,0,0.8)'});">
+                            <img src="${localUrl}" onerror="this.src='${fileUrl}'" alt="${item.name}" style="width:100%;height:100%;object-fit:contain;display:block;">
+                            <span style="position:absolute;inset:0;pointer-events:none;overflow:hidden;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                                <span style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.2) 44%,rgba(255,255,255,0.95) 50%,rgba(255,255,255,0.2) 56%,transparent 65%);animation:ff_shape_sweep 2.6s infinite linear;mix-blend-mode:screen;display:block;"></span>
+                            </span>
+                        </span>
+                    `;
+                } else if (item.type === 'svg_code') {
+                    previewHtml = `<div style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;">${item.svg_code}</div>`;
+                } else if (item.type === 'text_code') {
+                    previewHtml = item.text_code;
+                }
 
-                const badgeHtml = FFBadges.render(b.slug || b.id, { size: b.default_size || 34, position: 'inline' });
-                const imgUrl = b.file ? FFBadges.getImageUrl(b.file) : '';
+                // Rarity pill badge
+                let rarityBadge = '';
+                if (item.rarity === 'MYTHIC') {
+                    rarityBadge = `<span class="text-[9px] px-2 py-0.5 rounded bg-amber-950/80 text-yellow-300 border border-yellow-500/40 font-bold uppercase tracking-wider">MYTHIC</span>`;
+                } else if (item.rarity === 'LEGENDARY') {
+                    rarityBadge = `<span class="text-[9px] px-2 py-0.5 rounded bg-orange-950/80 text-orange-300 border border-orange-500/40 font-bold uppercase tracking-wider">LEGENDARY</span>`;
+                } else if (item.rarity === 'PURPLE' || item.rarity === 'EPIC') {
+                    rarityBadge = `<span class="text-[9px] px-2 py-0.5 rounded bg-purple-950/80 text-purple-300 border border-purple-500/40 font-bold uppercase tracking-wider">${item.rarity}</span>`;
+                } else {
+                    rarityBadge = `<span class="text-[9px] px-2 py-0.5 rounded bg-blue-950/80 text-cyan-300 border border-cyan-500/40 font-bold uppercase tracking-wider">${item.rarity}</span>`;
+                }
 
-                card.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between">
-                            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-gray-300 uppercase">${b.rarity || 'Badge'}</span>
-                            <span class="text-[10px] font-mono text-yellow-400">Pri: ${b.priority}</span>
+                return `
+                    <div class="item-card p-3 sm:p-3.5 flex flex-col justify-between group" onclick="openItemModal('${item.id}')">
+                        <!-- Top Header: Rarity & Patch -->
+                        <div class="flex items-center justify-between mb-2">
+                            ${rarityBadge}
+                            <span class="text-[10px] text-gray-500 font-mono font-medium">${item.patch || 'OB55'}</span>
                         </div>
 
-                        <!-- Live Badge Stage -->
-                        <div class="h-20 bg-black/40 rounded-xl border border-white/5 flex items-center justify-center p-2 relative overflow-hidden group">
-                            <div class="absolute inset-0 bg-yellow-400/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                            ${badgeHtml}
+                        <!-- Center Preview Box -->
+                        <div class="item-preview-box h-28 sm:h-32 flex items-center justify-center p-2 mb-3 rounded-xl border border-white/5 relative overflow-hidden group-hover:border-purple-500/30 transition">
+                            <div class="scale-100 group-hover:scale-125 transition-transform duration-300">
+                                ${previewHtml}
+                            </div>
                         </div>
 
-                        <div>
-                            <h4 class="font-bold text-sm text-white font-orbitron truncate">${b.name}</h4>
-                            <p class="text-[11px] text-gray-400 line-clamp-2 mt-0.5">${b.description || b.title}</p>
+                        <!-- Info Section -->
+                        <div class="space-y-1 mb-2">
+                            <h3 class="font-bold text-xs sm:text-sm text-white truncate tracking-wide group-hover:text-amber-300 transition" title="${item.name}">
+                                ${item.name}
+                            </h3>
+                            <p class="text-[11px] text-gray-400 truncate">
+                                ${item.category}
+                            </p>
                         </div>
-                    </div>
 
-                    <!-- Action Buttons -->
-                    <div class="pt-2 border-t border-gray-800/80 space-y-2">
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            ${b.file ? `
-                                <button onclick="copySnippet('${imgUrl}', this)" class="px-2.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white font-semibold text-[11px] flex items-center justify-center gap-1.5 transition">
-                                    <i class="fas fa-link text-[10px]"></i> <span>CDN URL</span>
-                                </button>
-                            ` : `
-                                <button onclick="copySnippet('${b.svg_code || ''}', this)" class="px-2.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white font-semibold text-[11px] flex items-center justify-center gap-1.5 transition">
-                                    <i class="fas fa-code text-[10px]"></i> <span>Copy SVG</span>
-                                </button>
-                            `}
-                            <button onclick="copyBadgeSnippet('${b.slug || b.id}')" class="px-2.5 py-1.5 rounded-lg bg-yellow-400/10 hover:bg-yellow-400/20 text-yellow-400 font-semibold text-[11px] flex items-center justify-center gap-1.5 transition">
-                                <i class="fas fa-code text-[10px]"></i> <span>HTML Code</span>
+                        <!-- Bottom ID & Copy Button -->
+                        <div class="pt-2 border-t border-[#1a1f3a] flex items-center justify-between">
+                            <span class="text-[11px] font-mono font-bold text-emerald-400 tracking-wider">
+                                #${item.id}
+                            </span>
+                            <button type="button" onclick="event.stopPropagation(); copyText('${item.id}', 'Item ID #${item.id} copied!');" class="text-gray-400 hover:text-white text-xs p-1 rounded hover:bg-white/10 transition" title="Copy ID">
+                                <i class="fas fa-copy"></i>
                             </button>
                         </div>
                     </div>
                 `;
-                grid.appendChild(card);
-            });
+            }).join('');
         }
 
-        function populatePlaygroundOptions() {
-            const select = document.getElementById('playBadgeSelect');
-            if (!select) return;
-            select.innerHTML = '';
-            allBadges.forEach(b => {
-                const opt = document.createElement('option');
-                opt.value = b.slug || b.id;
-                opt.textContent = b.name + ' (' + (b.rarity || 'Badge') + ')';
-                select.appendChild(opt);
+        // Apply filters & search
+        function applyFilters() {
+            const q = document.getElementById('searchInput').value.toLowerCase().trim();
+            const cat = document.getElementById('catSelect').value;
+            const patch = document.getElementById('patchSelect').value;
+            const rarity = document.getElementById('raritySelect').value;
+
+            const filtered = itemsData.filter(item => {
+                // Search match
+                const matchQuery = !q || 
+                    item.name.toLowerCase().includes(q) || 
+                    item.id.toLowerCase().includes(q) || 
+                    item.slug.toLowerCase().includes(q) || 
+                    item.icon_id.toLowerCase().includes(q) || 
+                    item.category.toLowerCase().includes(q);
+
+                // Cat match
+                const matchCat = (cat === 'all') || (item.category_slug === cat);
+
+                // Patch match
+                const matchPatch = (patch === 'all') || (item.patch_slug === patch);
+
+                // Rarity match
+                const matchRarity = (rarity === 'all') || (item.rarity.toUpperCase() === rarity.toUpperCase());
+
+                return matchQuery && matchCat && matchPatch && matchRarity;
             });
+
+            renderCards(filtered);
+            document.getElementById('itemCountDisplay').textContent = `${filtered.length} items available`;
         }
 
-        function updatePlayground() {
-            const selBadge = document.getElementById('playBadgeSelect').value;
-            const pos = document.getElementById('playPositionSelect').value;
-            const size = document.getElementById('playSizeSlider').value;
-            const speed = document.getElementById('playSpeedSlider').value;
-            const shape = document.getElementById('playShapeSelect').value;
+        // Open Modal matching Image 4
+        function openItemModal(itemId) {
+            const item = itemsData.find(i => i.id === itemId || i.slug === itemId);
+            if (!item) return;
 
-            document.getElementById('playSizeVal').textContent = size + 'px';
-            document.getElementById('playSpeedVal').textContent = speed + 's';
+            currentItem = item;
 
-            // Update Avatar Frame
-            const avatarImg = document.getElementById('playAvatarImg');
-            avatarImg.className = 'w-full h-full object-cover ' + shape + ' border-2 border-yellow-400/80 shadow-md';
+            // Update URL without reload for direct sharing
+            const newUrl = window.location.pathname + '?item=' + item.id;
+            window.history.pushState({ itemId: item.id }, '', newUrl);
 
-            // Clear previous slots
-            const slotAvatar = document.getElementById('playBadgeSlot');
-            const slotInline = document.getElementById('playInlineBadgeSlot');
-            slotAvatar.innerHTML = '';
-            slotInline.innerHTML = '';
+            // Populate fields
+            document.getElementById('modalItemName').textContent = item.name;
+            document.getElementById('modalItemId').textContent = item.id;
+            document.getElementById('modalIconId').textContent = item.icon_id;
+            document.getElementById('modalRarity').textContent = item.rarity;
+            document.getElementById('modalCategory').textContent = item.category;
+            document.getElementById('modalPatch').textContent = item.patch || 'OB55';
+            document.getElementById('modalDescription').textContent = item.description || 'Exclusive Free Fire verification badge asset.';
 
-            const badgeCode = FFBadges.render(selBadge, {
-                size: parseInt(size),
-                position: pos,
-                speed: speed + 's'
-            });
+            document.getElementById('modalPhpCall').textContent = item.fn_call || '';
+            document.getElementById('modalCdnUrl').textContent = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
 
-            if (pos === 'inline') {
-                slotInline.innerHTML = badgeCode;
-            } else {
-                slotAvatar.innerHTML = badgeCode;
+            // Render Preview
+            const previewContainer = document.getElementById('modalItemPreview');
+            const fileUrl = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
+            const localUrl = item.file ? 'badges/' + item.file : '';
+
+            if (item.type === 'image' && item.file) {
+                previewContainer.innerHTML = `
+                    <span class="ff-shape-badge" style="width:64px;height:64px;filter:drop-shadow(0 0 10px ${item.glow_color || 'rgba(255,215,0,0.8)'});">
+                        <img src="${localUrl}" onerror="this.src='${fileUrl}'" alt="${item.name}" style="width:100%;height:100%;object-fit:contain;display:block;">
+                        <span style="position:absolute;inset:0;pointer-events:none;overflow:hidden;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                            <span style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.2) 44%,rgba(255,255,255,0.95) 50%,rgba(255,255,255,0.2) 56%,transparent 65%);animation:ff_shape_sweep 2.6s infinite linear;mix-blend-mode:screen;display:block;"></span>
+                        </span>
+                    </span>
+                `;
+            } else if (item.type === 'svg_code') {
+                previewContainer.innerHTML = `<div style="width:54px;height:54px;display:flex;align-items:center;justify-content:center;">${item.svg_code}</div>`;
+            } else if (item.type === 'text_code') {
+                previewContainer.innerHTML = `<div class="scale-150">${item.text_code}</div>`;
             }
 
-            // Update snippet
-            document.getElementById('playCodeSnippet').value = badgeCode;
+            // Show modal
+            const modal = document.getElementById('itemModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
         }
 
-        function copyPlaygroundCode() {
-            const code = document.getElementById('playCodeSnippet').value;
-            copySnippet(code);
+        // Close Modal
+        function closeItemModal() {
+            const modal = document.getElementById('itemModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+            currentItem = null;
+
+            // Restore base URL without query parameter
+            window.history.pushState({}, '', window.location.pathname);
         }
 
-        function copyBadgeSnippet(slug) {
-            const code = FFBadges.render(slug, { size: 34, position: 'inline' });
-            copySnippet(code);
+        // Copy Modal Item ID
+        function copyModalId() {
+            if (currentItem) {
+                copyText(currentItem.id, `Item ID #${currentItem.id} copied!`);
+            }
         }
 
-        function copySnippet(text, btn = null) {
+        // Share Link functionality (Image 4 Share Link)
+        function shareCurrentItem() {
+            if (!currentItem) return;
+            const shareUrl = window.location.origin + window.location.pathname + '?item=' + currentItem.id;
+            
+            const btn = document.getElementById('shareLinkBtn');
+            const originalHtml = btn.innerHTML;
+            
+            copyText(shareUrl, 'Share link copied to clipboard!');
+            btn.innerHTML = `<i class="fas fa-check text-sm"></i> <span>Link Copied!</span>`;
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+            }, 2000);
+        }
+
+        // Generic Copy Text Helper
+        function copyText(text, successMsg = 'Copied!') {
+            if (!navigator.clipboard) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast(successMsg);
+                return;
+            }
+
             navigator.clipboard.writeText(text).then(() => {
-                showToast('Copied to clipboard!');
+                showToast(successMsg);
+            }).catch(err => {
+                console.error('Failed to copy', err);
             });
         }
 
+        // Toast Helper
         function showToast(msg) {
-            const t = document.getElementById('toast');
-            document.getElementById('toastMsg').textContent = msg;
-            t.classList.remove('translate-y-20', 'opacity-0');
+            const toast = document.getElementById('appToast');
+            document.getElementById('appToastMsg').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => {
-                t.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.add('translate-y-20', 'opacity-0');
             }, 2200);
         }
+
+        // Toggle Dev Integration
+        function toggleDevInfo() {
+            const block = document.getElementById('devInfoBlock');
+            const icon = document.getElementById('devInfoIcon');
+            if (block.classList.contains('hidden')) {
+                block.classList.remove('hidden');
+                icon.classList.add('rotate-180');
+            } else {
+                block.classList.add('hidden');
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        // Keyboard ESC & Outside click close
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeItemModal();
+        });
+
+        document.getElementById('itemModal').addEventListener('click', (e) => {
+            if (e.target.id === 'itemModal') closeItemModal();
+        });
+
+        // Initialize on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCards(itemsData);
+
+            // Handle URL Query parameter ?item=120000000080
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialId = urlParams.get('item') || urlParams.get('id') || urlParams.get('badge');
+            if (initialId) {
+                openItemModal(initialId);
+            }
+        });
     </script>
+
 </body>
 </html>

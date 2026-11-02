@@ -1,0 +1,31 @@
+{
+    "status": "success",
+    "item": {
+        "id": "120000000580",
+        "slug": "emerging-streamer",
+        "icon_id": "Icon_FF_KOL02_Emerging_Streamer",
+        "name": "FF Emerging Creator",
+        "title": "Rising Streamer & Tier-2 Partner Badge",
+        "rarity": "EPIC",
+        "rarity_color": "#10B981",
+        "rarity_class": "epic",
+        "category": "Rising Creators",
+        "category_slug": "creator",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "FF_UI_Badge_KOL02.png",
+        "glow_color": "rgba(16, 185, 129, 0.85)",
+        "hex_glow": "#10B981",
+        "priority": 80000,
+        "default_size": 34,
+        "type": "image",
+        "description": "Emerald lightning badge for verified up-and-coming gaming streamers and content creators.",
+        "fn_call": "generate_ff_badge_html('FF_UI_Badge_KOL02.png', 'FF Emerging Creator', 'rgba(16, 185, 129, 0.85)', 'top-right', '34px');",
+        "cdn_urls": {
+            "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL02.png",
+            "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL02.png",
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL02.png"
+        },
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL02.png"
+    }
+}

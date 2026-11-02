@@ -1,0 +1,28 @@
+{
+    "status": "success",
+    "item": {
+        "id": "120000001080",
+        "slug": "legendary-diamond",
+        "icon_id": "Icon_FF_Legendary_MysticDiamond",
+        "name": "Legendary Mystic Diamond",
+        "title": "Mystic Purple Aura Diamond",
+        "rarity": "MYTHIC",
+        "rarity_color": "#8B5CF6",
+        "rarity_class": "mythic",
+        "category": "Exclusive Tier",
+        "category_slug": "exclusive",
+        "patch": "OB55",
+        "patch_slug": "ob55",
+        "file": "",
+        "glow_color": "rgba(168, 85, 247, 0.95)",
+        "hex_glow": "#8E2DE2",
+        "priority": 95,
+        "default_size": 24,
+        "type": "svg_code",
+        "svg_code": "<svg viewBox=\"0 0 24 24\" style=\"width:100%;height:100%;animation:glow_legend 2.5s infinite ease-in-out;\"><defs><linearGradient id=\"leg_grad\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#8e2de2\"/><stop offset=\"1\" stop-color=\"#4a00e0\"/></linearGradient></defs><path fill=\"url(#leg_grad)\" d=\"M12 .5L4.5 9l7.5 14.5L19.5 9L12 .5zm0 2.31L17.5 9H6.5L12 2.81z\"/></svg>",
+        "description": "Prismatic diamond with rotating gradient and purple cosmic aura reserved for legendary performers.",
+        "fn_call": "render_verified_badge([$badge], $settings, 3, 'header');",
+        "cdn_urls": [],
+        "direct_url": ""
+    }
+}
