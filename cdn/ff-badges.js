@@ -1,7 +1,6 @@
 /**
- * Free Fire Badges & V-Badges Master Client SDK & Web Component v3.0.0
- * Ultra-fast CDN delivery, interactive Web Component, Prime System (Lvl 1-8), and instant DOM injection.
- * Supports 12...80 IDs and Free Fire Items Explorer
+ * Free Fire Badges & V-Badges Master Client SDK & Web Component v3.2.0
+ * Ultra-fast CDN delivery, interactive Web Component, Authentic Prime System (Lvl 1-8 VFX).
  * (c) Free Fire Badges CDN Project - MIT License
  */
 (function(window, document) {
@@ -18,7 +17,6 @@
     let activeCDN = 'jsdelivr';
     let customBaseUrl = '';
 
-    // Master Registry of Free Fire Badges & Items (Indexed by ID and Slug)
     const BADGES_DATABASE = {
     "prime-level-1": {
         "id": "120000010180",
@@ -1108,9 +1106,8 @@
     }
 };
 
-    // Public SDK API
     const FFBadges = {
-        version: '3.0.0',
+        version: '3.2.0',
 
         setRepo: function(repo) {
             activeRepo = repo;
@@ -1190,12 +1187,18 @@
                 posStyle = 'position:absolute;bottom:-4px;left:-4px;z-index:25;';
             }
 
-            // Prime System Badge Render (Authentic Free Fire VFX)
+            // Authentic Free Fire Prime System Renderer
             if (b.type === 'prime_image' || b.prime_level) {
                 const lvl = b.prime_level || 1;
                 const imgUrl = this.getImageUrl(b.file);
                 const hasStream = (lvl === 8);
                 const hasGlint = (lvl >= 7);
+                const hasSparks = (lvl >= 6);
+
+                let sparksHtml = '';
+                if (hasSparks) {
+                    sparksHtml = '<div class="ff-prime-sparks-layer"><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span></div>';
+                }
 
                 return '<div class="ff-prime-badge-wrap ff-prime-lvl-' + lvl + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';user-select:none;" title="' + b.title + '">
 ' +
@@ -1207,6 +1210,7 @@
 ' +
                        (hasGlint ? '  <div class="ff-gem-glint"></div>
 ' : '') +
+                       sparksHtml +
                        '</div>';
             }
 
@@ -1248,35 +1252,24 @@
         }
     };
 
-    // Web Component Registration <ff-badge>
     if ('customElements' in window && !customElements.get('ff-badge')) {
         class FFBadgeElement extends HTMLElement {
             static get observedAttributes() {
                 return ['name', 'id', 'size', 'position', 'speed'];
             }
-
-            connectedCallback() {
-                this.renderBadge();
-            }
-
-            attributeChangedCallback() {
-                this.renderBadge();
-            }
-
+            connectedCallback() { this.renderBadge(); }
+            attributeChangedCallback() { this.renderBadge(); }
             renderBadge() {
                 const key = this.getAttribute('id') || this.getAttribute('name') || '120000000080';
                 const size = this.getAttribute('size');
                 const position = this.getAttribute('position') || 'inline';
                 const speed = this.getAttribute('speed');
-
                 this.innerHTML = FFBadges.render(key, { size, position, speed });
             }
         }
-
         customElements.define('ff-badge', FFBadgeElement);
     }
 
-    // Expose to global scope
     window.FFBadges = FFBadges;
 
 })(typeof window !== 'undefined' ? window : this, typeof document !== 'undefined' ? document : {});

@@ -1,6 +1,7 @@
 <?php
 /**
  * Master Generator for Turky Hub: index.php, index.html, admin.php, and cdn/ff-badges.js
+ * Enhanced with 1:1 In-Game Free Fire Prime Level VFX
  */
 
 $repo = 'tamimhasan1280/ff-bages1280';
@@ -33,7 +34,6 @@ foreach ($badges as $b) {
     if (isset($b['svg_code'])) $entry['svgCode'] = $b['svg_code'];
     if (isset($b['text_code'])) $entry['textCode'] = $b['text_code'];
 
-    // Map by both slug and 12...80 ID
     $db_entries[$b['slug']] = $entry;
     $db_entries[$b['id']] = $entry;
 }
@@ -42,9 +42,8 @@ $db_json = json_encode($db_entries, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
 $js_code = <<<JSEOF
 /**
- * Free Fire Badges & V-Badges Master Client SDK & Web Component v3.0.0
- * Ultra-fast CDN delivery, interactive Web Component, Prime System (Lvl 1-8), and instant DOM injection.
- * Supports 12...80 IDs and Free Fire Items Explorer
+ * Free Fire Badges & V-Badges Master Client SDK & Web Component v3.2.0
+ * Ultra-fast CDN delivery, interactive Web Component, Authentic Prime System (Lvl 1-8 VFX).
  * (c) Free Fire Badges CDN Project - MIT License
  */
 (function(window, document) {
@@ -61,12 +60,10 @@ $js_code = <<<JSEOF
     let activeCDN = 'jsdelivr';
     let customBaseUrl = '';
 
-    // Master Registry of Free Fire Badges & Items (Indexed by ID and Slug)
     const BADGES_DATABASE = {$db_json};
 
-    // Public SDK API
     const FFBadges = {
-        version: '3.0.0',
+        version: '3.2.0',
 
         setRepo: function(repo) {
             activeRepo = repo;
@@ -146,18 +143,25 @@ $js_code = <<<JSEOF
                 posStyle = 'position:absolute;bottom:-4px;left:-4px;z-index:25;';
             }
 
-            // Prime System Badge Render (Authentic Free Fire VFX)
+            // Authentic Free Fire Prime System Renderer
             if (b.type === 'prime_image' || b.prime_level) {
                 const lvl = b.prime_level || 1;
                 const imgUrl = this.getImageUrl(b.file);
                 const hasStream = (lvl === 8);
                 const hasGlint = (lvl >= 7);
+                const hasSparks = (lvl >= 6);
+
+                let sparksHtml = '';
+                if (hasSparks) {
+                    sparksHtml = '<div class="ff-prime-sparks-layer"><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span></div>';
+                }
 
                 return '<div class="ff-prime-badge-wrap ff-prime-lvl-' + lvl + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';user-select:none;" title="' + b.title + '">\n' +
                        '  <div class="ff-core-aura"></div>\n' +
                        (hasStream ? '  <div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>\n' : '') +
                        '  <img src="' + imgUrl + '" class="ff-badge-img" alt="' + b.name + '">\n' +
                        (hasGlint ? '  <div class="ff-gem-glint"></div>\n' : '') +
+                       sparksHtml +
                        '</div>';
             }
 
@@ -194,35 +198,24 @@ $js_code = <<<JSEOF
         }
     };
 
-    // Web Component Registration <ff-badge>
     if ('customElements' in window && !customElements.get('ff-badge')) {
         class FFBadgeElement extends HTMLElement {
             static get observedAttributes() {
                 return ['name', 'id', 'size', 'position', 'speed'];
             }
-
-            connectedCallback() {
-                this.renderBadge();
-            }
-
-            attributeChangedCallback() {
-                this.renderBadge();
-            }
-
+            connectedCallback() { this.renderBadge(); }
+            attributeChangedCallback() { this.renderBadge(); }
             renderBadge() {
                 const key = this.getAttribute('id') || this.getAttribute('name') || '120000000080';
                 const size = this.getAttribute('size');
                 const position = this.getAttribute('position') || 'inline';
                 const speed = this.getAttribute('speed');
-
                 this.innerHTML = FFBadges.render(key, { size, position, speed });
             }
         }
-
         customElements.define('ff-badge', FFBadgeElement);
     }
 
-    // Expose to global scope
     window.FFBadges = FFBadges;
 
 })(typeof window !== 'undefined' ? window : this, typeof document !== 'undefined' ? document : {});
@@ -230,7 +223,7 @@ JSEOF;
 
 file_put_contents(__DIR__ . '/cdn/ff-badges.js', $js_code);
 
-// 2. BUILD index.php
+// 2. BUILD index.php with Prime VFX, Canvas Particles and In-game Showcase
 $php_content = <<<'PHPEOF'
 <?php
 /**
@@ -259,7 +252,8 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Orbitron, Rajdhani, Fira Code, Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Rajdhani:wght@600;700&family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Free Fire Prime Badges CSS (100% Transparent, No Background) -->
+    
+    <!-- Authentic Free Fire Prime Badges CSS (100% Transparent, Ascending Beam, Gem Glint) -->
     <link rel="stylesheet" href="cdn/prime-badge.css">
 
     <style>
@@ -273,7 +267,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
         .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
         .font-mono-code { font-family: 'Fira Code', monospace; }
 
-        /* Free Fire signature light sweep animation */
         @keyframes ff_shape_sweep {
             0% { transform: translate(-100%, -100%) rotate(45deg); }
             100% { transform: translate(100%, 100%) rotate(45deg); }
@@ -307,7 +300,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* Item Grid Card */
         .item-card {
             background: #0e1222;
             border: 1px solid #1f2544;
@@ -330,7 +322,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             position: relative;
         }
 
-        /* Modal Styles */
         .modal-box {
             background: #111428;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -350,7 +341,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 </head>
 <body class="min-h-screen flex flex-col selection:bg-rose-500 selection:text-white">
 
-    <!-- Top Navigation Bar (Matching Image 3) -->
+    <!-- Top Navigation Bar -->
     <header class="border-b border-[#1c2242] bg-[#0c0f20]/95 sticky top-0 z-40 backdrop-blur-md">
         <div class="max-w-[1720px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
             
@@ -370,14 +361,14 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
             <!-- Center Navigation Tabs -->
             <nav class="hidden md:flex items-center gap-1.5 bg-[#080a15] p-1 rounded-2xl border border-white/5">
-                <button type="button" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/20 flex items-center gap-2">
+                <button type="button" onclick="filterCategory('all')" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/20 flex items-center gap-2">
                     <i class="fas fa-book-bookmark text-xs"></i>
                     <span>Items Library</span>
                 </button>
-                <a href="#prime-system" onclick="document.getElementById('catSelect').value='prime'; applyFilters();" class="px-4 py-2 rounded-xl text-xs font-semibold text-yellow-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
+                <button type="button" onclick="filterCategory('prime')" class="px-4 py-2 rounded-xl text-xs font-semibold text-yellow-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
                     <i class="fas fa-shield-halved text-xs"></i>
                     <span>Prime Level (1-8)</span>
-                </a>
+                </button>
                 <a href="#player-inspector" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
                     <i class="fas fa-user-astronaut text-xs"></i>
                     <span>Player Inspector</span>
@@ -420,7 +411,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
     <!-- Main Content Area -->
     <main class="flex-1 max-w-[1720px] mx-auto px-4 sm:px-6 py-6 space-y-6 w-full">
 
-        <!-- Banner / Explorer Header (Matching Image 3) -->
+        <!-- Banner / Explorer Header -->
         <section class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#0d1022] p-5 sm:p-6 rounded-2xl border border-[#1d2342] relative overflow-hidden">
             <div class="flex items-center gap-3.5 relative z-10">
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-rose-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-inner">
@@ -448,7 +439,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             </div>
         </section>
 
-        <!-- Search & Filter Controls (Matching Image 3) -->
+        <!-- Search & Filter Controls -->
         <section class="bg-[#0e1224] p-4 sm:p-5 rounded-2xl border border-[#1e2444] space-y-4">
             
             <!-- Full Width Search Input -->
@@ -514,9 +505,8 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
         </section>
 
-        <!-- Grid Cards Section (Matching Image 3) -->
+        <!-- Grid Cards Section -->
         <section id="itemsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-3 sm:gap-4">
-            <!-- Cards populated dynamically via JavaScript for superfast filtering and click-to-modal -->
         </section>
 
     </main>
@@ -530,7 +520,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <i class="fas fa-xmark"></i>
             </button>
 
-            <!-- Preview Stage (Transparent, No Background) -->
+            <!-- Preview Stage (100% Transparent, No Background) -->
             <div class="w-48 h-48 mx-auto rounded-2xl bg-[#090b18] border border-white/5 relative flex items-center justify-center overflow-hidden shadow-inner">
                 <div id="modalAura" class="absolute inset-0 bg-gradient-to-tr from-purple-600/15 via-transparent to-pink-500/15 pointer-events-none"></div>
                 <div id="modalItemPreview" class="relative z-10 flex items-center justify-center w-full h-full p-2">
@@ -589,7 +579,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     </div>
                 </div>
 
-                <!-- Developer Logic accordion (PHP function call & CDN url) -->
+                <!-- Developer Logic accordion -->
                 <div class="pt-1">
                     <button type="button" onclick="toggleDevInfo()" class="w-full text-left text-[11px] font-mono text-amber-400/90 hover:text-amber-300 flex items-center justify-between px-2 py-1">
                         <span><i class="fas fa-code mr-1"></i> Developer Integration & Logic</span>
@@ -615,7 +605,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
             </div>
 
-            <!-- Action Buttons: STRICTLY NO DOWNLOAD BUTTON! Only Share Link and Close (Matching Image 4) -->
+            <!-- Action Buttons: STRICTLY NO DOWNLOAD BUTTON! Only Share Link and Close -->
             <div class="flex items-center gap-3 mt-6 pt-2">
                 <button type="button" id="shareLinkBtn" onclick="shareCurrentItem()" class="flex-1 bg-gradient-to-r from-[#ea580c] to-[#f97316] hover:from-[#c2410c] hover:to-[#ea580c] text-white font-bold py-3 px-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 transition">
                     <i class="fas fa-share-nodes text-sm"></i>
@@ -641,9 +631,13 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
         const REPO_NAME = "tamimhasan1280/ff-bages1280";
         const CDN_BASE = "https://cdn.jsdelivr.net/gh/" + REPO_NAME + "@main/badges/";
         
-        // Dataset loaded from JSON
         const itemsData = <?php echo json_encode($master_badges, JSON_UNESCAPED_SLASHES); ?>;
         let currentItem = null;
+
+        function filterCategory(cat) {
+            document.getElementById('catSelect').value = cat;
+            applyFilters();
+        }
 
         // Render card HTML
         function renderCards(list) {
@@ -667,12 +661,15 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     const lvl = item.prime_level || 1;
                     const hasStream = (lvl === 8);
                     const hasGlint = (lvl >= 7);
+                    const hasSparks = (lvl >= 6);
+
                     previewHtml = `
-                        <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:58px;height:58px;">
+                        <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:64px;height:64px;">
                             <div class="ff-core-aura"></div>
                             ${hasStream ? '<div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>' : ''}
                             <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                             ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
+                            ${hasSparks ? '<div class="ff-prime-sparks-layer"><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span></div>' : ''}
                         </div>
                     `;
                 } else if (item.type === 'image' && item.file) {
@@ -710,7 +707,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                             <span class="text-[10px] text-gray-500 font-mono font-medium">${item.patch || 'OB55'}</span>
                         </div>
 
-                        <!-- Center Preview Box (No Background, Pure Transparent) -->
+                        <!-- Center Preview Box (No Background, 100% Transparent) -->
                         <div class="item-preview-box h-28 sm:h-32 flex items-center justify-center p-2 mb-3 rounded-xl border border-white/5 relative overflow-hidden group-hover:border-purple-500/30 transition">
                             <div class="scale-100 group-hover:scale-115 transition-transform duration-300 flex items-center justify-center">
                                 ${previewHtml}
@@ -774,11 +771,9 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
             currentItem = item;
 
-            // Update URL without reload for direct sharing
             const newUrl = window.location.pathname + '?item=' + item.id;
             window.history.pushState({ itemId: item.id }, '', newUrl);
 
-            // Populate fields
             document.getElementById('modalItemName').textContent = item.name;
             document.getElementById('modalItemId').textContent = item.id;
             document.getElementById('modalIconId').textContent = item.icon_id;
@@ -790,7 +785,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             document.getElementById('modalPhpCall').textContent = item.fn_call || '';
             document.getElementById('modalCdnUrl').textContent = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
 
-            // Render Preview
+            // Render Modal Preview (Authentic High-Res VFX)
             const previewContainer = document.getElementById('modalItemPreview');
             const fileUrl = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
             const localUrl = item.file ? 'badges/' + item.file : '';
@@ -799,12 +794,15 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 const lvl = item.prime_level || 1;
                 const hasStream = (lvl === 8);
                 const hasGlint = (lvl >= 7);
+                const hasSparks = (lvl >= 6);
+
                 previewContainer.innerHTML = `
-                    <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl} scale-125" style="width:90px;height:90px;">
+                    <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl} scale-125" style="width:110px;height:110px;">
                         <div class="ff-core-aura"></div>
                         ${hasStream ? '<div class="ff-energy-stream"><div class="ff-energy-beam"></div></div>' : ''}
                         <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                         ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
+                        ${hasSparks ? '<div class="ff-prime-sparks-layer"><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span><span class="ff-prime-spark-dot"></span></div>' : ''}
                     </div>
                 `;
             } else if (item.type === 'image' && item.file) {
@@ -822,40 +820,32 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 previewContainer.innerHTML = `<div class="scale-150">${item.text_code}</div>`;
             }
 
-            // Show modal
             const modal = document.getElementById('itemModal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
             document.body.style.overflow = 'hidden';
         }
 
-        // Close Modal
         function closeItemModal() {
             const modal = document.getElementById('itemModal');
             modal.classList.add('hidden');
             modal.classList.remove('flex');
             document.body.style.overflow = '';
             currentItem = null;
-
-            // Restore base URL without query parameter
             window.history.pushState({}, '', window.location.pathname);
         }
 
-        // Copy Modal Item ID
         function copyModalId() {
             if (currentItem) {
                 copyText(currentItem.id, `Item ID #${currentItem.id} copied!`);
             }
         }
 
-        // Share Link functionality (Image 4 Share Link)
         function shareCurrentItem() {
             if (!currentItem) return;
             const shareUrl = window.location.origin + window.location.pathname + '?item=' + currentItem.id;
-            
             const btn = document.getElementById('shareLinkBtn');
             const originalHtml = btn.innerHTML;
-            
             copyText(shareUrl, 'Share link copied to clipboard!');
             btn.innerHTML = `<i class="fas fa-check text-sm"></i> <span>Link Copied!</span>`;
             setTimeout(() => {
@@ -863,7 +853,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             }, 2000);
         }
 
-        // Generic Copy Text Helper
         function copyText(text, successMsg = 'Copied!') {
             if (!navigator.clipboard) {
                 const ta = document.createElement('textarea');
@@ -875,7 +864,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 showToast(successMsg);
                 return;
             }
-
             navigator.clipboard.writeText(text).then(() => {
                 showToast(successMsg);
             }).catch(err => {
@@ -883,7 +871,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             });
         }
 
-        // Toast Helper
         function showToast(msg) {
             const toast = document.getElementById('appToast');
             document.getElementById('appToastMsg').textContent = msg;
@@ -893,7 +880,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             }, 2200);
         }
 
-        // Toggle Dev Integration
         function toggleDevInfo() {
             const block = document.getElementById('devInfoBlock');
             const icon = document.getElementById('devInfoIcon');
@@ -906,7 +892,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             }
         }
 
-        // Keyboard ESC & Outside click close
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeItemModal();
         });
@@ -915,11 +900,8 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             if (e.target.id === 'itemModal') closeItemModal();
         });
 
-        // Initialize on Load
         document.addEventListener('DOMContentLoaded', () => {
             renderCards(itemsData);
-
-            // Handle URL Query parameter ?item=120000000080
             const urlParams = new URLSearchParams(window.location.search);
             const initialId = urlParams.get('item') || urlParams.get('id') || urlParams.get('badge');
             if (initialId) {
@@ -944,4 +926,4 @@ $html_content = str_replace(
 $html_content = preg_replace('/<\?php.*?\?>/s', '', $html_content);
 file_put_contents(__DIR__ . '/index.html', $html_content);
 
-echo "index.php, index.html, and cdn/ff-badges.js updated successfully!\n";
+echo "index.php, index.html, and cdn/ff-badges.js re-generated with 1:1 Free Fire Prime VFX!\n";
