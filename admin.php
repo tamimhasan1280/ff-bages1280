@@ -7,7 +7,7 @@
 
 session_start();
 
-$ADMIN_USER = 'tamim1280';
+$ADMIN_USERS = ['tamimhasan1281@gmail.com', 'tamim1280'];
 $ADMIN_PASS = '123@#TAmi';
 $REPO_NAME = 'tamimhasan1280/ff-bages1280';
 $CDN_BASE = "https://cdn.jsdelivr.net/gh/{$REPO_NAME}@main/badges/";
@@ -27,7 +27,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_action'])) {
     $u = trim($_POST['username'] ?? '');
     $p = trim($_POST['password'] ?? '');
 
-    if ($u === $ADMIN_USER && $p === $ADMIN_PASS) {
+    $u_clean = strtolower(trim($u));
+    $is_authorized = false;
+    foreach ($ADMIN_USERS as $au) {
+        if (strtolower($au) === $u_clean) {
+            $is_authorized = true;
+            break;
+        }
+    }
+
+    if ($is_authorized && $p === $ADMIN_PASS) {
         $_SESSION['ff_admin_logged'] = true;
         header('Location: admin.php');
         exit;
@@ -337,10 +346,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <input type="hidden" name="login_action" value="1">
                 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Username</label>
+                    <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Email or Username</label>
                     <div class="relative">
                         <i class="fas fa-user absolute left-3.5 top-3 text-gray-500 text-xs"></i>
-                        <input type="text" name="username" required placeholder="Enter username..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                        <input type="text" name="username" required placeholder="tamimhasan1281@gmail.com" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
                     </div>
                 </div>
 

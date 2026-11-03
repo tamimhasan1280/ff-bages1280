@@ -114,6 +114,96 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 </head>
 <body class="min-h-screen flex flex-col selection:bg-rose-500 selection:text-white">
 
+    <!-- SECURE AUTHENTICATION GATE (tamimhasan1281@gmail.com) -->
+    <div id="authGateModal" class="fixed inset-0 z-50 bg-[#070914] flex items-center justify-center p-4 min-h-screen" style="display:flex;">
+        <!-- Ambient Glow Effects -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative w-full max-w-md bg-[#0c0f22]/95 border border-[#23294c] hover:border-amber-500/40 rounded-3xl p-7 sm:p-8 shadow-2xl backdrop-blur-xl transition duration-300">
+            
+            <!-- Top Badge Logo Preview with Live VFX -->
+            <div class="flex flex-col items-center text-center mb-6">
+                <div class="relative w-20 h-20 mb-3 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-amber-400/20 rounded-full blur-xl animate-pulse"></div>
+                    <div class="ff-prime-badge-wrap ff-prime-lvl-8" style="width:68px;height:68px;position:relative;background:transparent !important;filter:drop-shadow(0 0 10px rgba(255,215,0,0.8));">
+                        <div class="ff-prime-stars-layer star-theme-gold">
+                            <svg class="ff-pinpoint-star star-pos-1" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="#FFFCE0"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>
+                            <svg class="ff-pinpoint-star star-pos-3" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="#FFFCE0"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>
+                            <svg class="ff-pinpoint-star star-pos-5" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="#FFFCE0"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>
+                            <svg class="ff-pinpoint-star star-pos-7" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="#FFFCE0"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>
+                        </div>
+                        <img src="badges/ff_ui_prime_icon_08.png" onerror="this.src='https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_08.png'" class="ff-badge-img" alt="Turky Hub Emblem">
+                        <span class="ff-badge-shine sweep-dir-diag_bl_tr" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('badges/ff_ui_prime_icon_08.png');mask-image:url('badges/ff_ui_prime_icon_08.png');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                            <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:2.2s;mix-blend-mode:screen;display:block;"></span>
+                        </span>
+                        <div class="ff-gem-glint"></div>
+                    </div>
+                </div>
+                
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-[10px] uppercase font-bold tracking-wider mb-2">
+                    <i class="fas fa-shield-halved text-[9px]"></i>
+                    <span>Protected Access Gate</span>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-black font-orbitron text-white tracking-wide">TURKY HUB</h2>
+                <p class="text-xs text-gray-400 mt-1 max-w-xs">Enter your authorized email and password to unlock the badges explorer, CDN links, and API data.</p>
+            </div>
+
+            <!-- Error Banner -->
+            <div id="gateErrorMsg" class="hidden mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+                <i class="fas fa-circle-exclamation shrink-0 text-sm"></i>
+                <span id="gateErrorText">Invalid email or password! Please check your credentials.</span>
+            </div>
+
+            <!-- Authentication Form -->
+            <form id="authGateForm" onsubmit="handleGateLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono">
+                        Authorized Email
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
+                        <input type="email" id="gateEmail" required autocomplete="email" placeholder="tamimhasan1281@gmail.com" class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono">
+                        Access Password
+                    </label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
+                        <input type="password" id="gatePassword" required autocomplete="current-password" placeholder="••••••••••••" class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-10 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
+                        <button type="button" onclick="toggleGatePassVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition">
+                            <i id="gatePassEye" class="fas fa-eye text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs pt-1">
+                    <label class="flex items-center gap-2 text-gray-400 cursor-pointer select-none">
+                        <input type="checkbox" id="gateRemember" checked class="w-3.5 h-3.5 rounded bg-[#080a18] border-[#23294c] text-amber-500 focus:ring-0 focus:ring-offset-0 cursor-pointer">
+                        <span>Remember this device</span>
+                    </label>
+                    <span class="text-[11px] text-gray-500 font-mono">OB55 Engine</span>
+                </div>
+
+                <button type="submit" id="gateSubmitBtn" class="w-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-black font-extrabold py-3.5 px-6 rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition transform active:scale-[0.98] uppercase tracking-wider text-xs flex items-center justify-center gap-2 cursor-pointer font-orbitron">
+                    <span>Authenticate & Unlock Hub</span>
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+            </form>
+
+            <div class="mt-5 text-center">
+                <span class="text-[11px] text-gray-500 font-mono">TURKY HUB Secure Verification System</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER (Protected: only visible when authenticated) -->
+    <div id="mainAppContainer" class="hidden min-h-screen flex flex-col">
+
+
     <!-- Top Navigation Bar -->
     <header class="border-b border-[#1c2242] bg-[#0c0f20]/95 sticky top-0 z-40 backdrop-blur-md">
         <div class="max-w-[1720px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
@@ -164,6 +254,17 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
                         <i class="fab fa-telegram text-xs"></i>
                     </a>
+                </div>
+
+
+                <!-- Auth User & Logout -->
+                <div id="authUserPill" class="flex items-center gap-2 bg-[#12162b] px-3 py-1.5 rounded-2xl border border-white/10 text-xs">
+                    <i class="fas fa-user-check text-emerald-400"></i>
+                    <span id="authEmailDisplay" class="text-gray-300 font-mono text-[11px] hidden sm:inline">tamimhasan1281@gmail.com</span>
+                    <button type="button" onclick="logoutExplorer()" class="text-rose-400 hover:text-rose-300 ml-1.5 px-1 py-0.5 rounded transition text-xs flex items-center gap-1 font-bold" title="Sign Out">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="text-[10px]">Logout</span>
+                    </button>
                 </div>
 
                 <!-- Admin Profile Pill -->
@@ -367,11 +468,29 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                             </div>
                         </div>
                         <div class="space-y-1">
-                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">Global CDN Image URL:</span>
+                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">Direct Host / Vercel Image URL:</span>
+                            <div class="flex items-center gap-1.5">
+                                <code id="modalDirectUrl" class="text-[10px] font-mono text-emerald-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
+                                <button type="button" onclick="copyText(document.getElementById('modalDirectUrl').textContent, 'Direct Image URL copied!')" class="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-[10px] shrink-0 hover:bg-emerald-500/30">Copy</button>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">Global jsDelivr CDN URL:</span>
                             <div class="flex items-center gap-1.5">
                                 <code id="modalCdnUrl" class="text-[10px] font-mono text-cyan-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
                                 <button type="button" onclick="copyText(document.getElementById('modalCdnUrl').textContent, 'CDN URL copied!')" class="px-2 py-1 bg-cyan-500/20 text-cyan-300 rounded text-[10px] shrink-0 hover:bg-cyan-500/30">Copy</button>
                             </div>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">JSON API Endpoint:</span>
+                            <div class="flex items-center gap-1.5">
+                                <code id="modalApiUrl" class="text-[10px] font-mono text-purple-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
+                                <button type="button" onclick="copyText(document.getElementById('modalApiUrl').textContent, 'API URL copied!')" class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-[10px] shrink-0 hover:bg-purple-500/30">Copy</button>
+                            </div>
+                        </div>
+                        <div class="text-[9px] text-gray-400 bg-white/[0.02] p-2 rounded-lg border border-white/5 font-mono">
+                            <i class="fas fa-circle-info text-amber-400 mr-1"></i>
+                            <strong>Integration Note:</strong> External websites & apps do NOT require login or credentials to render these CDN badges.
                         </div>
                     </div>
                 </div>
@@ -594,7 +713,14 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             document.getElementById('modalDescription').textContent = item.description || 'Exclusive Free Fire verification badge asset.';
 
             document.getElementById('modalPhpCall').textContent = item.fn_call || '';
-            document.getElementById('modalCdnUrl').textContent = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
+            const hostBase = window.location.origin;
+            const itemDirect = item.file ? (hostBase + '/badges/' + item.file) : '';
+            const itemApi = hostBase + '/api/v1/badge/' + item.id + '.json';
+            const itemCdn = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
+            
+            if (document.getElementById('modalDirectUrl')) document.getElementById('modalDirectUrl').textContent = itemDirect;
+            if (document.getElementById('modalCdnUrl')) document.getElementById('modalCdnUrl').textContent = itemCdn;
+            if (document.getElementById('modalApiUrl')) document.getElementById('modalApiUrl').textContent = itemApi;
 
             // Render Modal Preview (Authentic High-Res VFX)
             const previewContainer = document.getElementById('modalItemPreview');
@@ -749,15 +875,100 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             if (e.target.id === 'itemModal') closeItemModal();
         });
 
-        document.addEventListener('DOMContentLoaded', () => {
+
+        // AUTHENTICATION SYSTEM (Credentials: tamimhasan1281@gmail.com / 123@#TAmi)
+        const AUTH_CONFIG = {
+            email: 'tamimhasan1281@gmail.com',
+            password: '123@#TAmi'
+        };
+
+        function checkAuthentication() {
+            return (sessionStorage.getItem('ff_hub_auth') === '1' || localStorage.getItem('ff_hub_auth') === '1');
+        }
+
+        function toggleGatePassVisibility() {
+            const input = document.getElementById('gatePassword');
+            const eye = document.getElementById('gatePassEye');
+            if (!input || !eye) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                eye.classList.remove('fa-eye');
+                eye.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                eye.classList.remove('fa-eye-slash');
+                eye.classList.add('fa-eye');
+            }
+        }
+
+        function handleGateLogin(e) {
+            e.preventDefault();
+            const emailInput = (document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
+            const passInput = document.getElementById('gatePassword')?.value || '';
+            const remember = document.getElementById('gateRemember')?.checked || false;
+            const errorBox = document.getElementById('gateErrorMsg');
+            const errorText = document.getElementById('gateErrorText');
+
+            if (emailInput === AUTH_CONFIG.email.toLowerCase() && passInput === AUTH_CONFIG.password) {
+                if (errorBox) errorBox.classList.add('hidden');
+                sessionStorage.setItem('ff_hub_auth', '1');
+                sessionStorage.setItem('ff_hub_email', emailInput);
+                if (remember) {
+                    localStorage.setItem('ff_hub_auth', '1');
+                    localStorage.setItem('ff_hub_email', emailInput);
+                }
+                unlockApp();
+                showToast('Access Granted! Welcome to TURKY HUB.');
+            } else {
+                if (errorBox) errorBox.classList.remove('hidden');
+                if (errorText) errorText.textContent = 'Invalid email or password! Please check your credentials.';
+                const passField = document.getElementById('gatePassword');
+                if (passField) {
+                    passField.value = '';
+                    passField.focus();
+                }
+            }
+        }
+
+        function unlockApp() {
+            const gate = document.getElementById('authGateModal');
+            const app = document.getElementById('mainAppContainer');
+            if (gate) gate.style.display = 'none';
+            if (app) app.classList.remove('hidden');
+
+            const email = sessionStorage.getItem('ff_hub_email') || localStorage.getItem('ff_hub_email') || AUTH_CONFIG.email;
+            const emailDisplay = document.getElementById('authEmailDisplay');
+            if (emailDisplay) emailDisplay.textContent = email;
+
+            // Render cards and check URL params
             renderCards(itemsData);
             const urlParams = new URLSearchParams(window.location.search);
             const initialId = urlParams.get('item') || urlParams.get('id') || urlParams.get('badge');
             if (initialId) {
                 openItemModal(initialId);
             }
+        }
+
+        function logoutExplorer() {
+            sessionStorage.removeItem('ff_hub_auth');
+            sessionStorage.removeItem('ff_hub_email');
+            localStorage.removeItem('ff_hub_auth');
+            localStorage.removeItem('ff_hub_email');
+            window.location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAuthentication()) {
+                unlockApp();
+            } else {
+                const gate = document.getElementById('authGateModal');
+                const app = document.getElementById('mainAppContainer');
+                if (gate) gate.style.display = 'flex';
+                if (app) app.classList.add('hidden');
+            }
         });
     </script>
 
+    </div>
 </body>
 </html>
