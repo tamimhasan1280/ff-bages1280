@@ -432,34 +432,31 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 let previewHtml = '';
                 if (isPrime) {
                     const lvl = item.prime_level || 1;
-                    const hasGlint = (lvl >= 7);
-                    const hasShine = (lvl >= 4);
-                    const hasStars = (lvl >= 4);
-                    const hasWingFlares = (lvl >= 4);
+                    const hasGlint = (item.has_gem_glint !== undefined) ? item.has_gem_glint : (lvl >= 7);
+                    const hasShine = (item.sweep_enabled !== undefined) ? item.sweep_enabled : (lvl >= 4);
+                    const sweepDir = item.sweep_direction || 'diag';
+                    const sweepClass = (sweepDir !== 'diag') ? ('sweep-dir-' + sweepDir) : '';
+                    const sweepSpd = item.sweep_speed || '2.6s';
 
-                    const wingFlaresHtml = hasWingFlares ? `
-                        <div class="ff-side-wing-flare left"></div>
-                        <div class="ff-side-wing-flare right"></div>
-                    ` : '';
+                    let density = item.star_density;
+                    if (density === undefined) {
+                        density = (lvl === 8 ? 16 : (lvl === 7 ? 12 : (lvl === 6 ? 8 : (lvl === 5 ? 6 : (lvl === 4 ? 4 : 0)))));
+                    }
+                    const allPositions = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8', 'star-pos-9', 'star-pos-10', 'star-pos-11', 'star-pos-12', 'star-pos-13', 'star-pos-14', 'star-pos-15', 'star-pos-16'];
+                    const starList = allPositions.slice(0, Math.min(density, 16));
+                    const starColor = (lvl === 4 || item.star_theme === 'cyan') ? '#00f0ff' : '#FFFCE0';
+                    const starThemeClass = (lvl === 4) ? 'star-theme-cyan' : (item.star_theme ? ('star-theme-' + item.star_theme) : '');
 
-                    let starList = [];
-                    if (lvl === 8) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8'];
-                    else if (lvl === 7) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-6', 'star-pos-7'];
-                    else if (lvl === 6) starList = ['star-pos-1', 'star-pos-2', 'star-pos-4', 'star-pos-5', 'star-pos-6'];
-                    else if (lvl === 5) starList = ['star-pos-1', 'star-pos-2', 'star-pos-6', 'star-pos-7'];
-                    else if (lvl === 4) starList = ['star-pos-1', 'star-pos-2'];
-
-                    const starsHtml = hasStars ? `<div class="ff-prime-stars-layer">${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L14.2 9.2 L24 12 L14.2 14.8 L12 24 L9.8 14.8 L0 12 L9.8 9.2 Z" fill="#FFF8B0"/><circle cx="12" cy="12" r="2.5" fill="#FFFFFF"/></svg>`).join('')}</div>` : '';
+                    const starsHtml = (density > 0) ? `<div class="ff-prime-stars-layer ${starThemeClass}">${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`).join('')}</div>` : '';
 
                     const shineHtml = hasShine ? `
-                        <span class="ff-badge-shine" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
-                            <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.22) 44%,rgba(255,255,255,0.98) 50%,rgba(255,255,255,0.22) 56%,transparent 65%);animation:ff_shape_sweep 2.6s infinite linear;mix-blend-mode:screen;display:block;"></span>
+                        <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                            <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:${sweepSpd};mix-blend-mode:screen;display:block;"></span>
                         </span>
                     ` : '';
 
                     previewHtml = `
                         <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:62px;height:62px;">
-                            ${wingFlaresHtml}
                             ${starsHtml}
                             <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                             ${shineHtml}
@@ -586,34 +583,31 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
             if (item.type === 'prime_image' || item.prime_level) {
                 const lvl = item.prime_level || 1;
-                const hasGlint = (lvl >= 7);
-                const hasShine = (lvl >= 4);
-                const hasStars = (lvl >= 4);
-                const hasWingFlares = (lvl >= 4);
+                const hasGlint = (item.has_gem_glint !== undefined) ? item.has_gem_glint : (lvl >= 7);
+                const hasShine = (item.sweep_enabled !== undefined) ? item.sweep_enabled : (lvl >= 4);
+                const sweepDir = item.sweep_direction || 'diag';
+                const sweepClass = (sweepDir !== 'diag') ? ('sweep-dir-' + sweepDir) : '';
+                const sweepSpd = item.sweep_speed || '2.6s';
 
-                const wingFlaresHtml = hasWingFlares ? `
-                    <div class="ff-side-wing-flare left"></div>
-                    <div class="ff-side-wing-flare right"></div>
-                ` : '';
+                let density = item.star_density;
+                if (density === undefined) {
+                    density = (lvl === 8 ? 16 : (lvl === 7 ? 12 : (lvl === 6 ? 8 : (lvl === 5 ? 6 : (lvl === 4 ? 4 : 0)))));
+                }
+                const allPositions = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8', 'star-pos-9', 'star-pos-10', 'star-pos-11', 'star-pos-12', 'star-pos-13', 'star-pos-14', 'star-pos-15', 'star-pos-16'];
+                const starList = allPositions.slice(0, Math.min(density, 16));
+                const starColor = (lvl === 4 || item.star_theme === 'cyan') ? '#00f0ff' : '#FFFCE0';
+                const starThemeClass = (lvl === 4) ? 'star-theme-cyan' : (item.star_theme ? ('star-theme-' + item.star_theme) : '');
 
-                let starList = [];
-                if (lvl === 8) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8'];
-                else if (lvl === 7) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-6', 'star-pos-7'];
-                else if (lvl === 6) starList = ['star-pos-1', 'star-pos-2', 'star-pos-4', 'star-pos-5', 'star-pos-6'];
-                else if (lvl === 5) starList = ['star-pos-1', 'star-pos-2', 'star-pos-6', 'star-pos-7'];
-                else if (lvl === 4) starList = ['star-pos-1', 'star-pos-2'];
-
-                const starsHtml = hasStars ? `<div class="ff-prime-stars-layer">${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L14.2 9.2 L24 12 L14.2 14.8 L12 24 L9.8 14.8 L0 12 L9.8 9.2 Z" fill="#FFF8B0"/><circle cx="12" cy="12" r="2.5" fill="#FFFFFF"/></svg>`).join('')}</div>` : '';
+                const starsHtml = (density > 0) ? `<div class="ff-prime-stars-layer ${starThemeClass}">${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`).join('')}</div>` : '';
 
                 const shineHtml = hasShine ? `
-                    <span class="ff-badge-shine" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
-                        <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.22) 44%,rgba(255,255,255,0.98) 50%,rgba(255,255,255,0.22) 56%,transparent 65%);animation:ff_shape_sweep 2.6s infinite linear;mix-blend-mode:screen;display:block;"></span>
+                    <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                        <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:${sweepSpd};mix-blend-mode:screen;display:block;"></span>
                     </span>
                 ` : '';
 
                 previewContainer.innerHTML = `
-                    <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:92px;height:92px;">
-                        ${wingFlaresHtml}
+                    <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:90px;height:90px;">
                         ${starsHtml}
                         <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                         ${shineHtml}

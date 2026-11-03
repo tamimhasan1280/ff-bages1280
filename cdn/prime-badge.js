@@ -35,25 +35,15 @@
         this.wrapper.style.height = this.size;
       }
 
-      // 1. Energetic Side Wing Flares (Levels 4 to 8)
-      if (this.level >= 4) {
-        const flareLeft = document.createElement('div');
-        flareLeft.className = 'ff-side-wing-flare left';
-        const flareRight = document.createElement('div');
-        flareRight.className = 'ff-side-wing-flare right';
-        this.wrapper.appendChild(flareLeft);
-        this.wrapper.appendChild(flareRight);
-      }
-
-      // 2. Pinpoint Diamond Stars Layer (Levels 4 to 8)
+      // 1. Pinpoint Diamond Stars Layer (Levels 4 to 8)
       if (this.level >= 4) {
         const starsLayer = document.createElement('div');
         starsLayer.className = 'ff-prime-stars-layer';
         
         let starList = [];
-        if (this.level === 8) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8'];
-        else if (this.level === 7) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-6', 'star-pos-7'];
-        else if (this.level === 6) starList = ['star-pos-1', 'star-pos-2', 'star-pos-4', 'star-pos-5', 'star-pos-6'];
+        if (this.level === 8) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8', 'star-pos-9', 'star-pos-10', 'star-pos-11', 'star-pos-12'];
+        else if (this.level === 7) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-6', 'star-pos-7', 'star-pos-8', 'star-pos-9'];
+        else if (this.level === 6) starList = ['star-pos-1', 'star-pos-2', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-8'];
         else if (this.level === 5) starList = ['star-pos-1', 'star-pos-2', 'star-pos-6', 'star-pos-7'];
         else if (this.level === 4) starList = ['star-pos-1', 'star-pos-2'];
 
@@ -61,7 +51,7 @@
           const starSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
           starSvg.setAttribute('class', `ff-pinpoint-star ${pos}`);
           starSvg.setAttribute('viewBox', '0 0 24 24');
-          starSvg.innerHTML = '<path d="M12 0 L14.2 9.2 L24 12 L14.2 14.8 L12 24 L9.8 14.8 L0 12 L9.8 9.2 Z" fill="#FFF8B0"/><circle cx="12" cy="12" r="2.5" fill="#FFFFFF"/>';
+          starSvg.innerHTML = '<path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="#FFFCE0"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/>';
           starsLayer.appendChild(starSvg);
         });
         this.wrapper.appendChild(starsLayer);

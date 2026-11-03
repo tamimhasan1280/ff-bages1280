@@ -57,9 +57,16 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
     $priority = intval($_POST['badge_priority'] ?? 500000);
     $glow_color = trim($_POST['badge_glow'] ?? 'rgba(255, 215, 0, 0.85)');
     $hex_glow = trim($_POST['badge_hex_glow'] ?? '#FFD700');
-    $size = intval($_POST['badge_size'] ?? 42);
+    $size = intval($_POST['badge_size'] ?? 54);
     $is_prime = !empty($_POST['is_prime']);
     $prime_lvl = intval($_POST['prime_level'] ?? 1);
+    $sweep_enabled = !empty($_POST['sweep_enabled']);
+    $sweep_direction = trim($_POST['sweep_direction'] ?? 'diag');
+    $sweep_speed = trim($_POST['sweep_speed'] ?? '2.2s');
+    $star_type = trim($_POST['star_type'] ?? 'gunpowder');
+    $star_density = intval($_POST['star_density'] ?? 16);
+    $star_theme = trim($_POST['star_theme'] ?? 'gold');
+    $has_gem_glint = !empty($_POST['has_gem_glint']);
 
     // Validate ID: MUST start with 12 and end with 80
     if (!preg_match('/^12\d{6,10}80$/', $id)) {
@@ -108,7 +115,7 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             'slug' => $slug,
             'icon_id' => 'Icon_FF_' . str_replace(' ', '_', ucwords($name)),
             'name' => $name,
-            'title' => $name . ' (Verified Asset)',
+            'title' => $name . ($is_prime ? " (Prime Level {$prime_lvl} Verified Asset)" : ' (Verified Asset)'),
             'rarity' => $rarity,
             'rarity_color' => $hex_glow,
             'rarity_class' => strtolower($rarity),
@@ -123,8 +130,15 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             'default_size' => $size,
             'type' => $is_prime ? 'prime_image' : 'image',
             'prime_level' => $is_prime ? $prime_lvl : null,
-            'description' => $description ?: "Official Free Fire verified asset deployed via Turky Hub Monster CDN.",
-            'fn_call' => "generate_ff_badge_html('{$filename}', '{$name}', '{$glow_color}', 'top-right', '{$size}px');",
+            'sweep_enabled' => $sweep_enabled,
+            'sweep_direction' => $sweep_direction,
+            'sweep_speed' => $sweep_speed,
+            'star_type' => $star_type,
+            'star_density' => $star_density,
+            'star_theme' => $star_theme,
+            'has_gem_glint' => $has_gem_glint,
+            'description' => $description ?: ($is_prime ? "Free Fire Prime Level {$prime_lvl} authentic insignia deployed via Turky Hub Monster CDN." : "Official Free Fire verified asset deployed via Turky Hub Monster CDN."),
+            'fn_call' => $is_prime ? "generate_ff_prime_badge_html('{$filename}', {$prime_lvl}, '{$size}px');" : "generate_ff_badge_html('{$filename}', '{$name}', '{$glow_color}', 'top-right', '{$size}px');",
             'cdn_urls' => [
                 'jsdelivr' => $CDN_BASE . $filename,
                 'github_raw' => $RAW_BASE . $filename,
@@ -202,6 +216,9 @@ if ($is_logged_in && isset($_GET['delete'])) {
 // Load current badges list
 $current_badges = json_decode(file_get_contents(__DIR__ . '/api/badges.json'), true)['badges'] ?? [];
 $suggested_id = generate_ff_id();
+$existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), function($f) {
+    return in_array(strtolower(pathinfo($f, PATHINFO_EXTENSION)), ['png', 'svg', 'webp', 'jpg']);
+}));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -218,6 +235,7 @@ $suggested_id = generate_ff_id();
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="cdn/prime-badge.css">
+    <script src="cdn/ff-badges.js"></script>
 
     <style>
         body {
@@ -441,7 +459,7 @@ $suggested_id = generate_ff_id();
                     <!-- 1. Badge Name -->
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Badge Name <span class="text-rose-500">*</span></label>
-                        <input type="text" name="badge_name" id="badgeNameInput" oninput="updateLiveSlug(this.value)" required placeholder="e.g. Prime Level 9 (Supreme Celestial)" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                        <input type="text" name="badge_name" id="badgeNameInput" required placeholder="e.g. Free Fire Prime Level 8" value="Free Fire Prime Level 8" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
                     </div>
 
                     <!-- 2. Auto 12...80 ID -->
@@ -462,7 +480,7 @@ $suggested_id = generate_ff_id();
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Category</label>
                         <select name="badge_category" id="badgeCatSelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                            <option value="Prime System">Prime System (Free Fire Prime)</option>
+                            <option value="Prime System" selected>Prime System (Free Fire Prime)</option>
                             <option value="Official Partner (KOL)">Official Partner (KOL)</option>
                             <option value="Crystal VIP Partner">Crystal VIP Partner</option>
                             <option value="Competitive & Esports">Competitive & Esports</option>
@@ -477,8 +495,8 @@ $suggested_id = generate_ff_id();
                     <!-- 4. Rarity -->
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Rarity</label>
-                        <select name="badge_rarity" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                            <option value="MYTHIC">MYTHIC (Gold / Celestial)</option>
+                        <select name="badge_rarity" id="badgeRaritySelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                            <option value="MYTHIC" selected>MYTHIC (Gold / Celestial)</option>
                             <option value="LEGENDARY">LEGENDARY (Crimson / Flame)</option>
                             <option value="EPIC">EPIC (Cyan / Purple)</option>
                             <option value="PURPLE">PURPLE (Violet Diamond)</option>
@@ -486,11 +504,17 @@ $suggested_id = generate_ff_id();
                         </select>
                     </div>
 
-                    <!-- 5. Glow Color -->
+                    <!-- 5. Default Size -->
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Default Size (px)</label>
+                        <input type="number" name="badge_size" id="badgeSizeInput" value="54" min="20" max="250" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition">
+                    </div>
+
+                    <!-- 6. Aura Glow Color -->
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Aura Glow Color</label>
-                        <select name="badge_glow" id="glowSelect" onchange="updateGlowPreview(this.value)" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                            <option value="rgba(255, 215, 0, 0.85)">Gold Aura (rgba(255, 215, 0, 0.85))</option>
+                        <select name="badge_glow" id="glowSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                            <option value="rgba(255, 215, 0, 0.85)" selected>Gold Aura (rgba(255, 215, 0, 0.85))</option>
                             <option value="rgba(168, 85, 247, 0.85)">Purple Cosmic (rgba(168, 85, 247, 0.85))</option>
                             <option value="rgba(6, 182, 212, 0.85)">Cyan Crystal (rgba(6, 182, 212, 0.85))</option>
                             <option value="rgba(239, 68, 68, 0.85)">Crimson Authority (rgba(239, 68, 68, 0.85))</option>
@@ -499,54 +523,159 @@ $suggested_id = generate_ff_id();
                         </select>
                     </div>
 
-                    <!-- 6. Prime Level Toggle & Selector -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Prime System Level VFX</label>
-                        <div class="flex items-center gap-3">
-                            <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-300">
-                                <input type="checkbox" name="is_prime" id="isPrimeCheck" value="1" onchange="togglePrimeLevel(this.checked)" class="rounded bg-gray-800 border-gray-700 text-amber-500 focus:ring-0">
-                                <span>Enable Prime VFX</span>
+                </div>
+
+                <!-- VFX & PRIME STUDIO PANEL -->
+                <div class="p-5 rounded-2xl bg-gradient-to-br from-[#121634] to-[#0c0f24] border border-amber-500/30 space-y-4 shadow-xl">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center font-bold text-sm shadow">
+                                <i class="fas fa-wand-magic-sparkles"></i>
+                            </span>
+                            <div>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">VFX Studio & FX Customizer (ইফেক্ট স্টুডিও)</h4>
+                                <p class="text-[10px] text-gray-400">ধাতব সোয়াইপ এঙ্গেল, বারুদ স্ফুলিঙ্গ, রত্ন ফ্ল্যাশ ও তারার এনিমেশন কাস্টমাইজ করুন</p>
+                            </div>
+                        </div>
+                        <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300 bg-amber-400/10 border border-amber-400/40 px-3 py-1.5 rounded-xl hover:bg-amber-400/20 transition">
+                            <input type="checkbox" name="is_prime" id="isPrimeCheck" value="1" checked onchange="togglePrimeStudio(this.checked)" class="rounded bg-gray-800 border-gray-700 text-amber-500 focus:ring-0">
+                            <span>Enable Prime VFX Engine</span>
+                        </label>
+                    </div>
+
+                    <div id="vfxStudioControls" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 transition-all">
+                        <!-- Prime Level Preset -->
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fas fa-crown text-amber-400"></i> <span>Prime Level Preset</span>
                             </label>
-                            <select name="prime_level" id="primeLevelSelect" class="flex-1 bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 opacity-50 cursor-not-allowed" disabled>
-                                <option value="8">Level 8 (Ascending Beam & Gem Glint)</option>
-                                <option value="7">Level 7 (Mythic Sparkle & Wings)</option>
-                                <option value="6">Level 6 (Flame Wings Pulse)</option>
-                                <option value="5">Level 5 (Radiant Gold Halo)</option>
-                                <option value="4">Level 4 (Cyan Crystal Breathing)</option>
+                            <select name="prime_level" id="primeLevelSelect" onchange="applyPrimePreset(this.value)" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
+                                <option value="8" selected>Level 8 (Supreme God Tier - 16 Stars & Glint)</option>
+                                <option value="7">Level 7 (Grandmaster Mythic - 12 Stars & Glint)</option>
+                                <option value="6">Level 6 (Amber Flame Wings - 8 Stars)</option>
+                                <option value="5">Level 5 (Radiant Gold Contour - 6 Stars)</option>
+                                <option value="4">Level 4 (Cyan Crystal - 4 Stars)</option>
                                 <option value="3">Level 3 (Gold Vanguard Static)</option>
                                 <option value="2">Level 2 (Silver Scout Static)</option>
                                 <option value="1">Level 1 (Bronze Recruit Static)</option>
                             </select>
                         </div>
-                    </div>
 
-                </div>
+                        <!-- Metallic Sheen Sweep Direction -->
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fas fa-bolt text-yellow-400"></i> <span>Sheen Direction</span>
+                                </label>
+                                <label class="flex items-center gap-1 cursor-pointer text-[10px] text-gray-400">
+                                    <input type="checkbox" name="sweep_enabled" id="sweepEnabledCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500 text-[10px]">
+                                    <span>Active</span>
+                                </label>
+                            </div>
+                            <select name="sweep_direction" id="sweepDirSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
+                                <option value="diag" selected>↗ Diagonal (Bottom-Left to Top-Right)</option>
+                                <option value="diag_rev">↖ Diagonal Reverse (Bottom-Right to Top-Left)</option>
+                                <option value="up">↑ Vertical (Bottom to Top)</option>
+                                <option value="down">↓ Vertical (Top to Bottom)</option>
+                                <option value="right">→ Horizontal (Left to Right)</option>
+                                <option value="left">← Horizontal (Right to Left)</option>
+                            </select>
+                        </div>
 
-                <!-- File Upload & Live Preview Zone -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
-                    
-                    <!-- File Upload Input (Drag & Drop) -->
-                    <div class="md:col-span-2 space-y-1.5">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Badge Icon Image (Transparent PNG / No Background) <span class="text-rose-500">*</span></label>
-                        <div class="border-2 border-dashed border-[#23294c] hover:border-amber-400/50 rounded-2xl p-6 text-center cursor-pointer bg-[#080a18] transition relative" onclick="document.getElementById('fileInput').click()">
-                            <input type="file" name="badge_file" id="fileInput" accept="image/png,image/svg+xml,image/webp" class="hidden" onchange="previewSelectedFile(event)">
-                            <div class="space-y-2 pointer-events-none">
-                                <div class="w-12 h-12 mx-auto rounded-full bg-white/5 flex items-center justify-center text-amber-400 text-xl">
-                                    <i class="fas fa-file-arrow-up"></i>
-                                </div>
-                                <div class="text-xs text-gray-300 font-semibold" id="uploadPromptText">Click or Drag & Drop Transparent PNG badge here</div>
-                                <p class="text-[10px] text-gray-500 font-mono">Accepted: PNG (Recommended without background), SVG, WebP</p>
+                        <!-- Sweep Speed -->
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fas fa-gauge-high text-cyan-400"></i> <span>Sheen Speed</span>
+                            </label>
+                            <select name="sweep_speed" id="sweepSpeedSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
+                                <option value="1.8s">Fast (1.8s - দ্রুত ঝলকানি)</option>
+                                <option value="2.2s" selected>Prime 8 Special (2.2s)</option>
+                                <option value="2.6s">Standard (2.6s - মানানসই)</option>
+                                <option value="3.4s">Smooth (3.4s - ধীর ও মসৃণ)</option>
+                            </select>
+                        </div>
+
+                        <!-- Gunpowder Stars Count & Theme -->
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fas fa-star text-amber-400"></i> <span>Gunpowder Stars (বারুদ স্টার)</span>
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <select name="star_density" id="starDensitySelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
+                                    <option value="16" selected>16 Stars (Supreme)</option>
+                                    <option value="12">12 Stars (High)</option>
+                                    <option value="8">8 Stars (Medium)</option>
+                                    <option value="6">6 Stars (Compact)</option>
+                                    <option value="4">4 Stars (Minimal)</option>
+                                    <option value="0">0 Stars (None)</option>
+                                </select>
+
+                                <select name="star_theme" id="starThemeSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
+                                    <option value="gold" selected>Gold Star</option>
+                                    <option value="cyan">Cyan Ice</option>
+                                    <option value="white">Diamond White</option>
+                                    <option value="ruby">Ruby Red</option>
+                                    <option value="purple">Cosmic Purple</option>
+                                </select>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Live Image Preview Box (No Background, 100% Transparent) -->
+                    <!-- Center Gem Glint & Transparency Guarantee -->
+                    <div id="vfxStudioToggles" class="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-white/10 transition-all">
+                        <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-300">
+                            <input type="checkbox" name="has_gem_glint" id="hasGemGlintCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
+                            <span>Center Gem Glint Flare (মাঝের রত্ন থেকে তারার মতো আলো ফুটবে)</span>
+                        </label>
+                        <span class="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
+                            <i class="fas fa-circle-check text-xs"></i> 100% Transparent Background (Zero Halos / No Yellow Side Clouds)
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Asset Selection & Live Studio Preview Zone -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 pt-1">
+                    
+                    <!-- Left: Asset Picker (Select Existing OR Upload New) -->
+                    <div class="lg:col-span-2 space-y-3">
+                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider block">Badge Icon Asset (Select Existing or Upload PNG) <span class="text-rose-500">*</span></label>
+                        
+                        <!-- Pick Existing Asset Dropdown -->
+                        <div class="space-y-1">
+                            <span class="text-[11px] text-gray-400 font-semibold">1. Choose from Existing Free Fire Assets:</span>
+                            <select name="existing_file" id="existingFileSelect" onchange="selectExistingAsset(this.value)" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer font-mono">
+                                <option value="">-- Or upload a custom file below --</option>
+                                <?php foreach ($existing_badge_files as $ef): ?>
+                                    <option value="<?= $ef ?>" <?= ($ef === 'ff_ui_prime_icon_08.png') ? 'selected' : '' ?>><?= $ef ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- OR Upload New File -->
+                        <div class="space-y-1">
+                            <span class="text-[11px] text-gray-400 font-semibold">2. Or Upload New Transparent PNG / SVG:</span>
+                            <div class="border-2 border-dashed border-[#23294c] hover:border-amber-400/50 rounded-2xl p-4 text-center cursor-pointer bg-[#080a18] transition relative" onclick="document.getElementById('fileInput').click()">
+                                <input type="file" name="badge_file" id="fileInput" accept="image/png,image/svg+xml,image/webp" class="hidden" onchange="previewSelectedFile(event)">
+                                <div class="space-y-1 pointer-events-none">
+                                    <div class="w-9 h-9 mx-auto rounded-full bg-white/5 flex items-center justify-center text-amber-400 text-base">
+                                        <i class="fas fa-file-arrow-up"></i>
+                                    </div>
+                                    <div class="text-xs text-gray-300 font-semibold" id="uploadPromptText">Click to select new Transparent PNG file</div>
+                                    <p class="text-[10px] text-gray-500 font-mono">100% transparent PNG with no background is recommended</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Live Studio Preview Box (100% Transparent, No Halos) -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Live Aura Preview</label>
-                        <div class="h-40 rounded-2xl bg-[#080a18] border border-white/5 flex items-center justify-center p-3 relative overflow-hidden shadow-inner">
-                            <div id="liveAuraBox" class="absolute inset-0 bg-radial from-amber-500/20 via-transparent to-transparent pointer-events-none"></div>
-                            <div id="liveImgWrapper" class="relative z-10 flex items-center justify-center">
-                                <img id="liveImgPreview" src="badges/FF_UI_Badge_KOL01.png" alt="Preview" class="w-14 h-14 object-contain filter drop-shadow-[0_0_8px_gold]">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Live VFX Stage Preview</label>
+                            <span class="text-[10px] text-amber-400 font-mono font-bold animate-pulse">● LIVE FX ACTIVE</span>
+                        </div>
+                        <div class="h-52 rounded-2xl bg-[#080a18] border border-white/10 flex items-center justify-center p-3 relative overflow-hidden shadow-inner">
+                            <div id="liveBadgeStage" class="relative z-10 flex items-center justify-center w-full h-full">
+                                <!-- Populated dynamically by updateLivePreviewStudio() -->
                             </div>
                         </div>
                     </div>
@@ -610,20 +739,10 @@ $suggested_id = generate_ff_id();
                             ?>
                             <tr class="hover:bg-white/[0.02] transition admin-badge-row" data-name="<?= strtolower($b['name']) ?>" data-id="<?= strtolower($b['id']) ?>">
                                 
-                                <!-- Preview (No Background) -->
+                                <!-- Preview (No Background, 100% Transparent Live Badge) -->
                                 <td class="py-3 px-3">
-                                    <div class="w-12 h-12 rounded-xl bg-[#090b18] border border-white/5 flex items-center justify-center p-1 relative">
-                                        <?php if ($isPrime): ?>
-                                            <div class="ff-prime-badge-wrap ff-prime-lvl-<?= $b['prime_level'] ?? 1 ?>" style="width:36px;height:36px;">
-                                                <img src="<?= $local_file ?>" onerror="this.src='<?= $img_cdn ?>'" class="ff-badge-img">
-                                            </div>
-                                        <?php elseif (!empty($b['file'])): ?>
-                                            <img src="<?= $local_file ?>" onerror="this.src='<?= $img_cdn ?>'" alt="<?= htmlspecialchars($b['name']) ?>" class="w-8 h-8 object-contain">
-                                        <?php elseif ($b['type'] === 'svg_code'): ?>
-                                            <div class="w-6 h-6 flex items-center justify-center"><?= $b['svg_code'] ?></div>
-                                        <?php elseif ($b['type'] === 'text_code'): ?>
-                                            <?= $b['text_code'] ?>
-                                        <?php endif; ?>
+                                    <div class="w-12 h-12 rounded-xl bg-[#090b18] border border-white/5 flex items-center justify-center p-1 relative overflow-hidden">
+                                        <ff-badge id="<?= $b['id'] ?>" size="36"></ff-badge>
                                     </div>
                                 </td>
 
@@ -737,37 +856,175 @@ $suggested_id = generate_ff_id();
             showToast('New 12...80 ID generated: #' + newId);
         }
 
+        // Active preview image source
+        let currentPreviewImg = 'badges/ff_ui_prime_icon_08.png';
+
+        // Select existing asset from dropdown
+        function selectExistingAsset(val) {
+            if (!val) return;
+            currentPreviewImg = 'badges/' + val;
+            document.getElementById('uploadPromptText').textContent = 'Asset: ' + val;
+            updateLivePreviewStudio();
+        }
+
         // Live preview of uploaded file
         function previewSelectedFile(event) {
             const file = event.target.files[0];
             if (!file) return;
 
             document.getElementById('uploadPromptText').textContent = 'Selected: ' + file.name;
+            document.getElementById('existingFileSelect').value = '';
             const reader = new FileReader();
             reader.onload = function(e) {
-                document.getElementById('liveImgPreview').src = e.target.result;
+                currentPreviewImg = e.target.result;
+                updateLivePreviewStudio();
             };
             reader.readAsDataURL(file);
         }
 
-        // Toggle Prime Level select
-        function togglePrimeLevel(checked) {
-            const sel = document.getElementById('primeLevelSelect');
+        // Toggle Prime Studio Enable/Disable
+        function togglePrimeStudio(checked) {
+            const ctrls = document.getElementById('vfxStudioControls');
+            const toggles = document.getElementById('vfxStudioToggles');
             if (checked) {
-                sel.removeAttribute('disabled');
-                sel.classList.remove('opacity-50', 'cursor-not-allowed');
+                ctrls.classList.remove('opacity-50', 'pointer-events-none');
+                toggles.classList.remove('opacity-50', 'pointer-events-none');
                 document.getElementById('badgeCatSelect').value = 'Prime System';
             } else {
-                sel.setAttribute('disabled', 'disabled');
-                sel.classList.add('opacity-50', 'cursor-not-allowed');
+                ctrls.classList.add('opacity-50', 'pointer-events-none');
+                toggles.classList.add('opacity-50', 'pointer-events-none');
+            }
+            updateLivePreviewStudio();
+        }
+
+        // Apply recommended preset when level changes
+        function applyPrimePreset(lvl) {
+            lvl = parseInt(lvl) || 8;
+            const nameInput = document.getElementById('badgeNameInput');
+            if (!nameInput.value || nameInput.value.startsWith('Free Fire Prime Level')) {
+                nameInput.value = 'Free Fire Prime Level ' + lvl;
+            }
+
+            // Auto select matching icon if in dropdown
+            const efSelect = document.getElementById('existingFileSelect');
+            const targetIcon = 'ff_ui_prime_icon_0' + lvl + '.png';
+            for (let i = 0; i < efSelect.options.length; i++) {
+                if (efSelect.options[i].value === targetIcon) {
+                    efSelect.selectedIndex = i;
+                    currentPreviewImg = 'badges/' + targetIcon;
+                    break;
+                }
+            }
+
+            if (lvl === 8) {
+                document.getElementById('sweepEnabledCheck').checked = true;
+                document.getElementById('sweepDirSelect').value = 'diag';
+                document.getElementById('sweepSpeedSelect').value = '2.2s';
+                document.getElementById('starDensitySelect').value = '16';
+                document.getElementById('starThemeSelect').value = 'gold';
+                document.getElementById('hasGemGlintCheck').checked = true;
+                document.getElementById('badgeRaritySelect').value = 'MYTHIC';
+            } else if (lvl === 7) {
+                document.getElementById('sweepEnabledCheck').checked = true;
+                document.getElementById('sweepDirSelect').value = 'diag';
+                document.getElementById('sweepSpeedSelect').value = '2.4s';
+                document.getElementById('starDensitySelect').value = '12';
+                document.getElementById('starThemeSelect').value = 'gold';
+                document.getElementById('hasGemGlintCheck').checked = true;
+                document.getElementById('badgeRaritySelect').value = 'MYTHIC';
+            } else if (lvl === 6) {
+                document.getElementById('sweepEnabledCheck').checked = true;
+                document.getElementById('sweepDirSelect').value = 'diag';
+                document.getElementById('sweepSpeedSelect').value = '2.4s';
+                document.getElementById('starDensitySelect').value = '8';
+                document.getElementById('starThemeSelect').value = 'ruby';
+                document.getElementById('hasGemGlintCheck').checked = false;
+                document.getElementById('badgeRaritySelect').value = 'LEGENDARY';
+            } else if (lvl === 5) {
+                document.getElementById('sweepEnabledCheck').checked = true;
+                document.getElementById('sweepDirSelect').value = 'diag';
+                document.getElementById('sweepSpeedSelect').value = '2.6s';
+                document.getElementById('starDensitySelect').value = '6';
+                document.getElementById('starThemeSelect').value = 'gold';
+                document.getElementById('hasGemGlintCheck').checked = false;
+                document.getElementById('badgeRaritySelect').value = 'LEGENDARY';
+            } else if (lvl === 4) {
+                document.getElementById('sweepEnabledCheck').checked = true;
+                document.getElementById('sweepDirSelect').value = 'diag';
+                document.getElementById('sweepSpeedSelect').value = '2.6s';
+                document.getElementById('starDensitySelect').value = '4';
+                document.getElementById('starThemeSelect').value = 'cyan';
+                document.getElementById('hasGemGlintCheck').checked = false;
+                document.getElementById('badgeRaritySelect').value = 'EPIC';
+            } else {
+                document.getElementById('sweepEnabledCheck').checked = false;
+                document.getElementById('starDensitySelect').value = '0';
+                document.getElementById('hasGemGlintCheck').checked = false;
+                document.getElementById('badgeRaritySelect').value = 'RARE';
+            }
+
+            updateLivePreviewStudio();
+        }
+
+        // Master Live Preview Studio Updater
+        function updateLivePreviewStudio() {
+            const stage = document.getElementById('liveBadgeStage');
+            if (!stage) return;
+
+            const isPrime = document.getElementById('isPrimeCheck').checked;
+            const lvl = parseInt(document.getElementById('primeLevelSelect').value) || 8;
+            const sweepEnabled = document.getElementById('sweepEnabledCheck').checked;
+            const sweepDir = document.getElementById('sweepDirSelect').value;
+            const sweepSpeed = document.getElementById('sweepSpeedSelect').value;
+            const density = parseInt(document.getElementById('starDensitySelect').value) || 0;
+            const starTheme = document.getElementById('starThemeSelect').value;
+            const hasGlint = document.getElementById('hasGemGlintCheck').checked;
+            const size = parseInt(document.getElementById('badgeSizeInput').value) || 54;
+            const glowVal = document.getElementById('glowSelect').value;
+
+            const sweepClass = (sweepDir !== 'diag') ? ('sweep-dir-' + sweepDir) : '';
+
+            if (isPrime) {
+                // Gunpowder Star Layer (up to 16 positions)
+                const allPositions = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8', 'star-pos-9', 'star-pos-10', 'star-pos-11', 'star-pos-12', 'star-pos-13', 'star-pos-14', 'star-pos-15', 'star-pos-16'];
+                const starList = allPositions.slice(0, Math.min(density, 16));
+                const starColor = (starTheme === 'cyan') ? '#00f0ff' : (starTheme === 'ruby' ? '#ef4444' : (starTheme === 'purple' ? '#c084fc' : '#FFFCE0'));
+                const themeClass = (starTheme !== 'gold') ? ('star-theme-' + starTheme) : '';
+
+                const starsHtml = (density > 0) ? `
+                    <div class="ff-prime-stars-layer ${themeClass}">
+                        ${starList.map(pos => `<svg class="ff-pinpoint-star ${pos}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`).join('')}
+                    </div>` : '';
+
+                // Metallic Sheen Mask Sweep
+                const shineHtml = sweepEnabled ? `
+                    <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${currentPreviewImg}');mask-image:url('${currentPreviewImg}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                        <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:${sweepSpeed};mix-blend-mode:screen;display:block;"></span>
+                    </span>` : '';
+
+                stage.innerHTML = `
+                    <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:72px;height:72px;position:relative;background:transparent !important;">
+                        ${starsHtml}
+                        <img src="${currentPreviewImg}" class="ff-badge-img" alt="Live Preview">
+                        ${shineHtml}
+                        ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
+                    </div>
+                `;
+            } else {
+                stage.innerHTML = `
+                    <span class="ff-shape-badge" style="width:54px;height:54px;filter:drop-shadow(0 0 6px ${glowVal});display:inline-block;position:relative;">
+                        <img src="${currentPreviewImg}" alt="Preview" style="width:100%;height:100%;object-fit:contain;display:block;">
+                        <span style="position:absolute;inset:0;pointer-events:none;overflow:hidden;-webkit-mask-image:url('${currentPreviewImg}');mask-image:url('${currentPreviewImg}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                            <span style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.2) 44%,rgba(255,255,255,0.95) 50%,rgba(255,255,255,0.2) 56%,transparent 65%);animation:ff_shape_sweep 2.6s infinite linear;mix-blend-mode:screen;display:block;"></span>
+                        </span>
+                    </span>
+                `;
             }
         }
 
-        // Update Glow Preview
-        function updateGlowPreview(val) {
-            const box = document.getElementById('liveAuraBox');
-            box.style.background = `radial-gradient(circle, ${val} 0%, transparent 70%)`;
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLivePreviewStudio();
+        });
 
         // Filter Table
         function filterAdminBadges(q) {
