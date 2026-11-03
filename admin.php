@@ -290,12 +290,19 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: #080915;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #070915;
             color: #f1f5f9;
+            letter-spacing: normal;
         }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .font-mono-code { font-family: 'Fira Code', monospace; }
+        .font-orbitron { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-weight: 800; }
+        .font-mono-code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+
+        /* Bone Focal Accent Pulse Animation */
+        @keyframes pulse_bone {
+            0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.85; }
+            100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+        }
 
         .glass-panel {
             background: #0e1224;
@@ -350,7 +357,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <input type="hidden" name="login_action" value="1">
                 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Email or Username</label>
+                    <label class="text-xs font-semibold text-slate-200">Email or Username</label>
                     <div class="relative">
                         <i class="fas fa-user absolute left-3.5 top-3 text-gray-500 text-xs"></i>
                         <input type="text" name="username" required placeholder="Enter email or username..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
@@ -358,7 +365,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Password</label>
+                    <label class="text-xs font-semibold text-slate-200">Password</label>
                     <div class="relative">
                         <i class="fas fa-lock absolute left-3.5 top-3 text-gray-500 text-xs"></i>
                         <input type="password" name="password" required placeholder="Enter password..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
@@ -561,7 +568,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         
                         <!-- 1. Badge Name (Editable) -->
                         <div class="space-y-1.5 sm:col-span-2">
-                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center justify-between">
+                            <label class="text-xs font-semibold text-slate-200 flex items-center justify-between">
                                 <span>Badge Name <span class="text-rose-500">*</span></span>
                                 <span class="text-[10px] text-gray-400 font-normal">Editable anytime</span>
                             </label>
@@ -571,7 +578,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <!-- 2. Badge ID (Editable 12...80) -->
                         <div class="space-y-1.5 sm:col-span-2">
                             <div class="flex items-center justify-between">
-                                <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Badge ID (Must start with 12 and end with 80) <span class="text-emerald-400">*</span></label>
+                                <label class="text-xs font-semibold text-slate-200">Badge ID (Must start with 12 and end with 80) <span class="text-emerald-400">*</span></label>
                                 <span class="text-[10px] text-emerald-400 font-mono font-bold">12 Digits Strict Format</span>
                             </div>
                             <div class="relative flex items-center">
@@ -584,7 +591,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                         <!-- 3. Category -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Category</label>
+                            <label class="text-xs font-semibold text-slate-200">Category</label>
                             <select name="badge_category" id="badgeCatSelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
                                 <option value="Prime System" selected>Prime System (Free Fire Prime)</option>
                                 <option value="Official Partner (KOL)">Official Partner (KOL V-Badge)</option>
@@ -600,7 +607,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                         <!-- 4. Rarity -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Rarity</label>
+                            <label class="text-xs font-semibold text-slate-200">Rarity</label>
                             <select name="badge_rarity" id="badgeRaritySelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
                                 <option value="MYTHIC" selected>MYTHIC (Gold / Celestial)</option>
                                 <option value="LEGENDARY">LEGENDARY (Crimson Flame)</option>
@@ -612,14 +619,14 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                         <!-- 5. Default Size -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Default Size (px)</label>
+                            <label class="text-xs font-semibold text-slate-200">Default Size (px)</label>
                             <input type="number" name="badge_size" id="badgeSizeInput" value="54" min="20" max="250" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition">
                         </div>
 
                         <!-- 6. Aura Glow Color -->
                         <div class="space-y-1.5">
                             <div class="flex items-center justify-between">
-                                <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Aura Glow Color</label>
+                                <label class="text-xs font-semibold text-slate-200">Aura Glow Color</label>
                                 <label class="flex items-center gap-1 cursor-pointer text-[10px] text-amber-300">
                                     <input type="checkbox" name="glow_enabled" id="glowEnabledCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
                                     <span>Active</span>
@@ -637,6 +644,195 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         </div>
 
                     </div>
+
+                                        <!-- CLEAR ADJUSTMENT & PRO ICON LAB (Background Remover, HD Clarity, Sliders & Bone Light) -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-[#090c21] border border-emerald-500/30 space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs">
+                                    <i class="fas fa-wand-magic-sparkles"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
+                                        <span>Clear Adjustment & Pro Icon Lab</span>
+                                        <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">Ultra Fast</span>
+                                    </h3>
+                                    <p class="text-[11px] text-slate-300">1-Click Auto Background Remover, Full HD Clarity Boost, Color Sliders & Bone Light</p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="resetAdjustments()" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-[11px] flex items-center gap-1 transition cursor-pointer">
+                                <i class="fas fa-rotate-left text-[10px]"></i> <span>Reset Sliders</span>
+                            </button>
+                        </div>
+
+                        <!-- Action 1: 1-Click Auto Background Remover & HD Clarity -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <button type="button" onclick="autoRemoveBackground()" class="p-2.5 rounded-xl bg-gradient-to-r from-emerald-600/30 to-teal-600/30 hover:from-emerald-600/40 hover:to-teal-600/40 border border-emerald-500/40 text-emerald-200 text-xs font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/10 cursor-pointer">
+                                <i class="fas fa-eraser text-emerald-400"></i>
+                                <span>1-Click Auto Background Remove (স্বচ্ছ কাটআউট)</span>
+                            </button>
+
+                            <button type="button" onclick="boostHdClarity()" class="p-2.5 rounded-xl bg-gradient-to-r from-cyan-600/30 to-blue-600/30 hover:from-cyan-600/40 hover:to-blue-600/40 border border-cyan-500/40 text-cyan-200 text-xs font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-cyan-500/10 cursor-pointer">
+                                <i class="fas fa-gem text-cyan-400"></i>
+                                <span>1-Click Full HD Clarity Boost (হাই-রেজোলিউশন)</span>
+                            </button>
+                        </div>
+
+                        <!-- Action 2: Image Color & Lighting Sliders Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                            <!-- Brightness -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-sun text-amber-400 text-[10px]"></i> Brightness (আলো):</span>
+                                    <span id="valBrightness" class="font-mono text-amber-300 font-bold">100%</span>
+                                </div>
+                                <input type="range" id="sliderBrightness" min="50" max="200" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                            </div>
+
+                            <!-- Contrast -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-circle-half-stroke text-cyan-400 text-[10px]"></i> Contrast (কনট্রাস্ট):</span>
+                                    <span id="valContrast" class="font-mono text-cyan-300 font-bold">100%</span>
+                                </div>
+                                <input type="range" id="sliderContrast" min="50" max="200" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                            </div>
+
+                            <!-- Saturation -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-palette text-pink-400 text-[10px]"></i> Saturation (রং তীব্রতা):</span>
+                                    <span id="valSaturation" class="font-mono text-pink-300 font-bold">100%</span>
+                                </div>
+                                <input type="range" id="sliderSaturation" min="0" max="250" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-pink-400">
+                            </div>
+
+                            <!-- Highlights -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-wand-magic text-yellow-300 text-[10px]"></i> Highlights (হাইলাইট):</span>
+                                    <span id="valHighlights" class="font-mono text-yellow-200 font-bold">100%</span>
+                                </div>
+                                <input type="range" id="sliderHighlights" min="0" max="160" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-yellow-300">
+                            </div>
+
+                            <!-- Hue Rotate -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-rotate text-purple-400 text-[10px]"></i> Hue Tone (টোন শিফট):</span>
+                                    <span id="valHue" class="font-mono text-purple-300 font-bold">0°</span>
+                                </div>
+                                <input type="range" id="sliderHue" min="0" max="360" value="0" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-purple-400">
+                            </div>
+
+                            <!-- HD Sharpness -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-bolt text-emerald-400 text-[10px]"></i> Sharpness (শার্পনেস):</span>
+                                    <span id="valSharpness" class="font-mono text-emerald-300 font-bold">0</span>
+                                </div>
+                                <input type="range" id="sliderSharpness" min="0" max="100" value="0" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-400">
+                            </div>
+                        </div>
+
+                        <!-- Action 3: BONE & FOCAL ACCENT LIGHT (বোন অ্যাড করে নির্দিষ্ট স্থানে আলো বাড়ানো/কমানো) -->
+                        <div class="p-3.5 rounded-xl bg-[#060817] border border-amber-500/20 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300">
+                                    <input type="checkbox" id="boneLightCheck" onchange="updateAdjustments()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
+                                    <i class="fas fa-lightbulb text-amber-400"></i>
+                                    <span>Enable Bone / Focal Accent Light (নির্দিষ্ট জায়গায় আলো কমানো/ বাড়ানো)</span>
+                                </label>
+                                <span class="text-[10px] text-gray-400 font-mono">Pinpoint Radiant Flare</span>
+                            </div>
+
+                            <div id="boneLightControls" class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                                <!-- Bone Position -->
+                                <div class="space-y-1">
+                                    <label class="text-[11px] text-slate-300 block">Bone Spot (কোন জায়গায় আলো?):</label>
+                                    <select id="bonePosSelect" onchange="updateAdjustments()" class="w-full bg-[#090b1c] border border-[#23294c] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
+                                        <option value="crown" selected>👑 Top Crown (শীর্ষ মুকুট)</option>
+                                        <option value="left_wing">🦅 Left Wing Peak (বাম ডানা)</option>
+                                        <option value="right_wing">🦅 Right Wing Peak (ডান ডানা)</option>
+                                        <option value="center_gem">💎 Center Gem Core (কেন্দ্রীয় রত্ন)</option>
+                                        <option value="bottom_apex">⚡ Bottom Apex (নিচের তীক্ষ্ণ প্রান্ত)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Bone Color -->
+                                <div class="space-y-1">
+                                    <label class="text-[11px] text-slate-300 block">Light Color (আলোর রং):</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="color" id="boneColorPicker" value="#FFD700" onchange="document.getElementById('boneColorHex').value=this.value; updateAdjustments();" class="w-8 h-8 rounded border border-white/20 bg-transparent cursor-pointer p-0.5">
+                                        <input type="text" id="boneColorHex" value="#FFD700" oninput="document.getElementById('boneColorPicker').value=this.value; updateAdjustments();" class="w-full bg-[#090b1c] border border-[#23294c] rounded-lg px-2 py-1.5 text-xs font-mono text-amber-300 uppercase">
+                                    </div>
+                                </div>
+
+                                <!-- Bone Intensity / Radius Slider -->
+                                <div class="space-y-1">
+                                    <div class="flex items-center justify-between text-[11px]">
+                                        <span class="text-slate-300">Light Radius (আলোর বিস্তার):</span>
+                                        <span id="valBoneRadius" class="font-mono text-amber-300 font-bold">45px</span>
+                                    </div>
+                                    <input type="range" id="sliderBoneRadius" min="10" max="100" value="45" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action 4: AURA GLOW & CONTOUR SHADOW (রাউন্ডেড বর্ডার কনট্যুর ধরে গ্লোয়িং কালার) -->
+                        <div class="p-3.5 rounded-xl bg-[#060817] border border-cyan-500/20 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-cyan-300">
+                                    <input type="checkbox" id="contourGlowCheck" checked onchange="updateAdjustments()" class="rounded bg-gray-800 border-gray-700 text-cyan-500">
+                                    <i class="fas fa-sun-plant-wilt text-cyan-400"></i>
+                                    <span>Enable Aura Glow & Contour Shadow (বর্ডার কনট্যুর ধরে ব্যাকগ্রাউন্ড গ্লো)</span>
+                                </label>
+                                <span class="text-[10px] text-emerald-400 font-mono">100% PNG Contour Silhouette</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                                <!-- Glow Color Picker Box -->
+                                <div class="space-y-1">
+                                    <label class="text-[11px] text-slate-300 block">Glow Color (গ্লোয়িং কালার বক্স):</label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="color" id="contourGlowColorPicker" value="#FFD700" onchange="document.getElementById('contourGlowColorHex').value=this.value; updateAdjustments();" class="w-8 h-8 rounded border border-white/20 bg-transparent cursor-pointer p-0.5">
+                                        <input type="text" id="contourGlowColorHex" value="#FFD700" oninput="document.getElementById('contourGlowColorPicker').value=this.value; updateAdjustments();" class="w-full bg-[#090b1c] border border-[#23294c] rounded-lg px-2 py-1.5 text-xs font-mono text-yellow-300 uppercase">
+                                    </div>
+                                </div>
+
+                                <!-- Glow Radius / Size Slider -->
+                                <div class="space-y-1">
+                                    <div class="flex items-center justify-between text-[11px]">
+                                        <span class="text-slate-300">Glow Radius (গ্লো সাইজ):</span>
+                                        <span id="valGlowRadius" class="font-mono text-cyan-300 font-bold">14px</span>
+                                    </div>
+                                    <input type="range" id="sliderGlowRadius" min="0" max="60" value="14" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                                </div>
+
+                                <!-- Glow Blur / Softness Slider -->
+                                <div class="space-y-1">
+                                    <div class="flex items-center justify-between text-[11px]">
+                                        <span class="text-slate-300">Blur Softness (সফটনেস):</span>
+                                        <span id="valGlowBlur" class="font-mono text-cyan-300 font-bold">10px</span>
+                                    </div>
+                                    <input type="range" id="sliderGlowBlur" min="0" max="40" value="10" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
+                                </div>
+                            </div>
+
+                            <!-- Preset Color Swatches -->
+                            <div class="flex items-center gap-2 pt-1 flex-wrap">
+                                <span class="text-[10px] text-gray-400">Quick Swatches:</span>
+                                <button type="button" onclick="setGlowColor('#FFD700')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#FFD700" title="Gold"></button>
+                                <button type="button" onclick="setGlowColor('#00F0FF')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#00F0FF" title="Cyan"></button>
+                                <button type="button" onclick="setGlowColor('#A855F7')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#A855F7" title="Purple"></button>
+                                <button type="button" onclick="setGlowColor('#EF4444')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#EF4444" title="Ruby"></button>
+                                <button type="button" onclick="setGlowColor('#10B981')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#10B981" title="Emerald"></button>
+                                <button type="button" onclick="setGlowColor('#F97316')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#F97316" title="Amber"></button>
+                                <button type="button" onclick="setGlowColor('#FFFFFF')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#FFFFFF" title="White"></button>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <!-- 50 NUMBERED EFFECT PRESETS & UNIVERSAL REMOVAL BAR -->
                     <div class="p-4 rounded-2xl bg-[#090c1f] border border-cyan-500/30 space-y-3">
@@ -687,7 +883,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <!-- 1. Metallic Sheen Sweep Direction (8 Directions) -->
                             <div class="space-y-1.5">
                                 <div class="flex items-center justify-between">
-                                    <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                    <label class="text-[11px] font-semibold text-slate-200 flex items-center gap-1.5">
                                         <i class="fas fa-bolt text-yellow-400"></i> <span>Sheen Direction (8 Directions)</span>
                                     </label>
                                     <label class="flex items-center gap-1 cursor-pointer text-[10px] text-gray-400">
@@ -709,7 +905,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                             <!-- 2. Sweep Speed -->
                             <div class="space-y-1.5">
-                                <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                <label class="text-[11px] font-semibold text-slate-200 flex items-center gap-1.5">
                                     <i class="fas fa-gauge-high text-cyan-400"></i> <span>Sheen Speed</span>
                                 </label>
                                 <select name="sweep_speed" id="sweepSpeedSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
@@ -725,7 +921,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <!-- 3. Dynamic Stars Count (0 to 50 Stars, Radially Scattered) -->
                             <div class="space-y-1.5 sm:col-span-2 bg-[#080a18] p-3 rounded-xl border border-white/5">
                                 <div class="flex items-center justify-between">
-                                    <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                    <label class="text-[11px] font-semibold text-slate-200 flex items-center gap-1.5">
                                         <i class="fas fa-star text-amber-400"></i> <span>Scattered Gunpowder Stars (0 to 50 - 360° All Around)</span>
                                     </label>
                                     <span id="starCountDisplay" class="text-xs font-mono font-bold text-amber-300">16 Stars</span>
@@ -752,7 +948,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                             <!-- 4. Star Color Theme -->
                             <div class="space-y-1.5">
-                                <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                <label class="text-[11px] font-semibold text-slate-200 flex items-center gap-1.5">
                                     <i class="fas fa-palette text-pink-400"></i> <span>Star Color Theme</span>
                                 </label>
                                 <select name="star_theme" id="starThemeSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
@@ -792,7 +988,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                     <!-- Icon Asset Selection (Dropdown OR Custom PNG Upload) -->
                     <div class="space-y-3">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider block">
+                        <label class="text-xs font-semibold text-slate-200 block">
                             Badge Icon Asset (Select Existing or Upload Transparent PNG) <span class="text-rose-500">*</span>
                         </label>
                         
@@ -824,7 +1020,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                     <!-- Description -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Description</label>
+                        <label class="text-xs font-semibold text-slate-200">Description</label>
                         <textarea name="badge_description" id="badgeDescInput" rows="2" placeholder="Official Free Fire verified insignia deployed via Turky Hub Monster CDN..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition"></textarea>
                     </div>
 
@@ -1423,6 +1619,114 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         }
 
         // MASTER LIVE PREVIEW STUDIO RENDERER (Radially Scattered Stars & Universal On/Off)
+
+        // CLEAR ADJUSTMENT & PRO ICON LAB STATE
+        function updateAdjustments() {
+            // Read slider values
+            const b = document.getElementById('sliderBrightness').value;
+            const c = document.getElementById('sliderContrast').value;
+            const s = document.getElementById('sliderSaturation').value;
+            const hl = document.getElementById('sliderHighlights').value;
+            const h = document.getElementById('sliderHue').value;
+            const sharp = document.getElementById('sliderSharpness').value;
+
+            // Update display badges
+            document.getElementById('valBrightness').textContent = b + '%';
+            document.getElementById('valContrast').textContent = c + '%';
+            document.getElementById('valSaturation').textContent = s + '%';
+            document.getElementById('valHighlights').textContent = hl + '%';
+            document.getElementById('valHue').textContent = h + '°';
+            document.getElementById('valSharpness').textContent = sharp;
+
+            const glowRad = document.getElementById('sliderGlowRadius').value;
+            const glowBlur = document.getElementById('sliderGlowBlur').value;
+            document.getElementById('valGlowRadius').textContent = glowRad + 'px';
+            document.getElementById('valGlowBlur').textContent = glowBlur + 'px';
+
+            const boneRad = document.getElementById('sliderBoneRadius').value;
+            document.getElementById('valBoneRadius').textContent = boneRad + 'px';
+
+            // Re-render live preview stage with these real-time adjustments
+            updateLivePreviewStudio();
+        }
+
+        function setGlowColor(colorHex) {
+            document.getElementById('contourGlowColorPicker').value = colorHex;
+            document.getElementById('contourGlowColorHex').value = colorHex;
+            updateAdjustments();
+        }
+
+        function resetAdjustments() {
+            document.getElementById('sliderBrightness').value = 100;
+            document.getElementById('sliderContrast').value = 100;
+            document.getElementById('sliderSaturation').value = 100;
+            document.getElementById('sliderHighlights').value = 100;
+            document.getElementById('sliderHue').value = 0;
+            document.getElementById('sliderSharpness').value = 0;
+
+            document.getElementById('boneLightCheck').checked = false;
+            document.getElementById('sliderBoneRadius').value = 45;
+
+            document.getElementById('contourGlowCheck').checked = true;
+            document.getElementById('sliderGlowRadius').value = 14;
+            document.getElementById('sliderGlowBlur').value = 10;
+            setGlowColor('#FFD700');
+
+            updateAdjustments();
+            showToast('All adjustments reset to default');
+        }
+
+        // 1-Click Auto Background Remover (Canvas Flood & Alpha Cutoff)
+        function autoRemoveBackground() {
+            const img = document.querySelector('#liveBadgeStage img');
+            if (!img) return;
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.naturalWidth || 512;
+            canvas.height = img.naturalHeight || 512;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imgData.data;
+
+            // Sample 4 corners to determine background color
+            const c1 = [data[0], data[1], data[2]];
+            const c2 = [data[(canvas.width - 1) * 4], data[(canvas.width - 1) * 4 + 1], data[(canvas.width - 1) * 4 + 2]];
+            const c3 = [data[(canvas.width * (canvas.height - 1)) * 4], data[(canvas.width * (canvas.height - 1)) * 4 + 1], data[(canvas.width * (canvas.height - 1)) * 4 + 2]];
+            const c4 = [data[(canvas.width * canvas.height - 1) * 4], data[(canvas.width * canvas.height - 1) * 4 + 1], data[(canvas.width * canvas.height - 1) * 4 + 2]];
+
+            const bgR = Math.round((c1[0] + c2[0] + c3[0] + c4[0]) / 4);
+            const bgG = Math.round((c1[1] + c2[1] + c3[1] + c4[1]) / 4);
+            const bgB = Math.round((c1[2] + c2[2] + c3[2] + c4[2]) / 4);
+
+            const tolerance = 40;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i], g = data[i + 1], b = data[i + 2];
+                const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
+                if (dist < tolerance) {
+                    data[i + 3] = 0; // 100% transparent
+                } else if (dist < tolerance + 15) {
+                    data[i + 3] = Math.round(((dist - tolerance) / 15) * data[i + 3]); // smooth feather edge
+                }
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+            currentPreviewImg = canvas.toDataURL('image/png');
+            updateLivePreviewStudio();
+            showToast('🪄 100% Transparent Background Applied!');
+        }
+
+        // 1-Click Full HD Clarity Boost
+        function boostHdClarity() {
+            document.getElementById('sliderContrast').value = 115;
+            document.getElementById('sliderSharpness').value = 35;
+            document.getElementById('sliderHighlights').value = 110;
+            document.getElementById('sliderSaturation').value = 112;
+            updateAdjustments();
+            showToast('💎 Full HD Clarity & Edge Definition Boosted!');
+        }
+
         function updateLivePreviewStudio() {
             const stage = document.getElementById('liveBadgeStage');
             if (!stage) return;
@@ -1492,13 +1796,53 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             const animOffClass = (!isMasterAnim) ? ' ff-anim-off' : '';
             const filterDrop = glowEnabled ? `filter:drop-shadow(0 0 10px ${glowVal});` : '';
 
-            // Render Live Stage (100% Transparent, No Yellow Cloud)
+            // Compute Pro Color & Lighting Adjustments
+            const adjB = (document.getElementById('sliderBrightness')?.value || 100) / 100;
+            const adjC = document.getElementById('sliderContrast')?.value || 100;
+            const adjS = document.getElementById('sliderSaturation')?.value || 100;
+            const adjHl = (document.getElementById('sliderHighlights')?.value || 100) / 100;
+            const adjH = document.getElementById('sliderHue')?.value || 0;
+            const adjSharp = parseInt(document.getElementById('sliderSharpness')?.value || 0);
+
+            const effectiveBrightness = adjB * adjHl;
+            const imgAdjustmentFilter = `brightness(${effectiveBrightness}) contrast(${adjC}%) saturate(${adjS}%) hue-rotate(${adjH}deg)` + (adjSharp > 0 ? ` contrast(${100 + adjSharp * 0.3}%)` : '');
+
+            // Compute Aura Contour Shadow (strictly hugs PNG outline, no square box!)
+            const isContourGlow = document.getElementById('contourGlowCheck')?.checked;
+            const contourGlowColor = document.getElementById('contourGlowColorHex')?.value || '#FFD700';
+            const contourGlowRad = parseInt(document.getElementById('sliderGlowRadius')?.value || 14);
+            const contourGlowBlur = parseInt(document.getElementById('sliderGlowBlur')?.value || 10);
+
+            let contourDropFilter = '';
+            if (isContourGlow && contourGlowRad > 0) {
+                contourDropFilter = `filter: drop-shadow(0 0 ${contourGlowRad}px ${contourGlowColor}) drop-shadow(0 0 ${contourGlowBlur}px ${contourGlowColor});`;
+            }
+
+            // Compute Bone / Focal Accent Light
+            const isBoneLight = document.getElementById('boneLightCheck')?.checked;
+            let boneLightHtml = '';
+            if (isBoneLight) {
+                const bonePos = document.getElementById('bonePosSelect')?.value || 'crown';
+                const boneColor = document.getElementById('boneColorHex')?.value || '#FFD700';
+                const boneRad = parseInt(document.getElementById('sliderBoneRadius')?.value || 45);
+
+                let posX = '50%', posY = '15%';
+                if (bonePos === 'left_wing') { posX = '22%'; posY = '38%'; }
+                else if (bonePos === 'right_wing') { posX = '78%'; posY = '38%'; }
+                else if (bonePos === 'center_gem') { posX = '50%'; posY = '52%'; }
+                else if (bonePos === 'bottom_apex') { posX = '50%'; posY = '84%'; }
+
+                boneLightHtml = `<div class="ff-bone-accent-light" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${boneRad * 2}px;height:${boneRad * 2}px;border-radius:50%;background:radial-gradient(circle, ${boneColor} 0%, rgba(255,255,255,0.9) 25%, ${boneColor} 45%, transparent 70%);mix-blend-mode:screen;pointer-events:none;z-index:9;filter:blur(3px);animation:pulse_bone 2s infinite alternate ease-in-out;"></div>`;
+            }
+
+            // Render Live Stage with Pro Lab Adjustments & Contour Glow
             stage.innerHTML = `
-                <div class="ff-prime-badge-wrap ff-prime-lvl-8${animOffClass}" style="width:${stageDisplaySize}px;height:${stageDisplaySize}px;position:relative;background:transparent !important;${filterDrop}">
+                <div class="ff-prime-badge-wrap ff-prime-lvl-8${animOffClass}" style="width:${stageDisplaySize}px;height:${stageDisplaySize}px;position:relative;background:transparent !important;${contourDropFilter}">
                     ${starsHtml}
-                    <img src="${currentPreviewImg}" class="ff-badge-img" style="${imgStyle}" alt="Live Preview" onerror="this.onerror=null;this.src='${CDN_BASE + (currentActiveBadge ? currentActiveBadge.file : 'ff_ui_prime_icon_08.png')}';">
+                    <img src="${currentPreviewImg}" class="ff-badge-img" style="${imgStyle} filter:${imgAdjustmentFilter};" alt="Live Preview" onerror="this.onerror=null;this.src='${CDN_BASE + (currentActiveBadge ? currentActiveBadge.file : 'ff_ui_prime_icon_08.png')}';">
                     ${shineHtml}
                     ${glintHtml}
+                    ${boneLightHtml}
                 </div>
             `;
 
