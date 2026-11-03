@@ -216,21 +216,29 @@
   background: linear-gradient(
     45deg,
     transparent 35%,
-    rgba(255, 255, 255, 0.2) 44%,
+    rgba(255, 255, 255, 0.25) 44%,
     rgba(255, 255, 255, 0.98) 50%,
-    rgba(255, 255, 255, 0.2) 56%,
+    rgba(255, 255, 255, 0.25) 56%,
     transparent 65%
   );
-  animation: ff_shape_sweep 2.6s infinite linear;
+  animation: ff_shape_sweep 2.2s infinite linear;
   mix-blend-mode: screen;
   display: block;
+}
+
+/* Fallback default sweep keyframe: sweeps diagonally across badge without ever freezing */
+@keyframes ff_shape_sweep {
+  0% { transform: translate(-100%, 100%) rotate(45deg); }
+  100% { transform: translate(100%, -100%) rotate(45deg); }
 }
 
 
 /* 8 Authentic Directional Sheen Sweep Styles */
 /* 1. Diagonal: Bottom-Left to Top-Right (45deg) - Classic FF in-game */
 .sweep-dir-diag .ff-badge-shine-beam,
-.sweep-dir-bl-tr .ff-badge-shine-beam {
+.sweep-dir-bl-tr .ff-badge-shine-beam,
+.sweep-dir-diag_bl_tr .ff-badge-shine-beam,
+.sweep-dir-bl_tr .ff-badge-shine-beam {
   background: linear-gradient(45deg, transparent 35%, rgba(255,255,255,0.2) 44%, rgba(255,255,255,0.98) 50%, rgba(255,255,255,0.2) 56%, transparent 65%);
   animation-name: ff_sweep_bl_tr;
 }
@@ -238,10 +246,16 @@
   0% { transform: translate(-100%, 100%) rotate(45deg); }
   100% { transform: translate(100%, -100%) rotate(45deg); }
 }
+@keyframes ff_sweep_diag_bl_tr {
+  0% { transform: translate(-100%, 100%) rotate(45deg); }
+  100% { transform: translate(100%, -100%) rotate(45deg); }
+}
 
 /* 2. Diagonal: Bottom-Right to Top-Left (-45deg) */
 .sweep-dir-diag-rev .ff-badge-shine-beam,
-.sweep-dir-br-tl .ff-badge-shine-beam {
+.sweep-dir-br-tl .ff-badge-shine-beam,
+.sweep-dir-diag_br_tl .ff-badge-shine-beam,
+.sweep-dir-br_tl .ff-badge-shine-beam {
   background: linear-gradient(-45deg, transparent 35%, rgba(255,255,255,0.2) 44%, rgba(255,255,255,0.98) 50%, rgba(255,255,255,0.2) 56%, transparent 65%);
   animation-name: ff_sweep_br_tl;
 }
@@ -251,7 +265,9 @@
 }
 
 /* 3. Diagonal: Top-Left to Bottom-Right (135deg) */
-.sweep-dir-tl-br .ff-badge-shine-beam {
+.sweep-dir-tl-br .ff-badge-shine-beam,
+.sweep-dir-diag_tl_br .ff-badge-shine-beam,
+.sweep-dir-tl_br .ff-badge-shine-beam {
   background: linear-gradient(135deg, transparent 35%, rgba(255,255,255,0.2) 44%, rgba(255,255,255,0.98) 50%, rgba(255,255,255,0.2) 56%, transparent 65%);
   animation-name: ff_sweep_tl_br;
 }
@@ -261,7 +277,9 @@
 }
 
 /* 4. Diagonal: Top-Right to Bottom-Left (-135deg) */
-.sweep-dir-tr-bl .ff-badge-shine-beam {
+.sweep-dir-tr-bl .ff-badge-shine-beam,
+.sweep-dir-diag_tr_bl .ff-badge-shine-beam,
+.sweep-dir-tr_bl .ff-badge-shine-beam {
   background: linear-gradient(-135deg, transparent 35%, rgba(255,255,255,0.2) 44%, rgba(255,255,255,0.98) 50%, rgba(255,255,255,0.2) 56%, transparent 65%);
   animation-name: ff_sweep_tr_bl;
 }

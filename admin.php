@@ -306,6 +306,86 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
         }
 
+        /* Continuous Metallic Sheen Keyframes - Glides across badge from corner to corner without freezing */
+        @keyframes ff_sweep_diag_bl_tr {
+            0% { transform: translate(-100%, 100%) rotate(45deg); }
+            100% { transform: translate(100%, -100%) rotate(45deg); }
+        }
+        @keyframes ff_shape_sweep {
+            0% { transform: translate(-100%, 100%) rotate(45deg); }
+            100% { transform: translate(100%, -100%) rotate(45deg); }
+        }
+        @keyframes ff_sweep_br_tl {
+            0% { transform: translate(100%, 100%) rotate(-45deg); }
+            100% { transform: translate(-100%, -100%) rotate(-45deg); }
+        }
+        @keyframes ff_sweep_tl_br {
+            0% { transform: translate(-100%, -100%) rotate(135deg); }
+            100% { transform: translate(100%, 100%) rotate(135deg); }
+        }
+        @keyframes ff_sweep_tr_bl {
+            0% { transform: translate(100%, -100%) rotate(-135deg); }
+            100% { transform: translate(-100%, 100%) rotate(-135deg); }
+        }
+        @keyframes ff_sweep_up {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(-100%); }
+        }
+        @keyframes ff_sweep_down {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        @keyframes ff_sweep_right {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        @keyframes ff_sweep_left {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Directional Class Support (supports underscores & dashes) */
+        .sweep-dir-diag .ff-badge-shine-beam,
+        .sweep-dir-bl-tr .ff-badge-shine-beam,
+        .sweep-dir-diag_bl_tr .ff-badge-shine-beam,
+        .sweep-dir-bl_tr .ff-badge-shine-beam {
+            background: linear-gradient(45deg, transparent 35%, rgba(255,255,255,0.25) 44%, rgba(255,255,255,0.98) 50%, rgba(255,255,255,0.25) 56%, transparent 65%);
+            animation-name: ff_sweep_diag_bl_tr;
+        }
+
+        .sweep-dir-diag-rev .ff-badge-shine-beam,
+        .sweep-dir-br-tl .ff-badge-shine-beam,
+        .sweep-dir-diag_br_tl .ff-badge-shine-beam,
+        .sweep-dir-br_tl .ff-badge-shine-beam {
+            background: linear-gradient(-45deg, transparent 35%, rgba(255,255,255,0.25) 44%, rgba(255,255,255,0.98) 50%, rgba(255,255,255,0.25) 56%, transparent 65%);
+            animation-name: ff_sweep_br_tl;
+        }
+
+        .sweep-dir-tl-br .ff-badge-shine-beam,
+        .sweep-dir-diag_tl_br .ff-badge-shine-beam,
+        .sweep-dir-tl_br .ff-badge-shine-beam {
+            background: linear-gradient(135deg, transparent 35%, rgba(255,255,255,0.25) 44%, rgba(255,255,255,0.98) 50%, rgba(255,255,255,0.25) 56%, transparent 65%);
+            animation-name: ff_sweep_tl_br;
+        }
+
+        .sweep-dir-tr-bl .ff-badge-shine-beam,
+        .sweep-dir-diag_tr_bl .ff-badge-shine-beam,
+        .sweep-dir-tr_bl .ff-badge-shine-beam {
+            background: linear-gradient(-135deg, transparent 35%, rgba(255,255,255,0.25) 44%, rgba(255,255,255,0.98) 50%, rgba(255,255,255,0.25) 56%, transparent 65%);
+            animation-name: ff_sweep_tr_bl;
+        }
+
+        /* Clean Animation Disable Support */
+        .ff-anim-off .ff-badge-shine,
+        .ff-anim-off .ff-prime-stars-layer,
+        .ff-anim-off .ff-gem-glint {
+            display: none !important;
+        }
+        .ff-anim-off .ff-badge-img {
+            animation: none !important;
+            transform: none !important;
+        }
+
         .glass-panel {
             background: #0e1224;
             border: 1px solid #1f2544;
@@ -321,7 +401,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             border-radius: 4px;
         }
 
-        /* Checkerboard pattern for proving 100% transparent backgrounds */
+        /* 3-Mode Background Switcher Styles */
         .checker-bg {
             background-color: #0c0f20;
             background-image: 
@@ -332,9 +412,20 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             background-size: 16px 16px;
             background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
         }
+
+        /* Studio Tabs Styling */
+        .studio-tab-btn {
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease-in-out;
+        }
+        .studio-tab-btn.active {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-rose-500 selection:text-white">
+
 <!-- DIGITAL HIGH-PASS SHARPNESS CONVOLUTION FILTER -->
 <svg style="position:absolute;width:0;height:0;overflow:hidden;" aria-hidden="true">
     <defs>
@@ -345,7 +436,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 </svg>
 
 <?php if (!$is_logged_in): ?>
-    <!-- LOGIN SCREEN -->
+    <!-- LOGIN SCREEN (100% ENGLISH, SECURE, ZERO PLAIN CREDENTIALS) -->
     <div class="min-h-screen flex items-center justify-center p-4 bg-radial from-[#151936] to-[#080915]">
         <div class="w-full max-w-md glass-panel p-8 sm:p-10 shadow-2xl relative border-amber-500/20">
             <div class="text-center space-y-3 mb-8">
@@ -367,18 +458,18 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <input type="hidden" name="login_action" value="1">
                 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-slate-200">Email or Username</label>
+                    <label class="text-xs font-semibold text-slate-200">Username or Email</label>
                     <div class="relative">
                         <i class="fas fa-user absolute left-3.5 top-3 text-gray-500 text-xs"></i>
-                        <input type="text" name="username" required placeholder="Enter email or username..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                        <input type="text" name="username" required autocomplete="off" placeholder="Enter username or email..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition font-mono">
                     </div>
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-slate-200">Password</label>
+                    <label class="text-xs font-semibold text-slate-200">Access Password</label>
                     <div class="relative">
                         <i class="fas fa-lock absolute left-3.5 top-3 text-gray-500 text-xs"></i>
-                        <input type="password" name="password" required placeholder="Enter password..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                        <input type="password" name="password" required autocomplete="off" placeholder="Enter security password..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition font-mono">
                     </div>
                 </div>
 
@@ -391,16 +482,14 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             <div class="mt-6 text-center">
                 <a href="index.php" class="text-xs text-gray-500 hover:text-gray-300 transition flex items-center justify-center gap-1.5">
                     <i class="fas fa-arrow-left text-[10px]"></i>
-                    <span>Back to FF Items Explorer</span>
+                    <span>Back to FF Badges Explorer</span>
                 </a>
             </div>
         </div>
     </div>
-
 <?php else: ?>
-    <!-- ADMIN STUDIO DASHBOARD -->
 
-    <!-- Navbar -->
+    <!-- TOP NAVBAR -->
     <header class="border-b border-[#1c2242] bg-[#0c0f20]/95 sticky top-0 z-40 backdrop-blur-md">
         <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
             
@@ -412,7 +501,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <div class="flex items-center gap-2">
                         <span class="font-extrabold font-orbitron text-white text-base tracking-wider">TURKY HUB</span>
                         <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-black font-extrabold font-mono uppercase tracking-wider">
-                            VFX STUDIO
+                            PRO STUDIO
                         </span>
                     </div>
                     <p class="text-[11px] text-gray-400 font-mono">12...80 ID & Live CDN Asset Generator</p>
@@ -448,11 +537,11 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <i class="fas fa-check-circle mr-1"></i> Asset Saved & Deployed to CDN!
                         </span>
                         <h2 class="text-xl font-black text-white font-orbitron flex items-center gap-2">
-                            <?= htmlspecialchars($success_item['name']) ?>
-                            <span class="text-sm font-mono text-emerald-400">#<?= $success_item['id'] ?></span>
+                            <?= htmlspecialchars($success_item['name'] ?? 'Untitled') ?>
+                            <span class="text-sm font-mono text-emerald-400">#<?= htmlspecialchars($success_item['id'] ?? '') ?></span>
                         </h2>
                         <p class="text-xs text-gray-300">
-                            Badge has been updated, synchronized across local files and D: drive backup, and deployed to jsDelivr CDN!
+                            Badge has been synchronized across local files, D: drive backup mirror, and deployed to jsDelivr Global CDN!
                         </p>
                     </div>
 
@@ -489,7 +578,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <div class="bg-[#090b18] p-3 rounded-xl border border-white/5 space-y-1.5">
                         <div class="flex items-center justify-between text-[11px] font-bold">
                             <span class="text-purple-400 font-mono">Web Tag &lt;ff-badge&gt;:</span>
-                            <button type="button" onclick="copyText('<ff-badge id=\'<?= $success_item['id'] ?>\' size=\'<?= $success_item['default_size'] ?>\'></ff-badge>', 'Web Tag Copied!')" class="text-purple-400 hover:text-purple-300 text-[10px]">
+                            <button type="button" onclick="copyText('<ff-badge id='<?= $success_item['id'] ?>' size='<?= $success_item['default_size'] ?>'></ff-badge>', 'Web Tag Copied!')" class="text-purple-400 hover:text-purple-300 text-[10px]">
                                 <i class="fas fa-copy"></i>
                             </button>
                         </div>
@@ -499,17 +588,17 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <div class="bg-[#090b18] p-3 rounded-xl border border-white/5 space-y-1.5">
                         <div class="flex items-center justify-between text-[11px] font-bold">
                             <span class="text-amber-400 font-mono">PHP Function Call:</span>
-                            <button type="button" onclick="copyText(<?= htmlspecialchars(json_encode($success_item['fn_call'])) ?>, 'PHP Call Copied!')" class="text-amber-400 hover:text-amber-300 text-[10px]">
+                            <button type="button" onclick="copyText(<?= htmlspecialchars(json_encode($success_item['fn_call'] ?? '')) ?>, 'PHP Call Copied!')" class="text-amber-400 hover:text-amber-300 text-[10px]">
                                 <i class="fas fa-copy"></i>
                             </button>
                         </div>
-                        <input type="text" readonly value="<?= htmlspecialchars($success_item['fn_call']) ?>" class="w-full bg-black/50 border border-gray-800 rounded p-1.5 text-[10px] font-mono text-amber-300">
+                        <input type="text" readonly value="<?= htmlspecialchars($success_item['fn_call'] ?? '') ?>" class="w-full bg-black/50 border border-gray-800 rounded p-1.5 text-[10px] font-mono text-amber-300">
                     </div>
                 </div>
             </section>
         <?php endif; ?>
 
-        <!-- SECTION 1: SEARCH / PASTE BADGE ID BAR (Clean, no quick select pills) -->
+        <!-- SECTION 1: SEARCH / PASTE BADGE ID BAR -->
         <section class="glass-panel p-5 border-amber-500/20">
             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                 
@@ -522,7 +611,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <div class="flex items-center gap-2">
                         <div class="relative flex-1">
                             <i class="fas fa-search absolute left-3.5 top-3 text-emerald-400 text-xs"></i>
-                            <input type="text" id="quickBadgeSearchInput" placeholder="Paste 12...80 ID (e.g. 120000010880) or type badge name..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs font-mono text-emerald-400 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                            <input type="text" id="quickBadgeSearchInput" placeholder="Paste 12...80 ID (e.g. 120000000880) or type badge name..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs font-mono text-emerald-400 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
                         </div>
                         <button type="button" onclick="handleQuickSearchLoad()" class="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-xs flex items-center gap-1.5 transition shadow-lg shadow-amber-400/20 whitespace-nowrap cursor-pointer">
                             <i class="fas fa-bolt text-xs"></i>
@@ -540,636 +629,17 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                     <button type="button" onclick="resetToNewBadge()" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 border border-white/10 transition cursor-pointer">
                         <i class="fas fa-plus text-amber-400"></i>
-                        <span>➕ Create New Badge</span>
+                        <span>Create New Badge</span>
                     </button>
                 </div>
 
             </div>
         </section>
 
-        <!-- SECTION 2: 2-COLUMN MAIN STUDIO WORKBENCH -->
+        <!-- SECTION 2: 2-COLUMN MAIN STUDIO LAYOUT (LEFT: FIXED LIVE PREVIEW | RIGHT: TABBED CONTROL CENTER) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-            <!-- LEFT COLUMN: BADGE CUSTOMIZER CONTROLS (7 COLS) -->
-            <div class="lg:col-span-7 glass-panel p-6 sm:p-7 space-y-6">
-                
-                <div class="flex items-center justify-between border-b border-[#1f2544] pb-4">
-                    <div class="space-y-1">
-                        <h2 class="text-base font-black font-orbitron text-white flex items-center gap-2">
-                            <i class="fas fa-sliders text-amber-400"></i>
-                            <span id="formPanelTitle">Badge Studio & VFX Customizer</span>
-                        </h2>
-                        <p class="text-xs text-gray-400" id="formPanelSub">
-                            Edit badge name, 12...80 ID, scattered gunpowder stars (0 to 50), and 50 numbered presets.
-                        </p>
-                    </div>
-
-                    <button type="button" onclick="randomizeId()" class="px-3 py-1.5 bg-amber-400/10 hover:bg-amber-400/20 text-yellow-300 border border-yellow-400/30 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition cursor-pointer" title="Generate New 12...80 ID">
-                        <i class="fas fa-dice text-xs"></i> <span>Randomize ID</span>
-                    </button>
-                </div>
-
-                <form method="POST" action="admin.php" enctype="multipart/form-data" id="badgeEditorForm" class="space-y-6">
-                    <input type="hidden" name="save_badge" value="1">
-                    <input type="hidden" name="original_id" id="originalIdInput" value="">
-
-                    <!-- Basic Metadata Grid -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        
-                        <!-- 1. Badge Name (Editable) -->
-                        <div class="space-y-1.5 sm:col-span-2">
-                            <label class="text-xs font-semibold text-slate-200 flex items-center justify-between">
-                                <span>Badge Name <span class="text-rose-500">*</span></span>
-                                <span class="text-[10px] text-gray-400 font-normal">Editable anytime</span>
-                            </label>
-                            <input type="text" name="badge_name" id="badgeNameInput" required placeholder="e.g. Free Fire Prime Level 8 or OFFICIAL V BAGE" value="Free Fire Prime Level 8" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
-                        </div>
-
-                        <!-- 2. Badge ID (Editable 12...80) -->
-                        <div class="space-y-1.5 sm:col-span-2">
-                            <div class="flex items-center justify-between">
-                                <label class="text-xs font-semibold text-slate-200">Badge ID (Must start with 12 and end with 80) <span class="text-emerald-400">*</span></label>
-                                <span class="text-[10px] text-emerald-400 font-mono font-bold">12 Digits Strict Format</span>
-                            </div>
-                            <div class="relative flex items-center">
-                                <input type="text" name="badge_id" id="badgeIdInput" value="<?= $suggested_id ?>" pattern="^12[0-9]{8}80$" required oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs font-mono font-bold text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-400 transition">
-                                <button type="button" onclick="randomizeId()" class="absolute right-2 px-2.5 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[11px] rounded-lg font-mono transition cursor-pointer" title="Randomize ID">
-                                    <i class="fas fa-rotate"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- 3. Category -->
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-semibold text-slate-200">Category</label>
-                            <select name="badge_category" id="badgeCatSelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                                <option value="Prime System" selected>Prime System (Free Fire Prime)</option>
-                                <option value="Official Partner (KOL)">Official Partner (KOL V-Badge)</option>
-                                <option value="Crystal VIP Partner">Crystal VIP Partner</option>
-                                <option value="Competitive & Esports">Competitive & Esports</option>
-                                <option value="Administration & Authority">Administration & Authority</option>
-                                <option value="Creators & Architects">Creators & Architects</option>
-                                <option value="Special Editions">Special Editions</option>
-                                <option value="Exchange Tokens">Exchange Tokens</option>
-                                <option value="Custom VIP">Custom VIP</option>
-                            </select>
-                        </div>
-
-                        <!-- 4. Rarity -->
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-semibold text-slate-200">Rarity</label>
-                            <select name="badge_rarity" id="badgeRaritySelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                                <option value="MYTHIC" selected>MYTHIC (Gold / Celestial)</option>
-                                <option value="LEGENDARY">LEGENDARY (Crimson Flame)</option>
-                                <option value="EPIC">EPIC (Cyan / Purple)</option>
-                                <option value="PURPLE">PURPLE (Violet Diamond)</option>
-                                <option value="RARE">RARE (Blue / Silver)</option>
-                            </select>
-                        </div>
-
-                        <!-- 5. Default Size -->
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-semibold text-slate-200">Default Size (px)</label>
-                            <input type="number" name="badge_size" id="badgeSizeInput" value="54" min="20" max="250" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition">
-                        </div>
-
-                        <!-- 6. Aura Glow Color -->
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <label class="text-xs font-semibold text-slate-200">Aura Glow Color</label>
-                                <label class="flex items-center gap-1 cursor-pointer text-[10px] text-amber-300">
-                                    <input type="checkbox" name="glow_enabled" id="glowEnabledCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
-                                    <span>Active</span>
-                                </label>
-                            </div>
-                            <select name="badge_glow" id="glowSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                                <option value="rgba(255, 215, 0, 0.85)" selected>Gold Aura (rgba(255, 215, 0, 0.85))</option>
-                                <option value="rgba(168, 85, 247, 0.85)">Cosmic Purple (rgba(168, 85, 247, 0.85))</option>
-                                <option value="rgba(6, 182, 212, 0.85)">Cyan Crystal (rgba(6, 182, 212, 0.85))</option>
-                                <option value="rgba(239, 68, 68, 0.85)">Crimson Authority (rgba(239, 68, 68, 0.85))</option>
-                                <option value="rgba(249, 115, 22, 0.85)">Amber Flame (rgba(249, 115, 22, 0.85))</option>
-                                <option value="rgba(16, 185, 129, 0.85)">Emerald Lightning (rgba(16, 185, 129, 0.85))</option>
-                                <option value="rgba(255, 255, 255, 0.85)">Diamond White (rgba(255, 255, 255, 0.85))</option>
-                            </select>
-                        </div>
-
-                    </div>
-
-                                                            <!-- ======================================================== -->
-                    <!-- SECTION: COLOR GRADING & PRO IMAGE STUDIO (100% English) -->
-                    <!-- ======================================================== -->
-                    <div class="p-5 rounded-2xl bg-[#090c22] border border-emerald-500/30 space-y-5 shadow-xl">
-                        
-                        <!-- Studio Header & 1-Click Magic Action Buttons -->
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
-                            <div class="space-y-0.5">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs">
-                                        <i class="fas fa-wand-magic-sparkles"></i>
-                                    </div>
-                                    <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                                        <span>Color Grading & Pro Image Studio</span>
-                                        <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">Ultra Fast</span>
-                                    </h3>
-                                </div>
-                                <p class="text-[11px] text-slate-300">1-Click Auto Background Remover, AI Enhancer, Color Shift Spectrum, Bone Lighting & Contour Glow.</p>
-                            </div>
-
-                            <button type="button" onclick="resetAllAdjustments()" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-[11px] font-semibold flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto">
-                                <i class="fas fa-rotate-left text-[10px]"></i> <span>Reset All Sliders</span>
-                            </button>
-                        </div>
-
-                        <!-- 1-Click Magic Actions Row -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                            <button type="button" onclick="aiAutoEnhance()" class="p-2.5 rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-amber-200 text-xs font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-amber-500/10 cursor-pointer">
-                                <i class="fas fa-sparkles text-amber-400"></i>
-                                <span>1-Click AI Auto Enhancer</span>
-                            </button>
-
-                            <button type="button" onclick="autoRemoveBackground()" class="p-2.5 rounded-xl bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 border border-emerald-500/40 text-emerald-200 text-xs font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/10 cursor-pointer">
-                                <i class="fas fa-eraser text-emerald-400"></i>
-                                <span>1-Click Auto Background Remove</span>
-                            </button>
-
-                            <button type="button" onclick="boostHdClarity()" class="p-2.5 rounded-xl bg-gradient-to-r from-cyan-600/20 to-blue-600/20 hover:from-cyan-600/30 hover:to-blue-600/30 border border-cyan-500/40 text-cyan-200 text-xs font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-cyan-500/10 cursor-pointer">
-                                <i class="fas fa-gem text-cyan-400"></i>
-                                <span>1-Click Full HD Clarity Boost</span>
-                            </button>
-                        </div>
-
-                        <!-- MODULE 1: UNIVERSAL COLOR SHIFT & TARGET RECOLORIZER -->
-                        <div class="p-4 rounded-xl bg-[#060818] border border-white/10 space-y-3">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-2">
-                                    <i class="fas fa-palette text-pink-400 text-xs"></i>
-                                    <span class="text-xs font-bold text-white">Universal Color Shift & Spectrum Recolorizer</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span id="valColorShift" class="font-mono text-pink-300 font-bold text-xs">0° (Original)</span>
-                                    <button type="button" onclick="resetSingleSlider('sliderColorShift', 0)" class="text-[10px] text-gray-400 hover:text-pink-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Color Shift to 0°">
-                                        <i class="fas fa-rotate-left"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Rainbow Spectrum Track -->
-                            <div class="space-y-2">
-                                <div class="flex items-center gap-3">
-                                    <div class="relative flex-1">
-                                        <input type="range" id="sliderColorShift" min="0" max="360" value="0" oninput="updateAdjustments()" ondblclick="document.getElementById('targetColorBox').click()" class="w-full h-2.5 rounded-lg appearance-none cursor-pointer" style="background: linear-gradient(to right, #ff0000 0%, #ff8800 17%, #ffff00 33%, #00ff00 50%, #00ffff 67%, #0000ff 83%, #ff00ff 92%, #ff0000 100%);">
-                                    </div>
-                                    
-                                    <!-- Interactive Color Box (Double-click or click to pick any color) -->
-                                    <div class="relative flex items-center gap-1.5 shrink-0" title="Click to pick custom target color">
-                                        <input type="color" id="targetColorBox" value="#FFD700" onchange="applyTargetColor(this.value)" class="w-7 h-7 rounded-lg border border-white/30 bg-transparent cursor-pointer p-0.5">
-                                        <span class="text-[10px] text-gray-400 font-mono hidden sm:inline">Color Picker</span>
-                                    </div>
-                                </div>
-
-                                <!-- Quick Recolor Swatches -->
-                                <div class="flex items-center gap-1.5 flex-wrap pt-1 text-[11px]">
-                                    <span class="text-gray-400 text-[10px] mr-1">Quick Presets:</span>
-                                    <button type="button" onclick="setColorShift(0)" class="px-2 py-0.5 rounded bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 border border-yellow-500/30 cursor-pointer">🟡 Gold (0°)</button>
-                                    <button type="button" onclick="setColorShift(330)" class="px-2 py-0.5 rounded bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 cursor-pointer">🔴 Crimson (330°)</button>
-                                    <button type="button" onclick="setColorShift(180)" class="px-2 py-0.5 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 cursor-pointer">🔵 Cyan Ice (180°)</button>
-                                    <button type="button" onclick="setColorShift(270)" class="px-2 py-0.5 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 cursor-pointer">🟣 Cosmic (270°)</button>
-                                    <button type="button" onclick="setColorShift(110)" class="px-2 py-0.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 cursor-pointer">🟢 Emerald (110°)</button>
-                                    <button type="button" onclick="setColorShift(35)" class="px-2 py-0.5 rounded bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/30 cursor-pointer">🟠 Flame (35°)</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MODULE 2: PRO ADJUSTMENT SLIDERS (EACH WITH INDIVIDUAL RESET BUTTON) -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                            
-                            <!-- 1. Brightness -->
-                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
-                                <div class="flex items-center justify-between text-[11px]">
-                                    <div class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fas fa-sun text-amber-400 text-[10px]"></i>
-                                        <span class="font-medium">Brightness:</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span id="valBrightness" class="font-mono text-amber-300 font-bold text-xs">100%</span>
-                                        <button type="button" onclick="resetSingleSlider('sliderBrightness', 100)" class="text-[10px] text-gray-400 hover:text-amber-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Brightness">
-                                            <i class="fas fa-rotate-left"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <input type="range" id="sliderBrightness" min="50" max="200" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
-                            </div>
-
-                            <!-- 2. Contrast -->
-                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
-                                <div class="flex items-center justify-between text-[11px]">
-                                    <div class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fas fa-circle-half-stroke text-cyan-400 text-[10px]"></i>
-                                        <span class="font-medium">Contrast:</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span id="valContrast" class="font-mono text-cyan-300 font-bold text-xs">100%</span>
-                                        <button type="button" onclick="resetSingleSlider('sliderContrast', 100)" class="text-[10px] text-gray-400 hover:text-cyan-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Contrast">
-                                            <i class="fas fa-rotate-left"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <input type="range" id="sliderContrast" min="50" max="200" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
-                            </div>
-
-                            <!-- 3. Saturation (up to 250%) -->
-                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
-                                <div class="flex items-center justify-between text-[11px]">
-                                    <div class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fas fa-palette text-pink-400 text-[10px]"></i>
-                                        <span class="font-medium">Saturation:</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span id="valSaturation" class="font-mono text-pink-300 font-bold text-xs">100%</span>
-                                        <button type="button" onclick="resetSingleSlider('sliderSaturation', 100)" class="text-[10px] text-gray-400 hover:text-pink-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Saturation">
-                                            <i class="fas fa-rotate-left"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <input type="range" id="sliderSaturation" min="0" max="250" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-pink-400">
-                            </div>
-
-                            <!-- 4. Highlights (up to 200%) -->
-                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
-                                <div class="flex items-center justify-between text-[11px]">
-                                    <div class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fas fa-wand-magic text-yellow-300 text-[10px]"></i>
-                                        <span class="font-medium">Highlights:</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span id="valHighlights" class="font-mono text-yellow-200 font-bold text-xs">100%</span>
-                                        <button type="button" onclick="resetSingleSlider('sliderHighlights', 100)" class="text-[10px] text-gray-400 hover:text-yellow-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Highlights">
-                                            <i class="fas fa-rotate-left"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <input type="range" id="sliderHighlights" min="0" max="200" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-yellow-300">
-                            </div>
-
-                            <!-- 5. Hue / Tone Shift -->
-                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
-                                <div class="flex items-center justify-between text-[11px]">
-                                    <div class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fas fa-rotate text-purple-400 text-[10px]"></i>
-                                        <span class="font-medium">Hue / Tone:</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span id="valHue" class="font-mono text-purple-300 font-bold text-xs">0°</span>
-                                        <button type="button" onclick="resetSingleSlider('sliderHue', 0)" class="text-[10px] text-gray-400 hover:text-purple-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Hue">
-                                            <i class="fas fa-rotate-left"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <input type="range" id="sliderHue" min="0" max="360" value="0" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-purple-400">
-                            </div>
-
-                            <!-- 6. Sharpness (Digital High-Pass Kernel - up to 200%) -->
-                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
-                                <div class="flex items-center justify-between text-[11px]">
-                                    <div class="flex items-center gap-1.5 text-slate-200">
-                                        <i class="fas fa-bolt text-emerald-400 text-[10px]"></i>
-                                        <span class="font-medium">HD Sharpness:</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <span id="valSharpness" class="font-mono text-emerald-300 font-bold text-xs">0%</span>
-                                        <button type="button" onclick="resetSingleSlider('sliderSharpness', 0)" class="text-[10px] text-gray-400 hover:text-emerald-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Sharpness">
-                                            <i class="fas fa-rotate-left"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <input type="range" id="sliderSharpness" min="0" max="200" value="0" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-400">
-                            </div>
-
-                        </div>
-
-                        <!-- MODULE 3: BONE & FOCAL ACCENT LIGHT (Click to position light, expand radius outward) -->
-                        <div class="p-4 rounded-xl bg-[#060818] border border-amber-500/20 space-y-3">
-                            <div class="flex items-center justify-between">
-                                <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300">
-                                    <input type="checkbox" id="boneLightCheck" onchange="updateAdjustments()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
-                                    <i class="fas fa-lightbulb text-amber-400"></i>
-                                    <span>Enable Bone / Focal Accent Light</span>
-                                </label>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-[10px] text-gray-400 font-mono">Pinpoint Radiant Outward Beam</span>
-                                    <button type="button" onclick="resetSingleSlider('sliderBoneRadius', 45)" class="text-[10px] text-gray-400 hover:text-amber-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Light Radius">
-                                        <i class="fas fa-rotate-left"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Clickable Bone Spot Presets -->
-                            <div class="space-y-1.5">
-                                <span class="text-[11px] text-slate-300 block font-medium">Select Bone Focal Spot:</span>
-                                <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-xs font-mono">
-                                    <button type="button" onclick="setBoneSpot('crown')" id="boneBtn-crown" class="bone-spot-btn px-2.5 py-1.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-center cursor-pointer transition">👑 Crown</button>
-                                    <button type="button" onclick="setBoneSpot('left_wing')" id="boneBtn-left_wing" class="bone-spot-btn px-2.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 text-center cursor-pointer transition">🦅 Left Wing</button>
-                                    <button type="button" onclick="setBoneSpot('right_wing')" id="boneBtn-right_wing" class="bone-spot-btn px-2.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 text-center cursor-pointer transition">🦅 Right Wing</button>
-                                    <button type="button" onclick="setBoneSpot('center_gem')" id="boneBtn-center_gem" class="bone-spot-btn px-2.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 text-center cursor-pointer transition">💎 Center Gem</button>
-                                    <button type="button" onclick="setBoneSpot('bottom_apex')" id="boneBtn-bottom_apex" class="bone-spot-btn px-2.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 text-center cursor-pointer transition">⚡ Bottom Apex</button>
-                                </div>
-                                <input type="hidden" id="bonePosSelect" value="crown">
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                                <!-- Bone Light Color -->
-                                <div class="space-y-1">
-                                    <label class="text-[11px] text-slate-300 block font-medium">Focal Light Color:</label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="color" id="boneColorPicker" value="#FFD700" onchange="document.getElementById('boneColorHex').value=this.value; updateAdjustments();" class="w-8 h-8 rounded border border-white/20 bg-transparent cursor-pointer p-0.5">
-                                        <input type="text" id="boneColorHex" value="#FFD700" oninput="document.getElementById('boneColorPicker').value=this.value; updateAdjustments();" class="w-full bg-[#090b1c] border border-[#23294c] rounded-lg px-2 py-1.5 text-xs font-mono text-amber-300 uppercase">
-                                    </div>
-                                </div>
-
-                                <!-- Bone Intensity / Outward Radius Slider -->
-                                <div class="space-y-1">
-                                    <div class="flex items-center justify-between text-[11px]">
-                                        <span class="text-slate-300 font-medium">Light Radius & Outward Beam:</span>
-                                        <span id="valBoneRadius" class="font-mono text-amber-300 font-bold">45px</span>
-                                    </div>
-                                    <input type="range" id="sliderBoneRadius" min="10" max="150" value="45" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MODULE 4: AURA GLOW & CONTOUR SHADOW (STRICT SILHOUETTE HUGGING) -->
-                        <div class="p-4 rounded-xl bg-[#060818] border border-cyan-500/20 space-y-3">
-                            <div class="flex items-center justify-between">
-                                <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-cyan-300">
-                                    <input type="checkbox" id="contourGlowCheck" checked onchange="updateAdjustments()" class="rounded bg-gray-800 border-gray-700 text-cyan-500">
-                                    <i class="fas fa-sun-plant-wilt text-cyan-400"></i>
-                                    <span>Enable Aura Glow & Contour Shadow</span>
-                                </label>
-                                <span class="text-[10px] text-emerald-400 font-mono">100% PNG Silhouette Outline (No Square Box)</span>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                                <!-- Glow Color Picker Box -->
-                                <div class="space-y-1">
-                                    <label class="text-[11px] text-slate-300 block font-medium">Glow Color Box:</label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="color" id="contourGlowColorPicker" value="#FFD700" onchange="document.getElementById('contourGlowColorHex').value=this.value; updateAdjustments();" class="w-8 h-8 rounded border border-white/20 bg-transparent cursor-pointer p-0.5">
-                                        <input type="text" id="contourGlowColorHex" value="#FFD700" oninput="document.getElementById('contourGlowColorPicker').value=this.value; updateAdjustments();" class="w-full bg-[#090b1c] border border-[#23294c] rounded-lg px-2 py-1.5 text-xs font-mono text-yellow-300 uppercase">
-                                    </div>
-                                </div>
-
-                                <!-- Glow Radius Slider -->
-                                <div class="space-y-1">
-                                    <div class="flex items-center justify-between text-[11px]">
-                                        <span class="text-slate-300 font-medium">Glow Radius:</span>
-                                        <div class="flex items-center gap-1.5">
-                                            <span id="valGlowRadius" class="font-mono text-cyan-300 font-bold">14px</span>
-                                            <button type="button" onclick="resetSingleSlider('sliderGlowRadius', 14)" class="text-[10px] text-gray-400 hover:text-cyan-300 px-1 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Glow Radius">
-                                                <i class="fas fa-rotate-left"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <input type="range" id="sliderGlowRadius" min="0" max="60" value="14" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
-                                </div>
-
-                                <!-- Glow Blur Slider -->
-                                <div class="space-y-1">
-                                    <div class="flex items-center justify-between text-[11px]">
-                                        <span class="text-slate-300 font-medium">Blur Softness:</span>
-                                        <div class="flex items-center gap-1.5">
-                                            <span id="valGlowBlur" class="font-mono text-cyan-300 font-bold">10px</span>
-                                            <button type="button" onclick="resetSingleSlider('sliderGlowBlur', 10)" class="text-[10px] text-gray-400 hover:text-cyan-300 px-1 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Blur">
-                                                <i class="fas fa-rotate-left"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <input type="range" id="sliderGlowBlur" min="0" max="40" value="10" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
-                                </div>
-                            </div>
-
-                            <!-- Preset Color Swatches -->
-                            <div class="flex items-center gap-2 pt-1 flex-wrap">
-                                <span class="text-[10px] text-gray-400">Quick Swatches:</span>
-                                <button type="button" onclick="setGlowColor('#FFD700')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#FFD700" title="Gold"></button>
-                                <button type="button" onclick="setGlowColor('#00F0FF')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#00F0FF" title="Cyan"></button>
-                                <button type="button" onclick="setGlowColor('#A855F7')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#A855F7" title="Purple"></button>
-                                <button type="button" onclick="setGlowColor('#EF4444')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#EF4444" title="Ruby"></button>
-                                <button type="button" onclick="setGlowColor('#10B981')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#10B981" title="Emerald"></button>
-                                <button type="button" onclick="setGlowColor('#F97316')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#F97316" title="Amber"></button>
-                                <button type="button" onclick="setGlowColor('#FFFFFF')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#FFFFFF" title="White"></button>
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    <!-- 50 NUMBERED EFFECT PRESETS & UNIVERSAL REMOVAL BAR -->
-                    <div class="p-4 rounded-2xl bg-[#090c1f] border border-cyan-500/30 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fas fa-wand-magic-sparkles text-amber-400"></i>
-                                <span>50+ Numbered Effect Presets</span>
-                            </label>
-                            <button type="button" onclick="removeAllEffects()" class="px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-[11px] font-bold flex items-center gap-1 transition cursor-pointer">
-                                <i class="fas fa-ban"></i> <span>❌ Remove All Effects (Clean Static Badge)</span>
-                            </button>
-                        </div>
-                        <p class="text-[11px] text-gray-400">Select any preset to automatically apply sheen angle, speed, scattered stars count, and center gem glint:</p>
-                        
-                        <div class="relative">
-                            <select id="presetSelect" onchange="handlePresetChange(this.value)" class="w-full bg-[#080a18] border border-cyan-500/40 rounded-xl px-4 py-2.5 text-xs text-cyan-200 focus:outline-none focus:border-amber-400 transition cursor-pointer font-mono">
-                                <option value="">-- Choose one of 50 Numbered Effect Presets --</option>
-                                <?php foreach ($presets_list as $ps): ?>
-                                    <option value="<?= $ps['id'] ?>"><?= htmlspecialchars($ps['name']) ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- MASTER VFX ENGINE & PARTICLE STUDIO -->
-                    <div class="p-5 rounded-2xl bg-gradient-to-br from-[#121634] to-[#0c0f24] border border-amber-500/30 space-y-4 shadow-xl">
-                        
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
-                            <div class="flex items-center gap-2.5">
-                                <span class="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center font-bold text-sm shadow">
-                                    <i class="fas fa-fire"></i>
-                                </span>
-                                <div>
-                                    <h4 class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">VFX Animation Engine & Particles</h4>
-                                    <p class="text-[10px] text-gray-400">Metallic sheen sweep, 360-degree radially scattered stars, and core gem glint</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Master Animation Switch (Allows ON/OFF for ANY badge, including V-Badge) -->
-                            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300 bg-amber-400/10 border border-amber-400/40 px-3.5 py-1.5 rounded-xl hover:bg-amber-400/20 transition">
-                                <input type="checkbox" name="sweep_enabled" id="masterAnimCheck" value="1" checked onchange="toggleMasterAnimation(this.checked)" class="rounded bg-gray-800 border-gray-700 text-amber-500 focus:ring-0">
-                                <span>Enable Animation Engine</span>
-                            </label>
-                        </div>
-
-                        <div id="vfxStudioControls" class="grid grid-cols-1 sm:grid-cols-2 gap-4 transition-all">
-                            
-                            <!-- 1. Metallic Sheen Sweep Direction (8 Directions) -->
-                            <div class="space-y-1.5">
-                                <div class="flex items-center justify-between">
-                                    <label class="text-[11px] font-semibold text-slate-200 flex items-center gap-1.5">
-                                        <i class="fas fa-bolt text-yellow-400"></i> <span>Sheen Direction (8 Directions)</span>
-                                    </label>
-                                    <label class="flex items-center gap-1 cursor-pointer text-[10px] text-gray-400">
-                                        <input type="checkbox" id="sheenActiveCheck" checked onchange="toggleSheenSweep(this.checked)" class="rounded bg-gray-800 border-gray-700 text-amber-500 text-[10px]">
-                                        <span>Sheen Active</span>
-                                    </label>
-                                </div>
-                                <select name="sweep_direction" id="sweepDirSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
-                                    <option value="diag_bl_tr" selected>↗ Diagonal (Bottom-Left to Top-Right - Prime 8 Authentic)</option>
-                                    <option value="diag_br_tl">↖ Diagonal Reverse (Bottom-Right to Top-Left)</option>
-                                    <option value="diag_tl_br">↘ Diagonal Down (Top-Left to Bottom-Right)</option>
-                                    <option value="diag_tr_bl">↙ Diagonal Down-Left (Top-Right to Bottom-Left)</option>
-                                    <option value="up">↑ Vertical Up (Bottom to Top)</option>
-                                    <option value="down">↓ Vertical Down (Top to Bottom)</option>
-                                    <option value="right">→ Horizontal Right (Left to Right)</option>
-                                    <option value="left">← Horizontal Left (Right to Left)</option>
-                                </select>
-                            </div>
-
-                            <!-- 2. Sweep Speed -->
-                            <div class="space-y-1.5">
-                                <label class="text-[11px] font-semibold text-slate-200 flex items-center gap-1.5">
-                                    <i class="fas fa-gauge-high text-cyan-400"></i> <span>Sheen Speed</span>
-                                </label>
-                                <select name="sweep_speed" id="sweepSpeedSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
-                                    <option value="1.5s">1.5s (Fast Flash)</option>
-                                    <option value="1.8s">1.8s (Active)</option>
-                                    <option value="2.2s" selected>2.2s (Prime 8 Authentic)</option>
-                                    <option value="2.6s">2.6s (Standard)</option>
-                                    <option value="3.2s">3.2s (Smooth)</option>
-                                    <option value="4.0s">4.0s (Calm Slow)</option>
-                                </select>
-                            </div>
-
-                            <!-- 3. Dynamic Stars Count (0 to 50 Stars, Radially Scattered) -->
-                            <div class="space-y-1.5 sm:col-span-2 bg-[#080a18] p-3 rounded-xl border border-white/5">
-                                <div class="flex items-center justify-between">
-                                    <label class="text-[11px] font-semibold text-slate-200 flex items-center gap-1.5">
-                                        <i class="fas fa-star text-amber-400"></i> <span>Scattered Gunpowder Stars (0 to 50 - 360° All Around)</span>
-                                    </label>
-                                    <span id="starCountDisplay" class="text-xs font-mono font-bold text-amber-300">16 Stars</span>
-                                </div>
-                                
-                                <div class="flex items-center gap-3">
-                                    <input type="range" id="starRangeSlider" min="0" max="50" value="16" oninput="setStarDensity(this.value)" class="flex-1 accent-amber-400 cursor-pointer">
-                                    <input type="number" name="star_density" id="starDensityInput" min="0" max="50" value="16" oninput="setStarDensity(this.value)" class="w-16 bg-[#0e1224] border border-[#23294c] rounded-lg px-2 py-1 text-xs font-mono text-center text-amber-300 focus:outline-none focus:border-amber-400">
-                                </div>
-
-                                <!-- Quick Star Pills -->
-                                <div class="flex flex-wrap items-center gap-1.5 pt-1">
-                                    <span class="text-[10px] text-gray-400 mr-1">Presets:</span>
-                                    <button type="button" onclick="setStarDensity(0)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">0 (None)</button>
-                                    <button type="button" onclick="setStarDensity(4)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">4</button>
-                                    <button type="button" onclick="setStarDensity(8)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">8</button>
-                                    <button type="button" onclick="setStarDensity(12)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">12</button>
-                                    <button type="button" onclick="setStarDensity(16)" class="px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-mono font-bold cursor-pointer">16 (Prime 8)</button>
-                                    <button type="button" onclick="setStarDensity(24)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">24</button>
-                                    <button type="button" onclick="setStarDensity(36)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">36</button>
-                                    <button type="button" onclick="setStarDensity(50)" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/40 text-[10px] font-mono font-bold cursor-pointer">50 (Max Fireworks)</button>
-                                </div>
-                            </div>
-
-                            <!-- 4. Star Color Theme -->
-                            <div class="space-y-1.5">
-                                <label class="text-[11px] font-semibold text-slate-200 flex items-center gap-1.5">
-                                    <i class="fas fa-palette text-pink-400"></i> <span>Star Color Theme</span>
-                                </label>
-                                <select name="star_theme" id="starThemeSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
-                                    <option value="gold" selected>Gold Spark</option>
-                                    <option value="cyan">Cyan Ice</option>
-                                    <option value="white">Diamond White</option>
-                                    <option value="ruby">Ruby Red</option>
-                                    <option value="purple">Cosmic Purple</option>
-                                    <option value="emerald">Emerald Green</option>
-                                    <option value="amber">Amber Flame</option>
-                                    <option value="rainbow">Rainbow Prism</option>
-                                </select>
-                            </div>
-
-                            <!-- 5. Center Gem Flare & Floating Motion Toggles -->
-                            <div class="space-y-2 flex flex-col justify-end">
-                                <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-200 bg-[#080a18] p-2 rounded-xl border border-white/5 hover:border-amber-400/30 transition">
-                                    <input type="checkbox" name="has_gem_glint" id="hasGemGlintCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
-                                    <span class="font-semibold">Center Gem Star Glint</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-200 bg-[#080a18] p-2 rounded-xl border border-white/5 hover:border-amber-400/30 transition">
-                                    <input type="checkbox" name="pulse_enabled" id="pulseEnabledCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
-                                    <span>Floating Wing Pulse Motion</span>
-                                </label>
-                            </div>
-
-                        </div>
-
-                        <!-- 100% Transparency Guarantee Note -->
-                        <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
-                            <span class="text-emerald-400 flex items-center gap-1.5 font-mono">
-                                <i class="fas fa-circle-check text-xs"></i> 100% Transparent Background (Zero Halos / No Yellow Background Clouds)
-                            </span>
-                        </div>
-
-                    </div>
-
-                    <!-- Icon Asset Selection (Dropdown OR Custom PNG Upload) -->
-                    <div class="space-y-3">
-                        <label class="text-xs font-semibold text-slate-200 block">
-                            Badge Icon Asset (Select Existing or Upload Transparent PNG) <span class="text-rose-500">*</span>
-                        </label>
-                        
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <!-- Dropdown -->
-                            <div class="space-y-1">
-                                <span class="text-[11px] text-gray-400 font-semibold">1. Choose from Existing Free Fire Assets:</span>
-                                <select name="existing_file" id="existingFileSelect" onchange="selectExistingAsset(this.value)" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer font-mono">
-                                    <option value="">-- Choose existing asset --</option>
-                                    <?php foreach ($existing_badge_files as $ef): ?>
-                                        <option value="<?= $ef ?>" <?= ($ef === 'ff_ui_prime_icon_08.png') ? 'selected' : '' ?>><?= $ef ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                            <!-- Upload New File -->
-                            <div class="space-y-1">
-                                <span class="text-[11px] text-gray-400 font-semibold">2. Or Upload New Transparent PNG:</span>
-                                <div class="border border-dashed border-[#23294c] hover:border-amber-400/50 rounded-xl p-2.5 text-center cursor-pointer bg-[#080a18] transition relative" onclick="document.getElementById('fileInput').click()">
-                                    <input type="file" name="badge_file" id="fileInput" accept="image/png,image/svg+xml,image/webp" class="hidden" onchange="previewSelectedFile(event)">
-                                    <div class="flex items-center justify-center gap-2 text-xs text-gray-300">
-                                        <i class="fas fa-file-arrow-up text-amber-400"></i>
-                                        <span id="uploadPromptText">Click to select PNG</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-slate-200">Description</label>
-                        <textarea name="badge_description" id="badgeDescInput" rows="2" placeholder="Official Free Fire verified insignia deployed via Turky Hub Monster CDN..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition"></textarea>
-                    </div>
-
-                    <!-- Submit & Save Button -->
-                    <div class="flex items-center justify-between gap-3 pt-3 border-t border-[#1f2544]">
-                        <button type="button" onclick="resetToNewBadge()" class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs font-semibold transition cursor-pointer">
-                            <i class="fas fa-arrow-rotate-left mr-1"></i> Reset Form
-                        </button>
-
-                        <button type="submit" class="bg-gradient-to-r from-amber-500 via-rose-500 to-pink-600 hover:from-amber-600 hover:to-pink-700 text-white font-extrabold text-xs py-3 px-8 rounded-xl flex items-center gap-2 shadow-lg shadow-rose-500/20 transition cursor-pointer">
-                            <i class="fas fa-cloud-arrow-up text-sm"></i>
-                            <span id="saveBtnText">Save & Generate Global CDN Asset</span>
-                        </button>
-                    </div>
-
-                </form>
-
-            </div>
-
-            <!-- RIGHT COLUMN: HERO STICKY LIVE PREVIEW STAGE (5 COLS) -->
+            <!-- LEFT COLUMN: STICKY LIVE PREVIEW STAGE (5 COLS) -->
             <div class="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
                 
                 <div class="glass-panel p-6 border-amber-400/30 space-y-5 shadow-2xl relative overflow-hidden">
@@ -1188,27 +658,26 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <!-- Stage Controls (Size & Background Mode) -->
                     <div class="flex items-center justify-between gap-2 text-[11px] font-mono">
                         
-                        <!-- Size Switcher -->
+                        <!-- Size Quick Buttons -->
                         <div class="flex items-center gap-1 bg-[#080a18] p-1 rounded-xl border border-white/5">
                             <span class="text-[10px] text-gray-400 px-1">SIZE:</span>
-                            <button type="button" onclick="setStageSize(48)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn cursor-pointer" data-size="48">48px</button>
-                            <button type="button" onclick="setStageSize(72)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn cursor-pointer" data-size="72">72px</button>
-                            <button type="button" onclick="setStageSize(110)" class="px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40 stage-size-btn cursor-pointer" data-size="110">110px</button>
-                            <button type="button" onclick="setStageSize(150)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn cursor-pointer" data-size="150">150px</button>
+                            <button type="button" onclick="setStageSize(38)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-300 text-[10px] transition">38</button>
+                            <button type="button" onclick="setStageSize(54)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-300 text-[10px] transition">54</button>
+                            <button type="button" onclick="setStageSize(80)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-300 text-[10px] transition">80</button>
+                            <button type="button" onclick="setStageSize(110)" class="px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 font-bold text-[10px] transition">110</button>
                         </div>
 
-                        <!-- Background Switcher (Prove Transparency) -->
+                        <!-- Background Switcher (Transparent Checkerboard, Dark Navy, Pure Black) -->
                         <div class="flex items-center gap-1 bg-[#080a18] p-1 rounded-xl border border-white/5">
-                            <span class="text-[10px] text-gray-400 px-1">BG:</span>
-                            <button type="button" onclick="setStageBg('dark')" title="Dark Space" class="w-5 h-5 rounded bg-[#080a18] border border-white/20 cursor-pointer"></button>
-                            <button type="button" onclick="setStageBg('black')" title="Pitch Black" class="w-5 h-5 rounded bg-black border border-white/20 cursor-pointer"></button>
-                            <button type="button" onclick="setStageBg('checker')" title="Checkerboard (Transparent Test)" class="w-5 h-5 rounded checker-bg border border-white/20 cursor-pointer"></button>
+                            <button type="button" onclick="setStageBg('checker')" id="bgBtn-checker" class="w-6 h-6 rounded-lg checker-bg border-2 border-amber-400 transition cursor-pointer" title="Transparent Checkerboard"></button>
+                            <button type="button" onclick="setStageBg('navy')" id="bgBtn-navy" class="w-6 h-6 rounded-lg bg-[#080a18] border border-white/20 hover:border-amber-400 transition cursor-pointer" title="Dark Navy (#080a18)"></button>
+                            <button type="button" onclick="setStageBg('black')" id="bgBtn-black" class="w-6 h-6 rounded-lg bg-black border border-white/20 hover:border-amber-400 transition cursor-pointer" title="Pure Black (#000000)"></button>
                         </div>
 
                     </div>
 
-                    <!-- Big Interactive Preview Stage -->
-                    <div id="stageContainer" class="h-64 rounded-2xl bg-[#080a18] border border-white/10 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300 shadow-inner">
+                    <!-- Live Render Viewport -->
+                    <div id="liveStageContainer" class="checker-bg w-full h-64 rounded-2xl flex items-center justify-center p-4 border border-[#23294c] relative overflow-hidden transition-all duration-300 shadow-inner">
                         <div id="liveBadgeStage" class="relative z-10 flex items-center justify-center w-full h-full">
                             <!-- Populated in real-time by JS -->
                         </div>
@@ -1232,20 +701,17 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         </div>
 
                         <div class="bg-[#080a18] p-2.5 rounded-xl border border-white/5 space-y-0.5">
-                            <span class="text-[10px] text-gray-400 uppercase font-mono">Badge ID:</span>
-                            <div class="font-bold text-emerald-400 font-mono text-xs" id="metaBadgeId">#<?= $suggested_id ?></div>
+                            <span class="text-[10px] text-gray-400 uppercase font-mono">Loaded ID:</span>
+                            <div class="font-bold text-emerald-400 font-mono text-xs" id="metaBadgeId">#120000000880</div>
                         </div>
                     </div>
 
-                    <!-- Quick Copy Studio Actions -->
-                    <div class="space-y-2 pt-2 border-t border-white/5">
-                        <div class="flex items-center justify-between text-xs font-bold text-gray-300">
-                            <span>Quick Copy Code & Links:</span>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2">
-                            <button type="button" onclick="copyActiveBadgeId()" class="p-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
-                                <i class="fas fa-barcode"></i> <span>Copy ID</span>
+                    <!-- Quick Copy Actions for active badge -->
+                    <div class="space-y-1.5 pt-1 border-t border-white/10">
+                        <span class="text-[10px] font-mono text-gray-400 uppercase tracking-wider">Quick Copy Snippets:</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <button type="button" onclick="copyActiveBadgeId()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-emerald-300 border border-emerald-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
+                                <i class="fas fa-hashtag text-[10px]"></i> <span>Copy ID</span>
                             </button>
 
                             <button type="button" onclick="copyActiveCDN()" class="p-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
@@ -1263,6 +729,603 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     </div>
 
                 </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: MULTI-TAB STUDIO CENTER (7 COLS) -->
+            <div class="lg:col-span-7 glass-panel p-6 sm:p-7 space-y-6">
+                
+                <!-- TOP HEADER & PERSISTENT DEPLOY ACTION -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1f2544] pb-4">
+                    <div class="space-y-1">
+                        <h2 class="text-base font-black font-orbitron text-white flex items-center gap-2">
+                            <i class="fas fa-sliders text-amber-400"></i>
+                            <span id="formPanelTitle">Badge Studio & VFX Customizer</span>
+                        </h2>
+                        <p class="text-xs text-gray-400" id="formPanelSub">
+                            Switch tabs to fine-tune Color Grading, VFX Animations, or Badge Identity. Live preview updates instantly!
+                        </p>
+                    </div>
+
+                    <!-- Fast Save Button Available from Any Tab -->
+                    <button type="button" onclick="document.getElementById('badgeEditorForm').requestSubmit()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-500 hover:to-orange-600 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition transform active:scale-95 cursor-pointer whitespace-nowrap">
+                        <i class="fas fa-cloud-arrow-up text-sm"></i>
+                        <span id="saveBtnTextTop">Save Badge / Deploy</span>
+                    </button>
+                </div>
+
+                <!-- TOP MENU TAB NAVIGATION BAR -->
+                <div class="flex items-center gap-2 p-1.5 bg-[#090c1d] rounded-2xl border border-[#1f2544]">
+                    <button type="button" onclick="switchStudioTab('color')" id="studioTabBtn-color" class="studio-tab-btn flex-1 py-3 px-3 sm:px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400 text-white shadow-lg shadow-amber-500/10">
+                        <i class="fas fa-palette text-amber-400"></i>
+                        <span>Color Grading & Studio</span>
+                    </button>
+
+                    <button type="button" onclick="switchStudioTab('vfx')" id="studioTabBtn-vfx" class="studio-tab-btn flex-1 py-3 px-3 sm:px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-[#080a18] border border-white/5 text-gray-400 hover:text-white hover:bg-white/5">
+                        <i class="fas fa-wand-magic-sparkles text-pink-400"></i>
+                        <span>VFX & Animations</span>
+                    </button>
+
+                    <button type="button" onclick="switchStudioTab('identity')" id="studioTabBtn-identity" class="studio-tab-btn flex-1 py-3 px-3 sm:px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-[#080a18] border border-white/5 text-gray-400 hover:text-white hover:bg-white/5">
+                        <i class="fas fa-id-card text-cyan-400"></i>
+                        <span>Badge Identity & Save</span>
+                    </button>
+                </div>
+
+                <!-- MAIN FORM CONTAINER (WRAPS ALL TABS FOR SEAMLESS SUBMIT) -->
+                <form method="POST" action="admin.php" enctype="multipart/form-data" id="badgeEditorForm" class="space-y-6">
+                    <input type="hidden" name="save_badge" value="1">
+                    <input type="hidden" name="original_id" id="originalIdInput" value="">
+
+                    <!-- ============================================================== -->
+                    <!-- TAB 1: COLOR GRADING & PRO IMAGE STUDIO (CLEAN, NO VFX CLUTTER) -->
+                    <!-- ============================================================== -->
+                    <div id="studioTab-color" class="studio-tab-content space-y-6">
+                        
+                        <!-- 1-Click AI Quick Actions Bar -->
+                        <div class="p-4 rounded-2xl bg-gradient-to-r from-purple-950/30 via-[#0a0d22] to-amber-950/20 border border-purple-500/30 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-purple-300 uppercase tracking-wider flex items-center gap-2 font-orbitron">
+                                    <i class="fas fa-brain text-amber-400"></i>
+                                    <span>1-Click AI & Clarity Actions</span>
+                                </span>
+                                <span class="text-[10px] font-mono text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full border border-emerald-400/30">
+                                    Smart Filters
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                <button type="button" onclick="aiAutoEnhance()" class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-purple-600/30 to-amber-600/30 hover:from-purple-600/50 hover:to-amber-600/50 text-white font-bold text-xs border border-purple-400/40 flex items-center justify-center gap-1.5 transition cursor-pointer shadow-lg shadow-purple-500/10">
+                                    <i class="fas fa-wand-magic-sparkles text-amber-300"></i>
+                                    <span>AI Auto Enhance</span>
+                                </button>
+                                <button type="button" onclick="autoRemoveBackground()" class="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-emerald-300 font-bold text-xs border border-emerald-500/30 flex items-center justify-center gap-1.5 transition cursor-pointer">
+                                    <i class="fas fa-cut text-emerald-400"></i>
+                                    <span>Cutout PNG BG</span>
+                                </button>
+                                <button type="button" onclick="boostHdClarity()" class="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-cyan-300 font-bold text-xs border border-cyan-500/30 flex items-center justify-center gap-1.5 transition cursor-pointer">
+                                    <i class="fas fa-gem text-cyan-400"></i>
+                                    <span>HD Clarity Boost</span>
+                                </button>
+                                <button type="button" onclick="resetAllAdjustments()" class="py-2.5 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 font-bold text-xs border border-rose-500/30 flex items-center justify-center gap-1.5 transition cursor-pointer">
+                                    <i class="fas fa-rotate-left"></i>
+                                    <span>Reset All</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Universal Color Shift & Recolorizer Module -->
+                        <div class="p-4 rounded-2xl bg-[#080a18] border border-pink-500/30 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-bold text-pink-300 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fas fa-eye-dropper text-pink-400"></i>
+                                    <span>Universal Color Changer & Recolorizer</span>
+                                </label>
+                                <button type="button" onclick="resetSingleSlider('sliderColorShift', 0)" class="text-[10px] font-mono text-gray-400 hover:text-white px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer flex items-center gap-1">
+                                    <i class="fas fa-rotate-left text-[9px]"></i> Reset Recolor
+                                </button>
+                            </div>
+
+                            <p class="text-[11px] text-gray-400">
+                                Drag the spectrum slider or click the Color Box to select ANY color to instantly recolor the badge:
+                            </p>
+
+                            <!-- Rainbow Spectrum Slider -->
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-slate-300">Color Spectrum Shift:</span>
+                                    <span class="font-mono text-pink-400 font-bold" id="valColorShift">0° (Original)</span>
+                                </div>
+                                <input type="range" id="sliderColorShift" min="0" max="360" value="0" oninput="setColorShift(this.value)" class="w-full h-3 rounded-lg appearance-none cursor-pointer" style="background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
+                            </div>
+
+                            <!-- Interactive Target Color Box & Quick Swatches -->
+                            <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-white/5">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[11px] text-slate-300 font-medium">Pick Target Color:</span>
+                                    <input type="color" id="targetColorBox" value="#FFD700" oninput="applyTargetColor(this.value)" class="w-8 h-8 rounded-lg border-2 border-white/30 cursor-pointer bg-transparent" title="Click or double-click to choose any color">
+                                </div>
+
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <button type="button" onclick="applyTargetColor('#FFD700')" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 transition cursor-pointer">Gold</button>
+                                    <button type="button" onclick="applyTargetColor('#FF1744')" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30 transition cursor-pointer">Crimson</button>
+                                    <button type="button" onclick="applyTargetColor('#00E5FF')" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 transition cursor-pointer">Cyan Ice</button>
+                                    <button type="button" onclick="applyTargetColor('#D500F9')" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 hover:bg-purple-500/30 transition cursor-pointer">Cosmic</button>
+                                    <button type="button" onclick="applyTargetColor('#00E676')" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 transition cursor-pointer">Emerald</button>
+                                    <button type="button" onclick="applyTargetColor('#FF6D00')" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-orange-500/20 text-orange-300 border border-orange-500/40 hover:bg-orange-500/30 transition cursor-pointer">Flame</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 6 Precision Adjustment Sliders (Each with dedicated individual Reset button) -->
+                        <div class="p-4 rounded-2xl bg-[#080a18] border border-white/10 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-2">
+                                    <i class="fas fa-sliders text-cyan-400"></i>
+                                    <span>Precision Light & Edge Adjustments</span>
+                                </label>
+                                <span class="text-[10px] font-mono text-gray-400">Individual Resets Available</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                
+                                <!-- Slider 1: Brightness -->
+                                <div class="bg-[#0b0f24] p-3 rounded-xl border border-white/5 space-y-2">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-slate-200 flex items-center gap-1.5"><i class="fas fa-sun text-amber-400 text-xs"></i> Brightness</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-mono text-amber-400 font-bold" id="valBrightness">100%</span>
+                                            <button type="button" onclick="resetSingleSlider('sliderBrightness', 100)" class="text-[10px] font-mono text-gray-400 hover:text-white px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Brightness"><i class="fas fa-rotate-left"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="range" id="sliderBrightness" min="50" max="180" value="100" oninput="updateLivePreviewStudio()" class="w-full accent-amber-400 cursor-pointer">
+                                </div>
+
+                                <!-- Slider 2: Contrast -->
+                                <div class="bg-[#0b0f24] p-3 rounded-xl border border-white/5 space-y-2">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-slate-200 flex items-center gap-1.5"><i class="fas fa-circle-half-stroke text-cyan-400 text-xs"></i> Contrast</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-mono text-cyan-400 font-bold" id="valContrast">100%</span>
+                                            <button type="button" onclick="resetSingleSlider('sliderContrast', 100)" class="text-[10px] font-mono text-gray-400 hover:text-white px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Contrast"><i class="fas fa-rotate-left"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="range" id="sliderContrast" min="50" max="200" value="100" oninput="updateLivePreviewStudio()" class="w-full accent-cyan-400 cursor-pointer">
+                                </div>
+
+                                <!-- Slider 3: Saturation (up to 250%) -->
+                                <div class="bg-[#0b0f24] p-3 rounded-xl border border-white/5 space-y-2">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-slate-200 flex items-center gap-1.5"><i class="fas fa-palette text-pink-400 text-xs"></i> Saturation (250% Max)</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-mono text-pink-400 font-bold" id="valSaturation">100%</span>
+                                            <button type="button" onclick="resetSingleSlider('sliderSaturation', 100)" class="text-[10px] font-mono text-gray-400 hover:text-white px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Saturation"><i class="fas fa-rotate-left"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="range" id="sliderSaturation" min="0" max="250" value="100" oninput="updateLivePreviewStudio()" class="w-full accent-pink-400 cursor-pointer">
+                                </div>
+
+                                <!-- Slider 4: Highlights (up to 200%) -->
+                                <div class="bg-[#0b0f24] p-3 rounded-xl border border-white/5 space-y-2">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-slate-200 flex items-center gap-1.5"><i class="fas fa-wand-magic text-yellow-300 text-xs"></i> Highlights (200% Max)</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-mono text-yellow-300 font-bold" id="valHighlights">100%</span>
+                                            <button type="button" onclick="resetSingleSlider('sliderHighlights', 100)" class="text-[10px] font-mono text-gray-400 hover:text-white px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Highlights"><i class="fas fa-rotate-left"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="range" id="sliderHighlights" min="50" max="200" value="100" oninput="updateLivePreviewStudio()" class="w-full accent-yellow-300 cursor-pointer">
+                                </div>
+
+                                <!-- Slider 5: Hue Tone -->
+                                <div class="bg-[#0b0f24] p-3 rounded-xl border border-white/5 space-y-2">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-slate-200 flex items-center gap-1.5"><i class="fas fa-rotate text-purple-400 text-xs"></i> Hue / Tone</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-mono text-purple-400 font-bold" id="valHue">0°</span>
+                                            <button type="button" onclick="resetSingleSlider('sliderHue', 0)" class="text-[10px] font-mono text-gray-400 hover:text-white px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Hue"><i class="fas fa-rotate-left"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="range" id="sliderHue" min="-180" max="180" value="0" oninput="updateLivePreviewStudio()" class="w-full accent-purple-400 cursor-pointer">
+                                </div>
+
+                                <!-- Slider 6: HD Sharpness (Digital High-Pass SVG Convolution up to 200%) -->
+                                <div class="bg-[#0b0f24] p-3 rounded-xl border border-emerald-500/20 space-y-2">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-slate-200 flex items-center gap-1.5"><i class="fas fa-bolt text-emerald-400 text-xs"></i> HD Sharpness (200% Max)</span>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-mono text-emerald-400 font-bold" id="valSharpness">100%</span>
+                                            <button type="button" onclick="resetSingleSlider('sliderSharpness', 100)" class="text-[10px] font-mono text-gray-400 hover:text-white px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Sharpness"><i class="fas fa-rotate-left"></i></button>
+                                        </div>
+                                    </div>
+                                    <input type="range" id="sliderSharpness" min="0" max="200" value="100" oninput="updateLivePreviewStudio()" class="w-full accent-emerald-400 cursor-pointer">
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Bone & Focal Accent Light Module -->
+                        <div class="p-4 rounded-2xl bg-[#080a18] border border-amber-500/30 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300 uppercase tracking-wider">
+                                    <input type="checkbox" id="boneLightCheck" onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500 cursor-pointer">
+                                    <span>Enable Bone / Focal Accent Light</span>
+                                </label>
+                                <button type="button" onclick="resetSingleSlider('sliderBoneRadius', 45)" class="text-[10px] font-mono text-gray-400 hover:text-white px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer flex items-center gap-1">
+                                    <i class="fas fa-rotate-left text-[9px]"></i> Reset Light
+                                </button>
+                            </div>
+
+                            <p class="text-[11px] text-gray-400">
+                                Click any spot preset below to focus radiant light. Expanding the light radius visibly beams light outward across that side of the badge:
+                            </p>
+
+                            <!-- Clickable Bone Spot Presets -->
+                            <div class="space-y-1.5">
+                                <span class="text-[11px] text-slate-300 block font-medium">Select Bone Focal Spot:</span>
+                                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                                    <button type="button" onclick="setBoneSpot('crown')" id="boneBtn-crown" class="bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 transition cursor-pointer text-center">👑 Top Crown</button>
+                                    <button type="button" onclick="setBoneSpot('left_wing')" id="boneBtn-left_wing" class="bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:border-amber-400 transition cursor-pointer text-center">🦅 Left Wing</button>
+                                    <button type="button" onclick="setBoneSpot('right_wing')" id="boneBtn-right_wing" class="bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:border-amber-400 transition cursor-pointer text-center">🦅 Right Wing</button>
+                                    <button type="button" onclick="setBoneSpot('center_gem')" id="boneBtn-center_gem" class="bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:border-amber-400 transition cursor-pointer text-center">💎 Center Gem</button>
+                                    <button type="button" onclick="setBoneSpot('bottom_apex')" id="boneBtn-bottom_apex" class="bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:border-amber-400 transition cursor-pointer text-center">⚡ Bottom Apex</button>
+                                </div>
+                                <input type="hidden" id="bonePosSelect" value="crown">
+                            </div>
+
+                            <!-- Color & Radius Control -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-white/5">
+                                <div class="space-y-1.5">
+                                    <span class="text-[11px] text-slate-300 block">Light Flare Color:</span>
+                                    <div class="flex items-center gap-2">
+                                        <input type="color" id="boneColorHex" value="#FFD700" oninput="updateLivePreviewStudio()" class="w-9 h-9 rounded-lg border border-white/20 cursor-pointer bg-transparent">
+                                        <input type="text" id="boneColorHexText" value="#FFD700" oninput="document.getElementById('boneColorHex').value=this.value; updateLivePreviewStudio()" class="flex-1 bg-[#050711] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs font-mono text-amber-300">
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1.5">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-slate-300">Light Outward Radius:</span>
+                                        <span class="font-mono text-amber-400 font-bold" id="valBoneRadius">45px</span>
+                                    </div>
+                                    <input type="range" id="sliderBoneRadius" min="15" max="100" value="45" oninput="updateLivePreviewStudio()" class="w-full accent-amber-400 cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Aura Glow & Silhouette Contour Module -->
+                        <div class="p-4 rounded-2xl bg-[#080a18] border border-cyan-500/30 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-cyan-300 uppercase tracking-wider">
+                                    <input type="checkbox" id="contourGlowCheck" onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-cyan-500 cursor-pointer">
+                                    <span>Enable Aura Glow & Contour Shadow</span>
+                                </label>
+                                <span class="text-[10px] font-mono text-emerald-400">Silhouette Outline (Zero Boxes)</span>
+                            </div>
+
+                            <p class="text-[11px] text-gray-400">
+                                Strictly applies <code class="text-cyan-300 font-mono">filter: drop-shadow</code> conforming directly to the PNG silhouette with zero square box artifacts:
+                            </p>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div class="space-y-1.5">
+                                    <span class="text-[11px] text-slate-300 block">Glow Color:</span>
+                                    <div class="flex items-center gap-2">
+                                        <input type="color" id="contourGlowColorHex" value="#FFD700" oninput="updateLivePreviewStudio()" class="w-9 h-9 rounded-lg border border-white/20 cursor-pointer bg-transparent">
+                                        <div class="flex items-center gap-1">
+                                            <button type="button" onclick="document.getElementById('contourGlowColorHex').value='#FFD700'; updateLivePreviewStudio()" class="w-5 h-5 rounded-full bg-[#FFD700] border border-white/40 cursor-pointer"></button>
+                                            <button type="button" onclick="document.getElementById('contourGlowColorHex').value='#00E5FF'; updateLivePreviewStudio()" class="w-5 h-5 rounded-full bg-[#00E5FF] border border-white/40 cursor-pointer"></button>
+                                            <button type="button" onclick="document.getElementById('contourGlowColorHex').value='#D500F9'; updateLivePreviewStudio()" class="w-5 h-5 rounded-full bg-[#D500F9] border border-white/40 cursor-pointer"></button>
+                                            <button type="button" onclick="document.getElementById('contourGlowColorHex').value='#FF1744'; updateLivePreviewStudio()" class="w-5 h-5 rounded-full bg-[#FF1744] border border-white/40 cursor-pointer"></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-1.5">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-slate-300">Glow Radius:</span>
+                                        <span class="font-mono text-cyan-400 font-bold" id="valGlowRadius">14px</span>
+                                    </div>
+                                    <input type="range" id="sliderGlowRadius" min="0" max="40" value="14" oninput="updateLivePreviewStudio()" class="w-full accent-cyan-400 cursor-pointer">
+                                </div>
+
+                                <div class="space-y-1.5">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="text-slate-300">Blur Softness:</span>
+                                        <span class="font-mono text-cyan-400 font-bold" id="valGlowBlur">10px</span>
+                                    </div>
+                                    <input type="range" id="sliderGlowBlur" min="0" max="30" value="10" oninput="updateLivePreviewStudio()" class="w-full accent-cyan-400 cursor-pointer">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ============================================================== -->
+                    <!-- TAB 2: VFX & ANIMATION CUSTOMIZER (SHEEN, STARS, 50 PRESETS)  -->
+                    <!-- ============================================================== -->
+                    <div id="studioTab-vfx" class="studio-tab-content hidden space-y-6">
+
+                        <!-- Master Animation Toggle Bar -->
+                        <div class="p-4 rounded-2xl bg-[#080a18] border border-amber-500/30 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" name="sweep_enabled" id="masterAnimCheck" value="1" checked onchange="toggleMasterAnimation(this.checked)" class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-amber-500 focus:ring-0 cursor-pointer">
+                                    <span class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">Master VFX & Animation Toggle</span>
+                                </label>
+                                <span class="text-[10px] font-mono text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/30">
+                                    1-Click On/Off
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-gray-400">
+                                Toggle OFF to instantly transform any badge into a 100% clean static emblem without sheen, glints, or moving stars.
+                            </p>
+                        </div>
+
+                        <!-- Directional Metallic Sheen Controls -->
+                        <div class="p-4 rounded-2xl bg-[#080a18] border border-white/10 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-yellow-300 uppercase tracking-wider">
+                                    <input type="checkbox" id="sheenActiveCheck" value="1" checked onchange="toggleSheenSweep(this.checked)" class="rounded bg-gray-800 border-gray-700 text-yellow-500 cursor-pointer">
+                                    <span>Metallic Sheen Sweep Motion</span>
+                                </label>
+                                <span class="text-[10px] font-mono text-yellow-400">Clipped to Silhouette</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-semibold text-slate-200">Sheen Sweep Direction</label>
+                                    <select name="sweep_direction" id="sweepDirSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#0b0f24] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                        <option value="diag_bl_tr" selected>↗ Diagonal: Bottom-Left to Top-Right (Free Fire Default)</option>
+                                        <option value="diag_br_tl">↖ Diagonal: Bottom-Right to Top-Left</option>
+                                        <option value="diag_tl_br">↘ Diagonal: Top-Left to Bottom-Right</option>
+                                        <option value="diag_tr_bl">↙ Diagonal: Top-Right to Bottom-Left</option>
+                                        <option value="up">↑ Vertical: Bottom to Top</option>
+                                        <option value="down">↓ Vertical: Top to Bottom</option>
+                                        <option value="right">→ Horizontal: Left to Right</option>
+                                        <option value="left">← Horizontal: Right to Left</option>
+                                    </select>
+                                </div>
+
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-semibold text-slate-200">Sheen Speed / Interval</label>
+                                    <select name="sweep_speed" id="sweepSpeedSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#0b0f24] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                        <option value="1.0s">1.0s (Hyper Ultra Fast)</option>
+                                        <option value="1.4s">1.4s (Rapid Action)</option>
+                                        <option value="1.8s">1.8s (Fast Metallic)</option>
+                                        <option value="2.2s" selected>2.2s (Free Fire Standard)</option>
+                                        <option value="2.6s">2.6s (Smooth Glint)</option>
+                                        <option value="3.2s">3.2s (Slow Elegant)</option>
+                                        <option value="4.0s">4.0s (Cinematic Majesty)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scattered Gunpowder Micro-Stars (0 to 50 Density) -->
+                        <div class="p-4 rounded-2xl bg-[#080a18] border border-white/10 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fas fa-sparkles text-amber-400"></i>
+                                    <span>Scattered Gunpowder Micro-Stars (0 to 50)</span>
+                                </label>
+                                <span class="text-xs font-mono font-bold text-amber-400" id="starDensityVal">16 Stars</span>
+                            </div>
+
+                            <p class="text-[11px] text-gray-400">
+                                In-game diamond sparkles scattered 360-degrees around badge perimeter. Set to 0 to disable stars completely:
+                            </p>
+
+                            <input type="range" name="star_density" id="starDensityInput" min="0" max="50" value="16" oninput="setStarDensity(this.value)" class="w-full accent-amber-400 cursor-pointer">
+
+                            <!-- Quick Count Buttons -->
+                            <div class="flex flex-wrap items-center gap-2">
+                                <button type="button" onclick="setStarDensity(0)" class="px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-xs font-mono font-bold border border-rose-500/30 transition">0 (Off)</button>
+                                <button type="button" onclick="setStarDensity(8)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-mono transition">8</button>
+                                <button type="button" onclick="setStarDensity(16)" class="px-2.5 py-1 rounded-lg bg-amber-400/20 text-amber-300 text-xs font-mono font-bold border border-amber-400/30 transition">16 (Prime 8)</button>
+                                <button type="button" onclick="setStarDensity(25)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-mono transition">25</button>
+                                <button type="button" onclick="setStarDensity(36)" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-mono transition">36</button>
+                                <button type="button" onclick="setStarDensity(50)" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-mono font-bold border border-emerald-500/30 transition">50 (Max)</button>
+                            </div>
+
+                            <!-- Star Theme Color -->
+                            <div class="space-y-1.5 pt-2 border-t border-white/5">
+                                <label class="text-xs font-semibold text-slate-200">Star Theme Sparkle Color</label>
+                                <select name="star_theme" id="starThemeSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#0b0f24] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                    <option value="gold" selected>Gold Celestial (#FFFCE0 & #FFD700)</option>
+                                    <option value="cyan">Cyan Crystal (#00F0FF)</option>
+                                    <option value="white">Pure White Diamond (#FFFFFF)</option>
+                                    <option value="ruby">Ruby Crimson (#FF3366)</option>
+                                    <option value="purple">Violet Diamond (#D946EF)</option>
+                                    <option value="emerald">Emerald Matrix (#10B981)</option>
+                                    <option value="amber">Amber Flame (#F59E0B)</option>
+                                    <option value="rainbow">Rainbow Prism (Chroma Spectrum)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Accent Glint & Floating Motion -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-200 bg-[#080a18] p-3 rounded-xl border border-white/5 hover:border-amber-400/30 transition">
+                                <input type="checkbox" name="has_gem_glint" id="hasGemGlintCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
+                                <span>Center Gem Pinpoint Glint</span>
+                            </label>
+
+                            <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-200 bg-[#080a18] p-3 rounded-xl border border-white/5 hover:border-amber-400/30 transition">
+                                <input type="checkbox" name="pulse_enabled" id="pulseEnabledCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
+                                <span>Floating Wing Pulse Motion</span>
+                            </label>
+                        </div>
+
+                        <!-- 50 Numbered Effect Presets Grid -->
+                        <div class="p-4 rounded-2xl bg-[#090c1f] border border-cyan-500/30 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-1.5 font-orbitron">
+                                    <i class="fas fa-wand-magic-sparkles text-amber-400"></i>
+                                    <span>50+ Numbered Effect Presets</span>
+                                </label>
+                                <button type="button" onclick="removeAllEffects()" class="px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-[11px] font-bold flex items-center gap-1 transition cursor-pointer">
+                                    <i class="fas fa-ban"></i> <span>Disable VFX (Static)</span>
+                                </button>
+                            </div>
+
+                            <p class="text-[11px] text-gray-400">
+                                Click any preset below to instantly apply sheen direction, speed, scattered stars count, and glow color:
+                            </p>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 max-h-72 overflow-y-auto custom-scroll pr-1">
+                                <?php foreach ($presets_list as $preset): ?>
+                                    <button type="button" onclick="handlePresetChange('<?= $preset['id'] ?>')" class="text-left p-2.5 rounded-xl bg-[#080a18] hover:bg-white/10 border border-white/5 hover:border-amber-400/40 transition cursor-pointer group">
+                                        <div class="flex items-center justify-between mb-1">
+                                            <span class="text-[10px] font-mono font-bold text-cyan-400 group-hover:text-amber-300">#<?= str_pad($preset['id'], 2, '0', STR_PAD_LEFT) ?></span>
+                                            <span class="w-2 h-2 rounded-full" style="background:<?= $preset['hex_glow'] ?>"></span>
+                                        </div>
+                                        <div class="text-[11px] font-bold text-white truncate"><?= htmlspecialchars($preset['name']) ?></div>
+                                        <div class="text-[10px] text-gray-500 font-mono">⭐ <?= $preset['star_density'] ?> Stars</div>
+                                    </button>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ============================================================== -->
+                    <!-- TAB 3: BADGE IDENTITY, ASSET & SAVE DEPLOYMENT                -->
+                    <!-- ============================================================== -->
+                    <div id="studioTab-identity" class="studio-tab-content hidden space-y-6">
+
+                        <!-- Identity Fields Grid -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            
+                            <!-- 1. Badge Name (Editable) -->
+                            <div class="space-y-1.5 sm:col-span-2">
+                                <label class="text-xs font-semibold text-slate-200 flex items-center justify-between">
+                                    <span>Badge Name <span class="text-rose-500">*</span></span>
+                                    <span class="text-[10px] text-gray-400 font-normal">Editable anytime</span>
+                                </label>
+                                <input type="text" name="badge_name" id="badgeNameInput" required placeholder="e.g. Free Fire Prime Level 8 or OFFICIAL V BAGE" value="Free Fire Prime Level 8" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition font-mono">
+                            </div>
+
+                            <!-- 2. Badge ID (Strict 12...80 Format) -->
+                            <div class="space-y-1.5 sm:col-span-2">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-xs font-semibold text-slate-200">Badge ID (Must start with 12 and end with 80) <span class="text-emerald-400">*</span></label>
+                                    <span class="text-[10px] text-emerald-400 font-mono font-bold">12 Digits Strict Format</span>
+                                </div>
+                                <div class="relative flex items-center">
+                                    <input type="text" name="badge_id" id="badgeIdInput" value="<?= $suggested_id ?>" pattern="^12[0-9]{8}80$" required oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs font-mono font-bold text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-400 transition">
+                                    <button type="button" onclick="randomizeId()" class="absolute right-2 px-2.5 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[11px] rounded-lg font-mono transition cursor-pointer" title="Randomize ID">
+                                        <i class="fas fa-rotate"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 3. Category -->
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-200">Category</label>
+                                <select name="badge_category" id="badgeCatSelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                    <option value="Prime System" selected>Prime System (Free Fire Prime)</option>
+                                    <option value="Official Partner (KOL)">Official Partner (KOL V-Badge)</option>
+                                    <option value="Crystal VIP Partner">Crystal VIP Partner</option>
+                                    <option value="Competitive & Esports">Competitive & Esports</option>
+                                    <option value="Administration & Authority">Administration & Authority</option>
+                                    <option value="Creators & Architects">Creators & Architects</option>
+                                    <option value="Special Editions">Special Editions</option>
+                                    <option value="Exchange Tokens">Exchange Tokens</option>
+                                    <option value="Custom VIP">Custom VIP</option>
+                                </select>
+                            </div>
+
+                            <!-- 4. Rarity -->
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-200">Rarity</label>
+                                <select name="badge_rarity" id="badgeRaritySelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                    <option value="MYTHIC" selected>MYTHIC (Gold / Celestial)</option>
+                                    <option value="LEGENDARY">LEGENDARY (Crimson Flame)</option>
+                                    <option value="EPIC">EPIC (Cyan / Purple)</option>
+                                    <option value="PURPLE">PURPLE (Violet Diamond)</option>
+                                    <option value="RARE">RARE (Blue / Silver)</option>
+                                </select>
+                            </div>
+
+                            <!-- 5. Default Size -->
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-semibold text-slate-200">Default Render Size (px)</label>
+                                <input type="number" name="badge_size" id="badgeSizeInput" value="54" min="20" max="250" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition">
+                            </div>
+
+                            <!-- 6. Aura Glow Color -->
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-xs font-semibold text-slate-200">Aura Glow Palette</label>
+                                    <label class="flex items-center gap-1 cursor-pointer text-[10px] text-amber-300">
+                                        <input type="checkbox" name="glow_enabled" id="glowEnabledCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
+                                        <span>Active</span>
+                                    </label>
+                                </div>
+                                <select name="badge_glow" id="glowSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                    <option value="rgba(255, 215, 0, 0.85)" selected>Gold Aura (rgba(255, 215, 0, 0.85))</option>
+                                    <option value="rgba(168, 85, 247, 0.85)">Cosmic Purple (rgba(168, 85, 247, 0.85))</option>
+                                    <option value="rgba(6, 182, 212, 0.85)">Cyan Crystal (rgba(6, 182, 212, 0.85))</option>
+                                    <option value="rgba(239, 68, 68, 0.85)">Crimson Authority (rgba(239, 68, 68, 0.85))</option>
+                                    <option value="rgba(249, 115, 22, 0.85)">Amber Flame (rgba(249, 115, 22, 0.85))</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <!-- Icon Asset Selection (Dropdown OR Custom PNG Upload) -->
+                        <div class="space-y-3 pt-2 border-t border-white/5">
+                            <label class="text-xs font-semibold text-slate-200 block">
+                                Badge Icon Asset (Select Existing or Upload Transparent PNG) <span class="text-rose-500">*</span>
+                            </label>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                
+                                <!-- Select Existing -->
+                                <div class="space-y-1.5">
+                                    <span class="text-[11px] text-gray-400">Select Existing Asset:</span>
+                                    <select name="existing_file" id="existingFileSelect" onchange="selectExistingAsset(this.value)" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                        <option value="">-- Choose Existing Badge Image --</option>
+                                        <?php foreach ($available_images as $img): ?>
+                                            <option value="<?= htmlspecialchars($img) ?>" <?= ($img === 'ff_ui_prime_icon_08.png') ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($img) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <!-- Upload Custom PNG -->
+                                <div class="space-y-1.5">
+                                    <span class="text-[11px] text-gray-400">Or Upload Custom PNG:</span>
+                                    <label class="flex flex-col items-center justify-center p-3 rounded-xl border border-dashed border-[#23294c] hover:border-amber-400/50 bg-[#080a18] cursor-pointer transition">
+                                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                                            <i class="fas fa-cloud-arrow-up text-amber-400"></i>
+                                            <span id="uploadPromptText">Upload Transparent PNG</span>
+                                        </div>
+                                        <input type="file" name="badge_file" id="badgeFileInput" accept=".png,.svg,.webp,.jpg" onchange="previewSelectedFile(event)" class="hidden">
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Description Field -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-slate-200">Badge Description</label>
+                            <textarea name="badge_description" id="badgeDescInput" rows="2" placeholder="e.g. Authentic Free Fire in-game badge with micro-stars and dynamic metallic sheen." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition custom-scroll"></textarea>
+                        </div>
+
+                        <!-- Prominent Submit / Save Badge Button -->
+                        <div class="pt-2">
+                            <button type="submit" id="saveBadgeBtn" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-500 hover:to-orange-600 text-black font-extrabold text-sm uppercase tracking-wider shadow-xl shadow-amber-500/20 transition transform active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer font-orbitron">
+                                <i class="fas fa-cloud-arrow-up text-base"></i>
+                                <span id="saveBtnText">Save Badge & Deploy to CDN</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </form>
 
             </div>
 
@@ -1315,10 +1378,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 $bGlow = htmlspecialchars($b['glow_color'] ?? 'rgba(255, 215, 0, 0.85)');
                                 $isPrime = (($b['type'] ?? '') === 'prime_image' || !empty($b['prime_level']));
                                 $isFullyStatic = (!$bSweep && $bStars === 0 && !$bGlint);
+                                $bId = htmlspecialchars($b['id'] ?? '');
+                                $bName = htmlspecialchars($b['name'] ?? 'Untitled');
+                                $bCat = htmlspecialchars($b['category'] ?? 'Custom VIP');
+                                $bRare = htmlspecialchars($b['rarity'] ?? 'MYTHIC');
+                                $bSize = intval($b['default_size'] ?? $b['size'] ?? 54);
                             ?>
-                            <tr class="hover:bg-white/[0.04] transition admin-badge-row cursor-pointer" onclick="handleRowClick(event, '<?= $b['id'] ?>')" data-name="<?= htmlspecialchars(strtolower($b['name'] ?? '')) ?>" data-id="<?= htmlspecialchars(strtolower($b['id'] ?? '')) ?>">
+                            <tr class="hover:bg-white/[0.04] transition admin-badge-row cursor-pointer" onclick="handleRowClick(event, '<?= $bId ?>')" data-name="<?= htmlspecialchars(strtolower($bName)) ?>" data-id="<?= htmlspecialchars(strtolower($bId)) ?>">
                                 
-                                <!-- Preview Cell (Direct Rock-Solid Live Rendering with Local Fallback) -->
+                                <!-- Preview Cell -->
                                 <td class="py-3 px-3">
                                     <div class="w-12 h-12 rounded-xl bg-[#080a18] border border-white/5 flex items-center justify-center p-1 relative overflow-hidden">
                                         <div class="ff-prime-badge-wrap <?= $isFullyStatic ? 'ff-anim-off' : '' ?>" style="width:38px;height:38px;position:relative;background:transparent !important;filter:drop-shadow(0 0 6px <?= $bGlow ?>);">
@@ -1329,9 +1397,9 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                                     <?php endfor; ?>
                                                 </div>
                                             <?php endif; ?>
-                                            <img src="badges/<?= $bFile ?>" onerror="this.onerror=null; this.src='<?= $img_cdn ?>'" class="ff-badge-img <?= $isFullyStatic ? 'style="animation:none !important;"' : '' ?>" alt="<?= htmlspecialchars($b['name'] ?? 'Untitled') ?>">
+                                            <img src="badges/<?= $bFile ?>" onerror="this.onerror=null; this.src='<?= $img_cdn ?>'" class="ff-badge-img <?= $isFullyStatic ? 'style="animation:none !important;"' : '' ?>" alt="<?= $bName ?>">
                                             <?php if ($bSweep): ?>
-                                                <span class="ff-badge-shine sweep-dir-<?= $bDir ?>" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('badges/<?= $bFile ?>');mask-image:url('badges/<?= $bFile ?>');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                                                <span class="ff-badge-shine sweep-dir-<?= $bDir ?> sweep-dir-diag_bl_tr" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('badges/<?= $bFile ?>');mask-image:url('badges/<?= $bFile ?>');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                                                     <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:<?= $bSpd ?>;mix-blend-mode:screen;display:block;"></span>
                                                 </span>
                                             <?php endif; ?>
@@ -1345,8 +1413,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 <!-- 12...80 ID -->
                                 <td class="py-3 px-3">
                                     <div class="flex items-center gap-1.5">
-                                        <span class="font-mono font-bold text-emerald-400">#<?= $b['id'] ?></span>
-                                        <button type="button" onclick="event.stopPropagation(); copyText('<?= $b['id'] ?>', 'ID Copied!')" class="text-gray-500 hover:text-white cursor-pointer" title="Copy ID">
+                                        <span class="font-mono font-bold text-emerald-400">#<?= $bId ?></span>
+                                        <button type="button" onclick="event.stopPropagation(); copyText('<?= $bId ?>', 'ID Copied!')" class="text-gray-500 hover:text-white cursor-pointer" title="Copy ID">
                                             <i class="fas fa-copy text-[10px]"></i>
                                         </button>
                                     </div>
@@ -1354,21 +1422,21 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                                 <!-- Name -->
                                 <td class="py-3 px-3">
-                                    <div class="font-bold text-white"><?= htmlspecialchars($b['name'] ?? 'Untitled') ?></div>
+                                    <div class="font-bold text-white"><?= $bName ?></div>
                                     <div class="text-[10px] text-gray-500 font-mono"><?= htmlspecialchars($b['icon_id'] ?? '') ?></div>
                                 </td>
 
                                 <!-- Category -->
                                 <td class="py-3 px-3">
                                     <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950/50 text-cyan-300 border border-cyan-800/40">
-                                        <?= htmlspecialchars($b['category'] ?? 'Custom VIP') ?>
+                                        <?= $bCat ?>
                                     </span>
                                 </td>
 
                                 <!-- Rarity -->
                                 <td class="py-3 px-3">
                                     <span class="text-[10px] font-bold uppercase tracking-wider text-yellow-300">
-                                        <?= htmlspecialchars($b['rarity'] ?? 'MYTHIC') ?>
+                                        <?= $bRare ?>
                                     </span>
                                 </td>
 
@@ -1395,7 +1463,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                             <i class="fab fa-php text-[10px]"></i> <span>PHP</span>
                                         </button>
 
-                                        <button type="button" onclick="copyText('<ff-badge id=\'<?= $b['id'] ?>\' size=\'<?= $b['default_size'] ?>\'></ff-badge>', 'Web Tag Copied!')" class="px-2 py-1 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-mono flex items-center gap-1 transition cursor-pointer">
+                                        <button type="button" onclick="copyText('<ff-badge id='<?= $bId ?>' size='<?= $bSize ?>'></ff-badge>', 'Web Tag Copied!')" class="px-2 py-1 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-mono flex items-center gap-1 transition cursor-pointer">
                                             <i class="fas fa-code text-[9px]"></i> <span>Tag</span>
                                         </button>
                                     </div>
@@ -1404,15 +1472,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 <!-- Actions -->
                                 <td class="py-3 px-3 text-right">
                                     <div class="flex items-center justify-end gap-2" onclick="event.stopPropagation()">
-                                        <button type="button" onclick="loadBadgeToEditor('<?= $b['id'] ?>')" class="px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-[11px] flex items-center gap-1 transition shadow cursor-pointer" title="Edit and customize in studio">
+                                        <button type="button" onclick="loadBadgeToEditor('<?= $bId ?>')" class="px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-[11px] flex items-center gap-1 transition shadow cursor-pointer" title="Edit in studio">
                                             <i class="fas fa-pen-to-square"></i> <span>Edit</span>
                                         </button>
                                         
-                                        <a href="index.php?item=<?= $b['id'] ?>" target="_blank" class="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition" title="View in Explorer">
+                                        <a href="index.php?item=<?= $bId ?>" target="_blank" class="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition" title="View in Explorer">
                                             <i class="fas fa-eye text-xs"></i>
                                         </a>
 
-                                        <a href="admin.php?delete=<?= $b['id'] ?>" onclick="return confirm('Are you sure you want to delete badge #<?= $b['id'] ?>?');" class="w-7 h-7 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 flex items-center justify-center transition" title="Delete Badge">
+                                        <a href="admin.php?delete=<?= $bId ?>" onclick="return confirm('Are you sure you want to delete badge #<?= $bId ?>?');" class="w-7 h-7 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 flex items-center justify-center transition" title="Delete Badge">
                                             <i class="fas fa-trash-can text-xs"></i>
                                         </a>
                                     </div>
@@ -1429,17 +1497,16 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     </main>
 
     <!-- Toast Notification -->
-    <div id="adminToast" class="fixed bottom-6 right-6 bg-amber-400 text-black font-extrabold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 transform translate-y-24 opacity-0 transition-all duration-300 z-50 pointer-events-none">
-        <i class="fas fa-check-circle text-lg"></i>
-        <span id="adminToastMsg">Copied!</span>
+    <div id="adminToast" class="fixed bottom-6 right-6 bg-amber-400 text-black font-extrabold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 transform translate-y-24 opacity-0 transition duration-300 z-50 pointer-events-none text-xs">
+        <i class="fas fa-circle-check text-sm"></i>
+        <span id="toastMsg">Action Successful!</span>
     </div>
 
-    <!-- CLIENT DATA & SCRIPT ENGINE -->
+    <!-- JAVASCRIPT STUDIO ENGINE (ZERO SYNTAX ERRORS, COMPLETE LIVE PREVIEW & TABS) -->
     <script>
-        // Master in-memory databases
-        const ALL_BADGES_DATA = <?= json_encode($current_badges); ?>;
-        const ALL_PRESETS_DATA = <?= json_encode($presets_list); ?>;
-        const REPO_NAME = '<?= $REPO_NAME ?>';
+        const ALL_BADGES_DATA = <?= json_encode($current_badges, JSON_UNESCAPED_SLASHES) ?>;
+        const PRESETS_LIST = <?= json_encode($presets_list, JSON_UNESCAPED_SLASHES) ?>;
+        const RAW_BASE = '<?= $RAW_BASE ?>';
         const CDN_BASE = '<?= $CDN_BASE ?>';
 
         let currentActiveBadge = null;
@@ -1458,53 +1525,73 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 showToast(msg);
                 return;
             }
-            navigator.clipboard.writeText(text).then(() => {
-                showToast(msg);
-            });
+            navigator.clipboard.writeText(text).then(() => showToast(msg)).catch(() => showToast(msg));
         }
 
+        // Toast Helper
         function showToast(msg) {
-            const t = document.getElementById('adminToast');
-            document.getElementById('adminToastMsg').textContent = msg;
-            t.classList.remove('translate-y-24', 'opacity-0');
+            const toast = document.getElementById('adminToast');
+            const msgEl = document.getElementById('toastMsg');
+            if (!toast || !msgEl) return;
+            msgEl.textContent = msg;
+            toast.classList.remove('translate-y-24', 'opacity-0');
             setTimeout(() => {
-                t.classList.add('translate-y-24', 'opacity-0');
-            }, 2200);
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 2500);
         }
 
         // Randomize 12...80 ID
         function randomizeId() {
             const middle = Math.floor(10000000 + Math.random() * 90000000);
             const newId = '12' + middle + '80';
-            document.getElementById('badgeIdInput').value = newId;
-            updateLivePreviewStudio();
-            showToast('New 12...80 ID generated: #' + newId);
+            const input = document.getElementById('badgeIdInput');
+            if (input) {
+                input.value = newId;
+                updateLivePreviewStudio();
+            }
         }
 
-        // Set Star fireworks count (0 to 50)
+        // STUDIO TAB SWITCHING LOGIC (Color Grading | VFX Animations | Badge Identity)
+        function switchStudioTab(tab) {
+            document.querySelectorAll('.studio-tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.studio-tab-btn').forEach(btn => {
+                btn.className = 'studio-tab-btn flex-1 py-3 px-3 sm:px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-[#080a18] border border-white/5 text-gray-400 hover:text-white hover:bg-white/5 cursor-pointer';
+            });
+
+            const targetContent = document.getElementById('studioTab-' + tab);
+            const targetBtn = document.getElementById('studioTabBtn-' + tab);
+
+            if (targetContent) targetContent.classList.remove('hidden');
+            if (targetBtn) {
+                let activeStyle = 'from-amber-500/20 to-orange-500/20 border-amber-400 text-white shadow-amber-500/10';
+                if (tab === 'vfx') activeStyle = 'from-pink-500/20 to-purple-500/20 border-pink-400 text-white shadow-pink-500/10';
+                if (tab === 'identity') activeStyle = 'from-cyan-500/20 to-blue-500/20 border-cyan-400 text-white shadow-cyan-500/10';
+                targetBtn.className = `studio-tab-btn flex-1 py-3 px-3 sm:px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 bg-gradient-to-r ${activeStyle} border shadow-lg cursor-pointer`;
+            }
+        }
+
+        // Star Density Slider Sync
         function setStarDensity(val) {
             val = Math.max(0, Math.min(50, parseInt(val) || 0));
-            document.getElementById('starRangeSlider').value = val;
             document.getElementById('starDensityInput').value = val;
-            document.getElementById('starCountDisplay').textContent = val + ' Stars';
+            document.getElementById('starDensityVal').textContent = val + ' Stars';
             updateLivePreviewStudio();
         }
 
-        // Select existing asset from dropdown
+        // Existing Asset Selection Dropdown
         function selectExistingAsset(val) {
             if (!val) return;
             currentPreviewImg = 'badges/' + val;
-            document.getElementById('uploadPromptText').textContent = 'Asset: ' + val;
+            document.getElementById('uploadPromptText').textContent = 'Selected: ' + val;
             updateLivePreviewStudio();
         }
 
-        // Live preview of uploaded file
+        // Custom PNG File Upload Preview
         function previewSelectedFile(event) {
             const file = event.target.files[0];
             if (!file) return;
 
-            document.getElementById('uploadPromptText').textContent = 'File: ' + file.name;
-            document.getElementById('existingFileSelect').value = '';
+            document.getElementById('uploadPromptText').textContent = 'Loaded: ' + file.name;
             const reader = new FileReader();
             reader.onload = function(e) {
                 currentPreviewImg = e.target.result;
@@ -1516,146 +1603,122 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         // Stage Size Switcher
         function setStageSize(sz) {
             stageDisplaySize = sz;
-            document.querySelectorAll('.stage-size-btn').forEach(b => {
-                if (parseInt(b.dataset.size) === sz) {
-                    b.classList.add('bg-amber-400/20', 'text-amber-300', 'font-bold', 'border', 'border-amber-400/40');
-                    b.classList.remove('text-gray-400');
-                } else {
-                    b.classList.remove('bg-amber-400/20', 'text-amber-300', 'font-bold', 'border', 'border-amber-400/40');
-                    b.classList.add('text-gray-400');
-                }
-            });
             updateLivePreviewStudio();
         }
 
-        // Stage Background Switcher
-        function setStageBg(type) {
-            const sc = document.getElementById('stageContainer');
+        // Background Mode Switcher (Transparent Checkerboard, Navy, Pure Black)
+        function setStageBg(mode) {
+            const sc = document.getElementById('liveStageContainer');
+            if (!sc) return;
+
             sc.classList.remove('checker-bg', 'bg-black', 'bg-[#080a18]');
-            if (type === 'checker') {
-                sc.classList.add('checker-bg');
-            } else if (type === 'black') {
-                sc.classList.add('bg-black');
-            } else {
+            document.getElementById('bgBtn-checker').className = 'w-6 h-6 rounded-lg checker-bg border border-white/20 transition cursor-pointer';
+            document.getElementById('bgBtn-navy').className = 'w-6 h-6 rounded-lg bg-[#080a18] border border-white/20 transition cursor-pointer';
+            document.getElementById('bgBtn-black').className = 'w-6 h-6 rounded-lg bg-black border border-white/20 transition cursor-pointer';
+
+            if (mode === 'navy') {
                 sc.classList.add('bg-[#080a18]');
-            }
-        }
-
-        // Master Animation Toggle Switch (ON / OFF)
-        function toggleMasterAnimation(checked) {
-            const ctrls = document.getElementById('vfxStudioControls');
-            if (checked) {
-                ctrls.classList.remove('opacity-40', 'pointer-events-none');
-                document.getElementById('sheenActiveCheck').checked = true;
-                if (parseInt(document.getElementById('starDensityInput').value) === 0) {
-                    setStarDensity(16);
-                }
+                document.getElementById('bgBtn-navy').className = 'w-6 h-6 rounded-lg bg-[#080a18] border-2 border-amber-400 transition cursor-pointer shadow-lg shadow-amber-400/20';
+            } else if (mode === 'black') {
+                sc.classList.add('bg-black');
+                document.getElementById('bgBtn-black').className = 'w-6 h-6 rounded-lg bg-black border-2 border-amber-400 transition cursor-pointer shadow-lg shadow-amber-400/20';
             } else {
-                ctrls.classList.add('opacity-40', 'pointer-events-none');
-                document.getElementById('sheenActiveCheck').checked = false;
-                setStarDensity(0);
-                document.getElementById('hasGemGlintCheck').checked = false;
-                document.getElementById('pulseEnabledCheck').checked = false;
+                sc.classList.add('checker-bg');
+                document.getElementById('bgBtn-checker').className = 'w-6 h-6 rounded-lg checker-bg border-2 border-amber-400 transition cursor-pointer shadow-lg shadow-amber-400/20';
             }
+        }
+
+        // Master Animation Toggle
+        function toggleMasterAnimation(enable) {
+            document.getElementById('masterAnimCheck').checked = enable;
+            document.getElementById('sheenActiveCheck').checked = enable;
             updateLivePreviewStudio();
         }
 
-        // Sheen Sweep Sub-Toggle
-        function toggleSheenSweep(checked) {
+        // Sheen Sweep Toggle
+        function toggleSheenSweep(enable) {
+            document.getElementById('sheenActiveCheck').checked = enable;
             updateLivePreviewStudio();
         }
 
-        // Quick Search or Paste ID
+        // Quick Search Bar Load
         function handleQuickSearchLoad() {
-            const query = (document.getElementById('quickBadgeSearchInput').value || '').trim();
-            if (!query) {
-                showToast('Please paste a badge ID or enter a name!');
-                return;
-            }
-            searchAndLoadBadge(query);
+            const q = (document.getElementById('quickBadgeSearchInput')?.value || '').trim();
+            if (!q) return;
+            searchAndLoadBadge(q);
         }
 
-        document.getElementById('quickBadgeSearchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                handleQuickSearchLoad();
-            }
-        });
+        function searchAndLoadBadge(query) {
+            query = query.toLowerCase().trim();
+            const badge = ALL_BADGES_DATA.find(b => 
+                (b.id && b.id.toLowerCase() === query) ||
+                (b.name && b.name.toLowerCase().includes(query)) ||
+                (b.file && b.file.toLowerCase().includes(query))
+            );
 
-        // Search in memory database and load
-        function searchAndLoadBadge(q) {
-            const cleanQ = q.toLowerCase().replace('#', '').trim();
-            let found = ALL_BADGES_DATA.find(b => b.id.toLowerCase() === cleanQ);
-            if (!found) {
-                found = ALL_BADGES_DATA.find(b => b.name.toLowerCase() === cleanQ || b.slug.toLowerCase() === cleanQ);
-            }
-            if (!found) {
-                found = ALL_BADGES_DATA.find(b => b.name.toLowerCase().includes(cleanQ) || b.id.includes(cleanQ));
-            }
-
-            if (found) {
-                loadBadgeToEditor(found.id);
+            if (badge) {
+                loadBadgeToEditor(badge.id);
             } else {
-                showToast('No badge found matching: ' + q);
+                showToast('Badge not found! Check 12...80 ID or name.');
             }
         }
 
-        // Handle Row Click in table
+        // Table Row Click Handler
         function handleRowClick(event, id) {
             loadBadgeToEditor(id);
         }
 
-        // MASTER LOADER: Populate everything from any badge
+        // LOAD BADGE INTO STUDIO EDITOR & LIVE PREVIEW
         function loadBadgeToEditor(id) {
             const b = ALL_BADGES_DATA.find(x => x.id === id);
             if (!b) return;
 
             currentActiveBadge = b;
 
-            // Update Header & Mode
+            // Form Headers
             document.getElementById('originalIdInput').value = b.id;
             document.getElementById('formPanelTitle').textContent = 'Editing: ' + b.name + ' (#' + b.id + ')';
-            document.getElementById('formPanelSub').textContent = 'Modify name, 12...80 ID, or VFX parameters and save to update CDN immediately.';
+            document.getElementById('formPanelSub').textContent = 'Modify parameters in tabs and click Save Badge to update CDN immediately.';
             document.getElementById('editorModeText').textContent = 'Editing: #' + b.id;
             document.getElementById('editorModeBadge').className = 'px-3.5 py-1.5 rounded-xl bg-amber-950/60 border border-amber-500/50 text-amber-300 text-xs font-mono flex items-center gap-2';
             document.getElementById('saveBtnText').textContent = 'Update & Redeploy #' + b.id;
+            document.getElementById('saveBtnTextTop').textContent = 'Update #' + b.id;
 
-            // Form Fields
-            document.getElementById('badgeNameInput').value = b.name;
-            document.getElementById('badgeIdInput').value = b.id;
+            // Identity Tab Fields
+            document.getElementById('badgeNameInput').value = b.name || '';
+            document.getElementById('badgeIdInput').value = b.id || '';
             document.getElementById('badgeCatSelect').value = b.category || 'Prime System';
             document.getElementById('badgeRaritySelect').value = b.rarity || 'MYTHIC';
-            document.getElementById('badgeSizeInput').value = b.default_size || 54;
+            document.getElementById('badgeSizeInput').value = b.default_size || b.size || 54;
             document.getElementById('glowSelect').value = b.glow_color || 'rgba(255, 215, 0, 0.85)';
             document.getElementById('glowEnabledCheck').checked = (b.glow_enabled !== false);
             document.getElementById('badgeDescInput').value = b.description || '';
 
-            // Icon Asset
+            // Icon Asset Selection
             currentPreviewImg = 'badges/' + (b.file || 'ff_ui_prime_icon_08.png');
             document.getElementById('uploadPromptText').textContent = 'Asset: ' + (b.file || 'ff_ui_prime_icon_08.png');
             
             const efSelect = document.getElementById('existingFileSelect');
-            for (let i = 0; i < efSelect.options.length; i++) {
-                if (efSelect.options[i].value === b.file) {
-                    efSelect.selectedIndex = i;
-                    break;
+            if (efSelect) {
+                for (let i = 0; i < efSelect.options.length; i++) {
+                    if (efSelect.options[i].value === b.file) {
+                        efSelect.selectedIndex = i;
+                        break;
+                    }
                 }
             }
 
-            // Universal Animation State Check:
+            // VFX Animation State
             const hasAnimation = (b.sweep_enabled !== false && b.sweep_enabled !== 'false' && b.sweep_enabled !== 0);
             document.getElementById('masterAnimCheck').checked = hasAnimation;
             document.getElementById('sheenActiveCheck').checked = hasAnimation;
-            toggleMasterAnimation(hasAnimation);
 
-            // Sheen Direction normalizer
             let sDir = b.sweep_direction || 'diag_bl_tr';
             if (sDir === 'diag') sDir = 'diag_bl_tr';
             if (sDir === 'diag_rev') sDir = 'diag_br_tl';
             document.getElementById('sweepDirSelect').value = sDir;
             document.getElementById('sweepSpeedSelect').value = b.sweep_speed || '2.2s';
             
-            // Star Density (0 to 50)
             const starCount = (b.star_density !== undefined) ? parseInt(b.star_density) : (b.prime_level === 8 ? 16 : 0);
             setStarDensity(hasAnimation ? starCount : 0);
 
@@ -1663,6 +1726,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             document.getElementById('hasGemGlintCheck').checked = hasAnimation && (b.has_gem_glint === true || b.has_gem_glint === '1' || b.has_gem_glint === 1);
             document.getElementById('pulseEnabledCheck').checked = hasAnimation && (b.pulse_enabled !== false);
 
+            // Update Stage immediately
             updateLivePreviewStudio();
             showToast('Loaded: ' + b.name + ' (#' + b.id + ')');
 
@@ -1679,280 +1743,119 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             randomizeId();
 
             document.getElementById('formPanelTitle').textContent = 'Badge Studio & VFX Customizer';
-            document.getElementById('formPanelSub').textContent = 'Upload transparent PNG badge or select existing asset to generate 12...80 ID and CDN link.';
+            document.getElementById('formPanelSub').textContent = 'Switch tabs to customize Color Grading, VFX Animations, or Badge Identity.';
             document.getElementById('editorModeText').textContent = 'Mode: New Badge';
             document.getElementById('editorModeBadge').className = 'px-3.5 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs font-mono flex items-center gap-2';
-            document.getElementById('saveBtnText').textContent = 'Save & Generate Global CDN Asset';
+            document.getElementById('saveBtnText').textContent = 'Save Badge & Deploy to CDN';
+            document.getElementById('saveBtnTextTop').textContent = 'Save & Deploy';
 
             currentPreviewImg = 'badges/ff_ui_prime_icon_08.png';
-            document.getElementById('uploadPromptText').textContent = 'Click to select PNG';
-            document.getElementById('existingFileSelect').value = 'ff_ui_prime_icon_08.png';
+            document.getElementById('uploadPromptText').textContent = 'Upload Transparent PNG';
 
             document.getElementById('masterAnimCheck').checked = true;
             document.getElementById('sheenActiveCheck').checked = true;
-            toggleMasterAnimation(true);
             setStarDensity(16);
-            document.getElementById('sweepDirSelect').value = 'diag_bl_tr';
-            document.getElementById('sweepSpeedSelect').value = '2.2s';
-            document.getElementById('starThemeSelect').value = 'gold';
-            document.getElementById('hasGemGlintCheck').checked = true;
-            document.getElementById('pulseEnabledCheck').checked = true;
-            document.getElementById('glowEnabledCheck').checked = true;
 
+            resetAllAdjustments();
+            switchStudioTab('color');
             updateLivePreviewStudio();
-            showToast('Editor reset for New Badge creation');
+            showToast('Switched to New Badge mode.');
         }
 
-        // Apply one of the 50 Numbered Effect Presets
+        // Apply Numbered Effect Preset
         function handlePresetChange(presetId) {
-            if (!presetId) return;
-            const p = ALL_PRESETS_DATA.find(x => x.id === parseInt(presetId));
+            const p = PRESETS_LIST.find(x => x.id === parseInt(presetId));
             if (!p) return;
 
             document.getElementById('masterAnimCheck').checked = true;
-            document.getElementById('sheenActiveCheck').checked = !!p.sweep;
-            toggleMasterAnimation(true);
+            document.getElementById('sheenActiveCheck').checked = true;
 
-            if (p.category) document.getElementById('badgeCatSelect').value = p.category;
-            if (p.rarity) document.getElementById('badgeRaritySelect').value = p.rarity;
-            if (p.glow) document.getElementById('glowSelect').value = p.glow;
+            let sDir = p.sweep_direction || 'diag_bl_tr';
+            if (sDir === 'diag') sDir = 'diag_bl_tr';
+            if (sDir === 'diag_rev') sDir = 'diag_br_tl';
+            document.getElementById('sweepDirSelect').value = sDir;
+            document.getElementById('sweepSpeedSelect').value = p.sweep_speed || '2.2s';
             
-            if (p.dir) {
-                let d = p.dir;
-                if (d === 'diag') d = 'diag_bl_tr';
-                if (d === 'diag_rev') d = 'diag_br_tl';
-                document.getElementById('sweepDirSelect').value = d;
+            setStarDensity(p.star_density || 0);
+            document.getElementById('starThemeSelect').value = p.star_theme || 'gold';
+            document.getElementById('hasGemGlintCheck').checked = (p.has_gem_glint !== false);
+            
+            if (p.glow_color) {
+                document.getElementById('glowSelect').value = p.glow_color;
+                document.getElementById('glowEnabledCheck').checked = true;
             }
-            if (p.speed) document.getElementById('sweepSpeedSelect').value = p.speed;
-
-            setStarDensity(p.stars || 0);
-            if (p.theme) document.getElementById('starThemeSelect').value = p.theme;
-            document.getElementById('hasGemGlintCheck').checked = !!p.glint;
-            document.getElementById('pulseEnabledCheck').checked = true;
 
             updateLivePreviewStudio();
-            showToast('Applied Preset: ' + p.name);
+            showToast('Applied Preset #' + p.id + ': ' + p.name);
         }
 
-        // Remove All Effects (Clean Static Badge - 100% Frozen & Transparent)
+        // Remove All Effects (Clean Static Emblem)
         function removeAllEffects() {
             document.getElementById('masterAnimCheck').checked = false;
             document.getElementById('sheenActiveCheck').checked = false;
             setStarDensity(0);
             document.getElementById('hasGemGlintCheck').checked = false;
             document.getElementById('pulseEnabledCheck').checked = false;
-            document.getElementById('presetSelect').value = '';
-            toggleMasterAnimation(false);
             updateLivePreviewStudio();
-            showToast('All effects removed: Clean static transparent badge!');
+            showToast('All VFX disabled (Clean static badge mode)');
         }
 
-        // MASTER LIVE PREVIEW STUDIO RENDERER (Radially Scattered Stars & Universal On/Off)
-
-        // CLEAR ADJUSTMENT & PRO ICON LAB STATE
-        function updateAdjustments() {
-            // Read slider values
-            const b = document.getElementById('sliderBrightness').value;
-            const c = document.getElementById('sliderContrast').value;
-            const s = document.getElementById('sliderSaturation').value;
-            const hl = document.getElementById('sliderHighlights').value;
-            const h = document.getElementById('sliderHue').value;
-            const sharp = document.getElementById('sliderSharpness').value;
-
-            // Update display badges
-            document.getElementById('valBrightness').textContent = b + '%';
-            document.getElementById('valContrast').textContent = c + '%';
-            document.getElementById('valSaturation').textContent = s + '%';
-            document.getElementById('valHighlights').textContent = hl + '%';
-            document.getElementById('valHue').textContent = h + '°';
-            document.getElementById('valSharpness').textContent = sharp;
-
-            const glowRad = document.getElementById('sliderGlowRadius').value;
-            const glowBlur = document.getElementById('sliderGlowBlur').value;
-            document.getElementById('valGlowRadius').textContent = glowRad + 'px';
-            document.getElementById('valGlowBlur').textContent = glowBlur + 'px';
-
-            const boneRad = document.getElementById('sliderBoneRadius').value;
-            document.getElementById('valBoneRadius').textContent = boneRad + 'px';
-
-            // Re-render live preview stage with these real-time adjustments
+        // INDIVIDUAL SLIDER RESET HELPER
+        function resetSingleSlider(id, defaultVal) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.value = defaultVal;
             updateLivePreviewStudio();
+            showToast('Reset ' + id.replace('slider', '') + ' to default.');
         }
 
-        function setGlowColor(colorHex) {
-            document.getElementById('contourGlowColorPicker').value = colorHex;
-            document.getElementById('contourGlowColorHex').value = colorHex;
-            updateAdjustments();
-        }
+        // BONE FOCAL SPOT PRESET SELECTOR
+        function setBoneSpot(spot) {
+            const posInput = document.getElementById('bonePosSelect');
+            if (posInput) posInput.value = spot;
 
-        function resetAdjustments() {
-            document.getElementById('sliderBrightness').value = 100;
-            document.getElementById('sliderContrast').value = 100;
-            document.getElementById('sliderSaturation').value = 100;
-            document.getElementById('sliderHighlights').value = 100;
-            document.getElementById('sliderHue').value = 0;
-            document.getElementById('sliderSharpness').value = 0;
-
-            document.getElementById('boneLightCheck').checked = false;
-            document.getElementById('sliderBoneRadius').value = 45;
-
-            document.getElementById('contourGlowCheck').checked = true;
-            document.getElementById('sliderGlowRadius').value = 14;
-            document.getElementById('sliderGlowBlur').value = 10;
-            setGlowColor('#FFD700');
-
-            updateAdjustments();
-            showToast('All adjustments reset to default');
-        }
-
-        // 1-Click Auto Background Remover (Canvas Flood & Alpha Cutoff)
-        function autoRemoveBackground() {
-            const img = document.querySelector('#liveBadgeStage img');
-            if (!img) return;
-
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = img.naturalWidth || 512;
-            canvas.height = img.naturalHeight || 512;
-
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imgData.data;
-
-            // Sample 4 corners to determine background color
-            const c1 = [data[0], data[1], data[2]];
-            const c2 = [data[(canvas.width - 1) * 4], data[(canvas.width - 1) * 4 + 1], data[(canvas.width - 1) * 4 + 2]];
-            const c3 = [data[(canvas.width * (canvas.height - 1)) * 4], data[(canvas.width * (canvas.height - 1)) * 4 + 1], data[(canvas.width * (canvas.height - 1)) * 4 + 2]];
-            const c4 = [data[(canvas.width * canvas.height - 1) * 4], data[(canvas.width * canvas.height - 1) * 4 + 1], data[(canvas.width * canvas.height - 1) * 4 + 2]];
-
-            const bgR = Math.round((c1[0] + c2[0] + c3[0] + c4[0]) / 4);
-            const bgG = Math.round((c1[1] + c2[1] + c3[1] + c4[1]) / 4);
-            const bgB = Math.round((c1[2] + c2[2] + c3[2] + c4[2]) / 4);
-
-            const tolerance = 40;
-            for (let i = 0; i < data.length; i += 4) {
-                const r = data[i], g = data[i + 1], b = data[i + 2];
-                const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
-                if (dist < tolerance) {
-                    data[i + 3] = 0; // 100% transparent
-                } else if (dist < tolerance + 15) {
-                    data[i + 3] = Math.round(((dist - tolerance) / 15) * data[i + 3]); // smooth feather edge
-                }
-            }
-
-            ctx.putImageData(imgData, 0, 0);
-            currentPreviewImg = canvas.toDataURL('image/png');
-            updateLivePreviewStudio();
-            showToast('🪄 100% Transparent Background Applied!');
-        }
-
-        // 1-Click Full HD Clarity Boost
-        function boostHdClarity() {
-            document.getElementById('sliderContrast').value = 115;
-            document.getElementById('sliderSharpness').value = 35;
-            document.getElementById('sliderHighlights').value = 110;
-            document.getElementById('sliderSaturation').value = 112;
-            updateAdjustments();
-            showToast('💎 Full HD Clarity & Edge Definition Boosted!');
-        }
-
-
-        // ========================================================
-        // COLOR GRADING & PRO IMAGE STUDIO LOGIC (100% English)
-        // ========================================================
-
-        function updateAdjustments() {
-            // Read slider values
-            const b = document.getElementById('sliderBrightness')?.value || 100;
-            const c = document.getElementById('sliderContrast')?.value || 100;
-            const s = document.getElementById('sliderSaturation')?.value || 100;
-            const hl = document.getElementById('sliderHighlights')?.value || 100;
-            const h = document.getElementById('sliderHue')?.value || 0;
-            const sharp = parseInt(document.getElementById('sliderSharpness')?.value || 0);
-            const colorShift = parseInt(document.getElementById('sliderColorShift')?.value || 0);
-
-            // Update display badges
-            if (document.getElementById('valBrightness')) document.getElementById('valBrightness').textContent = b + '%';
-            if (document.getElementById('valContrast')) document.getElementById('valContrast').textContent = c + '%';
-            if (document.getElementById('valSaturation')) document.getElementById('valSaturation').textContent = s + '%';
-            if (document.getElementById('valHighlights')) document.getElementById('valHighlights').textContent = hl + '%';
-            if (document.getElementById('valHue')) document.getElementById('valHue').textContent = h + '°';
-            if (document.getElementById('valSharpness')) document.getElementById('valSharpness').textContent = sharp + '%';
-            if (document.getElementById('valColorShift')) document.getElementById('valColorShift').textContent = colorShift === 0 ? '0° (Original)' : colorShift + '°';
-
-            const glowRad = document.getElementById('sliderGlowRadius')?.value || 14;
-            const glowBlur = document.getElementById('sliderGlowBlur')?.value || 10;
-            if (document.getElementById('valGlowRadius')) document.getElementById('valGlowRadius').textContent = glowRad + 'px';
-            if (document.getElementById('valGlowBlur')) document.getElementById('valGlowBlur').textContent = glowBlur + 'px';
-
-            const boneRad = document.getElementById('sliderBoneRadius')?.value || 45;
-            if (document.getElementById('valBoneRadius')) document.getElementById('valBoneRadius').textContent = boneRad + 'px';
-
-            // Update SVG High-Pass Sharpness Matrix
-            const matrixEl = document.getElementById('ffSharpenMatrix');
-            if (matrixEl) {
-                if (sharp > 0) {
-                    const factor = (sharp / 40); // 0 to 5
-                    const center = (1 + 4 * factor).toFixed(2);
-                    const edge = (-factor).toFixed(2);
-                    matrixEl.setAttribute('kernelMatrix', `0 ${edge} 0  ${edge} ${center} ${edge}  0 ${edge} 0`);
-                } else {
-                    matrixEl.setAttribute('kernelMatrix', '0 0 0  0 1 0  0 0 0');
-                }
-            }
-
-            // Re-render live preview stage with real-time adjustments
-            updateLivePreviewStudio();
-        }
-
-        // Reset an individual slider to its default value
-        function resetSingleSlider(sliderId, defaultVal) {
-            const el = document.getElementById(sliderId);
-            if (el) {
-                el.value = defaultVal;
-                updateAdjustments();
-                const name = sliderId.replace('slider', '');
-                showToast(`Reset ${name} to default (${defaultVal})`);
-            }
-        }
-
-        // Set Bone Spot Preset
-        function setBoneSpot(spotKey) {
-            document.getElementById('bonePosSelect').value = spotKey;
-            document.querySelectorAll('.bone-spot-btn').forEach(b => {
-                b.className = 'bone-spot-btn px-2.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 text-center cursor-pointer transition';
+            document.querySelectorAll('.bone-spot-btn').forEach(btn => {
+                btn.className = 'bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:border-amber-400 transition cursor-pointer text-center';
             });
-            const activeBtn = document.getElementById('boneBtn-' + spotKey);
+            const activeBtn = document.getElementById('boneBtn-' + spot);
             if (activeBtn) {
-                activeBtn.className = 'bone-spot-btn px-2.5 py-1.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-center cursor-pointer transition font-bold';
+                activeBtn.className = 'bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-lg shadow-amber-500/20 transition cursor-pointer text-center';
             }
-            // Auto-enable bone light checkbox if user picked a spot
-            const check = document.getElementById('boneLightCheck');
-            if (check && !check.checked) check.checked = true;
 
-            updateAdjustments();
-            showToast(`Focal Light positioned at: ${spotKey.replace('_', ' ').toUpperCase()}`);
+            document.getElementById('boneLightCheck').checked = true;
+            updateLivePreviewStudio();
+            showToast('Bone focal spot set: ' + spot.replace('_', ' ').toUpperCase());
         }
 
-        // Set Color Shift Slider
-        function setColorShift(deg) {
+        // UNIVERSAL COLOR SHIFT SPECTRUM HANDLER
+        function setColorShift(hue) {
+            hue = parseInt(hue) || 0;
             const slider = document.getElementById('sliderColorShift');
-            if (slider) {
-                slider.value = deg;
-                updateAdjustments();
-                showToast(`Color Palette shifted to ${deg}°`);
+            if (slider) slider.value = hue;
+
+            const valText = document.getElementById('valColorShift');
+            if (valText) {
+                valText.textContent = hue === 0 ? '0° (Original)' : (hue + '° Shift');
             }
+
+            updateLivePreviewStudio();
         }
 
-        // Apply Target Color from Color Picker box
-        function applyTargetColor(hexColor) {
-            // Convert Hex to approximate Hue angle
-            const rgb = hexToRgb(hexColor);
-            if (rgb) {
-                const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
-                const targetDeg = Math.round(hsv.h);
-                setColorShift(targetDeg);
-            }
+        // INTERACTIVE TARGET COLOR PICKER (Calculates relative hue rotation)
+        function applyTargetColor(hex) {
+            const rgb = hexToRgb(hex);
+            if (!rgb) return;
+            const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+            const targetHue = Math.round(hsv.h * 360);
+            const goldBaseHue = 45; // Default Free Fire gold base
+            let shiftDeg = targetHue - goldBaseHue;
+            if (shiftDeg < 0) shiftDeg += 360;
+
+            setColorShift(shiftDeg);
+            const colorBox = document.getElementById('targetColorBox');
+            if (colorBox) colorBox.value = hex;
+
+            showToast('Recolored badge to ' + hex.toUpperCase());
         }
 
         function hexToRgb(hex) {
@@ -1970,6 +1873,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             let h, s, v = max;
             const d = max - min;
             s = max === 0 ? 0 : d / max;
+
             if (max === min) {
                 h = 0;
             } else {
@@ -1980,126 +1884,132 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 }
                 h /= 6;
             }
-            return { h: h * 360, s: s, v: v };
+            return { h: h, s: s, v: v };
         }
 
-        function setGlowColor(colorHex) {
-            document.getElementById('contourGlowColorPicker').value = colorHex;
-            document.getElementById('contourGlowColorHex').value = colorHex;
-            updateAdjustments();
-        }
-
-        // 1-Click AI Auto Enhancer
+        // 1-CLICK AI AUTO ENHANCER
         function aiAutoEnhance() {
-            document.getElementById('sliderBrightness').value = 108;
+            document.getElementById('sliderBrightness').value = 112;
             document.getElementById('sliderContrast').value = 118;
-            document.getElementById('sliderSaturation').value = 135;
-            document.getElementById('sliderHighlights').value = 112;
-            document.getElementById('sliderSharpness').value = 45;
+            document.getElementById('sliderSaturation').value = 125;
+            document.getElementById('sliderHighlights').value = 110;
+            document.getElementById('sliderSharpness').value = 135;
+
             document.getElementById('contourGlowCheck').checked = true;
-            document.getElementById('sliderGlowRadius').value = 18;
+            document.getElementById('contourGlowColorHex').value = '#FFD700';
+            document.getElementById('sliderGlowRadius').value = 16;
             document.getElementById('sliderGlowBlur').value = 12;
 
-            updateAdjustments();
-            showToast('🪄 AI Auto-Enhance Applied! High-Definition Esports Look Active.');
+            updateLivePreviewStudio();
+            showToast('AI Auto Enhance applied! Balanced light, saturation & edge clarity.');
         }
 
-        // Reset all adjustments to default
+        // RESET ALL COLOR GRADING & PRO ADJUSTMENTS
         function resetAllAdjustments() {
             document.getElementById('sliderBrightness').value = 100;
             document.getElementById('sliderContrast').value = 100;
             document.getElementById('sliderSaturation').value = 100;
             document.getElementById('sliderHighlights').value = 100;
             document.getElementById('sliderHue').value = 0;
-            document.getElementById('sliderSharpness').value = 0;
+            document.getElementById('sliderSharpness').value = 100;
             document.getElementById('sliderColorShift').value = 0;
+            document.getElementById('valColorShift').textContent = '0° (Original)';
 
             document.getElementById('boneLightCheck').checked = false;
             document.getElementById('sliderBoneRadius').value = 45;
-            setBoneSpot('crown');
+            document.getElementById('boneColorHex').value = '#FFD700';
 
-            document.getElementById('contourGlowCheck').checked = true;
+            document.getElementById('contourGlowCheck').checked = false;
             document.getElementById('sliderGlowRadius').value = 14;
             document.getElementById('sliderGlowBlur').value = 10;
-            setGlowColor('#FFD700');
+            document.getElementById('contourGlowColorHex').value = '#FFD700';
 
-            updateAdjustments();
-            showToast('All color grading & adjustments reset to default');
-        }
-
-        // 1-Click Auto Background Remover (Canvas Flood & Alpha Cutoff)
-        function autoRemoveBackground() {
-            const img = document.querySelector('#liveBadgeStage img');
-            if (!img) return;
-
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = img.naturalWidth || 512;
-            canvas.height = img.naturalHeight || 512;
-
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imgData.data;
-
-            // Sample 4 corners to determine background color
-            const c1 = [data[0], data[1], data[2]];
-            const c2 = [data[(canvas.width - 1) * 4], data[(canvas.width - 1) * 4 + 1], data[(canvas.width - 1) * 4 + 2]];
-            const c3 = [data[(canvas.width * (canvas.height - 1)) * 4], data[(canvas.width * (canvas.height - 1)) * 4 + 1], data[(canvas.width * (canvas.height - 1)) * 4 + 2]];
-            const c4 = [data[(canvas.width * canvas.height - 1) * 4], data[(canvas.width * canvas.height - 1) * 4 + 1], data[(canvas.width * canvas.height - 1) * 4 + 2]];
-
-            const bgR = Math.round((c1[0] + c2[0] + c3[0] + c4[0]) / 4);
-            const bgG = Math.round((c1[1] + c2[1] + c3[1] + c4[1]) / 4);
-            const bgB = Math.round((c1[2] + c2[2] + c3[2] + c4[2]) / 4);
-
-            const tolerance = 42;
-            for (let i = 0; i < data.length; i += 4) {
-                const r = data[i], g = data[i + 1], b = data[i + 2];
-                const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
-                if (dist < tolerance) {
-                    data[i + 3] = 0; // 100% transparent
-                } else if (dist < tolerance + 15) {
-                    data[i + 3] = Math.round(((dist - tolerance) / 15) * data[i + 3]); // smooth feather edge
-                }
-            }
-
-            ctx.putImageData(imgData, 0, 0);
-            currentPreviewImg = canvas.toDataURL('image/png');
             updateLivePreviewStudio();
-            showToast('🪄 100% Transparent Background Applied!');
+            showToast('All Color Grading and Studio adjustments reset to defaults.');
         }
 
-        // 1-Click Full HD Clarity Boost
+        // 1-CLICK AUTO BACKGROUND REMOVE (Canvas Flood Erase + Edge Feathering)
+        function autoRemoveBackground() {
+            if (!currentPreviewImg) return;
+            showToast('Processing cutout... Removing background.');
+
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = currentPreviewImg;
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth || 500;
+                canvas.height = img.naturalHeight || 500;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imgData.data;
+
+                const c1 = [data[0], data[1], data[2]];
+                const c2 = [data[(canvas.width - 1) * 4], data[(canvas.width - 1) * 4 + 1], data[(canvas.width - 1) * 4 + 2]];
+                const c3 = [data[(canvas.width * (canvas.height - 1)) * 4], data[(canvas.width * (canvas.height - 1)) * 4 + 1], data[(canvas.width * (canvas.height - 1)) * 4 + 2]];
+                const c4 = [data[(canvas.width * canvas.height - 1) * 4], data[(canvas.width * canvas.height - 1) * 4 + 1], data[(canvas.width * canvas.height - 1) * 4 + 2]];
+
+                const bgR = Math.round((c1[0] + c2[0] + c3[0] + c4[0]) / 4);
+                const bgG = Math.round((c1[1] + c2[1] + c3[1] + c4[1]) / 4);
+                const bgB = Math.round((c1[2] + c2[2] + c3[2] + c4[2]) / 4);
+                const tolerance = 42;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i], g = data[i + 1], b = data[i + 2];
+                    const dist = Math.sqrt((r - bgR)**2 + (g - bgG)**2 + (b - bgB)**2);
+                    if (dist < tolerance) {
+                        data[i + 3] = 0; // Transparent
+                    } else if (dist < tolerance + 15) {
+                        data[i + 3] = Math.round(((dist - tolerance) / 15) * data[i + 3]); // Smooth feathering
+                    }
+                }
+
+                ctx.putImageData(imgData, 0, 0);
+                currentPreviewImg = canvas.toDataURL('image/png');
+                updateLivePreviewStudio();
+                showToast('Background removed! 100% transparent PNG cutout created.');
+            };
+            img.onerror = function() {
+                showToast('Unable to process external image directly due to CORS.');
+            };
+        }
+
+        // 1-CLICK FULL HD CLARITY BOOST
         function boostHdClarity() {
-            document.getElementById('sliderContrast').value = 118;
-            document.getElementById('sliderSharpness').value = 50;
-            document.getElementById('sliderHighlights').value = 112;
-            document.getElementById('sliderSaturation').value = 115;
-            updateAdjustments();
-            showToast('💎 Full HD Clarity & Edge Definition Boosted!');
+            document.getElementById('sliderContrast').value = 125;
+            document.getElementById('sliderSharpness').value = 150;
+            document.getElementById('sliderHighlights').value = 115;
+            updateLivePreviewStudio();
+            showToast('HD Clarity Boost active! Fine lines sharpened.');
         }
 
+        // ==============================================================
+        // CORE LIVE PREVIEW RENDERING ENGINE (ZERO SYNTAX ERRORS)
+        // ==============================================================
         function updateLivePreviewStudio() {
             const stage = document.getElementById('liveBadgeStage');
             if (!stage) return;
 
-            const isMasterAnim = document.getElementById('masterAnimCheck').checked;
-            const isSheenActive = isMasterAnim && document.getElementById('sheenActiveCheck').checked;
-            const sweepDir = document.getElementById('sweepDirSelect').value;
-            const sweepSpeed = document.getElementById('sweepSpeedSelect').value;
-            const starCount = isMasterAnim ? Math.max(0, Math.min(50, parseInt(document.getElementById('starDensityInput').value) || 0)) : 0;
-            const starTheme = document.getElementById('starThemeSelect').value;
-            const hasGlint = isMasterAnim && document.getElementById('hasGemGlintCheck').checked;
-            const hasPulse = isMasterAnim && document.getElementById('pulseEnabledCheck').checked;
-            const glowEnabled = document.getElementById('glowEnabledCheck').checked;
-            const glowVal = glowEnabled ? document.getElementById('glowSelect').value : 'transparent';
-            const badgeId = document.getElementById('badgeIdInput').value || '120000000080';
+            // Form Inputs & State
+            const isMasterAnim = document.getElementById('masterAnimCheck')?.checked ?? true;
+            const isSheenActive = isMasterAnim && (document.getElementById('sheenActiveCheck')?.checked ?? true);
+            const sweepDir = document.getElementById('sweepDirSelect')?.value || 'diag_bl_tr';
+            const sweepSpeed = document.getElementById('sweepSpeedSelect')?.value || '2.2s';
+            const starCount = isMasterAnim ? Math.max(0, Math.min(50, parseInt(document.getElementById('starDensityInput')?.value) || 0)) : 0;
+            const starTheme = document.getElementById('starThemeSelect')?.value || 'gold';
+            const hasGlint = isMasterAnim && (document.getElementById('hasGemGlintCheck')?.checked ?? true);
+            const hasPulse = isMasterAnim && (document.getElementById('pulseEnabledCheck')?.checked ?? true);
+            const glowEnabled = document.getElementById('glowEnabledCheck')?.checked ?? true;
+            const glowVal = glowEnabled ? (document.getElementById('glowSelect')?.value || 'rgba(255, 215, 0, 0.85)') : 'transparent';
+            const badgeId = document.getElementById('badgeIdInput')?.value || '120000000880';
 
-            // Sheen Direction Class
-            let sweepClass = '';
-            if (sweepDir === 'diag_bl_tr' || sweepDir === 'diag') sweepClass = 'sweep-dir-bl-tr';
-            else if (sweepDir === 'diag_br_tl' || sweepDir === 'diag_rev') sweepClass = 'sweep-dir-br-tl';
-            else if (sweepDir === 'diag_tl_br') sweepClass = 'sweep-dir-tl-br';
-            else if (sweepDir === 'diag_tr_bl') sweepClass = 'sweep-dir-tr-bl';
+            // Sheen Direction Class (Maps to both underscore and dash versions)
+            let sweepClass = 'sweep-dir-diag_bl_tr sweep-dir-bl-tr';
+            if (sweepDir === 'diag_br_tl' || sweepDir === 'diag_rev') sweepClass = 'sweep-dir-diag_br_tl sweep-dir-br-tl';
+            else if (sweepDir === 'diag_tl_br') sweepClass = 'sweep-dir-diag_tl_br sweep-dir-tl-br';
+            else if (sweepDir === 'diag_tr_bl') sweepClass = 'sweep-dir-tr-bl sweep-dir-diag_tr_bl';
             else if (sweepDir === 'up') sweepClass = 'sweep-dir-up';
             else if (sweepDir === 'down') sweepClass = 'sweep-dir-down';
             else if (sweepDir === 'right') sweepClass = 'sweep-dir-right';
@@ -2119,7 +2029,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             const starColor = themeColors[starTheme] || '#FFFCE0';
             const starThemeClass = 'star-theme-' + starTheme;
 
-            // Generate Radially Scattered Stars (360 degrees around badge silhouette)
+            // Generate Radially Scattered Stars (0 to 50)
             let starsHtml = '';
             if (isMasterAnim && starCount > 0) {
                 const starPositions = Array.from({length: starCount}, (_, i) => 'star-pos-' + (i + 1));
@@ -2145,18 +2055,43 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             // Image Animation Style
             const imgStyle = (!isMasterAnim || !hasPulse) ? 'animation:none !important;transform:none !important;' : '';
             const animOffClass = (!isMasterAnim) ? ' ff-anim-off' : '';
-            const filterDrop = glowEnabled ? `filter:drop-shadow(0 0 10px ${glowVal});` : '';
 
-            // Compute Pro Color & Lighting Adjustments
-            const adjB = (document.getElementById('sliderBrightness')?.value || 100) / 100;
-            const adjC = document.getElementById('sliderContrast')?.value || 100;
-            const adjS = document.getElementById('sliderSaturation')?.value || 100;
-            const adjHl = (document.getElementById('sliderHighlights')?.value || 100) / 100;
-            const adjH = document.getElementById('sliderHue')?.value || 0;
-            const adjSharp = parseInt(document.getElementById('sliderSharpness')?.value || 0);
+            // COMPUTE PRO COLOR & LIGHTING ADJUSTMENTS (SINGLE CLEAN DECLARATION)
+            const valB = parseInt(document.getElementById('sliderBrightness')?.value || 100);
+            const valC = parseInt(document.getElementById('sliderContrast')?.value || 100);
+            const valS = parseInt(document.getElementById('sliderSaturation')?.value || 100);
+            const valHl = parseInt(document.getElementById('sliderHighlights')?.value || 100);
+            const valH = parseInt(document.getElementById('sliderHue')?.value || 0);
+            const valColorShift = parseInt(document.getElementById('sliderColorShift')?.value || 0);
+            const valSharp = parseInt(document.getElementById('sliderSharpness')?.value || 100);
 
-            const effectiveBrightness = adjB * adjHl;
-            const imgAdjustmentFilter = `brightness(${effectiveBrightness}) contrast(${adjC}%) saturate(${adjS}%) hue-rotate(${adjH}deg)` + (adjSharp > 0 ? ` contrast(${100 + adjSharp * 0.3}%)` : '');
+            // Update Label Value Displays
+            if (document.getElementById('valBrightness')) document.getElementById('valBrightness').textContent = valB + '%';
+            if (document.getElementById('valContrast')) document.getElementById('valContrast').textContent = valC + '%';
+            if (document.getElementById('valSaturation')) document.getElementById('valSaturation').textContent = valS + '%';
+            if (document.getElementById('valHighlights')) document.getElementById('valHighlights').textContent = valHl + '%';
+            if (document.getElementById('valHue')) document.getElementById('valHue').textContent = valH + '°';
+            if (document.getElementById('valSharpness')) document.getElementById('valSharpness').textContent = valSharp + '%';
+
+            // Dynamic SVG Convolution Matrix for Real HD Edge Sharpening
+            const matrixEl = document.getElementById('ffSharpenMatrix');
+            if (matrixEl) {
+                if (valSharp <= 100) {
+                    matrixEl.setAttribute('kernelMatrix', '0 0 0  0 1 0  0 0 0');
+                } else {
+                    const factor = ((valSharp - 100) / 100) * 1.5;
+                    const c = -factor;
+                    const center = 1 + (4 * factor);
+                    matrixEl.setAttribute('kernelMatrix', `0 ${c} 0  ${c} ${center} ${c}  0 ${c} 0`);
+                }
+            }
+
+            const effectiveBrightness = ((valB / 100) * (valHl / 100)).toFixed(2);
+            const totalHue = valH + valColorShift;
+            let imgAdjustmentFilter = `brightness(${effectiveBrightness}) contrast(${valC}%) saturate(${valS}%) hue-rotate(${totalHue}deg)`;
+            if (valSharp > 100) {
+                imgAdjustmentFilter += ` url(#ffCustomSharpen)`;
+            }
 
             // Compute Aura Contour Shadow (strictly hugs PNG outline, no square box!)
             const isContourGlow = document.getElementById('contourGlowCheck')?.checked;
@@ -2164,7 +2099,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             const contourGlowRad = parseInt(document.getElementById('sliderGlowRadius')?.value || 14);
             const contourGlowBlur = parseInt(document.getElementById('sliderGlowBlur')?.value || 10);
 
-            let contourDropFilter = '';
+            if (document.getElementById('valGlowRadius')) document.getElementById('valGlowRadius').textContent = contourGlowRad + 'px';
+            if (document.getElementById('valGlowBlur')) document.getElementById('valGlowBlur').textContent = contourGlowBlur + 'px';
+
+            let contourDropFilter = glowEnabled ? `filter: drop-shadow(0 0 8px ${glowVal});` : '';
             if (isContourGlow && contourGlowRad > 0) {
                 contourDropFilter = `filter: drop-shadow(0 0 ${contourGlowRad}px ${contourGlowColor}) drop-shadow(0 0 ${contourGlowBlur}px ${contourGlowColor});`;
             }
@@ -2177,67 +2115,22 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 const boneColor = document.getElementById('boneColorHex')?.value || '#FFD700';
                 const boneRad = parseInt(document.getElementById('sliderBoneRadius')?.value || 45);
 
-                let posX = '50%', posY = '15%';
-                if (bonePos === 'left_wing') { posX = '22%'; posY = '38%'; }
-                else if (bonePos === 'right_wing') { posX = '78%'; posY = '38%'; }
+                if (document.getElementById('valBoneRadius')) document.getElementById('valBoneRadius').textContent = boneRad + 'px';
+                if (document.getElementById('boneColorHexText')) document.getElementById('boneColorHexText').value = boneColor;
+
+                let posX = '50%', posY = '14%';
+                if (bonePos === 'left_wing') { posX = '20%'; posY = '36%'; }
+                else if (bonePos === 'right_wing') { posX = '80%'; posY = '36%'; }
                 else if (bonePos === 'center_gem') { posX = '50%'; posY = '52%'; }
-                else if (bonePos === 'bottom_apex') { posX = '50%'; posY = '84%'; }
-
-                boneLightHtml = `<div class="ff-bone-accent-light" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${boneRad * 2}px;height:${boneRad * 2}px;border-radius:50%;background:radial-gradient(circle, ${boneColor} 0%, rgba(255,255,255,0.9) 25%, ${boneColor} 45%, transparent 70%);mix-blend-mode:screen;pointer-events:none;z-index:9;filter:blur(3px);animation:pulse_bone 2s infinite alternate ease-in-out;"></div>`;
-            }
-
-            // Compute Pro Color & Lighting Adjustments
-            const adjB = (document.getElementById('sliderBrightness')?.value || 100) / 100;
-            const adjC = document.getElementById('sliderContrast')?.value || 100;
-            const adjS = document.getElementById('sliderSaturation')?.value || 100;
-            const adjHl = (document.getElementById('sliderHighlights')?.value || 100) / 100;
-            const adjH = parseInt(document.getElementById('sliderHue')?.value || 0);
-            const colorShift = parseInt(document.getElementById('sliderColorShift')?.value || 0);
-            const adjSharp = parseInt(document.getElementById('sliderSharpness')?.value || 0);
-
-            const totalHue = (adjH + colorShift) % 360;
-            const effectiveBrightness = (adjB * adjHl).toFixed(2);
-            
-            // Build Filter String
-            let imgAdjustmentFilter = `brightness(${effectiveBrightness}) contrast(${adjC}%) saturate(${adjS}%) hue-rotate(${totalHue}deg)`;
-            if (adjSharp > 0) {
-                imgAdjustmentFilter += ` url(#ffCustomSharpen)`;
-            }
-
-            // Compute Aura Contour Shadow (strictly hugs PNG outline, no square box!)
-            const isContourGlow = document.getElementById('contourGlowCheck')?.checked;
-            const contourGlowColor = document.getElementById('contourGlowColorHex')?.value || '#FFD700';
-            const contourGlowRad = parseInt(document.getElementById('sliderGlowRadius')?.value || 14);
-            const contourGlowBlur = parseInt(document.getElementById('sliderGlowBlur')?.value || 10);
-
-            let contourDropFilter = '';
-            if (isContourGlow && contourGlowRad > 0) {
-                contourDropFilter = `filter: drop-shadow(0 0 ${contourGlowRad}px ${contourGlowColor}) drop-shadow(0 0 ${contourGlowBlur}px ${contourGlowColor});`;
-            }
-
-            // Compute Bone / Focal Accent Light with Radiant Outward Beaming Flare
-            const isBoneLight = document.getElementById('boneLightCheck')?.checked;
-            let boneLightHtml = '';
-            if (isBoneLight) {
-                const bonePos = document.getElementById('bonePosSelect')?.value || 'crown';
-                const boneColor = document.getElementById('boneColorHex')?.value || '#FFD700';
-                const boneRad = parseInt(document.getElementById('sliderBoneRadius')?.value || 45);
-
-                let posX = '50%', posY = '12%';
-                if (bonePos === 'left_wing') { posX = '18%'; posY = '36%'; }
-                else if (bonePos === 'right_wing') { posX = '82%'; posY = '36%'; }
-                else if (bonePos === 'center_gem') { posX = '50%'; posY = '52%'; }
-                else if (bonePos === 'bottom_apex') { posX = '50%'; posY = '85%'; }
+                else if (bonePos === 'bottom_apex') { posX = '50%'; posY = '86%'; }
 
                 boneLightHtml = `
-                    <!-- Core Pinpoint Light -->
-                    <div class="ff-bone-core-glint" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${boneRad}px;height:${boneRad}px;border-radius:50%;background:radial-gradient(circle, #FFFFFF 0%, ${boneColor} 35%, transparent 70%);mix-blend-mode:screen;pointer-events:none;z-index:10;filter:drop-shadow(0 0 8px ${boneColor});"></div>
-                    <!-- Outward Radiant Aura Beam -->
-                    <div class="ff-bone-radiant-beam" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${boneRad * 2.8}px;height:${boneRad * 2.8}px;border-radius:50%;background:radial-gradient(circle, ${boneColor} 0%, rgba(255,255,255,0.4) 20%, ${boneColor} 45%, transparent 75%);mix-blend-mode:screen;pointer-events:none;z-index:9;filter:blur(4px);opacity:0.95;animation:pulse_bone 2.2s infinite alternate ease-in-out;"></div>
+                    <div class="ff-bone-radiant-beam" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${boneRad * 2.5}px;height:${boneRad * 2.5}px;border-radius:50%;background:radial-gradient(circle, ${boneColor} 0%, rgba(255,255,255,0.7) 20%, ${boneColor} 40%, transparent 75%);mix-blend-mode:screen;pointer-events:none;z-index:9;filter:blur(6px);opacity:0.85;animation:pulse_bone 2.4s infinite alternate ease-in-out;"></div>
+                    <div class="ff-bone-core-glint" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${Math.max(12, boneRad * 0.4)}px;height:${Math.max(12, boneRad * 0.4)}px;border-radius:50%;background:#ffffff;box-shadow:0 0 14px #ffffff, 0 0 24px ${boneColor};mix-blend-mode:screen;pointer-events:none;z-index:10;"></div>
                 `;
             }
 
-            // Render Live Stage with Pro Lab Adjustments, Bone Outward Beams & Contour Glow
+            // Render Live Stage with Image, VFX, Adjustments, Bone Outward Beams & Contour Glow
             stage.innerHTML = `
                 <div class="ff-prime-badge-wrap ff-prime-lvl-8${animOffClass}" style="width:${stageDisplaySize}px;height:${stageDisplaySize}px;position:relative;background:transparent !important;${contourDropFilter}">
                     ${starsHtml}
@@ -2250,16 +2143,19 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
             // Update Status Badge on top of stage
             const statusBadge = document.getElementById('previewAnimStatusBadge');
-            if (isMasterAnim && (isSheenActive || starCount > 0 || hasGlint)) {
-                statusBadge.textContent = 'Animation Active';
-                statusBadge.className = 'text-[10px] font-mono text-emerald-300 bg-emerald-400/10 px-2.5 py-0.5 rounded-full border border-emerald-400/30';
-            } else {
-                statusBadge.textContent = 'Static (VFX Disabled)';
-                statusBadge.className = 'text-[10px] font-mono text-gray-400 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10';
+            if (statusBadge) {
+                if (isMasterAnim && (isSheenActive || starCount > 0 || hasGlint)) {
+                    statusBadge.textContent = 'Animation Active';
+                    statusBadge.className = 'text-[10px] font-mono text-emerald-300 bg-emerald-400/10 px-2.5 py-0.5 rounded-full border border-emerald-400/30';
+                } else {
+                    statusBadge.textContent = 'Static (VFX Disabled)';
+                    statusBadge.className = 'text-[10px] font-mono text-gray-400 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10';
+                }
             }
 
             // Update Live Metadata
-            document.getElementById('metaStars').textContent = starCount > 0 ? (starCount + ' Stars (' + starTheme + ')') : '0 Stars (None)';
+            const metaStars = document.getElementById('metaStars');
+            if (metaStars) metaStars.textContent = starCount > 0 ? (starCount + ' Stars (' + starTheme + ')') : '0 Stars (None)';
             
             let dirTxt = '↗ Diag';
             if (sweepDir === 'diag_bl_tr') dirTxt = '↗ Diag (BL-TR)';
@@ -2271,36 +2167,41 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             else if (sweepDir === 'right') dirTxt = '→ Right';
             else if (sweepDir === 'left') dirTxt = '← Left';
 
-            document.getElementById('metaSheen').textContent = isSheenActive ? (dirTxt + ' (' + sweepSpeed + ')') : 'Disabled';
-            document.getElementById('metaGlint').textContent = hasGlint ? '✨ Active Glint' : 'Off';
-            document.getElementById('metaBadgeId').textContent = '#' + badgeId;
+            const metaSheen = document.getElementById('metaSheen');
+            if (metaSheen) metaSheen.textContent = isSheenActive ? (dirTxt + ' (' + sweepSpeed + ')') : 'Disabled';
+
+            const metaGlint = document.getElementById('metaGlint');
+            if (metaGlint) metaGlint.textContent = hasGlint ? '✨ Active Glint' : 'Off';
+
+            const metaBadgeId = document.getElementById('metaBadgeId');
+            if (metaBadgeId) metaBadgeId.textContent = '#' + badgeId;
         }
 
         // Quick Copy Actions for active badge
         function copyActiveBadgeId() {
-            const id = document.getElementById('badgeIdInput').value || '120000000080';
+            const id = document.getElementById('badgeIdInput')?.value || '120000000880';
             copyText(id, 'Badge ID #' + id + ' Copied!');
         }
 
         function copyActiveCDN() {
-            const fileName = document.getElementById('existingFileSelect').value || 'ff_ui_prime_icon_08.png';
+            const fileName = document.getElementById('existingFileSelect')?.value || 'ff_ui_prime_icon_08.png';
             const url = CDN_BASE + fileName;
             copyText(url, 'CDN URL Copied!');
         }
 
         function copyActiveWebTag() {
-            const id = document.getElementById('badgeIdInput').value || '120000000080';
-            const sz = document.getElementById('badgeSizeInput').value || '54';
+            const id = document.getElementById('badgeIdInput')?.value || '120000000880';
+            const sz = document.getElementById('badgeSizeInput')?.value || '54';
             copyText('<ff-badge id="' + id + '" size="' + sz + '"></ff-badge>', 'Web Component Tag Copied!');
         }
 
         function copyActivePHP() {
-            const fileName = document.getElementById('existingFileSelect').value || 'ff_ui_prime_icon_08.png';
-            const sz = document.getElementById('badgeSizeInput').value || '54';
-            const isPrime = document.getElementById('badgeNameInput').value.toLowerCase().includes('prime');
+            const fileName = document.getElementById('existingFileSelect')?.value || 'ff_ui_prime_icon_08.png';
+            const sz = document.getElementById('badgeSizeInput')?.value || '54';
+            const isPrime = (document.getElementById('badgeNameInput')?.value || '').toLowerCase().includes('prime');
             const call = isPrime ? 
                 ("generate_ff_prime_badge_html('" + fileName + "', 8, '" + sz + "px');") :
-                ("generate_ff_badge_html('" + fileName + "', '" + document.getElementById('badgeNameInput').value + "', '" + document.getElementById('glowSelect').value + "', 'top-right', '" + sz + "px');");
+                ("generate_ff_badge_html('" + fileName + "', '" + (document.getElementById('badgeNameInput')?.value || 'Badge') + "', '" + (document.getElementById('glowSelect')?.value || '') + "', 'top-right', '" + sz + "px');");
             copyText(call, 'PHP Function Call Copied!');
         }
 
