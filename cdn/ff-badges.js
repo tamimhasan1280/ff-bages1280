@@ -1194,6 +1194,15 @@
                 const hasGlint = (lvl >= 7);
                 const hasShine = (lvl >= 4);
                 const hasStars = (lvl >= 4);
+                const hasWingFlares = (lvl >= 4);
+
+                let wingFlaresHtml = '';
+                if (hasWingFlares) {
+                    wingFlaresHtml = '  <div class="ff-side-wing-flare left"></div>
+' +
+                                     '  <div class="ff-side-wing-flare right"></div>
+';
+                }
 
                 let starsHtml = '';
                 if (hasStars) {
@@ -1209,7 +1218,7 @@
                     } else if (lvl === 4) {
                         starList = ['star-pos-1', 'star-pos-2'];
                     }
-                    const starDots = starList.map(pos => '<div class="ff-star-burst ' + pos + '"><span class="star-core"></span></div>').join('');
+                    const starDots = starList.map(pos => '<svg class="ff-pinpoint-star ' + pos + '" viewBox="0 0 24 24"><path d="M12 0 L14.2 9.2 L24 12 L14.2 14.8 L12 24 L9.8 14.8 L0 12 L9.8 9.2 Z" fill="#FFF8B0"/><circle cx="12" cy="12" r="2.5" fill="#FFFFFF"/></svg>').join('');
                     starsHtml = '  <div class="ff-prime-stars-layer">' + starDots + '</div>
 ';
                 }
@@ -1226,6 +1235,7 @@
 
                 return '<div class="ff-prime-badge-wrap ff-prime-lvl-' + lvl + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';user-select:none;" title="' + b.title + '">
 ' +
+                       wingFlaresHtml +
                        starsHtml +
                        '  <img src="' + imgUrl + '" class="ff-badge-img" alt="' + b.name + '">
 ' +

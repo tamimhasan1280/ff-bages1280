@@ -150,6 +150,13 @@ $js_code = <<<JSEOF
                 const hasGlint = (lvl >= 7);
                 const hasShine = (lvl >= 4);
                 const hasStars = (lvl >= 4);
+                const hasWingFlares = (lvl >= 4);
+
+                let wingFlaresHtml = '';
+                if (hasWingFlares) {
+                    wingFlaresHtml = '  <div class="ff-side-wing-flare left"></div>\n' +
+                                     '  <div class="ff-side-wing-flare right"></div>\n';
+                }
 
                 let starsHtml = '';
                 if (hasStars) {
@@ -165,7 +172,7 @@ $js_code = <<<JSEOF
                     } else if (lvl === 4) {
                         starList = ['star-pos-1', 'star-pos-2'];
                     }
-                    const starDots = starList.map(pos => '<div class="ff-star-burst ' + pos + '"><span class="star-core"></span></div>').join('');
+                    const starDots = starList.map(pos => '<svg class="ff-pinpoint-star ' + pos + '" viewBox="0 0 24 24"><path d="M12 0 L14.2 9.2 L24 12 L14.2 14.8 L12 24 L9.8 14.8 L0 12 L9.8 9.2 Z" fill="#FFF8B0"/><circle cx="12" cy="12" r="2.5" fill="#FFFFFF"/></svg>').join('');
                     starsHtml = '  <div class="ff-prime-stars-layer">' + starDots + '</div>\n';
                 }
 
@@ -177,6 +184,7 @@ $js_code = <<<JSEOF
                 }
 
                 return '<div class="ff-prime-badge-wrap ff-prime-lvl-' + lvl + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';user-select:none;" title="' + b.title + '">\n' +
+                       wingFlaresHtml +
                        starsHtml +
                        '  <img src="' + imgUrl + '" class="ff-badge-img" alt="' + b.name + '">\n' +
                        shineHtml +
@@ -681,6 +689,12 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     const hasGlint = (lvl >= 7);
                     const hasShine = (lvl >= 4);
                     const hasStars = (lvl >= 4);
+                    const hasWingFlares = (lvl >= 4);
+
+                    const wingFlaresHtml = hasWingFlares ? `
+                        <div class="ff-side-wing-flare left"></div>
+                        <div class="ff-side-wing-flare right"></div>
+                    ` : '';
 
                     let starList = [];
                     if (lvl === 8) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8'];
@@ -689,7 +703,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     else if (lvl === 5) starList = ['star-pos-1', 'star-pos-2', 'star-pos-6', 'star-pos-7'];
                     else if (lvl === 4) starList = ['star-pos-1', 'star-pos-2'];
 
-                    const starsHtml = hasStars ? `<div class="ff-prime-stars-layer">${starList.map(p => `<div class="ff-star-burst ${p}"><span class="star-core"></span></div>`).join('')}</div>` : '';
+                    const starsHtml = hasStars ? `<div class="ff-prime-stars-layer">${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L14.2 9.2 L24 12 L14.2 14.8 L12 24 L9.8 14.8 L0 12 L9.8 9.2 Z" fill="#FFF8B0"/><circle cx="12" cy="12" r="2.5" fill="#FFFFFF"/></svg>`).join('')}</div>` : '';
 
                     const shineHtml = hasShine ? `
                         <span class="ff-badge-shine" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
@@ -698,7 +712,8 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     ` : '';
 
                     previewHtml = `
-                        <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:64px;height:64px;">
+                        <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:62px;height:62px;">
+                            ${wingFlaresHtml}
                             ${starsHtml}
                             <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                             ${shineHtml}
@@ -828,6 +843,12 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 const hasGlint = (lvl >= 7);
                 const hasShine = (lvl >= 4);
                 const hasStars = (lvl >= 4);
+                const hasWingFlares = (lvl >= 4);
+
+                const wingFlaresHtml = hasWingFlares ? `
+                    <div class="ff-side-wing-flare left"></div>
+                    <div class="ff-side-wing-flare right"></div>
+                ` : '';
 
                 let starList = [];
                 if (lvl === 8) starList = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8'];
@@ -836,7 +857,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 else if (lvl === 5) starList = ['star-pos-1', 'star-pos-2', 'star-pos-6', 'star-pos-7'];
                 else if (lvl === 4) starList = ['star-pos-1', 'star-pos-2'];
 
-                const starsHtml = hasStars ? `<div class="ff-prime-stars-layer">${starList.map(p => `<div class="ff-star-burst ${p}"><span class="star-core"></span></div>`).join('')}</div>` : '';
+                const starsHtml = hasStars ? `<div class="ff-prime-stars-layer">${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L14.2 9.2 L24 12 L14.2 14.8 L12 24 L9.8 14.8 L0 12 L9.8 9.2 Z" fill="#FFF8B0"/><circle cx="12" cy="12" r="2.5" fill="#FFFFFF"/></svg>`).join('')}</div>` : '';
 
                 const shineHtml = hasShine ? `
                     <span class="ff-badge-shine" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
@@ -845,7 +866,8 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 ` : '';
 
                 previewContainer.innerHTML = `
-                    <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl} scale-125" style="width:110px;height:110px;">
+                    <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:92px;height:92px;">
+                        ${wingFlaresHtml}
                         ${starsHtml}
                         <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                         ${shineHtml}

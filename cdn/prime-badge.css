@@ -1,11 +1,11 @@
 /**
  * Free Fire Prime System - 1:1 In-Game Authentic Visual FX (OB55 Engine)
- * 100% Transparent, No Yellow Circular Background, No Diagonal Stream, No Rising Dots.
- * Features:
- *  1. In-Game Verify Badge Metallic Sheen Sweep (Alpha Mask clipped)
- *  2. Dazzling 4-Point Star Bursts popping and twinkling dynamically from the background ("ধাবধপ করে তারা ফুটবে")
- *  3. Central Gem Star Lens Flare Glint
- *  4. Crisp, tight contour drop-shadows hugging the badge silhouette
+ * Extracted directly from Free Fire in-game lobby footage:
+ *  1. Energetic Side Wing Flares (left & right wings emit blazing golden aura pulses)
+ *  2. Crisp Pinpoint Diamond Star Sparkles (distinct 4-point vector stars popping & twinkling)
+ *  3. In-Game Verify Badge Metallic Sheen Sweep (Alpha mask clipped directly to badge silhouette)
+ *  4. Center Gem Glint & Wing Breathing
+ *  5. 100% Transparent Background (Zero ugly yellow circles or background diagonal bars)
  */
 
 /* ========================================================
@@ -25,9 +25,9 @@
 
 /* Sizing Presets */
 .ff-prime-sm { width: 44px; height: 44px; }
-.ff-prime-md { width: 72px; height: 72px; }
-.ff-prime-lg { width: 140px; height: 140px; }
-.ff-prime-xl { width: 240px; height: 240px; }
+.ff-prime-md { width: 68px; height: 68px; }
+.ff-prime-lg { width: 110px; height: 110px; }
+.ff-prime-xl { width: 180px; height: 180px; }
 
 /* The Silhouette Badge Image (Z-Index 5) */
 .ff-prime-badge-wrap .ff-badge-img {
@@ -42,7 +42,7 @@
   transition: transform 0.3s ease, filter 0.3s ease;
 }
 
-/* Disable old circular yellow background, stream, and rising dots completely */
+/* Remove old bulky elements completely */
 .ff-prime-badge-wrap .ff-core-aura,
 .ff-prime-badge-wrap .ff-energy-stream,
 .ff-prime-badge-wrap .ff-energy-beam,
@@ -52,7 +52,170 @@
 }
 
 /* ========================================================
-   ★ 1. VERIFY BADGE METALLIC SHEEN MASK SWEEP (Z-Index 7) ★
+   ★ 1. ENERGETIC SIDE WING FLARES ("সাইড থেকে সুন্দর ইফেক্ট") ★
+   Left & Right wings emit radiant golden fire aura pulses
+   ======================================================== */
+.ff-prime-badge-wrap .ff-side-wing-flare {
+  position: absolute;
+  width: 42%;
+  height: 60%;
+  top: 18%;
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: screen;
+  filter: blur(3px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ff-prime-lvl-5 .ff-side-wing-flare,
+.ff-prime-lvl-6 .ff-side-wing-flare,
+.ff-prime-lvl-7 .ff-side-wing-flare,
+.ff-prime-lvl-8 .ff-side-wing-flare {
+  opacity: 1;
+}
+
+/* Left Wing Flare */
+.ff-prime-badge-wrap .ff-side-wing-flare.left {
+  left: -8%;
+  background: radial-gradient(
+    ellipse at 75% 75%,
+    rgba(255, 245, 180, 0.95) 0%,
+    rgba(255, 196, 0, 0.75) 35%,
+    rgba(251, 133, 0, 0.35) 60%,
+    transparent 80%
+  );
+  transform-origin: bottom right;
+  animation: ffWingFlareLeft 2.2s infinite ease-in-out alternate;
+}
+
+/* Right Wing Flare */
+.ff-prime-badge-wrap .ff-side-wing-flare.right {
+  right: -8%;
+  background: radial-gradient(
+    ellipse at 25% 75%,
+    rgba(255, 245, 180, 0.95) 0%,
+    rgba(255, 196, 0, 0.75) 35%,
+    rgba(251, 133, 0, 0.35) 60%,
+    transparent 80%
+  );
+  transform-origin: bottom left;
+  animation: ffWingFlareRight 2.2s infinite ease-in-out alternate;
+}
+
+@keyframes ffWingFlareLeft {
+  0% {
+    transform: rotate(-20deg) scale(0.92);
+    opacity: 0.5;
+  }
+  50% {
+    transform: rotate(-28deg) scale(1.18) translateY(-2px);
+    opacity: 0.95;
+    filter: blur(2.5px) brightness(1.35);
+  }
+  100% {
+    transform: rotate(-22deg) scale(0.98);
+    opacity: 0.6;
+  }
+}
+
+@keyframes ffWingFlareRight {
+  0% {
+    transform: rotate(20deg) scale(0.92);
+    opacity: 0.5;
+  }
+  50% {
+    transform: rotate(28deg) scale(1.18) translateY(-2px);
+    opacity: 0.95;
+    filter: blur(2.5px) brightness(1.35);
+  }
+  100% {
+    transform: rotate(22deg) scale(0.98);
+    opacity: 0.6;
+  }
+}
+
+/* Level 4 Cyan Wing Flares */
+.ff-prime-lvl-4 .ff-side-wing-flare.left {
+  background: radial-gradient(ellipse at 75% 75%, rgba(220, 250, 255, 0.95) 0%, rgba(0, 180, 216, 0.75) 40%, transparent 75%);
+  animation: ffWingFlareLeft 2.8s infinite ease-in-out alternate;
+  opacity: 0.8;
+}
+.ff-prime-lvl-4 .ff-side-wing-flare.right {
+  background: radial-gradient(ellipse at 25% 75%, rgba(220, 250, 255, 0.95) 0%, rgba(0, 180, 216, 0.75) 40%, transparent 75%);
+  animation: ffWingFlareRight 2.8s infinite ease-in-out alternate;
+  opacity: 0.8;
+}
+
+/* ========================================================
+   ★ 2. PINPOINT 4-POINT DIAMOND STARS ("স্পষ্ট তারা ফুটবে") ★
+   Sharp, crisp vector diamond stars bursting directly on badge tips
+   ======================================================== */
+.ff-prime-stars-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  overflow: visible;
+  background: transparent !important;
+}
+
+.ff-pinpoint-star {
+  position: absolute;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  mix-blend-mode: screen;
+  z-index: 6;
+  filter: drop-shadow(0 0 3px #ffffff) drop-shadow(0 0 6px #ffd700);
+}
+
+@keyframes ffStarSparkleBurst {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  14% {
+    transform: translate(-50%, -50%) scale(1.35) rotate(20deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 4px #ffffff) drop-shadow(0 0 8px #ffd700) brightness(1.6);
+  }
+  32% {
+    transform: translate(-50%, -50%) scale(0.92) rotate(45deg);
+    opacity: 0.95;
+    filter: drop-shadow(0 0 3px #ffffff) drop-shadow(0 0 6px #ffd700) brightness(1.25);
+  }
+  55% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(65deg);
+    opacity: 0.8;
+  }
+  78% {
+    transform: translate(-50%, -50%) scale(0.2) rotate(90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0) rotate(90deg);
+    opacity: 0;
+  }
+}
+
+/* Distinct, tight positions anchored directly on the badge emblem & wings */
+.star-pos-1 { top: 26%; left: 14%; width: 13px; height: 13px; animation: ffStarSparkleBurst 1.8s infinite 0.1s cubic-bezier(0.16, 1, 0.3, 1); }
+.star-pos-2 { top: 26%; left: 86%; width: 13px; height: 13px; animation: ffStarSparkleBurst 1.9s infinite 0.65s cubic-bezier(0.16, 1, 0.3, 1); }
+.star-pos-3 { top: 5%; left: 50%; width: 14px; height: 14px; animation: ffStarSparkleBurst 1.7s infinite 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.star-pos-4 { top: 56%; left: 10%; width: 12px; height: 12px; animation: ffStarSparkleBurst 2.0s infinite 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.star-pos-5 { top: 56%; left: 90%; width: 12px; height: 12px; animation: ffStarSparkleBurst 1.8s infinite 1.45s cubic-bezier(0.16, 1, 0.3, 1); }
+.star-pos-6 { top: 78%; left: 24%; width: 11px; height: 11px; animation: ffStarSparkleBurst 1.6s infinite 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+.star-pos-7 { top: 78%; left: 76%; width: 11px; height: 11px; animation: ffStarSparkleBurst 2.1s infinite 1.7s cubic-bezier(0.16, 1, 0.3, 1); }
+.star-pos-8 { top: 52%; left: 50%; width: 15px; height: 15px; animation: ffStarSparkleBurst 2.3s infinite 0.25s cubic-bezier(0.16, 1, 0.3, 1); z-index: 7; }
+
+/* Level 4 Cyan Stars */
+.ff-prime-lvl-4 .ff-pinpoint-star {
+  filter: drop-shadow(0 0 3px #ffffff) drop-shadow(0 0 6px #00b4d8);
+}
+
+/* ========================================================
+   ★ 3. VERIFY BADGE METALLIC SHEEN MASK SWEEP (Z-Index 7) ★
    The iconic Free Fire in-game light sheen clipped to the badge
    ======================================================== */
 .ff-prime-badge-wrap .ff-badge-shine {
@@ -78,9 +241,9 @@
   background: linear-gradient(
     45deg,
     transparent 35%,
-    rgba(255, 255, 255, 0.22) 44%,
-    rgba(255, 255, 255, 0.98) 50%,
-    rgba(255, 255, 255, 0.22) 56%,
+    rgba(255, 255, 255, 0.2) 44%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.2) 56%,
     transparent 65%
   );
   animation: ff_shape_sweep 2.6s infinite linear;
@@ -94,126 +257,14 @@
 }
 
 /* ========================================================
-   ★ 2. AUTHENTIC POPPING & BURSTING STARS LAYER (Z-Index 4) ★
-   4-pointed diamond flare stars popping in and out ("তারা ফুটবে ধাবধপ করে")
-   ======================================================== */
-.ff-prime-stars-layer {
-  position: absolute;
-  inset: -20%;
-  pointer-events: none;
-  z-index: 4;
-  overflow: visible;
-  background: transparent !important;
-}
-
-.ff-star-burst {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  pointer-events: none;
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
-  mix-blend-mode: screen;
-  z-index: 4;
-}
-
-/* Horizontal & Vertical 4-point diamond star flare rays */
-.ff-star-burst::before,
-.ff-star-burst::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-}
-
-.ff-star-burst::before {
-  width: 100%;
-  height: 22%;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 1) 50%, transparent 100%);
-  box-shadow: 0 0 6px #ffffff, 0 0 12px #ffd700, 0 0 18px #ff9e00;
-}
-
-.ff-star-burst::after {
-  width: 22%;
-  height: 100%;
-  background: linear-gradient(180deg, transparent 0%, rgba(255, 255, 255, 1) 50%, transparent 100%);
-  box-shadow: 0 0 6px #ffffff, 0 0 12px #ffd700, 0 0 18px #ff9e00;
-}
-
-.ff-star-burst .star-core {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  transform: translate(-50%, -50%);
-  background: #ffffff;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #ffffff, 0 0 12px #ffd700;
-}
-
-/* Fast, crisp star pop / burst keyframes ("ধাবধপ করে ফুটতে থাকবে") */
-@keyframes ffStarPop {
-  0% {
-    transform: translate(-50%, -50%) scale(0) rotate(0deg);
-    opacity: 0;
-  }
-  12% {
-    transform: translate(-50%, -50%) scale(1.45) rotate(25deg);
-    opacity: 1;
-    filter: brightness(1.75);
-  }
-  28% {
-    transform: translate(-50%, -50%) scale(0.95) rotate(45deg);
-    opacity: 0.95;
-    filter: brightness(1.25);
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.2) rotate(70deg);
-    opacity: 0.85;
-  }
-  75% {
-    transform: translate(-50%, -50%) scale(0.25) rotate(90deg);
-    opacity: 0;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(0) rotate(90deg);
-    opacity: 0;
-  }
-}
-
-/* Strategic burst positions surrounding the emblem with staggered timings */
-.star-pos-1 { top: 16%; left: 16%; animation: ffStarPop 1.7s infinite 0.1s cubic-bezier(0.16, 1, 0.3, 1); width: 17px; height: 17px; }
-.star-pos-2 { top: 14%; left: 84%; animation: ffStarPop 1.9s infinite 0.65s cubic-bezier(0.16, 1, 0.3, 1); width: 19px; height: 19px; }
-.star-pos-3 { top: 0%; left: 50%; animation: ffStarPop 1.6s infinite 1.15s cubic-bezier(0.16, 1, 0.3, 1); width: 15px; height: 15px; }
-.star-pos-4 { top: 52%; left: 8%; animation: ffStarPop 2.0s infinite 0.4s cubic-bezier(0.16, 1, 0.3, 1); width: 16px; height: 16px; }
-.star-pos-5 { top: 50%; left: 92%; animation: ffStarPop 1.8s infinite 1.45s cubic-bezier(0.16, 1, 0.3, 1); width: 16px; height: 16px; }
-.star-pos-6 { top: 82%; left: 24%; animation: ffStarPop 1.7s infinite 0.9s cubic-bezier(0.16, 1, 0.3, 1); width: 15px; height: 15px; }
-.star-pos-7 { top: 80%; left: 76%; animation: ffStarPop 2.1s infinite 1.75s cubic-bezier(0.16, 1, 0.3, 1); width: 18px; height: 18px; }
-.star-pos-8 { top: 48%; left: 50%; animation: ffStarPop 2.3s infinite 0.25s cubic-bezier(0.16, 1, 0.3, 1); width: 21px; height: 21px; z-index: 6; }
-
-/* Level 4 Cyan Stars */
-.ff-prime-lvl-4 .ff-star-burst::before {
-  box-shadow: 0 0 6px #ffffff, 0 0 12px #00b4d8, 0 0 18px #0077b6;
-}
-.ff-prime-lvl-4 .ff-star-burst::after {
-  box-shadow: 0 0 6px #ffffff, 0 0 12px #00b4d8, 0 0 18px #0077b6;
-}
-.ff-prime-lvl-4 .ff-star-burst .star-core {
-  box-shadow: 0 0 8px #ffffff, 0 0 12px #00b4d8;
-}
-
-/* ========================================================
-   ★ 3. CENTER GEM STAR TWINKLE (Levels 7 & 8) (Z-Index 8) ★
+   ★ 4. CENTER GEM STAR GLINT (Z-Index 8) ★
    ======================================================== */
 .ff-prime-badge-wrap .ff-gem-glint {
   position: absolute;
   top: 48%;
   left: 50%;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   transform: translate(-50%, -50%) scale(0);
   background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 235, 120, 0.85) 35%, rgba(255, 183, 3, 0.3) 65%, transparent 75%);
   border-radius: 50%;
@@ -234,12 +285,12 @@
   border-radius: 50%;
 }
 .ff-prime-badge-wrap .ff-gem-glint::before {
-  width: 190%;
+  width: 180%;
   height: 20%;
 }
 .ff-prime-badge-wrap .ff-gem-glint::after {
   width: 20%;
-  height: 190%;
+  height: 180%;
 }
 
 @keyframes ffGemSparkleStar {
@@ -249,32 +300,32 @@
   }
   78% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1.2) rotate(45deg);
+    transform: translate(-50%, -50%) scale(1.15) rotate(45deg);
   }
   86% {
     opacity: 0.65;
-    transform: translate(-50%, -50%) scale(1.35) rotate(90deg);
+    transform: translate(-50%, -50%) scale(1.3) rotate(90deg);
   }
   94%, 100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.5) rotate(135deg);
+    transform: translate(-50%, -50%) scale(1.4) rotate(135deg);
   }
 }
 
 /* ========================================================
    LEVEL-SPECIFIC CONFIGURATIONS (LEVEL 1 TO LEVEL 8)
-   Clean transparent silhouette with crisp drop-shadow contour
+   Direct Contour Emission (Zero Background Blobs)
    ======================================================== */
 
 /* Level 1, 2, 3: Clean Metallic Badges */
 .ff-prime-lvl-1 .ff-badge-img,
 .ff-prime-lvl-2 .ff-badge-img,
 .ff-prime-lvl-3 .ff-badge-img {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
   animation: none !important;
 }
 
-/* Level 4: Cyan Crystal (Crisp contour, subtle sheen) */
+/* Level 4: Cyan Crystal (Crisp contour) */
 .ff-prime-lvl-4 .ff-badge-img {
   filter: 
     drop-shadow(0 0 5px rgba(0, 180, 216, 0.75)) 
@@ -301,7 +352,7 @@
   animation: ffWingsPulseSoft 2.8s ease-in-out infinite alternate;
   filter: 
     drop-shadow(0 0 6px rgba(251, 133, 0, 0.8)) 
-    drop-shadow(0 0 14px rgba(255, 183, 3, 0.45)) 
+    drop-shadow(0 0 12px rgba(255, 183, 3, 0.45)) 
     drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7));
 }
 
@@ -313,7 +364,7 @@
   animation: ffWingsMythicSoft 2.6s ease-in-out infinite alternate;
   filter: 
     drop-shadow(0 0 6px rgba(255, 215, 0, 0.85)) 
-    drop-shadow(0 0 15px rgba(251, 133, 0, 0.45)) 
+    drop-shadow(0 0 14px rgba(251, 133, 0, 0.45)) 
     drop-shadow(0 3px 6px rgba(0, 0, 0, 0.75));
 }
 
@@ -322,7 +373,7 @@
   100% { transform: scale(1.03) translateY(-1.5px); }
 }
 
-/* Level 8: SUPREME GOD TIER (Verify Sheen + 8 Bursting Stars + Center Flare) */
+/* Level 8: SUPREME GOD TIER (Verify Sheen + Side Wing Flares + 8 Pinpoint Stars) */
 .ff-prime-lvl-8 .ff-gem-glint {
   animation: ffGemSparkleStar 2.8s ease-in-out infinite;
 }
@@ -330,10 +381,10 @@
 .ff-prime-lvl-8 .ff-badge-img {
   animation: ffWingsLegendarySoft 2.4s ease-in-out infinite alternate;
   filter: 
-    drop-shadow(0 0 7px rgba(255, 235, 120, 0.95)) 
-    drop-shadow(0 0 16px rgba(255, 196, 0, 0.65)) 
-    drop-shadow(0 0 24px rgba(251, 133, 0, 0.35)) 
-    drop-shadow(0 3px 8px rgba(0, 0, 0, 0.8));
+    drop-shadow(0 0 6px rgba(255, 235, 120, 0.95)) 
+    drop-shadow(0 0 14px rgba(255, 196, 0, 0.65)) 
+    drop-shadow(0 0 20px rgba(251, 133, 0, 0.35)) 
+    drop-shadow(0 3px 6px rgba(0, 0, 0, 0.75));
 }
 
 @keyframes ffWingsLegendarySoft {

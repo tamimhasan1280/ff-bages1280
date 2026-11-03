@@ -35,7 +35,17 @@
         this.wrapper.style.height = this.size;
       }
 
-      // 1. Dazzling Popping Stars Layer (Levels 4 to 8)
+      // 1. Energetic Side Wing Flares (Levels 4 to 8)
+      if (this.level >= 4) {
+        const flareLeft = document.createElement('div');
+        flareLeft.className = 'ff-side-wing-flare left';
+        const flareRight = document.createElement('div');
+        flareRight.className = 'ff-side-wing-flare right';
+        this.wrapper.appendChild(flareLeft);
+        this.wrapper.appendChild(flareRight);
+      }
+
+      // 2. Pinpoint Diamond Stars Layer (Levels 4 to 8)
       if (this.level >= 4) {
         const starsLayer = document.createElement('div');
         starsLayer.className = 'ff-prime-stars-layer';
@@ -48,12 +58,11 @@
         else if (this.level === 4) starList = ['star-pos-1', 'star-pos-2'];
 
         starList.forEach(pos => {
-          const star = document.createElement('div');
-          star.className = `ff-star-burst ${pos}`;
-          const core = document.createElement('span');
-          core.className = 'star-core';
-          star.appendChild(core);
-          starsLayer.appendChild(star);
+          const starSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          starSvg.setAttribute('class', `ff-pinpoint-star ${pos}`);
+          starSvg.setAttribute('viewBox', '0 0 24 24');
+          starSvg.innerHTML = '<path d="M12 0 L14.2 9.2 L24 12 L14.2 14.8 L12 24 L9.8 14.8 L0 12 L9.8 9.2 Z" fill="#FFF8B0"/><circle cx="12" cy="12" r="2.5" fill="#FFFFFF"/>';
+          starsLayer.appendChild(starSvg);
         });
         this.wrapper.appendChild(starsLayer);
       }
