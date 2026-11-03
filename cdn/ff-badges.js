@@ -1565,53 +1565,6 @@
                 posStyle = 'position:absolute;bottom:-4px;left:-4px;z-index:25;';
             }
 
-            // Authentic Free Fire Prime System Renderer
-            if (b.type === 'prime_image' || b.prime_level) {
-                const lvl = b.prime_level || 1;
-                const imgUrl = this.getImageUrl(b.file);
-                const hasGlint = (b.has_gem_glint !== undefined) ? b.has_gem_glint : (lvl >= 7);
-                const hasShine = (b.sweep_enabled !== undefined) ? b.sweep_enabled : (lvl >= 4);
-                const sweepDir = b.sweep_direction || 'diag_bl_tr';
-                const sweepClass = 'sweep-dir-' + sweepDir;
-                const sweepSpd = b.sweep_speed || speed || '2.6s';
-
-                let starsHtml = '';
-                const starType = b.star_type || (lvl >= 4 ? 'gunpowder' : 'none');
-                if (starType !== 'none') {
-                    let density = (b.star_density !== undefined) ? parseInt(b.star_density) : (lvl === 8 ? 16 : (lvl === 7 ? 12 : (lvl === 6 ? 8 : (lvl === 5 ? 6 : (lvl === 4 ? 4 : 0)))));
-                    const starCount = Math.min(Math.max(density, 0), 50);
-                    const starTheme = b.star_theme || (lvl === 4 ? 'cyan' : 'gold');
-                    const colorMap = { cyan: '#00f0ff', ruby: '#ef4444', purple: '#c084fc', white: '#ffffff', emerald: '#10b981', amber: '#f59e0b', rainbow: '#ff007f', gold: '#FFFCE0' };
-                    const starColor = colorMap[starTheme] || '#FFFCE0';
-                    const starThemeClass = 'star-theme-' + starTheme;
-
-                    const starList = Array.from({length: starCount}, (_, i) => 'star-pos-' + (i + 1));
-                    const starDots = starList.map(pos => '<svg class="ff-pinpoint-star ' + pos + '" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="' + starColor + '"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>').join('');
-                    starsHtml = (starCount > 0) ? ('  <div class="ff-prime-stars-layer ' + starThemeClass + '">' + starDots + '</div>
-') : '';
-                }
-
-                let shineHtml = '';
-                if (hasShine) {
-                    shineHtml = '  <span class="ff-badge-shine ' + sweepClass + '" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url(\'' + imgUrl + '\');mask-image:url(\'' + imgUrl + '\');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
-' +
-                                '    <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:' + sweepSpd + ';mix-blend-mode:screen;display:block;"></span>
-' +
-                                '  </span>
-';
-                }
-
-                return '<div class="ff-prime-badge-wrap ff-prime-lvl-' + lvl + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';user-select:none;" title="' + b.title + '">
-' +
-                       starsHtml +
-                       '  <img src="' + imgUrl + '" class="ff-badge-img" alt="' + b.name + '">
-' +
-                       shineHtml +
-                       (hasGlint ? '  <div class="ff-gem-glint"></div>
-' : '') +
-                       '</div>';
-            }
-
             if (b.type === 'svg_code') {
                 return '<div class="ff-badge" style="' + posStyle + 'width:' + size + ';height:' + size + ';user-select:none;" title="' + b.title + '">' + b.svgCode + '</div>';
             }
@@ -1620,20 +1573,65 @@
                 return '<span class="ff-badge" style="' + posStyle + 'user-select:none;" title="' + b.title + '">' + b.textCode + '</span>';
             }
 
+            // Universal Image Asset Renderer (Supports Prime Badges, V-Badges, KOL, Esports, etc.)
             const imgUrl = this.getImageUrl(b.file);
-            const filterStyle = 'filter:drop-shadow(0 0 6px ' + b.glowColor + ') drop-shadow(0 2px 4px rgba(0,0,0,0.9));';
+            const lvl = b.prime_level || 0;
+            const isPrime = (b.type === 'prime_image' || lvl > 0);
 
-            return '<span class="ff-shape-badge" style="' + posStyle + 'width:' + size + ';height:' + size + ';' + filterStyle + 'user-select:none;" title="' + b.title + '">
+            // Independent VFX Controls (Universal for ALL badges, can be turned ON/OFF anytime)
+            const hasShine = (b.sweep_enabled === true || b.sweep_enabled === 'true' || b.sweep_enabled === 1);
+            const hasGlint = (b.has_gem_glint === true || b.has_gem_glint === 'true' || b.has_gem_glint === 1);
+            let density = (b.star_density !== undefined) ? parseInt(b.star_density) : (lvl === 8 ? 16 : (lvl === 7 ? 12 : (lvl === 6 ? 8 : (lvl === 5 ? 6 : (lvl === 4 ? 4 : 0)))));
+            const starCount = Math.min(Math.max(density, 0), 50);
+
+            // Is the badge completely static?
+            const isFullyStatic = (!hasShine && starCount === 0 && !hasGlint);
+
+            const glowColor = b.glowColor || b.glow_color || 'rgba(255, 215, 0, 0.85)';
+            const filterStyle = (b.glow_enabled !== false) ? ('filter:drop-shadow(0 0 6px ' + glowColor + ') drop-shadow(0 2px 4px rgba(0,0,0,0.85));') : '';
+
+            // Radially scattered stars (360 degrees around badge)
+            let starsHtml = '';
+            if (starCount > 0) {
+                const starTheme = b.star_theme || (lvl === 4 ? 'cyan' : 'gold');
+                const colorMap = { cyan: '#00f0ff', ruby: '#ef4444', purple: '#c084fc', white: '#ffffff', emerald: '#10b981', amber: '#f59e0b', rainbow: '#ff007f', gold: '#FFFCE0' };
+                const starColor = colorMap[starTheme] || '#FFFCE0';
+                const starThemeClass = 'star-theme-' + starTheme;
+
+                const starList = Array.from({length: starCount}, (_, i) => 'star-pos-' + (i + 1));
+                const starDots = starList.map(pos => '<svg class="ff-pinpoint-star ' + pos + '" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="' + starColor + '"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>').join('');
+                starsHtml = '  <div class="ff-prime-stars-layer ' + starThemeClass + '">' + starDots + '</div>
+';
+            }
+
+            // Directional Metallic Sheen Sweep
+            let shineHtml = '';
+            if (hasShine) {
+                const sweepDir = b.sweep_direction || 'diag_bl_tr';
+                const sweepClass = 'sweep-dir-' + sweepDir;
+                const sweepSpd = b.sweep_speed || speed || '2.2s';
+                shineHtml = '  <span class="ff-badge-shine ' + sweepClass + '" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url(\'' + imgUrl + '\');mask-image:url(\'' + imgUrl + '\');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
 ' +
-                   '  <img src="' + imgUrl + '" alt="' + b.name + '" style="width:100%;height:100%;object-fit:contain;display:block;background:transparent;border:none;">
+                            '    <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:' + sweepSpd + ';mix-blend-mode:screen;display:block;"></span>
 ' +
-                   '  <span class="ff-badge-shine" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;-webkit-mask-image:url(\'' + imgUrl + '\');mask-image:url(\'' + imgUrl + '\');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                            '  </span>
+';
+            }
+
+            const glintHtml = hasGlint ? '  <div class="ff-gem-glint"></div>
+' : '';
+            const wrapClass = isPrime ? ('ff-prime-badge-wrap ff-prime-lvl-' + lvl) : 'ff-prime-badge-wrap';
+            const animClass = isFullyStatic ? ' ff-anim-off' : '';
+            const imgStyle = isFullyStatic ? 'style="animation:none !important;"' : '';
+
+            return '<div class="' + wrapClass + animClass + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';' + filterStyle + 'position:relative;background:transparent !important;user-select:none;" title="' + b.title + '">
 ' +
-                   '    <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.2) 44%,rgba(255,255,255,0.95) 50%,rgba(255,255,255,0.2) 56%,transparent 65%);animation:ff_shape_sweep ' + speed + ' infinite linear;mix-blend-mode:screen;display:block;"></span>
+                   starsHtml +
+                   '  <img src="' + imgUrl + '" class="ff-badge-img" ' + imgStyle + ' alt="' + b.name + '">
 ' +
-                   '  </span>
-' +
-                   '</span>';
+                   shineHtml +
+                   glintHtml +
+                   '</div>';
         },
 
         attachTo: function(container, badgeKey, options) {
