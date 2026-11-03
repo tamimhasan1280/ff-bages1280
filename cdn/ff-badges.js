@@ -1571,25 +1571,24 @@
                 const imgUrl = this.getImageUrl(b.file);
                 const hasGlint = (b.has_gem_glint !== undefined) ? b.has_gem_glint : (lvl >= 7);
                 const hasShine = (b.sweep_enabled !== undefined) ? b.sweep_enabled : (lvl >= 4);
-                const sweepDir = b.sweep_direction || 'diag';
-                const sweepClass = (sweepDir !== 'diag') ? ('sweep-dir-' + sweepDir) : '';
+                const sweepDir = b.sweep_direction || 'diag_bl_tr';
+                const sweepClass = 'sweep-dir-' + sweepDir;
                 const sweepSpd = b.sweep_speed || speed || '2.6s';
 
                 let starsHtml = '';
                 const starType = b.star_type || (lvl >= 4 ? 'gunpowder' : 'none');
                 if (starType !== 'none') {
-                    let density = b.star_density;
-                    if (density === undefined) {
-                        density = (lvl === 8 ? 16 : (lvl === 7 ? 12 : (lvl === 6 ? 8 : (lvl === 5 ? 6 : (lvl === 4 ? 4 : 0)))));
-                    }
-                    const allPositions = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8', 'star-pos-9', 'star-pos-10', 'star-pos-11', 'star-pos-12', 'star-pos-13', 'star-pos-14', 'star-pos-15', 'star-pos-16'];
-                    const starList = allPositions.slice(0, Math.min(density, 16));
-                    const starColor = (lvl === 4 || b.star_theme === 'cyan') ? '#00f0ff' : '#FFFCE0';
-                    const starThemeClass = (lvl === 4) ? 'star-theme-cyan' : (b.star_theme ? ('star-theme-' + b.star_theme) : '');
+                    let density = (b.star_density !== undefined) ? parseInt(b.star_density) : (lvl === 8 ? 16 : (lvl === 7 ? 12 : (lvl === 6 ? 8 : (lvl === 5 ? 6 : (lvl === 4 ? 4 : 0)))));
+                    const starCount = Math.min(Math.max(density, 0), 50);
+                    const starTheme = b.star_theme || (lvl === 4 ? 'cyan' : 'gold');
+                    const colorMap = { cyan: '#00f0ff', ruby: '#ef4444', purple: '#c084fc', white: '#ffffff', emerald: '#10b981', amber: '#f59e0b', rainbow: '#ff007f', gold: '#FFFCE0' };
+                    const starColor = colorMap[starTheme] || '#FFFCE0';
+                    const starThemeClass = 'star-theme-' + starTheme;
 
+                    const starList = Array.from({length: starCount}, (_, i) => 'star-pos-' + (i + 1));
                     const starDots = starList.map(pos => '<svg class="ff-pinpoint-star ' + pos + '" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="' + starColor + '"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>').join('');
-                    starsHtml = '  <div class="ff-prime-stars-layer ' + starThemeClass + '">' + starDots + '</div>
-';
+                    starsHtml = (starCount > 0) ? ('  <div class="ff-prime-stars-layer ' + starThemeClass + '">' + starDots + '</div>
+') : '';
                 }
 
                 let shineHtml = '';

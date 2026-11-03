@@ -1,8 +1,8 @@
 <?php
 /**
- * TURKY HUB - Badges Master Admin Studio
+ * TURKY HUB - Badges Master Admin Studio & CDN Asset Generator
  * GitHub Repository: https://github.com/tamimhasan1280/ff-bages1280
- * Dedicated Authentication & CDN Asset Generator
+ * Dedicated Authentication, Live Preview Stage, Click/Paste Badge Selector, 0-50 Stars, 50 Presets
  */
 
 session_start();
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_action'])) {
 
 $is_logged_in = !empty($_SESSION['ff_admin_logged']);
 
-// Helper: Generate valid 12...80 ID
+// Helper: Generate valid 12...80 ID (12 digits total)
 function generate_ff_id() {
     $middle = str_pad(mt_rand(10000000, 99999999), 8, '0', STR_PAD_LEFT);
     return '12' . $middle . '80';
@@ -47,8 +47,19 @@ function generate_ff_id() {
 $success_item = null;
 $error_msg = '';
 
-// Handle Badge Creation / Upload
+// Load current badges list and presets early
+$json_file = __DIR__ . '/api/badges.json';
+$v1_json = __DIR__ . '/api/v1/badges.json';
+$current_data = file_exists($json_file) ? json_decode(file_get_contents($json_file), true) : ['badges' => []];
+$current_badges = $current_data['badges'] ?? [];
+
+$effects_file = __DIR__ . '/api/effects.json';
+$effects_data = file_exists($effects_file) ? json_decode(file_get_contents($effects_file), true) : ['presets' => []];
+$presets_list = $effects_data['presets'] ?? [];
+
+// Handle Badge Creation or In-Place Update
 if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_badge'])) {
+    $original_id = trim($_POST['original_id'] ?? '');
     $name = trim($_POST['badge_name'] ?? '');
     $id = trim($_POST['badge_id'] ?? '');
     $category = trim($_POST['badge_category'] ?? 'Custom VIP');
@@ -61,22 +72,26 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
     $is_prime = !empty($_POST['is_prime']);
     $prime_lvl = intval($_POST['prime_level'] ?? 1);
     $sweep_enabled = !empty($_POST['sweep_enabled']);
-    $sweep_direction = trim($_POST['sweep_direction'] ?? 'diag');
+    $sweep_direction = trim($_POST['sweep_direction'] ?? 'diag_bl_tr');
     $sweep_speed = trim($_POST['sweep_speed'] ?? '2.2s');
     $star_type = trim($_POST['star_type'] ?? 'gunpowder');
     $star_density = intval($_POST['star_density'] ?? 16);
     $star_theme = trim($_POST['star_theme'] ?? 'gold');
     $has_gem_glint = !empty($_POST['has_gem_glint']);
 
-    // Validate ID: MUST start with 12 and end with 80
-    if (!preg_match('/^12\d{6,10}80$/', $id)) {
+    // Ensure star_density within 0 to 50
+    if ($star_density < 0) $star_density = 0;
+    if ($star_density > 50) $star_density = 50;
+
+    // Validate ID: MUST start with 12 and end with 80 (12 digits)
+    if (!preg_match('/^12\d{8}80$/', $id)) {
         // Auto-fix if invalid
         $clean_middle = preg_replace('/[^0-9]/', '', $id);
         if (strlen($clean_middle) < 8) {
             $id = generate_ff_id();
         } else {
             $middle = substr($clean_middle, 2, -2);
-            if (empty($middle)) $middle = str_pad(mt_rand(10000000, 99999999), 8, '0', STR_PAD_LEFT);
+            if (strlen($middle) < 8) $middle = str_pad($middle, 8, '0', STR_PAD_RIGHT);
             $id = '12' . substr($middle, 0, 8) . '80';
         }
     }
@@ -103,8 +118,18 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             $filename = trim($_POST['existing_file']);
         }
 
+        // Fallback: If filename is empty and we're editing an existing badge, preserve original file
+        if (empty($filename) && !empty($original_id)) {
+            foreach ($current_badges as $pb) {
+                if ($pb['id'] === $original_id) {
+                    $filename = $pb['file'] ?? '';
+                    break;
+                }
+            }
+        }
+
         if (empty($filename)) {
-            $filename = 'vbadge.png'; // Fallback
+            $filename = 'ff_ui_prime_icon_08.png'; // Sensible default
         }
 
         $slug = strtolower(preg_replace('/[^a-z0-9-]+/', '-', trim($name)));
@@ -133,7 +158,7 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             'sweep_enabled' => $sweep_enabled,
             'sweep_direction' => $sweep_direction,
             'sweep_speed' => $sweep_speed,
-            'star_type' => $star_type,
+            'star_type' => ($star_density > 0) ? 'gunpowder' : 'none',
             'star_density' => $star_density,
             'star_theme' => $star_theme,
             'has_gem_glint' => $has_gem_glint,
@@ -147,23 +172,26 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             'direct_url' => $CDN_BASE . $filename
         ];
 
-        // Update JSON files
-        $json_file = __DIR__ . '/api/badges.json';
-        $v1_json = __DIR__ . '/api/v1/badges.json';
-        $data = json_decode(file_get_contents($json_file), true);
-        
-        // Remove duplicate if exists
-        $badges_list = array_filter($data['badges'] ?? [], function($b) use ($id) {
+        // Filter out old badge if original_id or id existed
+        $badges_list = array_filter($current_badges, function($b) use ($id, $original_id) {
+            if (!empty($original_id) && $b['id'] === $original_id) return false;
             return $b['id'] !== $id;
         });
 
+        // Insert at beginning
         array_unshift($badges_list, $new_badge);
-        $data['badges'] = array_values($badges_list);
-        $data['total_badges'] = count($data['badges']);
+        $current_data['badges'] = array_values($badges_list);
+        $current_data['total_badges'] = count($current_data['badges']);
 
-        $encoded_json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $encoded_json = json_encode($current_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         file_put_contents($json_file, $encoded_json);
         file_put_contents($v1_json, $encoded_json);
+
+        // Clean up old single item JSON if original ID changed
+        if (!empty($original_id) && $original_id !== $id) {
+            $old_file = __DIR__ . "/api/v1/badge/{$original_id}.json";
+            if (file_exists($old_file)) @unlink($old_file);
+        }
 
         // Save individual item JSON
         $single_item_json = json_encode(['status' => 'success', 'item' => $new_badge], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
@@ -181,18 +209,18 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
         }
 
         // Auto Git Commit & Push
-        shell_exec('git -C "' . __DIR__ . '" add . && git -C "' . __DIR__ . '" commit -m "feat(admin): added new badge ' . addslashes($name) . ' (' . $id . ')" >nul 2>&1');
+        shell_exec('git -C "' . __DIR__ . '" add . && git -C "' . __DIR__ . '" commit -m "feat(admin): updated badge ' . addslashes($name) . ' (' . $id . ')" >nul 2>&1');
         shell_exec('git -C "' . __DIR__ . '" push origin main >nul 2>&1');
 
         $success_item = $new_badge;
+        // Refresh $current_badges for display
+        $current_badges = $current_data['badges'];
     }
 }
 
 // Handle Delete Badge
 if ($is_logged_in && isset($_GET['delete'])) {
     $del_id = trim($_GET['delete']);
-    $json_file = __DIR__ . '/api/badges.json';
-    $v1_json = __DIR__ . '/api/v1/badges.json';
     $data = json_decode(file_get_contents($json_file), true);
     
     $data['badges'] = array_values(array_filter($data['badges'] ?? [], function($b) use ($del_id) {
@@ -204,6 +232,9 @@ if ($is_logged_in && isset($_GET['delete'])) {
     file_put_contents($json_file, $encoded_json);
     file_put_contents($v1_json, $encoded_json);
 
+    $old_single = __DIR__ . "/api/v1/badge/{$del_id}.json";
+    if (file_exists($old_single)) @unlink($old_single);
+
     // Regenerate
     if (file_exists(__DIR__ . '/generate_all.php')) {
         shell_exec('php "' . __DIR__ . '/generate_all.php" 2>&1');
@@ -213,19 +244,17 @@ if ($is_logged_in && isset($_GET['delete'])) {
     exit;
 }
 
-// Load current badges list
-$current_badges = json_decode(file_get_contents(__DIR__ . '/api/badges.json'), true)['badges'] ?? [];
 $suggested_id = generate_ff_id();
 $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), function($f) {
     return in_array(strtolower(pathinfo($f, PATHINFO_EXTENSION)), ['png', 'svg', 'webp', 'jpg']);
 }));
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TURKY HUB - Badges Admin Studio & CDN Generator</title>
+    <title>TURKY HUB - Badges Admin Studio & Live VFX Customizer</title>
     <link rel="icon" type="image/png" href="badges/FF_UI_Badge_KOL01.png">
     
     <!-- Tailwind CSS -->
@@ -254,12 +283,24 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         }
 
         .custom-scroll::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
+            width: 6px;
+            height: 6px;
         }
         .custom-scroll::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 4px;
+        }
+
+        /* Checkerboard pattern to prove 100% transparent backgrounds */
+        .checker-bg {
+            background-color: #0c0f20;
+            background-image: 
+                linear-gradient(45deg, #13172e 25%, transparent 25%), 
+                linear-gradient(-45deg, #13172e 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #13172e 75%), 
+                linear-gradient(-45deg, transparent 75%, #13172e 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
         }
     </style>
 </head>
@@ -269,7 +310,6 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     <!-- LOGIN SCREEN -->
     <div class="min-h-screen flex items-center justify-center p-4 bg-radial from-[#151936] to-[#080915]">
         <div class="w-full max-w-md glass-panel p-8 sm:p-10 shadow-2xl relative border-amber-500/20">
-            
             <div class="text-center space-y-3 mb-8">
                 <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/20">
                     <i class="fas fa-shield-halved text-white text-2xl"></i>
@@ -316,7 +356,6 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <span>Back to FF Items Explorer</span>
                 </a>
             </div>
-
         </div>
     </div>
 
@@ -325,7 +364,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
     <!-- Navbar -->
     <header class="border-b border-[#1c2242] bg-[#0c0f20]/95 sticky top-0 z-40 backdrop-blur-md">
-        <div class="max-w-[1720px] mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
+        <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
             
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
@@ -335,10 +374,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <div class="flex items-center gap-2">
                         <span class="font-extrabold font-orbitron text-white text-base tracking-wider">TURKY HUB</span>
                         <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-black font-extrabold font-mono uppercase tracking-wider">
-                            ADMIN STUDIO
+                            VFX STUDIO
                         </span>
                     </div>
-                    <p class="text-[11px] text-gray-400 font-mono">CDN & 12...80 ID Generator Hub</p>
+                    <p class="text-[11px] text-gray-400 font-mono">12...80 ID & Live CDN Asset Generator</p>
                 </div>
             </div>
 
@@ -356,15 +395,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         </div>
     </header>
 
-    <main class="flex-1 max-w-[1720px] mx-auto px-4 sm:px-6 py-6 space-y-6 w-full">
+    <main class="flex-1 max-w-[1780px] mx-auto px-4 sm:px-6 py-6 space-y-6 w-full">
 
-        <!-- SUCCESS ALERT: SHOW INSTANT CDN LINKS FOR DEPLOYED BADGE -->
+        <!-- SUCCESS ALERT: INSTANT CDN LINKS FOR DEPLOYED BADGE -->
         <?php if ($success_item): ?>
             <section class="glass-panel p-6 border-emerald-500/40 relative overflow-hidden bg-gradient-to-r from-emerald-950/30 via-[#0e1224] to-[#0e1224] animate-in fade-in duration-300">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                     <div class="space-y-1.5 max-w-2xl">
                         <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold uppercase tracking-wider">
-                            <i class="fas fa-check-circle mr-1"></i> Asset Created & Deployed to CDN
+                            <i class="fas fa-check-circle mr-1"></i> Asset Saved & Deployed to CDN
                         </span>
                         <h2 class="text-xl font-black text-white font-orbitron flex items-center gap-2">
                             <?= htmlspecialchars($success_item['name']) ?>
@@ -385,8 +424,6 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                 <!-- Instant CDN URLs & Code Copy Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mt-5 pt-4 border-t border-white/5">
-                    
-                    <!-- 1. jsDelivr CDN Link -->
                     <div class="bg-[#090b18] p-3 rounded-xl border border-white/5 space-y-1.5">
                         <div class="flex items-center justify-between text-[11px] font-bold">
                             <span class="text-cyan-400 font-mono">jsDelivr Global CDN URL:</span>
@@ -397,7 +434,6 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <input type="text" readonly value="<?= $success_item['direct_url'] ?>" class="w-full bg-black/50 border border-gray-800 rounded p-1.5 text-[10px] font-mono text-cyan-300 selection:bg-cyan-500">
                     </div>
 
-                    <!-- 2. Item ID -->
                     <div class="bg-[#090b18] p-3 rounded-xl border border-white/5 space-y-1.5">
                         <div class="flex items-center justify-between text-[11px] font-bold">
                             <span class="text-emerald-400 font-mono">Item ID (12...80):</span>
@@ -408,7 +444,6 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <input type="text" readonly value="<?= $success_item['id'] ?>" class="w-full bg-black/50 border border-gray-800 rounded p-1.5 text-[10px] font-mono text-emerald-300 selection:bg-emerald-500">
                     </div>
 
-                    <!-- 3. Drop-in HTML Tag -->
                     <div class="bg-[#090b18] p-3 rounded-xl border border-white/5 space-y-1.5">
                         <div class="flex items-center justify-between text-[11px] font-bold">
                             <span class="text-purple-400 font-mono">Web Tag &lt;ff-badge&gt;:</span>
@@ -419,287 +454,471 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <input type="text" readonly value="&lt;ff-badge id=&quot;<?= $success_item['id'] ?>&quot; size=&quot;<?= $success_item['default_size'] ?>&quot;&gt;&lt;/ff-badge&gt;" class="w-full bg-black/50 border border-gray-800 rounded p-1.5 text-[10px] font-mono text-purple-300">
                     </div>
 
-                    <!-- 4. PHP Function Call -->
                     <div class="bg-[#090b18] p-3 rounded-xl border border-white/5 space-y-1.5">
                         <div class="flex items-center justify-between text-[11px] font-bold">
-                            <span class="text-amber-400 font-mono">PHP Logic Call:</span>
+                            <span class="text-amber-400 font-mono">PHP Function Call:</span>
                             <button type="button" onclick="copyText(<?= htmlspecialchars(json_encode($success_item['fn_call'])) ?>, 'PHP Call Copied!')" class="text-amber-400 hover:text-amber-300 text-[10px]">
                                 <i class="fas fa-copy"></i>
                             </button>
                         </div>
                         <input type="text" readonly value="<?= htmlspecialchars($success_item['fn_call']) ?>" class="w-full bg-black/50 border border-gray-800 rounded p-1.5 text-[10px] font-mono text-amber-300">
                     </div>
-
                 </div>
             </section>
         <?php endif; ?>
 
-        <!-- SECTION 1: ADD & DEPLOY NEW BADGE / PRIME ICON FORM -->
-        <section class="glass-panel p-6 sm:p-7">
-            <div class="flex items-center justify-between border-b border-[#1f2544] pb-4 mb-6">
-                <div class="space-y-1">
-                    <h2 class="text-lg font-black font-orbitron text-white flex items-center gap-2">
-                        <i class="fas fa-cloud-arrow-up text-amber-400"></i>
-                        <span>নতুন ব্যাজ বা প্রাইম আইকন আপলোড ও সিডিএন জেনারেটর</span>
-                    </h2>
-                    <p class="text-xs text-gray-400">
-                        এখানে স্বচ্ছ ব্যাকগ্রাউন্ডের (Transparent PNG) ব্যাজ আপলোড করলে স্বয়ংক্রিয়ভাবে ১২ দিয়ে শুরু ও ৮০ দিয়ে শেষ হওয়া আইডি এবং সিডিএন লিংক তৈরি হবে।
-                    </p>
+        <!-- SECTION 1: QUICK BADGE SELECTOR & SEARCH/PASTE ID BAR -->
+        <section class="glass-panel p-5 border-amber-500/20">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+                
+                <!-- Search or Paste ID to Load Badge -->
+                <div class="flex-1 w-full lg:max-w-xl">
+                    <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-2 mb-1.5">
+                        <i class="fas fa-paste text-amber-400"></i>
+                        <span>Paste Badge ID or Search (আইডি পেস্ট করলেই ব্যাজ লোড হবে):</span>
+                    </label>
+                    <div class="flex items-center gap-2">
+                        <div class="relative flex-1">
+                            <i class="fas fa-barcode absolute left-3.5 top-3 text-emerald-400 text-xs"></i>
+                            <input type="text" id="quickBadgeSearchInput" placeholder="Paste 12...80 ID (e.g. 120000010880) or type name..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs font-mono text-emerald-400 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                        </div>
+                        <button type="button" onclick="handleQuickSearchLoad()" class="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-xs flex items-center gap-1.5 transition shadow-lg shadow-amber-400/20 whitespace-nowrap">
+                            <i class="fas fa-bolt text-xs"></i>
+                            <span>Load Badge</span>
+                        </button>
+                    </div>
                 </div>
-                <button type="button" onclick="randomizeId()" class="px-3 py-1.5 bg-amber-400/10 hover:bg-amber-400/20 text-yellow-300 border border-yellow-400/30 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition">
-                    <i class="fas fa-dice text-xs"></i> <span>Generate New 12...80 ID</span>
-                </button>
+
+                <!-- Mode Indicator & Create New Reset Button -->
+                <div class="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
+                    <div id="editorModeBadge" class="px-3.5 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs font-mono flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                        <span id="editorModeText">Mode: Ready</span>
+                    </div>
+
+                    <button type="button" onclick="resetToNewBadge()" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 border border-white/10 transition">
+                        <i class="fas fa-plus text-amber-400"></i>
+                        <span>➕ Create New Badge</span>
+                    </button>
+                </div>
+
             </div>
 
-            <form method="POST" action="admin.php" enctype="multipart/form-data" class="space-y-6">
-                <input type="hidden" name="save_badge" value="1">
+            <!-- Quick Clickable Badge Pills (Prime 1-8, KOL, Official V, etc.) -->
+            <div class="mt-4 pt-3 border-t border-[#1f2544] flex items-center gap-2 overflow-x-auto custom-scroll pb-1">
+                <span class="text-[10px] font-mono text-gray-400 whitespace-nowrap uppercase tracking-wider mr-1">Quick Select:</span>
+                
+                <?php foreach ($current_badges as $cb): ?>
+                    <button type="button" onclick="loadBadgeToEditor('<?= $cb['id'] ?>')" class="px-2.5 py-1 rounded-lg bg-[#080a18] hover:bg-amber-400/10 border border-[#23294c] hover:border-amber-400/40 text-gray-300 hover:text-amber-300 text-[11px] font-medium flex items-center gap-1.5 transition whitespace-nowrap">
+                        <img src="badges/<?= htmlspecialchars($cb['file'] ?? 'vbadge.png') ?>" class="w-4 h-4 object-contain" alt="">
+                        <span><?= htmlspecialchars($cb['name']) ?></span>
+                        <span class="text-[9px] font-mono text-emerald-400">#<?= substr($cb['id'], -4) ?></span>
+                    </button>
+                <?php endforeach; ?>
+            </div>
+        </section>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    
-                    <!-- 1. Badge Name -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Badge Name <span class="text-rose-500">*</span></label>
-                        <input type="text" name="badge_name" id="badgeNameInput" required placeholder="e.g. Free Fire Prime Level 8" value="Free Fire Prime Level 8" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+        <!-- SECTION 2: 2-COLUMN MAIN STUDIO WORKBENCH -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- LEFT COLUMN: BADGE CUSTOMIZER CONTROLS (7 COLS) -->
+            <div class="lg:col-span-7 glass-panel p-6 sm:p-7 space-y-6">
+                
+                <div class="flex items-center justify-between border-b border-[#1f2544] pb-4">
+                    <div class="space-y-1">
+                        <h2 class="text-base font-black font-orbitron text-white flex items-center gap-2">
+                            <i class="fas fa-sliders text-amber-400"></i>
+                            <span id="formPanelTitle">ব্যাজ কাস্টমাইজ ও সিডিএন জেনারেটর</span>
+                        </h2>
+                        <p class="text-xs text-gray-400" id="formPanelSub">
+                            নাম, ১২...৮০ আইডি, তারা সংখ্যা (০ থেকে ৫০), এবং ৫০টি ইফেক্ট প্রিসেট যেকোনো ব্যাজে পরিবর্তন করতে পারেন।
+                        </p>
                     </div>
 
-                    <!-- 2. Auto 12...80 ID -->
-                    <div class="space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Item ID (Must start with 12 & end with 80) <span class="text-emerald-400">*</span></label>
-                            <span class="text-[10px] text-emerald-400 font-mono font-bold">12 Digits Secure</span>
+                    <button type="button" onclick="randomizeId()" class="px-3 py-1.5 bg-amber-400/10 hover:bg-amber-400/20 text-yellow-300 border border-yellow-400/30 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition" title="Generate New 12...80 ID">
+                        <i class="fas fa-dice text-xs"></i> <span>Randomize 12...80 ID</span>
+                    </button>
+                </div>
+
+                <form method="POST" action="admin.php" enctype="multipart/form-data" id="badgeEditorForm" class="space-y-6">
+                    <input type="hidden" name="save_badge" value="1">
+                    <input type="hidden" name="original_id" id="originalIdInput" value="">
+
+                    <!-- Basic Metadata Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <!-- 1. Badge Name (Editable) -->
+                        <div class="space-y-1.5 sm:col-span-2">
+                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center justify-between">
+                                <span>Badge Name (নাম পরিবর্তনযোগ্য) <span class="text-rose-500">*</span></span>
+                                <span class="text-[10px] text-gray-400">Edit anytime</span>
+                            </label>
+                            <input type="text" name="badge_name" id="badgeNameInput" required placeholder="e.g. Free Fire Prime Level 8" value="Free Fire Prime Level 8" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
                         </div>
-                        <div class="relative flex items-center">
-                            <input type="text" name="badge_id" id="badgeIdInput" value="<?= $suggested_id ?>" pattern="^12[0-9]{6,10}80$" required class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs font-mono font-bold text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-400 transition">
-                            <button type="button" onclick="randomizeId()" class="absolute right-2 px-2.5 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[11px] rounded-lg font-mono transition" title="Randomize">
-                                <i class="fas fa-rotate"></i>
+
+                        <!-- 2. Badge ID (Editable 12...80) -->
+                        <div class="space-y-1.5 sm:col-span-2">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Badge ID (অবশ্যই 12 দিয়ে শুরু ও 80 দিয়ে শেষ) <span class="text-emerald-400">*</span></label>
+                                <span class="text-[10px] text-emerald-400 font-mono font-bold">12 Digits Strict Format</span>
+                            </div>
+                            <div class="relative flex items-center">
+                                <input type="text" name="badge_id" id="badgeIdInput" value="<?= $suggested_id ?>" pattern="^12[0-9]{8}80$" required oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs font-mono font-bold text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-400 transition">
+                                <button type="button" onclick="randomizeId()" class="absolute right-2 px-2.5 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[11px] rounded-lg font-mono transition" title="Randomize ID">
+                                    <i class="fas fa-rotate"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 3. Category -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Category</label>
+                            <select name="badge_category" id="badgeCatSelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                <option value="Prime System" selected>Prime System (Free Fire Prime)</option>
+                                <option value="Official Partner (KOL)">Official Partner (KOL)</option>
+                                <option value="Crystal VIP Partner">Crystal VIP Partner</option>
+                                <option value="Competitive & Esports">Competitive & Esports</option>
+                                <option value="Administration & Authority">Administration & Authority</option>
+                                <option value="Creators & Architects">Creators & Architects</option>
+                                <option value="Special Editions">Special Editions</option>
+                                <option value="Exchange Tokens">Exchange Tokens</option>
+                                <option value="Custom VIP">Custom VIP</option>
+                            </select>
+                        </div>
+
+                        <!-- 4. Rarity -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Rarity</label>
+                            <select name="badge_rarity" id="badgeRaritySelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                <option value="MYTHIC" selected>MYTHIC (Gold / Celestial)</option>
+                                <option value="LEGENDARY">LEGENDARY (Crimson / Flame)</option>
+                                <option value="EPIC">EPIC (Cyan / Purple)</option>
+                                <option value="PURPLE">PURPLE (Violet Diamond)</option>
+                                <option value="RARE">RARE (Blue / Silver)</option>
+                            </select>
+                        </div>
+
+                        <!-- 5. Default Size -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Default Size (px)</label>
+                            <input type="number" name="badge_size" id="badgeSizeInput" value="54" min="20" max="250" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition">
+                        </div>
+
+                        <!-- 6. Aura Glow Color -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Aura Glow Color</label>
+                            <select name="badge_glow" id="glowSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
+                                <option value="rgba(255, 215, 0, 0.85)" selected>Gold Aura (rgba(255, 215, 0, 0.85))</option>
+                                <option value="rgba(168, 85, 247, 0.85)">Purple Cosmic (rgba(168, 85, 247, 0.85))</option>
+                                <option value="rgba(6, 182, 212, 0.85)">Cyan Crystal (rgba(6, 182, 212, 0.85))</option>
+                                <option value="rgba(239, 68, 68, 0.85)">Crimson Authority (rgba(239, 68, 68, 0.85))</option>
+                                <option value="rgba(249, 115, 22, 0.85)">Amber Flame (rgba(249, 115, 22, 0.85))</option>
+                                <option value="rgba(16, 185, 129, 0.85)">Emerald Lightning (rgba(16, 185, 129, 0.85))</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <!-- 50 NUMBERED EFFECT PRESETS & UNIVERSAL REMOVAL BAR -->
+                    <div class="p-4 rounded-2xl bg-[#090c1f] border border-cyan-500/30 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fas fa-wand-magic-sparkles text-amber-400"></i>
+                                <span>50+ Numbered Effect Presets (৫০টি রেডিমেড ইফেক্ট)</span>
+                            </label>
+                            <button type="button" onclick="removeAllEffects()" class="px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-[10px] font-bold flex items-center gap-1 transition">
+                                <i class="fas fa-ban"></i> <span>❌ Remove All Effects (Clean Static)</span>
                             </button>
                         </div>
-                    </div>
-
-                    <!-- 3. Category -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Category</label>
-                        <select name="badge_category" id="badgeCatSelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                            <option value="Prime System" selected>Prime System (Free Fire Prime)</option>
-                            <option value="Official Partner (KOL)">Official Partner (KOL)</option>
-                            <option value="Crystal VIP Partner">Crystal VIP Partner</option>
-                            <option value="Competitive & Esports">Competitive & Esports</option>
-                            <option value="Administration & Authority">Administration & Authority</option>
-                            <option value="Creators & Architects">Creators & Architects</option>
-                            <option value="Special Editions">Special Editions</option>
-                            <option value="Exchange Tokens">Exchange Tokens</option>
-                            <option value="Custom VIP">Custom VIP</option>
-                        </select>
-                    </div>
-
-                    <!-- 4. Rarity -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Rarity</label>
-                        <select name="badge_rarity" id="badgeRaritySelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                            <option value="MYTHIC" selected>MYTHIC (Gold / Celestial)</option>
-                            <option value="LEGENDARY">LEGENDARY (Crimson / Flame)</option>
-                            <option value="EPIC">EPIC (Cyan / Purple)</option>
-                            <option value="PURPLE">PURPLE (Violet Diamond)</option>
-                            <option value="RARE">RARE (Blue / Silver)</option>
-                        </select>
-                    </div>
-
-                    <!-- 5. Default Size -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Default Size (px)</label>
-                        <input type="number" name="badge_size" id="badgeSizeInput" value="54" min="20" max="250" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition">
-                    </div>
-
-                    <!-- 6. Aura Glow Color -->
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Aura Glow Color</label>
-                        <select name="badge_glow" id="glowSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                            <option value="rgba(255, 215, 0, 0.85)" selected>Gold Aura (rgba(255, 215, 0, 0.85))</option>
-                            <option value="rgba(168, 85, 247, 0.85)">Purple Cosmic (rgba(168, 85, 247, 0.85))</option>
-                            <option value="rgba(6, 182, 212, 0.85)">Cyan Crystal (rgba(6, 182, 212, 0.85))</option>
-                            <option value="rgba(239, 68, 68, 0.85)">Crimson Authority (rgba(239, 68, 68, 0.85))</option>
-                            <option value="rgba(249, 115, 22, 0.85)">Amber Flame (rgba(249, 115, 22, 0.85))</option>
-                            <option value="rgba(16, 185, 129, 0.85)">Emerald Lightning (rgba(16, 185, 129, 0.85))</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <!-- VFX & PRIME STUDIO PANEL -->
-                <div class="p-5 rounded-2xl bg-gradient-to-br from-[#121634] to-[#0c0f24] border border-amber-500/30 space-y-4 shadow-xl">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center font-bold text-sm shadow">
-                                <i class="fas fa-wand-magic-sparkles"></i>
-                            </span>
-                            <div>
-                                <h4 class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">VFX Studio & FX Customizer (ইফেক্ট স্টুডিও)</h4>
-                                <p class="text-[10px] text-gray-400">ধাতব সোয়াইপ এঙ্গেল, বারুদ স্ফুলিঙ্গ, রত্ন ফ্ল্যাশ ও তারার এনিমেশন কাস্টমাইজ করুন</p>
-                            </div>
-                        </div>
-                        <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300 bg-amber-400/10 border border-amber-400/40 px-3 py-1.5 rounded-xl hover:bg-amber-400/20 transition">
-                            <input type="checkbox" name="is_prime" id="isPrimeCheck" value="1" checked onchange="togglePrimeStudio(this.checked)" class="rounded bg-gray-800 border-gray-700 text-amber-500 focus:ring-0">
-                            <span>Enable Prime VFX Engine</span>
-                        </label>
-                    </div>
-
-                    <div id="vfxStudioControls" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 transition-all">
-                        <!-- Prime Level Preset -->
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fas fa-crown text-amber-400"></i> <span>Prime Level Preset</span>
-                            </label>
-                            <select name="prime_level" id="primeLevelSelect" onchange="applyPrimePreset(this.value)" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
-                                <option value="8" selected>Level 8 (Supreme God Tier - 16 Stars & Glint)</option>
-                                <option value="7">Level 7 (Grandmaster Mythic - 12 Stars & Glint)</option>
-                                <option value="6">Level 6 (Amber Flame Wings - 8 Stars)</option>
-                                <option value="5">Level 5 (Radiant Gold Contour - 6 Stars)</option>
-                                <option value="4">Level 4 (Cyan Crystal - 4 Stars)</option>
-                                <option value="3">Level 3 (Gold Vanguard Static)</option>
-                                <option value="2">Level 2 (Silver Scout Static)</option>
-                                <option value="1">Level 1 (Bronze Recruit Static)</option>
-                            </select>
-                        </div>
-
-                        <!-- Metallic Sheen Sweep Direction -->
-                        <div class="space-y-1.5">
-                            <div class="flex items-center justify-between">
-                                <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                                    <i class="fas fa-bolt text-yellow-400"></i> <span>Sheen Direction</span>
-                                </label>
-                                <label class="flex items-center gap-1 cursor-pointer text-[10px] text-gray-400">
-                                    <input type="checkbox" name="sweep_enabled" id="sweepEnabledCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500 text-[10px]">
-                                    <span>Active</span>
-                                </label>
-                            </div>
-                            <select name="sweep_direction" id="sweepDirSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
-                                <option value="diag" selected>↗ Diagonal (Bottom-Left to Top-Right)</option>
-                                <option value="diag_rev">↖ Diagonal Reverse (Bottom-Right to Top-Left)</option>
-                                <option value="up">↑ Vertical (Bottom to Top)</option>
-                                <option value="down">↓ Vertical (Top to Bottom)</option>
-                                <option value="right">→ Horizontal (Left to Right)</option>
-                                <option value="left">← Horizontal (Right to Left)</option>
-                            </select>
-                        </div>
-
-                        <!-- Sweep Speed -->
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fas fa-gauge-high text-cyan-400"></i> <span>Sheen Speed</span>
-                            </label>
-                            <select name="sweep_speed" id="sweepSpeedSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
-                                <option value="1.8s">Fast (1.8s - দ্রুত ঝলকানি)</option>
-                                <option value="2.2s" selected>Prime 8 Special (2.2s)</option>
-                                <option value="2.6s">Standard (2.6s - মানানসই)</option>
-                                <option value="3.4s">Smooth (3.4s - ধীর ও মসৃণ)</option>
-                            </select>
-                        </div>
-
-                        <!-- Gunpowder Stars Count & Theme -->
-                        <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fas fa-star text-amber-400"></i> <span>Gunpowder Stars (বারুদ স্টার)</span>
-                            </label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <select name="star_density" id="starDensitySelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
-                                    <option value="16" selected>16 Stars (Supreme)</option>
-                                    <option value="12">12 Stars (High)</option>
-                                    <option value="8">8 Stars (Medium)</option>
-                                    <option value="6">6 Stars (Compact)</option>
-                                    <option value="4">4 Stars (Minimal)</option>
-                                    <option value="0">0 Stars (None)</option>
-                                </select>
-
-                                <select name="star_theme" id="starThemeSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
-                                    <option value="gold" selected>Gold Star</option>
-                                    <option value="cyan">Cyan Ice</option>
-                                    <option value="white">Diamond White</option>
-                                    <option value="ruby">Ruby Red</option>
-                                    <option value="purple">Cosmic Purple</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Center Gem Glint & Transparency Guarantee -->
-                    <div id="vfxStudioToggles" class="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-white/10 transition-all">
-                        <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-300">
-                            <input type="checkbox" name="has_gem_glint" id="hasGemGlintCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
-                            <span>Center Gem Glint Flare (মাঝের রত্ন থেকে তারার মতো আলো ফুটবে)</span>
-                        </label>
-                        <span class="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
-                            <i class="fas fa-circle-check text-xs"></i> 100% Transparent Background (Zero Halos / No Yellow Side Clouds)
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Asset Selection & Live Studio Preview Zone -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 pt-1">
-                    
-                    <!-- Left: Asset Picker (Select Existing OR Upload New) -->
-                    <div class="lg:col-span-2 space-y-3">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider block">Badge Icon Asset (Select Existing or Upload PNG) <span class="text-rose-500">*</span></label>
+                        <p class="text-[11px] text-gray-400">যেকোনো একটি প্রিসেট সিলেক্ট করলেই স্বয়ংক্রিয়ভাবে সোয়াইপ, গতি, স্টার সংখ্যা এবং ফ্ল্যাশ সেট হয়ে যাবে:</p>
                         
-                        <!-- Pick Existing Asset Dropdown -->
-                        <div class="space-y-1">
-                            <span class="text-[11px] text-gray-400 font-semibold">1. Choose from Existing Free Fire Assets:</span>
-                            <select name="existing_file" id="existingFileSelect" onchange="selectExistingAsset(this.value)" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer font-mono">
-                                <option value="">-- Or upload a custom file below --</option>
-                                <?php foreach ($existing_badge_files as $ef): ?>
-                                    <option value="<?= $ef ?>" <?= ($ef === 'ff_ui_prime_icon_08.png') ? 'selected' : '' ?>><?= $ef ?></option>
+                        <div class="relative">
+                            <select id="presetSelect" onchange="handlePresetChange(this.value)" class="w-full bg-[#080a18] border border-cyan-500/40 rounded-xl px-4 py-2.5 text-xs text-cyan-200 focus:outline-none focus:border-amber-400 transition cursor-pointer font-mono">
+                                <option value="">-- Choose one of 50 Numbered Effect Presets --</option>
+                                <?php foreach ($presets_list as $ps): ?>
+                                    <option value="<?= $ps['id'] ?>"><?= htmlspecialchars($ps['name']) ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                    </div>
 
-                        <!-- OR Upload New File -->
-                        <div class="space-y-1">
-                            <span class="text-[11px] text-gray-400 font-semibold">2. Or Upload New Transparent PNG / SVG:</span>
-                            <div class="border-2 border-dashed border-[#23294c] hover:border-amber-400/50 rounded-2xl p-4 text-center cursor-pointer bg-[#080a18] transition relative" onclick="document.getElementById('fileInput').click()">
-                                <input type="file" name="badge_file" id="fileInput" accept="image/png,image/svg+xml,image/webp" class="hidden" onchange="previewSelectedFile(event)">
-                                <div class="space-y-1 pointer-events-none">
-                                    <div class="w-9 h-9 mx-auto rounded-full bg-white/5 flex items-center justify-center text-amber-400 text-base">
-                                        <i class="fas fa-file-arrow-up"></i>
+                    <!-- VFX & PRIME ENGINE CONTROLS -->
+                    <div class="p-5 rounded-2xl bg-gradient-to-br from-[#121634] to-[#0c0f24] border border-amber-500/30 space-y-4 shadow-xl">
+                        
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-8 h-8 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center font-bold text-sm shadow">
+                                    <i class="fas fa-fire"></i>
+                                </span>
+                                <div>
+                                    <h4 class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">VFX Engine & Particle Studio</h4>
+                                    <p class="text-[10px] text-gray-400">মেটালিক সোয়াইপ ডিরেকশন, তারার সংখ্যা (০ থেকে ৫০) এবং রত্ন ফ্ল্যাশ</p>
+                                </div>
+                            </div>
+                            <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300 bg-amber-400/10 border border-amber-400/40 px-3 py-1.5 rounded-xl hover:bg-amber-400/20 transition">
+                                <input type="checkbox" name="is_prime" id="isPrimeCheck" value="1" checked onchange="togglePrimeStudio(this.checked)" class="rounded bg-gray-800 border-gray-700 text-amber-500 focus:ring-0">
+                                <span>Enable VFX Engine</span>
+                            </label>
+                        </div>
+
+                        <div id="vfxStudioControls" class="grid grid-cols-1 sm:grid-cols-2 gap-4 transition-all">
+                            
+                            <!-- 1. Metallic Sheen Sweep Direction (8 Directions) -->
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                        <i class="fas fa-bolt text-yellow-400"></i> <span>Sheen Direction (৮টি ডিরেকশন)</span>
+                                    </label>
+                                    <label class="flex items-center gap-1 cursor-pointer text-[10px] text-gray-400">
+                                        <input type="checkbox" name="sweep_enabled" id="sweepEnabledCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500 text-[10px]">
+                                        <span>Active</span>
+                                    </label>
+                                </div>
+                                <select name="sweep_direction" id="sweepDirSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
+                                    <option value="diag_bl_tr" selected>↗ Diagonal (Bottom-Left to Top-Right)</option>
+                                    <option value="diag_br_tl">↖ Diagonal Reverse (Bottom-Right to Top-Left)</option>
+                                    <option value="diag_tl_br">↘ Diagonal Down (Top-Left to Bottom-Right)</option>
+                                    <option value="diag_tr_bl">↙ Diagonal Down-Left (Top-Right to Bottom-Left)</option>
+                                    <option value="up">↑ Vertical Up (Bottom to Top)</option>
+                                    <option value="down">↓ Vertical Down (Top to Bottom)</option>
+                                    <option value="right">→ Horizontal Right (Left to Right)</option>
+                                    <option value="left">← Horizontal Left (Right to Left)</option>
+                                </select>
+                            </div>
+
+                            <!-- 2. Sweep Speed -->
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fas fa-gauge-high text-cyan-400"></i> <span>Sheen Speed (গতি)</span>
+                                </label>
+                                <select name="sweep_speed" id="sweepSpeedSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
+                                    <option value="1.5s">Fast (1.5s - দ্রুত ঝলক)</option>
+                                    <option value="1.8s">Active (1.8s)</option>
+                                    <option value="2.2s" selected>Prime 8 Authentic (2.2s)</option>
+                                    <option value="2.6s">Standard (2.6s)</option>
+                                    <option value="3.2s">Smooth (3.2s - ধীর ও মসৃণ)</option>
+                                    <option value="4.0s">Slow (4.0s - শান্ত)</option>
+                                </select>
+                            </div>
+
+                            <!-- 3. Dynamic Stars Count (0 to 50 Stars) -->
+                            <div class="space-y-1.5 sm:col-span-2 bg-[#080a18] p-3 rounded-xl border border-white/5">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                        <i class="fas fa-star text-amber-400"></i> <span>Star Fireworks Count (০ থেকে ৫০টি তারা)</span>
+                                    </label>
+                                    <span id="starCountDisplay" class="text-xs font-mono font-bold text-amber-300">16 Stars</span>
+                                </div>
+                                
+                                <div class="flex items-center gap-3">
+                                    <input type="range" id="starRangeSlider" min="0" max="50" value="16" oninput="setStarDensity(this.value)" class="flex-1 accent-amber-400 cursor-pointer">
+                                    <input type="number" name="star_density" id="starDensityInput" min="0" max="50" value="16" oninput="setStarDensity(this.value)" class="w-16 bg-[#0e1224] border border-[#23294c] rounded-lg px-2 py-1 text-xs font-mono text-center text-amber-300 focus:outline-none focus:border-amber-400">
+                                </div>
+
+                                <!-- Quick Star Pills -->
+                                <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                                    <span class="text-[9px] font-mono text-gray-500 uppercase mr-1">Presets:</span>
+                                    <button type="button" onclick="setStarDensity(0)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300">0</button>
+                                    <button type="button" onclick="setStarDensity(4)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300">4</button>
+                                    <button type="button" onclick="setStarDensity(8)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300">8</button>
+                                    <button type="button" onclick="setStarDensity(12)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300">12</button>
+                                    <button type="button" onclick="setStarDensity(16)" class="px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-mono">16</button>
+                                    <button type="button" onclick="setStarDensity(24)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300">24</button>
+                                    <button type="button" onclick="setStarDensity(36)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300">36</button>
+                                    <button type="button" onclick="setStarDensity(50)" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/40 text-[10px] font-mono font-bold">50 (Max Fireworks)</button>
+                                </div>
+                            </div>
+
+                            <!-- 4. Star Color Theme -->
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fas fa-palette text-pink-400"></i> <span>Star Color Theme</span>
+                                </label>
+                                <select name="star_theme" id="starThemeSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
+                                    <option value="gold" selected>Gold Spark (স্বর্ণালি বারুদ)</option>
+                                    <option value="cyan">Cyan Ice (হিমশীতল নীল)</option>
+                                    <option value="white">Diamond White (শুভ্র হীরা)</option>
+                                    <option value="ruby">Ruby Red (রক্ত লাল)</option>
+                                    <option value="purple">Cosmic Purple (মহাজাগতিক বেগুনি)</option>
+                                    <option value="emerald">Emerald Green (পান্না সবুজ)</option>
+                                    <option value="amber">Amber Flame (জ্বলন্ত শিখা)</option>
+                                    <option value="rainbow">Rainbow Prism (সাতরঙা রংধনু)</option>
+                                </select>
+                            </div>
+
+                            <!-- 5. Center Gem Glint Flare -->
+                            <div class="space-y-1.5 flex flex-col justify-end">
+                                <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-200 bg-[#080a18] p-2.5 rounded-xl border border-white/5 hover:border-amber-400/30 transition">
+                                    <input type="checkbox" name="has_gem_glint" id="hasGemGlintCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
+                                    <span class="font-semibold">Center Gem Glint (রত্ন তারা ফ্ল্যাশ)</span>
+                                </label>
+                            </div>
+
+                        </div>
+
+                        <!-- 100% Transparency Guarantee Note -->
+                        <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
+                            <span class="text-emerald-400 font-mono flex items-center gap-1.5">
+                                <i class="fas fa-circle-check text-xs"></i> 100% Transparent Background (কোনো ব্যাকগ্রাউন্ড বা হলুদ ক্লাউড থাকবে না)
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <!-- Icon Asset Selection (Dropdown OR Custom PNG Upload) -->
+                    <div class="space-y-3">
+                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider block">
+                            Badge Icon Asset (আইকন ফাইল নির্বাচন অথবা নতুন PNG আপলোড) <span class="text-rose-500">*</span>
+                        </label>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <!-- Dropdown -->
+                            <div class="space-y-1">
+                                <span class="text-[11px] text-gray-400 font-semibold">1. Choose from Existing Free Fire Assets:</span>
+                                <select name="existing_file" id="existingFileSelect" onchange="selectExistingAsset(this.value)" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer font-mono">
+                                    <option value="">-- Choose existing asset --</option>
+                                    <?php foreach ($existing_badge_files as $ef): ?>
+                                        <option value="<?= $ef ?>" <?= ($ef === 'ff_ui_prime_icon_08.png') ? 'selected' : '' ?>><?= $ef ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <!-- Upload New File -->
+                            <div class="space-y-1">
+                                <span class="text-[11px] text-gray-400 font-semibold">2. Or Upload New Transparent PNG:</span>
+                                <div class="border border-dashed border-[#23294c] hover:border-amber-400/50 rounded-xl p-2.5 text-center cursor-pointer bg-[#080a18] transition relative" onclick="document.getElementById('fileInput').click()">
+                                    <input type="file" name="badge_file" id="fileInput" accept="image/png,image/svg+xml,image/webp" class="hidden" onchange="previewSelectedFile(event)">
+                                    <div class="flex items-center justify-center gap-2 text-xs text-gray-300">
+                                        <i class="fas fa-file-arrow-up text-amber-400"></i>
+                                        <span id="uploadPromptText">Click to select PNG</span>
                                     </div>
-                                    <div class="text-xs text-gray-300 font-semibold" id="uploadPromptText">Click to select new Transparent PNG file</div>
-                                    <p class="text-[10px] text-gray-500 font-mono">100% transparent PNG with no background is recommended</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Right: Live Studio Preview Box (100% Transparent, No Halos) -->
+                    <!-- Description -->
                     <div class="space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Live VFX Stage Preview</label>
-                            <span class="text-[10px] text-amber-400 font-mono font-bold animate-pulse">● LIVE FX ACTIVE</span>
+                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Description (বিবরণ)</label>
+                        <textarea name="badge_description" id="badgeDescInput" rows="2" placeholder="Free Fire Prime Level 8 authentic insignia deployed via Turky Hub Monster CDN..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition"></textarea>
+                    </div>
+
+                    <!-- Submit & Save Button -->
+                    <div class="flex items-center justify-between gap-3 pt-3 border-t border-[#1f2544]">
+                        <button type="button" onclick="resetToNewBadge()" class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs font-semibold transition">
+                            <i class="fas fa-arrow-rotate-left mr-1"></i> Reset Form
+                        </button>
+
+                        <button type="submit" class="bg-gradient-to-r from-amber-500 via-rose-500 to-pink-600 hover:from-amber-600 hover:to-pink-700 text-white font-extrabold text-xs py-3 px-8 rounded-xl flex items-center gap-2 shadow-lg shadow-rose-500/20 transition cursor-pointer">
+                            <i class="fas fa-cloud-arrow-up text-sm"></i>
+                            <span id="saveBtnText">Save & Generate Global CDN Asset</span>
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+            <!-- RIGHT COLUMN: HERO STICKY LIVE PREVIEW STAGE (5 COLS) -->
+            <div class="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
+                
+                <div class="glass-panel p-6 border-amber-400/30 space-y-5 shadow-2xl relative overflow-hidden">
+                    
+                    <!-- Header -->
+                    <div class="flex items-center justify-between border-b border-[#1f2544] pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">Live VFX Stage Preview</h3>
                         </div>
-                        <div class="h-52 rounded-2xl bg-[#080a18] border border-white/10 flex items-center justify-center p-3 relative overflow-hidden shadow-inner">
-                            <div id="liveBadgeStage" class="relative z-10 flex items-center justify-center w-full h-full">
-                                <!-- Populated dynamically by updateLivePreviewStudio() -->
-                            </div>
+                        <span class="text-[10px] font-mono text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/30">
+                            Realtime Active
+                        </span>
+                    </div>
+
+                    <!-- Stage Controls (Size & Background Mode) -->
+                    <div class="flex items-center justify-between gap-2 text-[11px] font-mono">
+                        
+                        <!-- Size Switcher -->
+                        <div class="flex items-center gap-1 bg-[#080a18] p-1 rounded-xl border border-white/5">
+                            <span class="text-[9px] text-gray-500 px-1">SIZE:</span>
+                            <button type="button" onclick="setStageSize(48)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn" data-size="48">48px</button>
+                            <button type="button" onclick="setStageSize(72)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn" data-size="72">72px</button>
+                            <button type="button" onclick="setStageSize(110)" class="px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40 stage-size-btn" data-size="110">110px</button>
+                            <button type="button" onclick="setStageSize(150)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn" data-size="150">150px</button>
+                        </div>
+
+                        <!-- Background Switcher (Prove Transparency) -->
+                        <div class="flex items-center gap-1 bg-[#080a18] p-1 rounded-xl border border-white/5">
+                            <span class="text-[9px] text-gray-500 px-1">BG:</span>
+                            <button type="button" onclick="setStageBg('dark')" title="Dark Space" class="w-5 h-5 rounded bg-[#080a18] border border-white/20"></button>
+                            <button type="button" onclick="setStageBg('black')" title="Pitch Black" class="w-5 h-5 rounded bg-black border border-white/20"></button>
+                            <button type="button" onclick="setStageBg('checker')" title="Checkerboard (Transparent Test)" class="w-5 h-5 rounded checker-bg border border-white/20"></button>
+                        </div>
+
+                    </div>
+
+                    <!-- Big Interactive Preview Stage -->
+                    <div id="stageContainer" class="h-64 rounded-2xl bg-[#080a18] border border-white/10 flex items-center justify-center p-4 relative overflow-hidden transition-all duration-300 shadow-inner">
+                        <div id="liveBadgeStage" class="relative z-10 flex items-center justify-center w-full h-full">
+                            <!-- Populated in real-time by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Live Metadata Badges -->
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="bg-[#080a18] p-2.5 rounded-xl border border-white/5 space-y-0.5">
+                            <span class="text-[10px] text-gray-500 font-mono uppercase">Stars Active:</span>
+                            <div class="font-bold text-amber-300 font-mono text-xs" id="metaStars">16 Stars (Gold)</div>
+                        </div>
+
+                        <div class="bg-[#080a18] p-2.5 rounded-xl border border-white/5 space-y-0.5">
+                            <span class="text-[10px] text-gray-500 font-mono uppercase">Sheen Sweep:</span>
+                            <div class="font-bold text-yellow-300 font-mono text-xs" id="metaSheen">↗ 2.2s (Diag)</div>
+                        </div>
+
+                        <div class="bg-[#080a18] p-2.5 rounded-xl border border-white/5 space-y-0.5">
+                            <span class="text-[10px] text-gray-500 font-mono uppercase">Gem Flare:</span>
+                            <div class="font-bold text-cyan-300 font-mono text-xs" id="metaGlint">✨ Active Glint</div>
+                        </div>
+
+                        <div class="bg-[#080a18] p-2.5 rounded-xl border border-white/5 space-y-0.5">
+                            <span class="text-[10px] text-gray-500 font-mono uppercase">Badge ID:</span>
+                            <div class="font-bold text-emerald-400 font-mono text-xs" id="metaBadgeId">#<?= $suggested_id ?></div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Copy Studio Actions -->
+                    <div class="space-y-2 pt-2 border-t border-white/5">
+                        <div class="flex items-center justify-between text-xs font-bold text-gray-300">
+                            <span>Quick Copy Snippets:</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" onclick="copyActiveBadgeId()" class="p-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition">
+                                <i class="fas fa-barcode"></i> <span>Copy ID</span>
+                            </button>
+
+                            <button type="button" onclick="copyActiveCDN()" class="p-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition">
+                                <i class="fas fa-link"></i> <span>Copy CDN URL</span>
+                            </button>
+
+                            <button type="button" onclick="copyActiveWebTag()" class="p-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition">
+                                <i class="fas fa-code"></i> <span>Copy &lt;ff-badge&gt;</span>
+                            </button>
+
+                            <button type="button" onclick="copyActivePHP()" class="p-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition">
+                                <i class="fab fa-php text-xs"></i> <span>Copy PHP Call</span>
+                            </button>
                         </div>
                     </div>
 
                 </div>
 
-                <!-- Description -->
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Description</label>
-                    <textarea name="badge_description" rows="2" placeholder="Exclusive Free Fire partner or prime level verification asset..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition"></textarea>
-                </div>
+            </div>
 
-                <!-- Submit Button -->
-                <div class="flex items-center justify-end gap-3 pt-2">
-                    <button type="submit" class="bg-gradient-to-r from-amber-500 via-rose-500 to-pink-600 hover:from-amber-600 hover:to-pink-700 text-white font-extrabold text-xs py-3 px-8 rounded-xl flex items-center gap-2 shadow-lg shadow-rose-500/20 transition">
-                        <i class="fas fa-rocket"></i>
-                        <span>Save & Generate Global CDN Asset</span>
-                    </button>
-                </div>
+        </div>
 
-            </form>
-        </section>
-
-        <!-- SECTION 2: BROWSE & MANAGE ALL BADGES (TOTAL: <?= count($current_badges) ?>) -->
+        <!-- SECTION 3: BROWSE & EDIT ALL BADGES (TOTAL: <?= count($current_badges) ?>) -->
         <section class="glass-panel p-6 sm:p-7 space-y-5">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1f2544] pb-4">
                 <div class="space-y-0.5">
@@ -707,12 +926,12 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <i class="fas fa-layer-group text-cyan-400"></i>
                         <span>Existing Badges & Prime Assets (<?= count($current_badges) ?> Total)</span>
                     </h3>
-                    <p class="text-xs text-gray-400">প্রতিটি ব্যাজের সরাসরি CDN লিংক, PHP কল এবং ID কপি করার জন্য বাটন দেওয়া আছে।</p>
+                    <p class="text-xs text-gray-400">যে ব্যাজটিতে ক্লিক করবেন বা Edit চাপবেন, সেটি সরাসরি উপরের স্টুডিওতে লোড হয়ে যাবে।</p>
                 </div>
 
                 <!-- Filter & Search -->
                 <div class="flex items-center gap-3">
-                    <input type="text" id="adminSearchInput" oninput="filterAdminBadges(this.value)" placeholder="Search name or 12...80 ID..." class="bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition w-56">
+                    <input type="text" id="adminSearchInput" oninput="filterAdminBadges(this.value)" placeholder="Search name or 12...80 ID..." class="bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition w-64">
                 </div>
             </div>
 
@@ -721,12 +940,13 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <table class="w-full text-left text-xs border-collapse">
                     <thead>
                         <tr class="border-b border-[#1f2544] text-[11px] font-mono uppercase text-gray-400">
-                            <th class="py-3 px-3">Preview</th>
+                            <th class="py-3 px-3">Live Badge</th>
                             <th class="py-3 px-3">Item ID (12...80)</th>
                             <th class="py-3 px-3">Badge Name</th>
                             <th class="py-3 px-3">Category</th>
                             <th class="py-3 px-3">Rarity</th>
-                            <th class="py-3 px-3">CDN Link & Snippets</th>
+                            <th class="py-3 px-3">VFX Parameters</th>
+                            <th class="py-3 px-3">CDN & Snippets</th>
                             <th class="py-3 px-3 text-right">Actions</th>
                         </tr>
                     </thead>
@@ -734,14 +954,14 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <?php foreach ($current_badges as $b): ?>
                             <?php
                                 $img_cdn = $CDN_BASE . ($b['file'] ?? '');
-                                $local_file = 'badges/' . ($b['file'] ?? '');
                                 $isPrime = ($b['type'] === 'prime_image' || !empty($b['prime_level']));
+                                $bStars = $b['star_density'] ?? 0;
                             ?>
-                            <tr class="hover:bg-white/[0.02] transition admin-badge-row" data-name="<?= strtolower($b['name']) ?>" data-id="<?= strtolower($b['id']) ?>">
+                            <tr class="hover:bg-white/[0.04] transition admin-badge-row cursor-pointer" onclick="handleRowClick(event, '<?= $b['id'] ?>')" data-name="<?= strtolower($b['name']) ?>" data-id="<?= strtolower($b['id']) ?>">
                                 
                                 <!-- Preview (No Background, 100% Transparent Live Badge) -->
                                 <td class="py-3 px-3">
-                                    <div class="w-12 h-12 rounded-xl bg-[#090b18] border border-white/5 flex items-center justify-center p-1 relative overflow-hidden">
+                                    <div class="w-12 h-12 rounded-xl bg-[#080a18] border border-white/5 flex items-center justify-center p-1 relative overflow-hidden">
                                         <ff-badge id="<?= $b['id'] ?>" size="36"></ff-badge>
                                     </div>
                                 </td>
@@ -750,7 +970,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 <td class="py-3 px-3">
                                     <div class="flex items-center gap-1.5">
                                         <span class="font-mono font-bold text-emerald-400">#<?= $b['id'] ?></span>
-                                        <button type="button" onclick="copyText('<?= $b['id'] ?>', 'ID Copied!')" class="text-gray-500 hover:text-white" title="Copy ID">
+                                        <button type="button" onclick="event.stopPropagation(); copyText('<?= $b['id'] ?>', 'ID Copied!')" class="text-gray-500 hover:text-white" title="Copy ID">
                                             <i class="fas fa-copy text-[10px]"></i>
                                         </button>
                                     </div>
@@ -776,9 +996,17 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                     </span>
                                 </td>
 
+                                <!-- VFX Parameters -->
+                                <td class="py-3 px-3 font-mono text-[11px]">
+                                    <div class="flex flex-col gap-0.5">
+                                        <span class="text-amber-300">⭐ <?= $bStars ?> Stars (<?= htmlspecialchars($b['star_theme'] ?? 'gold') ?>)</span>
+                                        <span class="text-gray-400">⚡ <?= htmlspecialchars($b['sweep_direction'] ?? 'diag') ?> (<?= htmlspecialchars($b['sweep_speed'] ?? 'none') ?>)</span>
+                                    </div>
+                                </td>
+
                                 <!-- CDN Link & Snippets -->
                                 <td class="py-3 px-3">
-                                    <div class="flex items-center gap-1.5">
+                                    <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
                                         <button type="button" onclick="copyText('<?= $img_cdn ?>', 'CDN URL Copied!')" class="px-2 py-1 rounded bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-mono flex items-center gap-1 transition">
                                             <i class="fas fa-link text-[9px]"></i> <span>CDN</span>
                                         </button>
@@ -795,10 +1023,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                                 <!-- Actions -->
                                 <td class="py-3 px-3 text-right">
-                                    <div class="flex items-center justify-end gap-2">
+                                    <div class="flex items-center justify-end gap-2" onclick="event.stopPropagation()">
+                                        <button type="button" onclick="loadBadgeToEditor('<?= $b['id'] ?>')" class="px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-[11px] flex items-center gap-1 transition shadow" title="Edit and customize in studio">
+                                            <i class="fas fa-pen-to-square"></i> <span>Edit</span>
+                                        </button>
+                                        
                                         <a href="index.php?item=<?= $b['id'] ?>" target="_blank" class="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition" title="View in Explorer">
                                             <i class="fas fa-eye text-xs"></i>
                                         </a>
+
                                         <a href="admin.php?delete=<?= $b['id'] ?>" onclick="return confirm('Are you sure you want to delete badge #<?= $b['id'] ?>?');" class="w-7 h-7 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 flex items-center justify-center transition" title="Delete Badge">
                                             <i class="fas fa-trash-can text-xs"></i>
                                         </a>
@@ -816,12 +1049,23 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     </main>
 
     <!-- Toast Notification -->
-    <div id="adminToast" class="fixed bottom-6 right-6 bg-amber-400 text-black font-extrabold px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none">
-        <i class="fas fa-check-circle text-base"></i>
+    <div id="adminToast" class="fixed bottom-6 right-6 bg-amber-400 text-black font-extrabold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 transform translate-y-24 opacity-0 transition-all duration-300 z-50 pointer-events-none">
+        <i class="fas fa-check-circle text-lg"></i>
         <span id="adminToastMsg">Copied!</span>
     </div>
 
+    <!-- CLIENT DATA & SCRIPT ENGINE -->
     <script>
+        // Master in-memory databases
+        const ALL_BADGES_DATA = <?= json_encode($current_badges); ?>;
+        const ALL_PRESETS_DATA = <?= json_encode($presets_list); ?>;
+        const REPO_NAME = '<?= $REPO_NAME ?>';
+        const CDN_BASE = '<?= $CDN_BASE ?>';
+
+        let currentActiveBadge = null;
+        let currentPreviewImg = 'badges/ff_ui_prime_icon_08.png';
+        let stageDisplaySize = 110;
+
         // Copy text helper
         function copyText(text, msg = 'Copied!') {
             if (!navigator.clipboard) {
@@ -842,10 +1086,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         function showToast(msg) {
             const t = document.getElementById('adminToast');
             document.getElementById('adminToastMsg').textContent = msg;
-            t.classList.remove('translate-y-20', 'opacity-0');
+            t.classList.remove('translate-y-24', 'opacity-0');
             setTimeout(() => {
-                t.classList.add('translate-y-20', 'opacity-0');
-            }, 2000);
+                t.classList.add('translate-y-24', 'opacity-0');
+            }, 2200);
         }
 
         // Randomize 12...80 ID
@@ -853,11 +1097,18 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             const middle = Math.floor(10000000 + Math.random() * 90000000);
             const newId = '12' + middle + '80';
             document.getElementById('badgeIdInput').value = newId;
+            updateLivePreviewStudio();
             showToast('New 12...80 ID generated: #' + newId);
         }
 
-        // Active preview image source
-        let currentPreviewImg = 'badges/ff_ui_prime_icon_08.png';
+        // Set Star fireworks count (0 to 50)
+        function setStarDensity(val) {
+            val = Math.max(0, Math.min(50, parseInt(val) || 0));
+            document.getElementById('starRangeSlider').value = val;
+            document.getElementById('starDensityInput').value = val;
+            document.getElementById('starCountDisplay').textContent = val + ' Stars';
+            updateLivePreviewStudio();
+        }
 
         // Select existing asset from dropdown
         function selectExistingAsset(val) {
@@ -872,7 +1123,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             const file = event.target.files[0];
             if (!file) return;
 
-            document.getElementById('uploadPromptText').textContent = 'Selected: ' + file.name;
+            document.getElementById('uploadPromptText').textContent = 'File: ' + file.name;
             document.getElementById('existingFileSelect').value = '';
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -882,151 +1133,327 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             reader.readAsDataURL(file);
         }
 
-        // Toggle Prime Studio Enable/Disable
-        function togglePrimeStudio(checked) {
-            const ctrls = document.getElementById('vfxStudioControls');
-            const toggles = document.getElementById('vfxStudioToggles');
-            if (checked) {
-                ctrls.classList.remove('opacity-50', 'pointer-events-none');
-                toggles.classList.remove('opacity-50', 'pointer-events-none');
-                document.getElementById('badgeCatSelect').value = 'Prime System';
-            } else {
-                ctrls.classList.add('opacity-50', 'pointer-events-none');
-                toggles.classList.add('opacity-50', 'pointer-events-none');
-            }
+        // Stage Size Switcher
+        function setStageSize(sz) {
+            stageDisplaySize = sz;
+            document.querySelectorAll('.stage-size-btn').forEach(b => {
+                if (parseInt(b.dataset.size) === sz) {
+                    b.classList.add('bg-amber-400/20', 'text-amber-300', 'font-bold', 'border', 'border-amber-400/40');
+                    b.classList.remove('text-gray-400');
+                } else {
+                    b.classList.remove('bg-amber-400/20', 'text-amber-300', 'font-bold', 'border', 'border-amber-400/40');
+                    b.classList.add('text-gray-400');
+                }
+            });
             updateLivePreviewStudio();
         }
 
-        // Apply recommended preset when level changes
-        function applyPrimePreset(lvl) {
-            lvl = parseInt(lvl) || 8;
-            const nameInput = document.getElementById('badgeNameInput');
-            if (!nameInput.value || nameInput.value.startsWith('Free Fire Prime Level')) {
-                nameInput.value = 'Free Fire Prime Level ' + lvl;
+        // Stage Background Switcher
+        function setStageBg(type) {
+            const sc = document.getElementById('stageContainer');
+            sc.classList.remove('checker-bg', 'bg-black', 'bg-[#080a18]');
+            if (type === 'checker') {
+                sc.classList.add('checker-bg');
+            } else if (type === 'black') {
+                sc.classList.add('bg-black');
+            } else {
+                sc.classList.add('bg-[#080a18]');
+            }
+        }
+
+        // Quick Search or Paste ID
+        function handleQuickSearchLoad() {
+            const query = (document.getElementById('quickBadgeSearchInput').value || '').trim();
+            if (!query) {
+                showToast('Please paste a badge ID or enter a name!');
+                return;
+            }
+            searchAndLoadBadge(query);
+        }
+
+        document.getElementById('quickBadgeSearchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleQuickSearchLoad();
+            }
+        });
+
+        // Search in memory database and load
+        function searchAndLoadBadge(q) {
+            const cleanQ = q.toLowerCase().replace('#', '').trim();
+            let found = ALL_BADGES_DATA.find(b => b.id.toLowerCase() === cleanQ);
+            if (!found) {
+                found = ALL_BADGES_DATA.find(b => b.name.toLowerCase() === cleanQ || b.slug.toLowerCase() === cleanQ);
+            }
+            if (!found) {
+                found = ALL_BADGES_DATA.find(b => b.name.toLowerCase().includes(cleanQ) || b.id.includes(cleanQ));
             }
 
-            // Auto select matching icon if in dropdown
+            if (found) {
+                loadBadgeToEditor(found.id);
+            } else {
+                showToast('No badge found matching: ' + q);
+            }
+        }
+
+        // Handle Row Click in table
+        function handleRowClick(event, id) {
+            loadBadgeToEditor(id);
+        }
+
+        // MASTER LOADER: Populate everything from any badge
+        function loadBadgeToEditor(id) {
+            const b = ALL_BADGES_DATA.find(x => x.id === id);
+            if (!b) return;
+
+            currentActiveBadge = b;
+
+            // Update Header & Mode
+            document.getElementById('originalIdInput').value = b.id;
+            document.getElementById('formPanelTitle').textContent = 'সম্পাদনা: ' + b.name + ' (#' + b.id + ')';
+            document.getElementById('formPanelSub').textContent = 'এই ব্যাজের নাম, আইডি বা ইফেক্ট পরিবর্তন করে সেভ করলেই সিডিএন আপডেট হয়ে যাবে।';
+            document.getElementById('editorModeText').textContent = 'Editing: #' + b.id;
+            document.getElementById('editorModeBadge').className = 'px-3.5 py-1.5 rounded-xl bg-amber-950/60 border border-amber-500/50 text-amber-300 text-xs font-mono flex items-center gap-2';
+            document.getElementById('saveBtnText').textContent = 'Update & Redeploy #' + b.id;
+
+            // Form Fields
+            document.getElementById('badgeNameInput').value = b.name;
+            document.getElementById('badgeIdInput').value = b.id;
+            document.getElementById('badgeCatSelect').value = b.category || 'Prime System';
+            document.getElementById('badgeRaritySelect').value = b.rarity || 'MYTHIC';
+            document.getElementById('badgeSizeInput').value = b.default_size || 54;
+            document.getElementById('glowSelect').value = b.glow_color || 'rgba(255, 215, 0, 0.85)';
+            document.getElementById('badgeDescInput').value = b.description || '';
+
+            // Icon Asset
+            currentPreviewImg = 'badges/' + (b.file || 'ff_ui_prime_icon_08.png');
+            document.getElementById('uploadPromptText').textContent = 'Asset: ' + (b.file || 'ff_ui_prime_icon_08.png');
+            
             const efSelect = document.getElementById('existingFileSelect');
-            const targetIcon = 'ff_ui_prime_icon_0' + lvl + '.png';
             for (let i = 0; i < efSelect.options.length; i++) {
-                if (efSelect.options[i].value === targetIcon) {
+                if (efSelect.options[i].value === b.file) {
                     efSelect.selectedIndex = i;
-                    currentPreviewImg = 'badges/' + targetIcon;
                     break;
                 }
             }
 
-            if (lvl === 8) {
-                document.getElementById('sweepEnabledCheck').checked = true;
-                document.getElementById('sweepDirSelect').value = 'diag';
-                document.getElementById('sweepSpeedSelect').value = '2.2s';
-                document.getElementById('starDensitySelect').value = '16';
-                document.getElementById('starThemeSelect').value = 'gold';
-                document.getElementById('hasGemGlintCheck').checked = true;
-                document.getElementById('badgeRaritySelect').value = 'MYTHIC';
-            } else if (lvl === 7) {
-                document.getElementById('sweepEnabledCheck').checked = true;
-                document.getElementById('sweepDirSelect').value = 'diag';
-                document.getElementById('sweepSpeedSelect').value = '2.4s';
-                document.getElementById('starDensitySelect').value = '12';
-                document.getElementById('starThemeSelect').value = 'gold';
-                document.getElementById('hasGemGlintCheck').checked = true;
-                document.getElementById('badgeRaritySelect').value = 'MYTHIC';
-            } else if (lvl === 6) {
-                document.getElementById('sweepEnabledCheck').checked = true;
-                document.getElementById('sweepDirSelect').value = 'diag';
-                document.getElementById('sweepSpeedSelect').value = '2.4s';
-                document.getElementById('starDensitySelect').value = '8';
-                document.getElementById('starThemeSelect').value = 'ruby';
-                document.getElementById('hasGemGlintCheck').checked = false;
-                document.getElementById('badgeRaritySelect').value = 'LEGENDARY';
-            } else if (lvl === 5) {
-                document.getElementById('sweepEnabledCheck').checked = true;
-                document.getElementById('sweepDirSelect').value = 'diag';
-                document.getElementById('sweepSpeedSelect').value = '2.6s';
-                document.getElementById('starDensitySelect').value = '6';
-                document.getElementById('starThemeSelect').value = 'gold';
-                document.getElementById('hasGemGlintCheck').checked = false;
-                document.getElementById('badgeRaritySelect').value = 'LEGENDARY';
-            } else if (lvl === 4) {
-                document.getElementById('sweepEnabledCheck').checked = true;
-                document.getElementById('sweepDirSelect').value = 'diag';
-                document.getElementById('sweepSpeedSelect').value = '2.6s';
-                document.getElementById('starDensitySelect').value = '4';
-                document.getElementById('starThemeSelect').value = 'cyan';
-                document.getElementById('hasGemGlintCheck').checked = false;
-                document.getElementById('badgeRaritySelect').value = 'EPIC';
-            } else {
-                document.getElementById('sweepEnabledCheck').checked = false;
-                document.getElementById('starDensitySelect').value = '0';
-                document.getElementById('hasGemGlintCheck').checked = false;
-                document.getElementById('badgeRaritySelect').value = 'RARE';
-            }
+            // VFX Controls
+            const isPrime = (b.type === 'prime_image' || !!b.prime_level);
+            document.getElementById('isPrimeCheck').checked = isPrime;
+            togglePrimeStudio(isPrime);
 
+            document.getElementById('sweepEnabledCheck').checked = (b.sweep_enabled !== false);
+            
+            // Sheen Direction normalizer
+            let sDir = b.sweep_direction || 'diag_bl_tr';
+            if (sDir === 'diag') sDir = 'diag_bl_tr';
+            if (sDir === 'diag_rev') sDir = 'diag_br_tl';
+            document.getElementById('sweepDirSelect').value = sDir;
+
+            document.getElementById('sweepSpeedSelect').value = b.sweep_speed || '2.2s';
+            
+            // Star Density (0 to 50)
+            const starCount = (b.star_density !== undefined) ? parseInt(b.star_density) : (b.prime_level === 8 ? 16 : 0);
+            setStarDensity(starCount);
+
+            document.getElementById('starThemeSelect').value = b.star_theme || 'gold';
+            document.getElementById('hasGemGlintCheck').checked = (b.has_gem_glint !== false);
+
+            updateLivePreviewStudio();
+            showToast('Loaded: ' + b.name + ' (#' + b.id + ')');
+
+            // Smooth scroll to top of editor
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+
+        // Reset to Create New Badge Mode
+        function resetToNewBadge() {
+            currentActiveBadge = null;
+            document.getElementById('badgeEditorForm').reset();
+            document.getElementById('originalIdInput').value = '';
+            
+            randomizeId();
+
+            document.getElementById('formPanelTitle').textContent = 'নতুন ব্যাজ বা প্রাইম আইকন আপলোড ও সিডিএন জেনারেটর';
+            document.getElementById('formPanelSub').textContent = 'স্বচ্ছ ব্যাকগ্রাউন্ডের (Transparent PNG) ব্যাজ আপলোড করলে স্বয়ংক্রিয়ভাবে ১২...৮০ আইডি তৈরি হবে।';
+            document.getElementById('editorModeText').textContent = 'Mode: New Badge';
+            document.getElementById('editorModeBadge').className = 'px-3.5 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs font-mono flex items-center gap-2';
+            document.getElementById('saveBtnText').textContent = 'Save & Generate Global CDN Asset';
+
+            currentPreviewImg = 'badges/ff_ui_prime_icon_08.png';
+            document.getElementById('uploadPromptText').textContent = 'Click to select PNG';
+            document.getElementById('existingFileSelect').value = 'ff_ui_prime_icon_08.png';
+
+            document.getElementById('isPrimeCheck').checked = true;
+            togglePrimeStudio(true);
+            setStarDensity(16);
+            document.getElementById('sweepEnabledCheck').checked = true;
+            document.getElementById('sweepDirSelect').value = 'diag_bl_tr';
+            document.getElementById('sweepSpeedSelect').value = '2.2s';
+            document.getElementById('starThemeSelect').value = 'gold';
+            document.getElementById('hasGemGlintCheck').checked = true;
+
+            updateLivePreviewStudio();
+            showToast('Editor reset for New Badge creation');
+        }
+
+        // Apply one of the 50 Numbered Effect Presets
+        function handlePresetChange(presetId) {
+            if (!presetId) return;
+            const p = ALL_PRESETS_DATA.find(x => x.id === parseInt(presetId));
+            if (!p) return;
+
+            document.getElementById('isPrimeCheck').checked = true;
+            togglePrimeStudio(true);
+
+            if (p.category) document.getElementById('badgeCatSelect').value = p.category;
+            if (p.rarity) document.getElementById('badgeRaritySelect').value = p.rarity;
+            if (p.glow) document.getElementById('glowSelect').value = p.glow;
+            
+            document.getElementById('sweepEnabledCheck').checked = !!p.sweep;
+            if (p.dir) {
+                let d = p.dir;
+                if (d === 'diag') d = 'diag_bl_tr';
+                if (d === 'diag_rev') d = 'diag_br_tl';
+                document.getElementById('sweepDirSelect').value = d;
+            }
+            if (p.speed) document.getElementById('sweepSpeedSelect').value = p.speed;
+
+            setStarDensity(p.stars || 0);
+            if (p.theme) document.getElementById('starThemeSelect').value = p.theme;
+            document.getElementById('hasGemGlintCheck').checked = !!p.glint;
+
+            updateLivePreviewStudio();
+            showToast('Applied: ' + p.name);
+        }
+
+        // Remove All Effects (Clean Static Badge)
+        function removeAllEffects() {
+            document.getElementById('sweepEnabledCheck').checked = false;
+            setStarDensity(0);
+            document.getElementById('hasGemGlintCheck').checked = false;
+            document.getElementById('presetSelect').value = '';
+            updateLivePreviewStudio();
+            showToast('All effects removed: Clean static transparent badge!');
+        }
+
+        // Toggle Prime Studio inputs
+        function togglePrimeStudio(checked) {
+            const ctrls = document.getElementById('vfxStudioControls');
+            if (checked) {
+                ctrls.classList.remove('opacity-40', 'pointer-events-none');
+            } else {
+                ctrls.classList.add('opacity-40', 'pointer-events-none');
+            }
             updateLivePreviewStudio();
         }
 
-        // Master Live Preview Studio Updater
+        // MASTER LIVE PREVIEW STUDIO RENDERER (Supports 0 to 50 Stars & 8 Directions)
         function updateLivePreviewStudio() {
             const stage = document.getElementById('liveBadgeStage');
             if (!stage) return;
 
             const isPrime = document.getElementById('isPrimeCheck').checked;
-            const lvl = parseInt(document.getElementById('primeLevelSelect').value) || 8;
             const sweepEnabled = document.getElementById('sweepEnabledCheck').checked;
             const sweepDir = document.getElementById('sweepDirSelect').value;
             const sweepSpeed = document.getElementById('sweepSpeedSelect').value;
-            const density = parseInt(document.getElementById('starDensitySelect').value) || 0;
+            const starCount = Math.max(0, Math.min(50, parseInt(document.getElementById('starDensityInput').value) || 0));
             const starTheme = document.getElementById('starThemeSelect').value;
             const hasGlint = document.getElementById('hasGemGlintCheck').checked;
-            const size = parseInt(document.getElementById('badgeSizeInput').value) || 54;
             const glowVal = document.getElementById('glowSelect').value;
+            const badgeId = document.getElementById('badgeIdInput').value || '120000000080';
 
-            const sweepClass = (sweepDir !== 'diag') ? ('sweep-dir-' + sweepDir) : '';
+            // Sheen Direction Class
+            let sweepClass = '';
+            if (sweepDir === 'diag_bl_tr' || sweepDir === 'diag') sweepClass = 'sweep-dir-bl-tr';
+            else if (sweepDir === 'diag_br_tl' || sweepDir === 'diag_rev') sweepClass = 'sweep-dir-br-tl';
+            else if (sweepDir === 'diag_tl_br') sweepClass = 'sweep-dir-tl-br';
+            else if (sweepDir === 'diag_tr_bl') sweepClass = 'sweep-dir-tr-bl';
+            else if (sweepDir === 'up') sweepClass = 'sweep-dir-up';
+            else if (sweepDir === 'down') sweepClass = 'sweep-dir-down';
+            else if (sweepDir === 'right') sweepClass = 'sweep-dir-right';
+            else if (sweepDir === 'left') sweepClass = 'sweep-dir-left';
 
-            if (isPrime) {
-                // Gunpowder Star Layer (up to 16 positions)
-                const allPositions = ['star-pos-1', 'star-pos-2', 'star-pos-3', 'star-pos-4', 'star-pos-5', 'star-pos-6', 'star-pos-7', 'star-pos-8', 'star-pos-9', 'star-pos-10', 'star-pos-11', 'star-pos-12', 'star-pos-13', 'star-pos-14', 'star-pos-15', 'star-pos-16'];
-                const starList = allPositions.slice(0, Math.min(density, 16));
-                const starColor = (starTheme === 'cyan') ? '#00f0ff' : (starTheme === 'ruby' ? '#ef4444' : (starTheme === 'purple' ? '#c084fc' : '#FFFCE0'));
-                const themeClass = (starTheme !== 'gold') ? ('star-theme-' + starTheme) : '';
+            // Star theme & color map
+            const themeColors = {
+                gold: '#FFFCE0',
+                cyan: '#00F0FF',
+                white: '#FFFFFF',
+                ruby: '#FF3366',
+                purple: '#D946EF',
+                emerald: '#10B981',
+                amber: '#F59E0B',
+                rainbow: '#FFFCE0'
+            };
+            const starColor = themeColors[starTheme] || '#FFFCE0';
+            const starThemeClass = 'star-theme-' + starTheme;
 
-                const starsHtml = (density > 0) ? `
-                    <div class="ff-prime-stars-layer ${themeClass}">
-                        ${starList.map(pos => `<svg class="ff-pinpoint-star ${pos}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`).join('')}
-                    </div>` : '';
+            // Generate 0 to 50 Stars using star-pos-1 to star-pos-50
+            let starsHtml = '';
+            if (isPrime && starCount > 0) {
+                const starPositions = Array.from({length: starCount}, (_, i) => 'star-pos-' + (i + 1));
+                const starDots = starPositions.map(pos => 
+                    `<svg class="ff-pinpoint-star ${pos}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`
+                ).join('');
 
-                // Metallic Sheen Mask Sweep
-                const shineHtml = sweepEnabled ? `
+                starsHtml = `<div class="ff-prime-stars-layer ${starThemeClass}">${starDots}</div>`;
+            }
+
+            // Directional Metallic Sheen Beam
+            let shineHtml = '';
+            if (sweepEnabled) {
+                shineHtml = `
                     <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${currentPreviewImg}');mask-image:url('${currentPreviewImg}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                         <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:${sweepSpeed};mix-blend-mode:screen;display:block;"></span>
-                    </span>` : '';
-
-                stage.innerHTML = `
-                    <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:72px;height:72px;position:relative;background:transparent !important;">
-                        ${starsHtml}
-                        <img src="${currentPreviewImg}" class="ff-badge-img" alt="Live Preview">
-                        ${shineHtml}
-                        ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
-                    </div>
-                `;
-            } else {
-                stage.innerHTML = `
-                    <span class="ff-shape-badge" style="width:54px;height:54px;filter:drop-shadow(0 0 6px ${glowVal});display:inline-block;position:relative;">
-                        <img src="${currentPreviewImg}" alt="Preview" style="width:100%;height:100%;object-fit:contain;display:block;">
-                        <span style="position:absolute;inset:0;pointer-events:none;overflow:hidden;-webkit-mask-image:url('${currentPreviewImg}');mask-image:url('${currentPreviewImg}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
-                            <span style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;background:linear-gradient(45deg,transparent 35%,rgba(255,255,255,0.2) 44%,rgba(255,255,255,0.95) 50%,rgba(255,255,255,0.2) 56%,transparent 65%);animation:ff_shape_sweep 2.6s infinite linear;mix-blend-mode:screen;display:block;"></span>
-                        </span>
-                    </span>
-                `;
+                    </span>`;
             }
+
+            // Central Gem Glint
+            const glintHtml = (isPrime && hasGlint) ? '<div class="ff-gem-glint"></div>' : '';
+
+            // Render on Live Stage (100% Transparent, No yellow background)
+            stage.innerHTML = `
+                <div class="ff-prime-badge-wrap ff-prime-lvl-8" style="width:${stageDisplaySize}px;height:${stageDisplaySize}px;position:relative;background:transparent !important;filter:drop-shadow(0 0 10px ${glowVal});">
+                    ${starsHtml}
+                    <img src="${currentPreviewImg}" class="ff-badge-img" alt="Live Badge Preview" onerror="this.src='badges/ff_ui_prime_icon_08.png'">
+                    ${shineHtml}
+                    ${glintHtml}
+                </div>
+            `;
+
+            // Update Live Metadata
+            document.getElementById('metaStars').textContent = starCount > 0 ? (starCount + ' Stars (' + starTheme + ')') : '0 Stars (None)';
+            document.getElementById('metaSheen').textContent = sweepEnabled ? (sweepDir + ' (' + sweepSpeed + ')') : 'Disabled';
+            document.getElementById('metaGlint').textContent = hasGlint ? '✨ Active Glint' : 'Off';
+            document.getElementById('metaBadgeId').textContent = '#' + badgeId;
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            updateLivePreviewStudio();
-        });
+        // Quick Copy Actions for active badge
+        function copyActiveBadgeId() {
+            const id = document.getElementById('badgeIdInput').value || '120000000080';
+            copyText(id, 'Badge ID #' + id + ' Copied!');
+        }
 
-        // Filter Table
+        function copyActiveCDN() {
+            const fileName = document.getElementById('existingFileSelect').value || 'ff_ui_prime_icon_08.png';
+            const url = CDN_BASE + fileName;
+            copyText(url, 'CDN URL Copied!');
+        }
+
+        function copyActiveWebTag() {
+            const id = document.getElementById('badgeIdInput').value || '120000000080';
+            const sz = document.getElementById('badgeSizeInput').value || '54';
+            copyText('<ff-badge id="' + id + '" size="' + sz + '"></ff-badge>', 'Web Component Tag Copied!');
+        }
+
+        function copyActivePHP() {
+            const fileName = document.getElementById('existingFileSelect').value || 'ff_ui_prime_icon_08.png';
+            const sz = document.getElementById('badgeSizeInput').value || '54';
+            const call = "generate_ff_prime_badge_html('" + fileName + "', 8, '" + sz + "px');";
+            copyText(call, 'PHP Function Call Copied!');
+        }
+
+        // Search & Filter badges table
         function filterAdminBadges(q) {
             q = q.toLowerCase().trim();
             const rows = document.querySelectorAll('.admin-badge-row');
@@ -1040,6 +1467,11 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 }
             });
         }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLivePreviewStudio();
+        });
     </script>
 
 <?php endif; ?>
