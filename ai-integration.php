@@ -1,4 +1,5 @@
 <?php
+header('Connection: close');
 /**
  * TURKY HUB - AI Integration & Master Prompt Studio
  * Universal integration instructions for ChatGPT, Claude, Gemini, Cursor & Copilot
@@ -711,7 +712,8 @@ print(get_badge_info("120000010880"))</pre>
                         <tbody id="matrixTableBody" class="divide-y divide-emerald-500/10 font-mono">
                             <?php foreach ($badges as $b): ?>
                                 <?php
-                                    $bFile = htmlspecialchars($b['file'] ?? 'ff_ui_prime_icon_08.png');
+                                    $rawBFile = trim($b['file'] ?? '');
+                                    $bFile = (!empty($rawBFile)) ? htmlspecialchars($rawBFile) : 'FF_UI_Badge_KOL01.png';
                                     $bLvl = $b['prime_level'] ?? 0;
                                     $bStars = intval($b['star_density'] ?? ($bLvl === 8 ? 16 : ($bLvl === 7 ? 12 : ($bLvl === 6 ? 8 : ($bLvl === 5 ? 6 : ($bLvl === 4 ? 4 : 0))))));
                                     $bSweep = !empty($b['sweep_enabled']) || ($bLvl >= 4);
@@ -722,7 +724,7 @@ print(get_badge_info("120000010880"))</pre>
                                     <!-- Preview -->
                                     <td class="py-3 px-4">
                                         <div class="w-10 h-10 rounded-xl bg-[#080a18] border border-emerald-500/20 flex items-center justify-center p-1 relative">
-                                            <img src="badges/<?= $bFile ?>" onerror="this.src='<?= $bCdn ?>'" class="w-full h-full object-contain" alt="<?= htmlspecialchars($b['name']) ?>">
+                                            <img src="badges/<?= $bFile ?>" onerror="this.onerror=null; this.src='<?= $bCdn ?>'" class="w-full h-full object-contain" alt="<?= htmlspecialchars($b['name']) ?>">
                                         </div>
                                     </td>
                                     <!-- ID -->

@@ -1,4 +1,5 @@
 <?php
+header('Connection: close');
 /**
  * TURKY HUB - Free Fire Items & Badges EXPLORER (OB55 Engine)
  * GitHub Repository: https://github.com/tamimhasan1280/ff-bages1280
@@ -133,7 +134,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                             <svg class="ff-pinpoint-star star-pos-5" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="#FFFCE0"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>
                             <svg class="ff-pinpoint-star star-pos-7" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="#FFFCE0"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>
                         </div>
-                        <img src="badges/ff_ui_prime_icon_08.png" onerror="this.src='https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_08.png'" class="ff-badge-img" alt="Turky Hub Emblem">
+                        <img src="badges/ff_ui_prime_icon_08.png" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_prime_icon_08.png'" class="ff-badge-img" alt="Turky Hub Emblem">
                         <span class="ff-badge-shine sweep-dir-diag_bl_tr" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('badges/ff_ui_prime_icon_08.png');mask-image:url('badges/ff_ui_prime_icon_08.png');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                             <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:2.2s;mix-blend-mode:screen;display:block;"></span>
                         </span>
@@ -549,8 +550,9 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
             container.innerHTML = list.map(item => {
                 const isPrime = item.type === 'prime_image' || !!item.prime_level;
-                const fileUrl = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
-                const localUrl = item.file ? 'badges/' + item.file : '';
+                const fileUrl = item.cdn_urls?.jsdelivr || (CDN_BASE + validFile);
+                const validFile = (item.file && item.file.trim() !== '') ? item.file.trim() : 'FF_UI_Badge_KOL01.png';
+                const localUrl = 'badges/' + validFile;
                 
                 let previewHtml = '';
                 if (isPrime) {
@@ -580,7 +582,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     previewHtml = `
                         <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:62px;height:62px;">
                             ${starsHtml}
-                            <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
+                            <img src="${localUrl}" onerror="this.onerror=null; this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                             ${shineHtml}
                             ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
                         </div>
@@ -610,7 +612,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     previewHtml = `
                         <div class="ff-prime-badge-wrap${animClass}" style="width:48px;height:48px;position:relative;background:transparent !important;filter:drop-shadow(0 0 6px ${item.glow_color || 'rgba(255,215,0,0.8)'});">
                             ${starsHtml}
-                            <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" ${isFullyStatic ? 'style="animation:none !important;"' : ''} alt="${item.name}">
+                            <img src="${localUrl}" onerror="this.onerror=null; this.src='${fileUrl}'" class="ff-badge-img" ${isFullyStatic ? 'style="animation:none !important;"' : ''} alt="${item.name}">
                             ${shineHtml}
                             ${item.has_gem_glint ? '<div class="ff-gem-glint"></div>' : ''}
                         </div>
@@ -728,8 +730,9 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
             // Render Modal Preview (Authentic High-Res VFX)
             const previewContainer = document.getElementById('modalItemPreview');
-            const fileUrl = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
-            const localUrl = item.file ? 'badges/' + item.file : '';
+            const fileUrl = item.cdn_urls?.jsdelivr || (CDN_BASE + validFile);
+            const validFile = (item.file && item.file.trim() !== '') ? item.file.trim() : 'FF_UI_Badge_KOL01.png';
+                const localUrl = 'badges/' + validFile;
 
             if (item.type === 'prime_image' || item.prime_level) {
                 const lvl = item.prime_level || 1;
@@ -758,7 +761,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 previewContainer.innerHTML = `
                     <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:90px;height:90px;">
                         ${starsHtml}
-                        <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
+                        <img src="${localUrl}" onerror="this.onerror=null; this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                         ${shineHtml}
                         ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
                     </div>
@@ -788,7 +791,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 previewContainer.innerHTML = `
                     <div class="ff-prime-badge-wrap${animClass}" style="width:90px;height:90px;position:relative;background:transparent !important;filter:drop-shadow(0 0 10px ${item.glow_color || 'rgba(255,215,0,0.8)'});">
                         ${starsHtml}
-                        <img src="${localUrl}" onerror="this.src='${fileUrl}'" class="ff-badge-img" ${isFullyStatic ? 'style="animation:none !important;"' : ''} alt="${item.name}">
+                        <img src="${localUrl}" onerror="this.onerror=null; this.src='${fileUrl}'" class="ff-badge-img" ${isFullyStatic ? 'style="animation:none !important;"' : ''} alt="${item.name}">
                         ${shineHtml}
                         ${item.has_gem_glint ? '<div class="ff-gem-glint"></div>' : ''}
                     </div>

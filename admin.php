@@ -1,4 +1,5 @@
 <?php
+header('Connection: close');
 /**
  * TURKY HUB - Badges Admin Studio & Live VFX Customizer
  * GitHub Repository: https://github.com/tamimhasan1280/ff-bages1280
@@ -977,7 +978,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <tbody id="adminBadgesTbody" class="divide-y divide-[#151934]">
                         <?php foreach ($current_badges as $b): ?>
                             <?php
-                                $bFile = htmlspecialchars($b['file'] ?? 'ff_ui_prime_icon_08.png');
+                                $rawBFile = trim($b['file'] ?? '');
+                                $bFile = (!empty($rawBFile)) ? htmlspecialchars($rawBFile) : 'FF_UI_Badge_KOL01.png';
                                 $img_cdn = $CDN_BASE . $bFile;
                                 $bStars = intval($b['star_density'] ?? 0);
                                 $bSweep = !empty($b['sweep_enabled']);
@@ -1002,7 +1004,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                                     <?php endfor; ?>
                                                 </div>
                                             <?php endif; ?>
-                                            <img src="badges/<?= $bFile ?>" onerror="this.src='<?= $img_cdn ?>'" class="ff-badge-img <?= $isFullyStatic ? 'style="animation:none !important;"' : '' ?>" alt="<?= htmlspecialchars($b['name']) ?>">
+                                            <img src="badges/<?= $bFile ?>" onerror="this.onerror=null; this.src='<?= $img_cdn ?>'" class="ff-badge-img <?= $isFullyStatic ? 'style="animation:none !important;"' : '' ?>" alt="<?= htmlspecialchars($b['name']) ?>">
                                             <?php if ($bSweep): ?>
                                                 <span class="ff-badge-shine sweep-dir-<?= $bDir ?>" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('badges/<?= $bFile ?>');mask-image:url('badges/<?= $bFile ?>');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                                                     <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:<?= $bSpd ?>;mix-blend-mode:screen;display:block;"></span>
