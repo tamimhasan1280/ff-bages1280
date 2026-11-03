@@ -111,6 +111,16 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             background: rgba(255, 255, 255, 0.18);
             border-radius: 4px;
         }
+            .checker-bg {
+            background-color: #0c0f20 !important;
+            background-image: 
+                linear-gradient(45deg, #181d38 25%, transparent 25%), 
+                linear-gradient(-45deg, #181d38 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #181d38 75%), 
+                linear-gradient(-45deg, transparent 75%, #181d38 75%) !important;
+            background-size: 16px 16px !important;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0px !important;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-rose-500 selection:text-white">
@@ -391,11 +401,17 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             </button>
 
             <!-- Preview Stage (100% Transparent, No Background) -->
-            <div class="w-48 h-48 mx-auto rounded-2xl bg-[#090b18] border border-white/5 relative flex items-center justify-center overflow-hidden shadow-inner">
+            <div id="modalPreviewBox" class="w-48 h-48 mx-auto rounded-2xl bg-[#090b18] border border-white/5 relative flex items-center justify-center overflow-hidden shadow-inner transition-colors duration-200">
                 <div id="modalAura" class="absolute inset-0 bg-gradient-to-tr from-purple-600/15 via-transparent to-pink-500/15 pointer-events-none"></div>
                 <div id="modalItemPreview" class="relative z-10 flex items-center justify-center w-full h-full p-2">
                     <!-- Image or Animation injected here -->
                 </div>
+            </div>
+            <!-- Transparency Verification Quick Switcher -->
+            <div class="flex items-center justify-center gap-2 mt-2">
+                <button type="button" onclick="toggleModalCheckerboard()" class="text-[10px] font-mono font-bold text-amber-300 hover:text-white bg-amber-400/10 hover:bg-amber-400/20 px-2.5 py-1 rounded-lg border border-amber-400/30 transition flex items-center gap-1 cursor-pointer">
+                    <i class="fas fa-eye"></i> <span>Verify 100% Transparency (Checkerboard)</span>
+                </button>
             </div>
 
             <!-- Item Name -->
@@ -470,11 +486,50 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                                 <button type="button" onclick="copyText(document.getElementById('modalDirectUrl').textContent, 'Direct Image URL copied!')" class="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-[10px] shrink-0 hover:bg-emerald-500/30">Copy</button>
                             </div>
                         </div>
+                        <!-- Live Animated CDN Player URL -->
                         <div class="space-y-1">
-                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">Global jsDelivr CDN URL:</span>
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] text-amber-400 uppercase font-mono font-bold flex items-center gap-1">
+                                    <i class="fas fa-bolt text-amber-400"></i> Live Animated CDN Player URL:
+                                </span>
+                                <a id="modalPlayerOpenLink" href="#" target="_blank" class="text-[9px] text-cyan-400 hover:underline font-mono">Open in New Tab <i class="fas fa-external-link-alt text-[8px]"></i></a>
+                            </div>
                             <div class="flex items-center gap-1.5">
-                                <code id="modalCdnUrl" class="text-[10px] font-mono text-cyan-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
-                                <button type="button" onclick="copyText(document.getElementById('modalCdnUrl').textContent, 'CDN URL copied!')" class="px-2 py-1 bg-cyan-500/20 text-cyan-300 rounded text-[10px] shrink-0 hover:bg-cyan-500/30">Copy</button>
+                                <code id="modalAnimatedPlayerUrl" class="text-[10px] font-mono text-amber-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
+                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedPlayerUrl').textContent, 'Live Animated Player URL copied!')" class="px-2 py-1 bg-amber-500/20 text-amber-300 rounded text-[10px] shrink-0 hover:bg-amber-500/30">Copy</button>
+                            </div>
+                        </div>
+
+                        <!-- Animated SVG Image URL -->
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-purple-400 uppercase font-mono font-bold flex items-center gap-1">
+                                <i class="fas fa-file-code"></i> Animated SVG Image URL (for &lt;img&gt; tag):
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <code id="modalAnimatedSvgUrl" class="text-[10px] font-mono text-purple-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
+                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedSvgUrl').textContent, 'Animated SVG URL copied!')" class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-[10px] shrink-0 hover:bg-purple-500/30">Copy</button>
+                            </div>
+                        </div>
+
+                        <!-- Web Component HTML Tag -->
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-cyan-400 uppercase font-mono font-bold flex items-center gap-1">
+                                <i class="fas fa-code"></i> Web Component HTML Tag:
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <code id="modalWebTagCode" class="text-[10px] font-mono text-cyan-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
+                                <button type="button" onclick="copyText(document.getElementById('modalWebTagCode').textContent, 'Web Component Tag copied!')" class="px-2 py-1 bg-cyan-500/20 text-cyan-300 rounded text-[10px] shrink-0 hover:bg-cyan-500/30">Copy</button>
+                            </div>
+                        </div>
+
+                        <!-- Raw Static Transparent PNG -->
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold flex items-center gap-1">
+                                <i class="fas fa-image"></i> Raw Static Transparent PNG:
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <code id="modalCdnUrl" class="text-[10px] font-mono text-gray-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
+                                <button type="button" onclick="copyText(document.getElementById('modalCdnUrl').textContent, 'Raw Transparent PNG URL copied!')" class="px-2 py-1 bg-white/10 text-white rounded text-[10px] shrink-0 hover:bg-white/20">Copy</button>
                             </div>
                         </div>
                         <div class="space-y-1">
@@ -815,6 +870,13 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             document.body.style.overflow = 'hidden';
         }
 
+        
+        function toggleModalCheckerboard() {
+            const box = document.getElementById('modalPreviewBox');
+            if (!box) return;
+            box.classList.toggle('checker-bg');
+        }
+
         function closeItemModal() {
             const modal = document.getElementById('itemModal');
             modal.classList.add('hidden');
@@ -965,7 +1027,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     submitBtn.innerHTML = '<span>Authenticate & Unlock Hub</span><i class="fas fa-arrow-right text-xs"></i>';
                 }
             }
-        }
         }
 
         function unlockApp() {

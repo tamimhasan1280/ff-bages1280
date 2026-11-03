@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire Prime Badge - Standalone Animated CDN Player</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cdn/prime-badge.css">
+
+    <style>
+        * { box-sizing: border-box; }
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent !important;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        .checker-bg {
+            background-color: #0c0f20 !important;
+            background-image: 
+                linear-gradient(45deg, #181d38 25%, transparent 25%), 
+                linear-gradient(-45deg, #181d38 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #181d38 75%), 
+                linear-gradient(-45deg, transparent 75%, #181d38 75%) !important;
+            background-size: 16px 16px !important;
+            background-position: 0 0, 0 8px, 8px -8px, -8px 0px !important;
+        }
+
+        /* Directional Metallic Sheen Animation */
+        @keyframes ff_sweep_diag_bl_tr {
+            0% { transform: translate(-100%, 100%) rotate(45deg); }
+            100% { transform: translate(100%, -100%) rotate(45deg); }
+        }
+        @keyframes ff_shape_sweep {
+            0% { transform: translate(-100%, 100%) rotate(45deg); }
+            100% { transform: translate(100%, -100%) rotate(45deg); }
+        }
+        @keyframes pulse_bone {
+            0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.85; }
+            100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+        }
+
+        .sweep-dir-diag_bl_tr .ff-badge-shine-beam,
+        .sweep-dir-bl-tr .ff-badge-shine-beam,
+        .sweep-dir-diag .ff-badge-shine-beam {
+            background: linear-gradient(45deg, transparent 35%, rgba(255,255,255,0.25) 44%, rgba(255,255,255,0.98) 50%, rgba(255,255,255,0.25) 56%, transparent 65%);
+            animation-name: ff_sweep_diag_bl_tr;
+        }
+    </style>
+</head>
+<body id="embedBody" class="flex flex-col items-center justify-center min-h-screen relative select-none">
+
+    <!-- BADGE ANIMATION STAGE (100% Transparent Background, GPU-Accelerated) -->
+    <main class="flex-1 flex items-center justify-center p-4 w-full">
+        <div id="badgeStage" class="flex items-center justify-center relative">
+            <div class="animate-spin text-amber-400 text-2xl">
+                <i class="fas fa-circle-notch"></i>
+            </div>
+        </div>
+    </main>
+
+    <!-- FLOATING TRANSPARENCY & CDN INSPECTOR (Hidden if ?clean=1 or iframe) -->
+    <footer id="inspectorBar" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#080a18]/90 backdrop-blur-md border border-amber-500/30 px-4 py-2.5 rounded-2xl shadow-2xl flex flex-wrap items-center justify-center gap-3 text-xs z-50 max-w-[95vw]">
+        
+        <!-- Live Item ID Pill -->
+        <div class="flex items-center gap-1.5 font-mono text-[11px] text-amber-300 font-bold bg-amber-400/10 px-2.5 py-1 rounded-xl border border-amber-400/30">
+            <i class="fas fa-id-badge text-[10px]"></i>
+            <span id="badgeIdText">#126393684880</span>
+        </div>
+
+        <!-- Transparency Verification Background Switcher -->
+        <div class="flex items-center gap-1.5 border-l border-white/10 pl-3">
+            <span class="text-[10px] text-gray-400 hidden sm:inline">Verify Transparency:</span>
+            <button type="button" onclick="setBgMode('checker')" class="px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-bold text-amber-300 flex items-center gap-1 cursor-pointer" title="Checkerboard shows 100% transparent cut out">
+                <span>🏁 Checkerboard</span>
+            </button>
+            <button type="button" onclick="setBgMode('black')" class="px-2 py-1 rounded-lg bg-black hover:bg-gray-900 border border-white/20 text-[10px] text-gray-300 cursor-pointer" title="Dark Gamer BG">
+                <span>⬛ Black</span>
+            </button>
+            <button type="button" onclick="setBgMode('transparent')" class="px-2 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-[10px] font-bold text-cyan-300 cursor-pointer" title="Zero Background (True Transparent)">
+                <span>💎 Transparent</span>
+            </button>
+        </div>
+
+        <!-- Quick Copy Actions -->
+        <div class="flex items-center gap-1.5 border-l border-white/10 pl-3">
+            <button type="button" onclick="copyAnimatedLink()" class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-400 to-orange-500 text-black text-[10px] font-extrabold flex items-center gap-1 cursor-pointer shadow-md shadow-amber-500/20">
+                <i class="fas fa-bolt text-[9px]"></i> <span>Copy Live Player</span>
+            </button>
+            <button type="button" onclick="copySvgLink()" class="px-2 py-1 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 border border-purple-400/30 text-purple-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                <i class="fas fa-file-code text-[9px]"></i> <span>Copy SVG</span>
+            </button>
+            <button type="button" onclick="copyWebTag()" class="px-2 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/30 text-cyan-300 text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                <i class="fas fa-code text-[9px]"></i> <span>Copy Tag</span>
+            </button>
+        </div>
+
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="embedToast" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-amber-400 text-black font-extrabold px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2 -translate-y-20 opacity-0 transition duration-300 z-50 pointer-events-none text-xs">
+        <i class="fas fa-circle-check"></i>
+        <span id="toastMsg">Copied!</span>
+    </div>
+
+    <script>
+        const CDN_BASE = 'https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/';
+        let currentBadge = null;
+
+        // Parse URL Query Params
+        const urlParams = new URLSearchParams(window.location.search);
+        const reqId = urlParams.get('id') || urlParams.get('item') || urlParams.get('badge') || '126393684880';
+        const reqSize = parseInt(urlParams.get('size') || 100);
+        const isClean = urlParams.get('clean') === '1' || window.self !== window.top;
+        const initialBg = urlParams.get('bg') || (isClean ? 'transparent' : 'checker');
+
+        if (isClean) {
+            const bar = document.getElementById('inspectorBar');
+            if (bar) bar.style.display = 'none';
+        }
+
+        // Background switcher helper
+        function setBgMode(mode) {
+            const body = document.getElementById('embedBody');
+            body.classList.remove('checker-bg', 'bg-black', 'bg-[#080a18]', 'bg-white');
+            if (mode === 'checker') {
+                body.classList.add('checker-bg');
+            } else if (mode === 'black') {
+                body.classList.add('bg-black');
+            } else if (mode === 'white') {
+                body.classList.add('bg-white');
+            } else {
+                body.style.background = 'transparent';
+            }
+        }
+        setBgMode(initialBg);
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('embedToast');
+            const msgEl = document.getElementById('toastMsg');
+            if (!toast || !msgEl) return;
+            msgEl.textContent = msg;
+            toast.classList.remove('-translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('-translate-y-20', 'opacity-0');
+            }, 2200);
+        }
+
+        // Copy Helper
+        function copyText(txt, msg = 'Copied!') {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(txt).then(() => showToast(msg)).catch(() => showToast(msg));
+            } else {
+                const ta = document.createElement('textarea');
+                ta.value = txt;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast(msg);
+            }
+        }
+
+        function copyAnimatedLink() {
+            const id = currentBadge ? currentBadge.id : reqId;
+            const url = window.location.origin + window.location.pathname + '?id=' + id;
+            copyText(url, 'Live Animated Player URL Copied!');
+        }
+
+        function copySvgLink() {
+            const id = currentBadge ? currentBadge.id : reqId;
+            const url = CDN_BASE + 'badges/svg/' + id + '.svg';
+            copyText(url, 'Animated SVG Image URL Copied!');
+        }
+
+        function copyWebTag() {
+            const id = currentBadge ? currentBadge.id : reqId;
+            copyText('<ff-badge id="' + id + '" size="' + reqSize + '"></ff-badge>', 'Web Component Tag Copied!');
+        }
+
+        // Fetch Badge Data from API
+        async function loadBadge() {
+            let badge = null;
+            try {
+                // Try single item JSON endpoint
+                const res = await fetch(`api/v1/badge/${reqId}.json`);
+                if (res.ok) {
+                    const data = await res.json();
+                    badge = data.item || data;
+                }
+            } catch (e) {}
+
+            if (!badge) {
+                try {
+                    // Try master badges.json
+                    const res2 = await fetch('api/badges.json');
+                    if (res2.ok) {
+                        const all = await res2.json();
+                        const list = all.badges || all;
+                        badge = list.find(b => b.id === reqId || (b.slug && b.slug === reqId) || (b.file && b.file.includes(reqId)));
+                    }
+                } catch (e) {}
+            }
+
+            // Fallback default Prime Level 8 if not found
+            if (!badge) {
+                badge = {
+                    id: reqId,
+                    name: 'Free Fire Prime Level 8',
+                    file: 'ff_ui_prime_icon_08.png',
+                    prime_level: 8,
+                    sweep_enabled: true,
+                    sweep_direction: 'diag_bl_tr',
+                    sweep_speed: '2.2s',
+                    star_density: 16,
+                    star_theme: 'gold',
+                    has_gem_glint: true,
+                    pulse_enabled: true,
+                    glow_color: 'rgba(255, 215, 0, 0.85)'
+                };
+            }
+
+            currentBadge = badge;
+            document.getElementById('badgeIdText').textContent = '#' + badge.id;
+            renderBadgeOnStage(badge);
+        }
+
+        function renderBadgeOnStage(b) {
+            const stage = document.getElementById('badgeStage');
+            const fileName = (b.file && b.file.trim() !== '') ? b.file.trim() : 'ff_ui_prime_icon_08.png';
+            const fileUrl = 'badges/' + fileName;
+            const isPrime = (b.prime_level !== undefined && b.prime_level > 0) || (b.name && b.name.toLowerCase().includes('prime'));
+            const lvl = b.prime_level || 8;
+            const size = reqSize;
+
+            const isAnimated = (b.sweep_enabled !== false);
+            const sweepDir = b.sweep_direction || 'diag_bl_tr';
+            const sweepClass = 'sweep-dir-' + sweepDir;
+            const sweepSpd = b.sweep_speed || '2.2s';
+
+            // Stars
+            const starCount = Math.min(Math.max(parseInt(b.star_density) || (lvl === 8 ? 16 : 0), 0), 50);
+            const starTheme = b.star_theme || 'gold';
+            const colorMap = { cyan: '#00f0ff', ruby: '#ef4444', purple: '#c084fc', white: '#ffffff', emerald: '#10b981', amber: '#f59e0b', rainbow: '#ff007f', gold: '#FFFCE0' };
+            const starColor = colorMap[starTheme] || '#FFFCE0';
+            const starThemeClass = 'star-theme-' + starTheme;
+
+            const starList = Array.from({ length: starCount }, (_, i) => 'star-pos-' + (i + 1));
+            const starsHtml = (starCount > 0 && isAnimated) ? `
+                <div class="ff-prime-stars-layer ${starThemeClass}">
+                    ${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`).join('')}
+                </div>
+            ` : '';
+
+            // Continuous Sheen Beam
+            const shineHtml = isAnimated ? `
+                <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                    <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:${sweepSpd};mix-blend-mode:screen;display:block;"></span>
+                </span>
+            ` : '';
+
+            // Gem Glint
+            const hasGlint = (b.has_gem_glint !== false) && isAnimated;
+            const glintHtml = hasGlint ? '<div class="ff-gem-glint"></div>' : '';
+
+            // Multi-Bone Focal Highlights (Masked inside Badge Metal Texture)
+            let innerBonesHtml = '';
+            let outerBonesHtml = '';
+            const bones = b.bone_data || [
+                { id: 1, name: 'Crown Apex', x: 50, y: 14, size: 20, color: '#FFD700' },
+                { id: 2, name: 'Center Gem', x: 50, y: 52, size: 24, color: '#FFFFFF' }
+            ];
+
+            bones.forEach(pt => {
+                const x = pt.x || 50;
+                const y = pt.y || 50;
+                const sz = pt.size || 20;
+                const col = pt.color || '#FFD700';
+
+                innerBonesHtml += `
+                    <div style="position:absolute;top:${y}%;left:${x}%;transform:translate(-50%,-50%);width:${sz * 2.2}px;height:${sz * 2.2}px;border-radius:50%;background:radial-gradient(circle, #ffffff 0%, ${col} 35%, transparent 70%);mix-blend-mode:color-dodge;filter:blur(2px);opacity:0.95;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;"></div>
+                    <div style="position:absolute;top:${y}%;left:${x}%;transform:translate(-50%,-50%);width:${Math.max(6, sz * 0.45)}px;height:${Math.max(6, sz * 0.45)}px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px #ffffff, 0 0 18px ${col};mix-blend-mode:screen;pointer-events:none;"></div>
+                `;
+
+                outerBonesHtml += `
+                    <div style="position:absolute;top:${y}%;left:${x}%;transform:translate(-50%,-50%);width:${sz * 3.5}px;height:${sz * 3.5}px;border-radius:50%;background:radial-gradient(circle, ${col} 0%, rgba(255,255,255,0.4) 25%, transparent 70%);mix-blend-mode:screen;filter:blur(8px);opacity:0.65;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;z-index:9;"></div>
+                `;
+            });
+
+            const boneInsideHtml = innerBonesHtml ? `
+                <div style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:hidden;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                    ${innerBonesHtml}
+                </div>
+            ` : '';
+
+            // Aura drop shadow
+            const glowFilter = b.glow_color ? `filter: drop-shadow(0 0 8px ${b.glow_color});` : 'filter: drop-shadow(0 0 8px rgba(255,215,0,0.8));';
+
+            stage.innerHTML = `
+                <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:${size}px;height:${size}px;position:relative;background:transparent !important;${glowFilter}">
+                    ${starsHtml}
+                    <img src="${fileUrl}" onerror="this.onerror=null;this.src='${CDN_BASE + 'badges/' + fileName}';" class="ff-badge-img" alt="${b.name}" style="width:100%;height:100%;object-fit:contain;background:transparent !important;display:block;">
+                    ${shineHtml}
+                    ${glintHtml}
+                    ${boneInsideHtml}
+                    ${outerBonesHtml}
+                </div>
+            `;
+        }
+
+        window.addEventListener('DOMContentLoaded', loadBadge);
+    </script>
+</body>
+</html>

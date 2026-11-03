@@ -24,8 +24,10 @@
         "cdn_urls": {
             "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png",
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png",
-            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png"
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png",
+            "animated_player": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/embed.html?id=120000001280",
+            "animated_svg": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/svg/120000001280.svg"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/embed.html?id=120000001280"
     }
 }

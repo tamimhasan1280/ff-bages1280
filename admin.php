@@ -196,10 +196,12 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             'fn_call' => $is_prime ? "generate_ff_prime_badge_html('{$filename}', {$prime_lvl}, '{$size}px');" : "generate_ff_badge_html('{$filename}', '{$name}', '{$glow_color}', 'top-right', '{$size}px');",
             'cdn_urls' => [
                 'jsdelivr' => $CDN_BASE . $filename,
+                'animated_player' => "https://cdn.jsdelivr.net/gh/{$REPO_NAME}@main/cdn/embed.html?id={$id}",
+                'animated_svg' => "https://cdn.jsdelivr.net/gh/{$REPO_NAME}@main/badges/svg/{$id}.svg",
                 'github_raw' => $RAW_BASE . $filename,
                 'statically' => "https://cdn.statically.io/gh/{$REPO_NAME}/main/badges/" . $filename
             ],
-            'direct_url' => $CDN_BASE . $filename
+            'direct_url' => "https://cdn.jsdelivr.net/gh/{$REPO_NAME}@main/cdn/embed.html?id={$id}"
         ];
 
         // Filter out old badge if original_id or id existed
@@ -713,23 +715,40 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     </div>
 
                     <!-- Quick Copy Actions for active badge -->
-                    <div class="space-y-1.5 pt-1 border-t border-white/10">
-                        <span class="text-[10px] font-mono text-gray-400 uppercase tracking-wider">Quick Copy Snippets:</span>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div class="space-y-2 pt-1 border-t border-white/10">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-mono text-gray-400 uppercase tracking-wider">Quick Copy Snippets:</span>
+                            <span class="text-[9px] font-mono text-emerald-400 font-bold">100% Transparent</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            <!-- Animated CDN Live Player -->
+                            <button type="button" onclick="copyActiveAnimatedCDN()" class="p-2 rounded-xl bg-gradient-to-r from-amber-400/20 to-orange-500/20 hover:from-amber-400/30 hover:to-orange-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer font-bold shadow-sm" title="Live 60fps animated badge player link">
+                                <i class="fas fa-bolt text-[10px] text-amber-400"></i> <span>Anim Player</span>
+                            </button>
+
+                            <!-- Animated SVG for <img> tag -->
+                            <button type="button" onclick="copyActiveSvgCDN()" class="p-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer font-bold" title="Animated SVG link for <img> tag">
+                                <i class="fas fa-file-code text-[10px]"></i> <span>Anim SVG</span>
+                            </button>
+
+                            <!-- Web Component Tag -->
+                            <button type="button" onclick="copyActiveWebTag()" class="p-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer font-bold" title="Custom HTML tag for any website">
+                                <i class="fas fa-code text-[10px]"></i> <span>Web Tag</span>
+                            </button>
+
+                            <!-- Raw Static Transparent PNG -->
+                            <button type="button" onclick="copyActiveRawPNG()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer" title="Direct raw transparent PNG file">
+                                <i class="fas fa-image text-[10px]"></i> <span>Raw PNG</span>
+                            </button>
+
+                            <!-- Copy Item ID -->
                             <button type="button" onclick="copyActiveBadgeId()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-emerald-300 border border-emerald-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
                                 <i class="fas fa-hashtag text-[10px]"></i> <span>Copy ID</span>
                             </button>
 
-                            <button type="button" onclick="copyActiveCDN()" class="p-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
-                                <i class="fas fa-link"></i> <span>Copy CDN</span>
-                            </button>
-
-                            <button type="button" onclick="copyActiveWebTag()" class="p-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
-                                <i class="fas fa-code"></i> <span>Copy Tag</span>
-                            </button>
-
+                            <!-- Copy PHP Snippet -->
                             <button type="button" onclick="copyActivePHP()" class="p-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
-                                <i class="fab fa-php text-xs"></i> <span>Copy PHP</span>
+                                <i class="fab fa-php text-xs"></i> <span>PHP Call</span>
                             </button>
                         </div>
                     </div>
@@ -2457,10 +2476,26 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             copyText(id, 'Badge ID #' + id + ' Copied!');
         }
 
-        function copyActiveCDN() {
+        function copyActiveAnimatedCDN() {
+            const id = document.getElementById('badgeIdInput')?.value || '120000000880';
+            const url = 'https://cdn.jsdelivr.net/gh/' + '<?= $REPO_NAME ?>' + '@main/cdn/embed.html?id=' + id;
+            copyText(url, 'Animated CDN Player URL Copied! Full live animation with 100% transparency.');
+        }
+
+        function copyActiveSvgCDN() {
+            const id = document.getElementById('badgeIdInput')?.value || '120000000880';
+            const url = 'https://cdn.jsdelivr.net/gh/' + '<?= $REPO_NAME ?>' + '@main/badges/svg/' + id + '.svg';
+            copyText(url, 'Animated SVG Image URL Copied! Works inside <img> tag with full animations.');
+        }
+
+        function copyActiveRawPNG() {
             const fileName = document.getElementById('existingFileSelect')?.value || 'ff_ui_prime_icon_08.png';
             const url = CDN_BASE + fileName;
-            copyText(url, 'CDN URL Copied!');
+            copyText(url, 'Raw Transparent PNG URL Copied! (100% transparent background, static asset).');
+        }
+
+        function copyActiveCDN() {
+            copyActiveAnimatedCDN();
         }
 
         function copyActiveWebTag() {

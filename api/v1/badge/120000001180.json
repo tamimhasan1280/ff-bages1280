@@ -24,8 +24,10 @@
         "cdn_urls": {
             "jsdelivr": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_alive_teal.png",
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/badge_alive_teal.png",
-            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_alive_teal.png"
+            "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_alive_teal.png",
+            "animated_player": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/embed.html?id=120000001180",
+            "animated_svg": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/svg/120000001180.svg"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_alive_teal.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/embed.html?id=120000001180"
     }
 }
