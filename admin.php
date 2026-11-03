@@ -1,4 +1,10 @@
 <?php
+// Security Hardening Headers
+header('X-Robots-Tag: noindex, nofollow, noarchive, nosnippet');
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+
 header('Connection: close');
 error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 ini_set('display_errors', '0');
@@ -296,6 +302,9 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="cdn/prime-badge.css">
+    <!-- Turky Hub Autonomous Security Guard (Admin Bypass Enabled) -->
+    <script>window.__TURKY_ADMIN__ = <?= $is_logged_in ? "true" : "false" ?>;</script>
+    <script src="cdn/turky-guard.js"></script>
     <script src="cdn/ff-badges.js"></script>
 
     <style>

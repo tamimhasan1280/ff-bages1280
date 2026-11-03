@@ -1,4 +1,10 @@
 <?php
+// Security Hardening Headers
+header('X-Robots-Tag: noindex, nofollow, noarchive, nosnippet');
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+
 header('Connection: close');
 /**
  * TURKY HUB - AI Integration & Master Prompt Studio
@@ -121,6 +127,8 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
             background: rgba(16, 185, 129, 0.6);
         }
     </style>
+    <!-- Turky Hub Autonomous Security Guard -->
+    <script src="cdn/turky-guard.js"></script>
 </head>
 <body class="min-h-screen flex flex-col cyber-grid selection:bg-emerald-500 selection:text-black">
 

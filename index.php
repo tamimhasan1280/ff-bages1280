@@ -1,4 +1,10 @@
 <?php
+// Security Hardening Headers
+header('X-Robots-Tag: noindex, nofollow, noarchive, nosnippet');
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+
 header('Connection: close');
 /**
  * TURKY HUB - Free Fire Items & Badges EXPLORER (OB55 Engine)
@@ -29,6 +35,8 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
     
     <!-- Authentic Free Fire Prime Badges CSS (100% Transparent, Ascending Beam, Gem Glint) -->
     <link rel="stylesheet" href="cdn/prime-badge.css">
+    <!-- Turky Hub Autonomous Security Guard -->
+    <script src="cdn/turky-guard.js"></script>
 
     <style>
         body {
