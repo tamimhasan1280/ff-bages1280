@@ -2,7 +2,7 @@
 /**
  * TURKY HUB - Badges Admin Studio & Live VFX Customizer
  * GitHub Repository: https://github.com/tamimhasan1280/ff-bages1280
- * 100% Bengali Interface, Radial 360 Scattered Stars, Universal Animation On/Off, V-Badge Full Control
+ * Dedicated Authentication, Live Preview Stage, Search/Paste ID Selector, 0-50 Scattered Stars, 50 Presets
  */
 
 session_start();
@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_action'])) {
         header('Location: admin.php');
         exit;
     } else {
-        $login_error = 'ভুল ইউজারনেম অথবা পাসওয়ার্ড! দয়া করে সঠিক তথ্য দিন।';
+        $login_error = 'Invalid username or password! Please check your credentials.';
     }
 }
 
@@ -97,7 +97,7 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
     }
 
     if (empty($name)) {
-        $error_msg = 'দয়া করে ব্যাজের নাম লিখুন।';
+        $error_msg = 'Please enter a badge name.';
     } else {
         $filename = '';
         
@@ -259,11 +259,11 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 }));
 ?>
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TURKY HUB - ব্যাজেস অ্যাডমিন স্টুডিও ও লাইভ ভিএফএক্স কাস্টমাইজার</title>
+    <title>TURKY HUB - Badges Admin Studio & Live VFX Customizer</title>
     <link rel="icon" type="image/png" href="badges/FF_UI_Badge_KOL01.png">
     
     <!-- Tailwind CSS -->
@@ -271,13 +271,13 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Hind+Siliguri:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="cdn/prime-badge.css">
     <script src="cdn/ff-badges.js"></script>
 
     <style>
         body {
-            font-family: 'Hind Siliguri', 'Inter', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: #080915;
             color: #f1f5f9;
         }
@@ -323,7 +323,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <i class="fas fa-shield-halved text-white text-2xl"></i>
                 </div>
                 <h1 class="text-2xl font-black font-orbitron tracking-wider text-white">TURKY HUB</h1>
-                <p class="text-xs text-amber-400 font-mono tracking-widest uppercase">অ্যাডমিন স্টুডিও ও সিডিএন পোর্টাল</p>
+                <p class="text-xs text-amber-400 font-mono tracking-widest uppercase">Admin Studio & CDN Portal</p>
             </div>
 
             <?php if (!empty($login_error)): ?>
@@ -337,31 +337,31 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <input type="hidden" name="login_action" value="1">
                 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">ইউজারনেম (Username)</label>
+                    <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Username</label>
                     <div class="relative">
                         <i class="fas fa-user absolute left-3.5 top-3 text-gray-500 text-xs"></i>
-                        <input type="text" name="username" required placeholder="ইউজারনেম লিখুন..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                        <input type="text" name="username" required placeholder="Enter username..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
                     </div>
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">পাসওয়ার্ড (Password)</label>
+                    <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Password</label>
                     <div class="relative">
                         <i class="fas fa-lock absolute left-3.5 top-3 text-gray-500 text-xs"></i>
-                        <input type="password" name="password" required placeholder="পাসওয়ার্ড লিখুন..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                        <input type="password" name="password" required placeholder="Enter password..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
                     </div>
                 </div>
 
                 <button type="submit" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-bold text-xs py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition cursor-pointer">
                     <i class="fas fa-arrow-right-to-bracket"></i>
-                    <span>অ্যাডমিন স্টুডিওতে প্রবেশ করুন</span>
+                    <span>Sign In to Admin Studio</span>
                 </button>
             </form>
 
             <div class="mt-6 text-center">
                 <a href="index.php" class="text-xs text-gray-500 hover:text-gray-300 transition flex items-center justify-center gap-1.5">
                     <i class="fas fa-arrow-left text-[10px]"></i>
-                    <span>ফ্রি ফায়ার আইটেমস এক্সপ্লোরারে ফিরে যান</span>
+                    <span>Back to FF Items Explorer</span>
                 </a>
             </div>
         </div>
@@ -382,21 +382,21 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <div class="flex items-center gap-2">
                         <span class="font-extrabold font-orbitron text-white text-base tracking-wider">TURKY HUB</span>
                         <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-black font-extrabold font-mono uppercase tracking-wider">
-                            ভিএফএক্স স্টুডিও
+                            VFX STUDIO
                         </span>
                     </div>
-                    <p class="text-[11px] text-gray-400 font-mono">১২...৮০ আইডি ও লাইভ সিডিএন অ্যাসেট জেনারেটর</p>
+                    <p class="text-[11px] text-gray-400 font-mono">12...80 ID & Live CDN Asset Generator</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-3">
                 <a href="index.php" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold flex items-center gap-2 transition">
                     <i class="fas fa-eye text-cyan-400"></i>
-                    <span>লাইভ এক্সপ্লোরার দেখুন</span>
+                    <span>Open Live Explorer</span>
                 </a>
                 <a href="admin.php?action=logout" class="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition">
                     <i class="fas fa-power-off text-xs"></i>
-                    <span>লগআউট</span>
+                    <span>Logout</span>
                 </a>
             </div>
 
@@ -411,21 +411,21 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                     <div class="space-y-1.5 max-w-2xl">
                         <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold uppercase tracking-wider">
-                            <i class="fas fa-check-circle mr-1"></i> ব্যাজ সংরক্ষিত ও সিডিএন-এ সক্রিয় হয়েছে!
+                            <i class="fas fa-check-circle mr-1"></i> Asset Saved & Deployed to CDN!
                         </span>
                         <h2 class="text-xl font-black text-white font-orbitron flex items-center gap-2">
                             <?= htmlspecialchars($success_item['name']) ?>
                             <span class="text-sm font-mono text-emerald-400">#<?= $success_item['id'] ?></span>
                         </h2>
                         <p class="text-xs text-gray-300">
-                            ব্যাজটি সফলভাবে সেভ হয়েছে, লোকাল ফাইল ও ব্যাকআপ আপডেট হয়েছে, এবং স্বয়ংক্রিয়ভাবে গিটহাব ও jsDelivr CDN-এ লিংক জেনারেট হয়ে গেছে!
+                            Badge has been updated, synchronized across local files and D: drive backup, and deployed to jsDelivr CDN!
                         </p>
                     </div>
 
                     <div class="flex items-center gap-2">
                         <a href="index.php?item=<?= $success_item['id'] ?>" target="_blank" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-rose-500/20 transition">
                             <i class="fas fa-external-link-alt text-xs"></i>
-                            <span>এক্সপ্লোরার মডালে দেখুন</span>
+                            <span>View in Explorer Modal</span>
                         </a>
                     </div>
                 </div>
@@ -434,8 +434,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mt-5 pt-4 border-t border-white/5">
                     <div class="bg-[#090b18] p-3 rounded-xl border border-white/5 space-y-1.5">
                         <div class="flex items-center justify-between text-[11px] font-bold">
-                            <span class="text-cyan-400 font-mono">jsDelivr গ্লোবাল সিডিএন লিংক:</span>
-                            <button type="button" onclick="copyText('<?= $success_item['direct_url'] ?>', 'সিডিএন লিংক কপি হয়েছে!')" class="text-cyan-400 hover:text-cyan-300 text-[10px]">
+                            <span class="text-cyan-400 font-mono">jsDelivr Global CDN URL:</span>
+                            <button type="button" onclick="copyText('<?= $success_item['direct_url'] ?>', 'CDN URL Copied!')" class="text-cyan-400 hover:text-cyan-300 text-[10px]">
                                 <i class="fas fa-copy"></i>
                             </button>
                         </div>
@@ -444,8 +444,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                     <div class="bg-[#090b18] p-3 rounded-xl border border-white/5 space-y-1.5">
                         <div class="flex items-center justify-between text-[11px] font-bold">
-                            <span class="text-emerald-400 font-mono">আইটেম আইডি (১২...৮০):</span>
-                            <button type="button" onclick="copyText('<?= $success_item['id'] ?>', 'আইডি কপি হয়েছে!')" class="text-emerald-400 hover:text-emerald-300 text-[10px]">
+                            <span class="text-emerald-400 font-mono">Item ID (12...80):</span>
+                            <button type="button" onclick="copyText('<?= $success_item['id'] ?>', 'Badge ID Copied!')" class="text-emerald-400 hover:text-emerald-300 text-[10px]">
                                 <i class="fas fa-copy"></i>
                             </button>
                         </div>
@@ -454,8 +454,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                     <div class="bg-[#090b18] p-3 rounded-xl border border-white/5 space-y-1.5">
                         <div class="flex items-center justify-between text-[11px] font-bold">
-                            <span class="text-purple-400 font-mono">ওয়েব ট্যাগ &lt;ff-badge&gt;:</span>
-                            <button type="button" onclick="copyText('<ff-badge id=\'<?= $success_item['id'] ?>\' size=\'<?= $success_item['default_size'] ?>\'></ff-badge>', 'ওয়েব ট্যাগ কপি হয়েছে!')" class="text-purple-400 hover:text-purple-300 text-[10px]">
+                            <span class="text-purple-400 font-mono">Web Tag &lt;ff-badge&gt;:</span>
+                            <button type="button" onclick="copyText('<ff-badge id=\'<?= $success_item['id'] ?>\' size=\'<?= $success_item['default_size'] ?>\'></ff-badge>', 'Web Tag Copied!')" class="text-purple-400 hover:text-purple-300 text-[10px]">
                                 <i class="fas fa-copy"></i>
                             </button>
                         </div>
@@ -464,8 +464,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                     <div class="bg-[#090b18] p-3 rounded-xl border border-white/5 space-y-1.5">
                         <div class="flex items-center justify-between text-[11px] font-bold">
-                            <span class="text-amber-400 font-mono">পিএইচপি ফাংশন কোড:</span>
-                            <button type="button" onclick="copyText(<?= htmlspecialchars(json_encode($success_item['fn_call'])) ?>, 'পিএইচপি কোড কপি হয়েছে!')" class="text-amber-400 hover:text-amber-300 text-[10px]">
+                            <span class="text-amber-400 font-mono">PHP Function Call:</span>
+                            <button type="button" onclick="copyText(<?= htmlspecialchars(json_encode($success_item['fn_call'])) ?>, 'PHP Call Copied!')" class="text-amber-400 hover:text-amber-300 text-[10px]">
                                 <i class="fas fa-copy"></i>
                             </button>
                         </div>
@@ -475,24 +475,24 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             </section>
         <?php endif; ?>
 
-        <!-- SECTION 1: QUICK BADGE SELECTOR & SEARCH/PASTE ID BAR -->
+        <!-- SECTION 1: SEARCH / PASTE BADGE ID BAR (Clean, no quick select pills) -->
         <section class="glass-panel p-5 border-amber-500/20">
             <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                 
                 <!-- Search or Paste ID to Load Badge -->
                 <div class="flex-1 w-full lg:max-w-xl">
                     <label class="text-xs font-bold text-gray-200 uppercase tracking-wider flex items-center gap-2 mb-1.5">
-                        <i class="fas fa-paste text-amber-400"></i>
-                        <span>ব্যাজ আইডি পেস্ট করুন অথবা নাম লিখুন (আইডি পেস্ট করলেই লোড হবে):</span>
+                        <i class="fas fa-barcode text-amber-400"></i>
+                        <span>Paste 12...80 Badge ID or Search Name to Load:</span>
                     </label>
                     <div class="flex items-center gap-2">
                         <div class="relative flex-1">
-                            <i class="fas fa-barcode absolute left-3.5 top-3 text-emerald-400 text-xs"></i>
-                            <input type="text" id="quickBadgeSearchInput" placeholder="১২...৮০ আইডি (যেমন: 120000010880) পেস্ট করুন..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs font-mono text-emerald-400 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                            <i class="fas fa-search absolute left-3.5 top-3 text-emerald-400 text-xs"></i>
+                            <input type="text" id="quickBadgeSearchInput" placeholder="Paste 12...80 ID (e.g. 120000010880) or type badge name..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs font-mono text-emerald-400 placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
                         </div>
-                        <button type="button" onclick="handleQuickSearchLoad()" class="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-xs flex items-center gap-1.5 transition shadow-lg shadow-amber-400/20 whitespace-nowrap cursor-pointer">
+                        <button type="button" onclick="handleQuickSearchLoad()" class="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-xs flex items-center gap-1.5 transition shadow-lg shadow-amber-400/20 whitespace-nowrap cursor-pointer">
                             <i class="fas fa-bolt text-xs"></i>
-                            <span>ব্যাজ লোড করুন</span>
+                            <span>Load Badge</span>
                         </button>
                     </div>
                 </div>
@@ -501,28 +501,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <div class="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
                     <div id="editorModeBadge" class="px-3.5 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs font-mono flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-                        <span id="editorModeText">মোড: প্রস্তুত</span>
+                        <span id="editorModeText">Mode: Ready</span>
                     </div>
 
                     <button type="button" onclick="resetToNewBadge()" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 border border-white/10 transition cursor-pointer">
                         <i class="fas fa-plus text-amber-400"></i>
-                        <span>➕ নতুন ব্যাজ তৈরি করুন</span>
+                        <span>➕ Create New Badge</span>
                     </button>
                 </div>
 
-            </div>
-
-            <!-- Quick Clickable Badge Pills (Prime 1-8, KOL, Official V, etc.) -->
-            <div class="mt-4 pt-3 border-t border-[#1f2544] flex items-center gap-2 overflow-x-auto custom-scroll pb-1">
-                <span class="text-[11px] text-gray-400 whitespace-nowrap uppercase tracking-wider mr-1">দ্রুত বাছাই:</span>
-                
-                <?php foreach ($current_badges as $cb): ?>
-                    <button type="button" onclick="loadBadgeToEditor('<?= $cb['id'] ?>')" class="px-2.5 py-1 rounded-lg bg-[#080a18] hover:bg-amber-400/10 border border-[#23294c] hover:border-amber-400/40 text-gray-300 hover:text-amber-300 text-[11px] font-medium flex items-center gap-1.5 transition whitespace-nowrap cursor-pointer">
-                        <img src="badges/<?= htmlspecialchars($cb['file'] ?? 'vbadge.png') ?>" class="w-4 h-4 object-contain" alt="">
-                        <span><?= htmlspecialchars($cb['name']) ?></span>
-                        <span class="text-[9px] font-mono text-emerald-400">#<?= substr($cb['id'], -4) ?></span>
-                    </button>
-                <?php endforeach; ?>
             </div>
         </section>
 
@@ -536,15 +523,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <div class="space-y-1">
                         <h2 class="text-base font-black font-orbitron text-white flex items-center gap-2">
                             <i class="fas fa-sliders text-amber-400"></i>
-                            <span id="formPanelTitle">ব্যাজ কাস্টমাইজ ও সিডিএন জেনারেটর</span>
+                            <span id="formPanelTitle">Badge Studio & VFX Customizer</span>
                         </h2>
                         <p class="text-xs text-gray-400" id="formPanelSub">
-                            নাম, ১২...৮০ আইডি, তারার সংখ্যা (০ থেকে ৫০), এবং ৫০টি রেডিমেড ইফেক্ট যেকোনো ব্যাজে পরিবর্তন করতে পারেন।
+                            Edit badge name, 12...80 ID, scattered gunpowder stars (0 to 50), and 50 numbered presets.
                         </p>
                     </div>
 
-                    <button type="button" onclick="randomizeId()" class="px-3 py-1.5 bg-amber-400/10 hover:bg-amber-400/20 text-yellow-300 border border-yellow-400/30 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition cursor-pointer" title="নতুন ১২...৮০ আইডি তৈরি করুন">
-                        <i class="fas fa-dice text-xs"></i> <span>নতুন ১২...৮০ আইডি</span>
+                    <button type="button" onclick="randomizeId()" class="px-3 py-1.5 bg-amber-400/10 hover:bg-amber-400/20 text-yellow-300 border border-yellow-400/30 rounded-xl text-xs font-mono font-bold flex items-center gap-1.5 transition cursor-pointer" title="Generate New 12...80 ID">
+                        <i class="fas fa-dice text-xs"></i> <span>Randomize ID</span>
                     </button>
                 </div>
 
@@ -558,21 +545,21 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <!-- 1. Badge Name (Editable) -->
                         <div class="space-y-1.5 sm:col-span-2">
                             <label class="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center justify-between">
-                                <span>ব্যাজের নাম (Badge Name) <span class="text-rose-500">*</span></span>
-                                <span class="text-[10px] text-gray-400 font-normal">যেকোনো সময় পরিবর্তনযোগ্য</span>
+                                <span>Badge Name <span class="text-rose-500">*</span></span>
+                                <span class="text-[10px] text-gray-400 font-normal">Editable anytime</span>
                             </label>
-                            <input type="text" name="badge_name" id="badgeNameInput" required placeholder="যেমন: Free Fire Prime Level 8 বা OFFICIAL V BAGE" value="Free Fire Prime Level 8" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                            <input type="text" name="badge_name" id="badgeNameInput" required placeholder="e.g. Free Fire Prime Level 8 or OFFICIAL V BAGE" value="Free Fire Prime Level 8" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
                         </div>
 
                         <!-- 2. Badge ID (Editable 12...80) -->
                         <div class="space-y-1.5 sm:col-span-2">
                             <div class="flex items-center justify-between">
-                                <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">আইটেম আইডি (অবশ্যই ১২ দিয়ে শুরু ও ৮০ দিয়ে শেষ) <span class="text-emerald-400">*</span></label>
-                                <span class="text-[10px] text-emerald-400 font-mono font-bold">১২ ডিজিট সিকিউর ফরম্যাট</span>
+                                <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Badge ID (Must start with 12 and end with 80) <span class="text-emerald-400">*</span></label>
+                                <span class="text-[10px] text-emerald-400 font-mono font-bold">12 Digits Strict Format</span>
                             </div>
                             <div class="relative flex items-center">
                                 <input type="text" name="badge_id" id="badgeIdInput" value="<?= $suggested_id ?>" pattern="^12[0-9]{8}80$" required oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs font-mono font-bold text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-400 transition">
-                                <button type="button" onclick="randomizeId()" class="absolute right-2 px-2.5 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[11px] rounded-lg font-mono transition cursor-pointer" title="নতুন আইডি জেনারেট করুন">
+                                <button type="button" onclick="randomizeId()" class="absolute right-2 px-2.5 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[11px] rounded-lg font-mono transition cursor-pointer" title="Randomize ID">
                                     <i class="fas fa-rotate"></i>
                                 </button>
                             </div>
@@ -580,55 +567,55 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                         <!-- 3. Category -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">ক্যাটাগরি / বিভাগ</label>
+                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Category</label>
                             <select name="badge_category" id="badgeCatSelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                                <option value="Prime System" selected>প্রাইম সিস্টেম (Free Fire Prime)</option>
-                                <option value="Official Partner (KOL)">অফিসিয়াল পার্টনার (KOL ভি-ব্যাজ)</option>
-                                <option value="Crystal VIP Partner">ক্রিস্টাল ভিআইপি পার্টনার</option>
-                                <option value="Competitive & Esports">কম্পিটিটিভ ও ইস্পোর্টস</option>
-                                <option value="Administration & Authority">অ্যাডমিন ও অফিশিয়াল অথরিটি</option>
-                                <option value="Creators & Architects">ক্রিয়েটরস ও আর্কিটেক্টস</option>
-                                <option value="Special Editions">স্পেশাল এডিশন</option>
-                                <option value="Exchange Tokens">এক্সচেঞ্জ টোকেন</option>
-                                <option value="Custom VIP">কাস্টম ভিআইপি</option>
+                                <option value="Prime System" selected>Prime System (Free Fire Prime)</option>
+                                <option value="Official Partner (KOL)">Official Partner (KOL V-Badge)</option>
+                                <option value="Crystal VIP Partner">Crystal VIP Partner</option>
+                                <option value="Competitive & Esports">Competitive & Esports</option>
+                                <option value="Administration & Authority">Administration & Authority</option>
+                                <option value="Creators & Architects">Creators & Architects</option>
+                                <option value="Special Editions">Special Editions</option>
+                                <option value="Exchange Tokens">Exchange Tokens</option>
+                                <option value="Custom VIP">Custom VIP</option>
                             </select>
                         </div>
 
                         <!-- 4. Rarity -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">রেয়ারিটি / মান</label>
+                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Rarity</label>
                             <select name="badge_rarity" id="badgeRaritySelect" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                                <option value="MYTHIC" selected>মিথিক (MYTHIC - গোল্ড / সেলেস্টিয়াল)</option>
-                                <option value="LEGENDARY">লেজেন্ডারি (LEGENDARY - ক্রিমসন ফ্লেম)</option>
-                                <option value="EPIC">এপিক (EPIC - সায়ান / পার্পল)</option>
-                                <option value="PURPLE">পার্পল (PURPLE - ভায়োলেট ডায়মন্ড)</option>
-                                <option value="RARE">রেয়ার (RARE - ব্লু / সিলভার)</option>
+                                <option value="MYTHIC" selected>MYTHIC (Gold / Celestial)</option>
+                                <option value="LEGENDARY">LEGENDARY (Crimson Flame)</option>
+                                <option value="EPIC">EPIC (Cyan / Purple)</option>
+                                <option value="PURPLE">PURPLE (Violet Diamond)</option>
+                                <option value="RARE">RARE (Blue / Silver)</option>
                             </select>
                         </div>
 
                         <!-- 5. Default Size -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">ডিফল্ট সাইজ (পিক্সেল)</label>
+                            <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Default Size (px)</label>
                             <input type="number" name="badge_size" id="badgeSizeInput" value="54" min="20" max="250" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition">
                         </div>
 
                         <!-- 6. Aura Glow Color -->
                         <div class="space-y-1.5">
                             <div class="flex items-center justify-between">
-                                <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">আলোর আভা (অরা গ্লো)</label>
+                                <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Aura Glow Color</label>
                                 <label class="flex items-center gap-1 cursor-pointer text-[10px] text-amber-300">
                                     <input type="checkbox" name="glow_enabled" id="glowEnabledCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
-                                    <span>সক্রিয়</span>
+                                    <span>Active</span>
                                 </label>
                             </div>
                             <select name="badge_glow" id="glowSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                                <option value="rgba(255, 215, 0, 0.85)" selected>স্বর্ণালি আভা (Gold Aura)</option>
-                                <option value="rgba(168, 85, 247, 0.85)">মহাজাগতিক বেগুনি (Purple Cosmic)</option>
-                                <option value="rgba(6, 182, 212, 0.85)">হিমশীতল সায়ান (Cyan Crystal)</option>
-                                <option value="rgba(239, 68, 68, 0.85)">রক্তিম লাল (Crimson Authority)</option>
-                                <option value="rgba(249, 115, 22, 0.85)">জ্বলন্ত অ্যাম্বার (Amber Flame)</option>
-                                <option value="rgba(16, 185, 129, 0.85)">পান্না সবুজ (Emerald Lightning)</option>
-                                <option value="rgba(255, 255, 255, 0.85)">শুভ্র ডায়মন্ড (Diamond White)</option>
+                                <option value="rgba(255, 215, 0, 0.85)" selected>Gold Aura (rgba(255, 215, 0, 0.85))</option>
+                                <option value="rgba(168, 85, 247, 0.85)">Cosmic Purple (rgba(168, 85, 247, 0.85))</option>
+                                <option value="rgba(6, 182, 212, 0.85)">Cyan Crystal (rgba(6, 182, 212, 0.85))</option>
+                                <option value="rgba(239, 68, 68, 0.85)">Crimson Authority (rgba(239, 68, 68, 0.85))</option>
+                                <option value="rgba(249, 115, 22, 0.85)">Amber Flame (rgba(249, 115, 22, 0.85))</option>
+                                <option value="rgba(16, 185, 129, 0.85)">Emerald Lightning (rgba(16, 185, 129, 0.85))</option>
+                                <option value="rgba(255, 255, 255, 0.85)">Diamond White (rgba(255, 255, 255, 0.85))</option>
                             </select>
                         </div>
 
@@ -639,17 +626,17 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <div class="flex items-center justify-between">
                             <label class="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-1.5">
                                 <i class="fas fa-wand-magic-sparkles text-amber-400"></i>
-                                <span>৫০টি রেডিমেড ইফেক্ট প্রিসেট (নম্বরযুক্ত)</span>
+                                <span>50+ Numbered Effect Presets</span>
                             </label>
                             <button type="button" onclick="removeAllEffects()" class="px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-[11px] font-bold flex items-center gap-1 transition cursor-pointer">
-                                <i class="fas fa-ban"></i> <span>❌ সব ইফেক্ট বন্ধ করুন (ক্লিন স্ট্যাটিক ব্যাজ)</span>
+                                <i class="fas fa-ban"></i> <span>❌ Remove All Effects (Clean Static Badge)</span>
                             </button>
                         </div>
-                        <p class="text-[11px] text-gray-400">যেকোনো একটি প্রিসেট সিলেক্ট করলেই স্বয়ংক্রিয়ভাবে সোয়াইপ ডিরেকশন, গতি, বারুদ স্টার ও রত্ন তারা সেট হয়ে যাবে:</p>
+                        <p class="text-[11px] text-gray-400">Select any preset to automatically apply sheen angle, speed, scattered stars count, and center gem glint:</p>
                         
                         <div class="relative">
-                            <select id="presetSelect" onchange="handlePresetChange(this.value)" class="w-full bg-[#080a18] border border-cyan-500/40 rounded-xl px-4 py-2.5 text-xs text-cyan-200 focus:outline-none focus:border-amber-400 transition cursor-pointer">
-                                <option value="">-- ৫০টি ইফেক্ট প্রিসেট থেকে বেছে নিন --</option>
+                            <select id="presetSelect" onchange="handlePresetChange(this.value)" class="w-full bg-[#080a18] border border-cyan-500/40 rounded-xl px-4 py-2.5 text-xs text-cyan-200 focus:outline-none focus:border-amber-400 transition cursor-pointer font-mono">
+                                <option value="">-- Choose one of 50 Numbered Effect Presets --</option>
                                 <?php foreach ($presets_list as $ps): ?>
                                     <option value="<?= $ps['id'] ?>"><?= htmlspecialchars($ps['name']) ?></option>
                                 <?php endforeach; ?>
@@ -666,15 +653,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                     <i class="fas fa-fire"></i>
                                 </span>
                                 <div>
-                                    <h4 class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">মাস্টার ভিএফএক্স ইঞ্জিন ও পার্টিকেল স্টুডিও</h4>
-                                    <p class="text-[10px] text-gray-400">মেটালিক সোয়াইপ, চারপাশে ছড়িয়ে-ছিটিয়ে থাকা বারুদ স্টার এবং রত্ন তারা ফ্ল্যাশ</p>
+                                    <h4 class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">VFX Animation Engine & Particles</h4>
+                                    <p class="text-[10px] text-gray-400">Metallic sheen sweep, 360-degree radially scattered stars, and core gem glint</p>
                                 </div>
                             </div>
                             
                             <!-- Master Animation Switch (Allows ON/OFF for ANY badge, including V-Badge) -->
                             <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300 bg-amber-400/10 border border-amber-400/40 px-3.5 py-1.5 rounded-xl hover:bg-amber-400/20 transition">
                                 <input type="checkbox" name="sweep_enabled" id="masterAnimCheck" value="1" checked onchange="toggleMasterAnimation(this.checked)" class="rounded bg-gray-800 border-gray-700 text-amber-500 focus:ring-0">
-                                <span>অ্যানিমেশন ইঞ্জিন চালু রাখুন</span>
+                                <span>Enable Animation Engine</span>
                             </label>
                         </div>
 
@@ -684,37 +671,37 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <div class="space-y-1.5">
                                 <div class="flex items-center justify-between">
                                     <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                                        <i class="fas fa-bolt text-yellow-400"></i> <span>মেটালিক ঝলকানির দিক (৮টি দিক)</span>
+                                        <i class="fas fa-bolt text-yellow-400"></i> <span>Sheen Direction (8 Directions)</span>
                                     </label>
                                     <label class="flex items-center gap-1 cursor-pointer text-[10px] text-gray-400">
                                         <input type="checkbox" id="sheenActiveCheck" checked onchange="toggleSheenSweep(this.checked)" class="rounded bg-gray-800 border-gray-700 text-amber-500 text-[10px]">
-                                        <span>সোয়াইপ চালু</span>
+                                        <span>Sheen Active</span>
                                     </label>
                                 </div>
-                                <select name="sweep_direction" id="sweepDirSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
-                                    <option value="diag_bl_tr" selected>↗ কোণাকুণি (নিচ-বাম থেকে উপর-ডান) - প্রাইম ৮ অথেনটিক</option>
-                                    <option value="diag_br_tl">↖ কোণাকুণি উল্টো (নিচ-ডান থেকে উপর-বাম)</option>
-                                    <option value="diag_tl_br">↘ কোণাকুণি নিচে (উপর-বাম থেকে নিচ-ডান)</option>
-                                    <option value="diag_tr_bl">↙ কোণাকুণি নিচে-বামে (উপর-ডান থেকে নিচ-বাম)</option>
-                                    <option value="up">↑ সোজা উপরে (নিচ থেকে উপরে)</option>
-                                    <option value="down">↓ সোজা নিচে (উপর থেকে নিচে)</option>
-                                    <option value="right">→ সোজা ডানে (বাম থেকে ডানে)</option>
-                                    <option value="left">← সোজা বামে (ডান থেকে বামে)</option>
+                                <select name="sweep_direction" id="sweepDirSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
+                                    <option value="diag_bl_tr" selected>↗ Diagonal (Bottom-Left to Top-Right - Prime 8 Authentic)</option>
+                                    <option value="diag_br_tl">↖ Diagonal Reverse (Bottom-Right to Top-Left)</option>
+                                    <option value="diag_tl_br">↘ Diagonal Down (Top-Left to Bottom-Right)</option>
+                                    <option value="diag_tr_bl">↙ Diagonal Down-Left (Top-Right to Bottom-Left)</option>
+                                    <option value="up">↑ Vertical Up (Bottom to Top)</option>
+                                    <option value="down">↓ Vertical Down (Top to Bottom)</option>
+                                    <option value="right">→ Horizontal Right (Left to Right)</option>
+                                    <option value="left">← Horizontal Left (Right to Left)</option>
                                 </select>
                             </div>
 
                             <!-- 2. Sweep Speed -->
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                                    <i class="fas fa-gauge-high text-cyan-400"></i> <span>ঝলকানির গতি (স্পিড)</span>
+                                    <i class="fas fa-gauge-high text-cyan-400"></i> <span>Sheen Speed</span>
                                 </label>
-                                <select name="sweep_speed" id="sweepSpeedSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
-                                    <option value="1.5s">১.৫ সেকেন্ড (অতি দ্রুত ঝলকানি)</option>
-                                    <option value="1.8s">১.৮ সেকেন্ড (দ্রুত ঝলকানি)</option>
-                                    <option value="2.2s" selected>২.২ সেকেন্ড (প্রাইম ৮ অথেনটিক গতি)</option>
-                                    <option value="2.6s">২.৬ সেকেন্ড (স্ট্যান্ডার্ড গতি)</option>
-                                    <option value="3.2s">৩.২ সেকেন্ড (ধীর ও মসৃণ)</option>
-                                    <option value="4.0s">৪.০ সেকেন্ড (শান্ত ও ধীর)</option>
+                                <select name="sweep_speed" id="sweepSpeedSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
+                                    <option value="1.5s">1.5s (Fast Flash)</option>
+                                    <option value="1.8s">1.8s (Active)</option>
+                                    <option value="2.2s" selected>2.2s (Prime 8 Authentic)</option>
+                                    <option value="2.6s">2.6s (Standard)</option>
+                                    <option value="3.2s">3.2s (Smooth)</option>
+                                    <option value="4.0s">4.0s (Calm Slow)</option>
                                 </select>
                             </div>
 
@@ -722,9 +709,9 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <div class="space-y-1.5 sm:col-span-2 bg-[#080a18] p-3 rounded-xl border border-white/5">
                                 <div class="flex items-center justify-between">
                                     <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                                        <i class="fas fa-star text-amber-400"></i> <span>বারুদ তারার সংখ্যা (০ থেকে ৫০টি তারা - চারদিকে ছড়িয়ে থাকবে)</span>
+                                        <i class="fas fa-star text-amber-400"></i> <span>Scattered Gunpowder Stars (0 to 50 - 360° All Around)</span>
                                     </label>
-                                    <span id="starCountDisplay" class="text-xs font-mono font-bold text-amber-300">১৬টি তারা</span>
+                                    <span id="starCountDisplay" class="text-xs font-mono font-bold text-amber-300">16 Stars</span>
                                 </div>
                                 
                                 <div class="flex items-center gap-3">
@@ -734,32 +721,32 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                                 <!-- Quick Star Pills -->
                                 <div class="flex flex-wrap items-center gap-1.5 pt-1">
-                                    <span class="text-[10px] text-gray-400 mr-1">প্রিসেট:</span>
-                                    <button type="button" onclick="setStarDensity(0)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">০ (কোনো তারা নেই)</button>
-                                    <button type="button" onclick="setStarDensity(4)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">৪</button>
-                                    <button type="button" onclick="setStarDensity(8)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">৮</button>
-                                    <button type="button" onclick="setStarDensity(12)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">১২</button>
-                                    <button type="button" onclick="setStarDensity(16)" class="px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-mono font-bold cursor-pointer">১৬ (প্রাইম ৮)</button>
-                                    <button type="button" onclick="setStarDensity(24)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">২৪</button>
-                                    <button type="button" onclick="setStarDensity(36)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">৩৬</button>
-                                    <button type="button" onclick="setStarDensity(50)" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/40 text-[10px] font-mono font-bold cursor-pointer">৫০ (সর্বোচ্চ আতশবাজি)</button>
+                                    <span class="text-[10px] text-gray-400 mr-1">Presets:</span>
+                                    <button type="button" onclick="setStarDensity(0)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">0 (None)</button>
+                                    <button type="button" onclick="setStarDensity(4)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">4</button>
+                                    <button type="button" onclick="setStarDensity(8)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">8</button>
+                                    <button type="button" onclick="setStarDensity(12)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">12</button>
+                                    <button type="button" onclick="setStarDensity(16)" class="px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-mono font-bold cursor-pointer">16 (Prime 8)</button>
+                                    <button type="button" onclick="setStarDensity(24)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">24</button>
+                                    <button type="button" onclick="setStarDensity(36)" class="px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300 cursor-pointer">36</button>
+                                    <button type="button" onclick="setStarDensity(50)" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/40 text-[10px] font-mono font-bold cursor-pointer">50 (Max Fireworks)</button>
                                 </div>
                             </div>
 
                             <!-- 4. Star Color Theme -->
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                                    <i class="fas fa-palette text-pink-400"></i> <span>তারার কালার থিম</span>
+                                    <i class="fas fa-palette text-pink-400"></i> <span>Star Color Theme</span>
                                 </label>
-                                <select name="star_theme" id="starThemeSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
-                                    <option value="gold" selected>স্বর্ণালি বারুদ (Gold Spark)</option>
-                                    <option value="cyan">হিমশীতল সায়ান (Cyan Ice)</option>
-                                    <option value="white">শুভ্র ডায়মন্ড (Diamond White)</option>
-                                    <option value="ruby">রক্তিম রুবি লাল (Ruby Red)</option>
-                                    <option value="purple">মহাজাগতিক বেগুনি (Cosmic Purple)</option>
-                                    <option value="emerald">পান্না সবুজ (Emerald Green)</option>
-                                    <option value="amber">জ্বলন্ত শিখা (Amber Flame)</option>
-                                    <option value="rainbow">সাতরঙা রংধনু (Rainbow Prism)</option>
+                                <select name="star_theme" id="starThemeSelect" onchange="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer font-mono">
+                                    <option value="gold" selected>Gold Spark</option>
+                                    <option value="cyan">Cyan Ice</option>
+                                    <option value="white">Diamond White</option>
+                                    <option value="ruby">Ruby Red</option>
+                                    <option value="purple">Cosmic Purple</option>
+                                    <option value="emerald">Emerald Green</option>
+                                    <option value="amber">Amber Flame</option>
+                                    <option value="rainbow">Rainbow Prism</option>
                                 </select>
                             </div>
 
@@ -767,11 +754,11 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <div class="space-y-2 flex flex-col justify-end">
                                 <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-200 bg-[#080a18] p-2 rounded-xl border border-white/5 hover:border-amber-400/30 transition">
                                     <input type="checkbox" name="has_gem_glint" id="hasGemGlintCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
-                                    <span class="font-semibold">মাঝের রত্ন তারা ফ্ল্যাশ (সেন্টার গ্লিন্ট)</span>
+                                    <span class="font-semibold">Center Gem Star Glint</span>
                                 </label>
                                 <label class="flex items-center gap-2 cursor-pointer text-xs text-gray-200 bg-[#080a18] p-2 rounded-xl border border-white/5 hover:border-amber-400/30 transition">
                                     <input type="checkbox" name="pulse_enabled" id="pulseEnabledCheck" value="1" checked onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
-                                    <span>ভাসমান উইং মোশন (Floating Motion)</span>
+                                    <span>Floating Wing Pulse Motion</span>
                                 </label>
                             </div>
 
@@ -779,8 +766,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                         <!-- 100% Transparency Guarantee Note -->
                         <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
-                            <span class="text-emerald-400 flex items-center gap-1.5">
-                                <i class="fas fa-circle-check text-xs"></i> ১০০% স্বচ্ছ ব্যাকগ্রাউন্ড (কোনো হলুদ ক্লাউড বা ঘোলা ব্যাকগ্রাউন্ড নেই)
+                            <span class="text-emerald-400 flex items-center gap-1.5 font-mono">
+                                <i class="fas fa-circle-check text-xs"></i> 100% Transparent Background (Zero Halos / No Yellow Background Clouds)
                             </span>
                         </div>
 
@@ -789,15 +776,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <!-- Icon Asset Selection (Dropdown OR Custom PNG Upload) -->
                     <div class="space-y-3">
                         <label class="text-xs font-bold text-gray-300 uppercase tracking-wider block">
-                            ব্যাজ আইকন ফাইল (আগের ফাইল সিলেক্ট করুন অথবা নতুন PNG আপলোড করুন) <span class="text-rose-500">*</span>
+                            Badge Icon Asset (Select Existing or Upload Transparent PNG) <span class="text-rose-500">*</span>
                         </label>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <!-- Dropdown -->
                             <div class="space-y-1">
-                                <span class="text-[11px] text-gray-400 font-semibold">১. ফ্রি ফায়ারের বিদ্যমান আইকন থেকে বেছে নিন:</span>
+                                <span class="text-[11px] text-gray-400 font-semibold">1. Choose from Existing Free Fire Assets:</span>
                                 <select name="existing_file" id="existingFileSelect" onchange="selectExistingAsset(this.value)" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition cursor-pointer font-mono">
-                                    <option value="">-- বিদ্যমান অ্যাসেট বেছে নিন --</option>
+                                    <option value="">-- Choose existing asset --</option>
                                     <?php foreach ($existing_badge_files as $ef): ?>
                                         <option value="<?= $ef ?>" <?= ($ef === 'ff_ui_prime_icon_08.png') ? 'selected' : '' ?>><?= $ef ?></option>
                                     <?php endforeach; ?>
@@ -806,12 +793,12 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                             <!-- Upload New File -->
                             <div class="space-y-1">
-                                <span class="text-[11px] text-gray-400 font-semibold">২. অথবা নতুন স্বচ্ছ PNG আপলোড করুন:</span>
+                                <span class="text-[11px] text-gray-400 font-semibold">2. Or Upload New Transparent PNG:</span>
                                 <div class="border border-dashed border-[#23294c] hover:border-amber-400/50 rounded-xl p-2.5 text-center cursor-pointer bg-[#080a18] transition relative" onclick="document.getElementById('fileInput').click()">
                                     <input type="file" name="badge_file" id="fileInput" accept="image/png,image/svg+xml,image/webp" class="hidden" onchange="previewSelectedFile(event)">
                                     <div class="flex items-center justify-center gap-2 text-xs text-gray-300">
                                         <i class="fas fa-file-arrow-up text-amber-400"></i>
-                                        <span id="uploadPromptText">PNG ফাইল সিলেক্ট করতে ক্লিক করুন</span>
+                                        <span id="uploadPromptText">Click to select PNG</span>
                                     </div>
                                 </div>
                             </div>
@@ -820,19 +807,19 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                     <!-- Description -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">ব্যাজের বিবরণ (Description)</label>
-                        <textarea name="badge_description" id="badgeDescInput" rows="2" placeholder="ফ্রি ফায়ার প্রাইম সিস্টেম অথবা অফিশিয়াল পার্টনার ভেরিফায়েড অ্যাসেট..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition"></textarea>
+                        <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Description</label>
+                        <textarea name="badge_description" id="badgeDescInput" rows="2" placeholder="Official Free Fire verified insignia deployed via Turky Hub Monster CDN..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition"></textarea>
                     </div>
 
                     <!-- Submit & Save Button -->
                     <div class="flex items-center justify-between gap-3 pt-3 border-t border-[#1f2544]">
                         <button type="button" onclick="resetToNewBadge()" class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs font-semibold transition cursor-pointer">
-                            <i class="fas fa-arrow-rotate-left mr-1"></i> ফর্ম রিসেট
+                            <i class="fas fa-arrow-rotate-left mr-1"></i> Reset Form
                         </button>
 
                         <button type="submit" class="bg-gradient-to-r from-amber-500 via-rose-500 to-pink-600 hover:from-amber-600 hover:to-pink-700 text-white font-extrabold text-xs py-3 px-8 rounded-xl flex items-center gap-2 shadow-lg shadow-rose-500/20 transition cursor-pointer">
                             <i class="fas fa-cloud-arrow-up text-sm"></i>
-                            <span id="saveBtnText">সেভ করুন ও গ্লোবাল সিডিএন আপডেট করুন</span>
+                            <span id="saveBtnText">Save & Generate Global CDN Asset</span>
                         </button>
                     </div>
 
@@ -849,31 +836,31 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <div class="flex items-center justify-between border-b border-[#1f2544] pb-3">
                         <div class="flex items-center gap-2">
                             <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">লাইভ ভিএফএক্স স্টেজ প্রিভিউ</h3>
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">Live VFX Stage Preview</h3>
                         </div>
                         <span id="previewAnimStatusBadge" class="text-[10px] font-mono text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/30">
-                            অ্যানিমেশন সক্রিয়
+                            Animation Active
                         </span>
                     </div>
 
                     <!-- Stage Controls (Size & Background Mode) -->
-                    <div class="flex items-center justify-between gap-2 text-[11px]">
+                    <div class="flex items-center justify-between gap-2 text-[11px] font-mono">
                         
                         <!-- Size Switcher -->
                         <div class="flex items-center gap-1 bg-[#080a18] p-1 rounded-xl border border-white/5">
-                            <span class="text-[10px] text-gray-400 px-1">সাইজ:</span>
-                            <button type="button" onclick="setStageSize(48)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn cursor-pointer" data-size="48">৪৮px</button>
-                            <button type="button" onclick="setStageSize(72)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn cursor-pointer" data-size="72">৭২px</button>
-                            <button type="button" onclick="setStageSize(110)" class="px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40 stage-size-btn cursor-pointer" data-size="110">১১০px</button>
-                            <button type="button" onclick="setStageSize(150)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn cursor-pointer" data-size="150">১৫০px</button>
+                            <span class="text-[10px] text-gray-400 px-1">SIZE:</span>
+                            <button type="button" onclick="setStageSize(48)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn cursor-pointer" data-size="48">48px</button>
+                            <button type="button" onclick="setStageSize(72)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn cursor-pointer" data-size="72">72px</button>
+                            <button type="button" onclick="setStageSize(110)" class="px-2 py-0.5 rounded-lg bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40 stage-size-btn cursor-pointer" data-size="110">110px</button>
+                            <button type="button" onclick="setStageSize(150)" class="px-2 py-0.5 rounded-lg hover:bg-white/10 text-gray-400 stage-size-btn cursor-pointer" data-size="150">150px</button>
                         </div>
 
                         <!-- Background Switcher (Prove Transparency) -->
                         <div class="flex items-center gap-1 bg-[#080a18] p-1 rounded-xl border border-white/5">
-                            <span class="text-[10px] text-gray-400 px-1">ব্যাকগ্রাউন্ড:</span>
-                            <button type="button" onclick="setStageBg('dark')" title="ডার্ক স্পেস" class="w-5 h-5 rounded bg-[#080a18] border border-white/20 cursor-pointer"></button>
-                            <button type="button" onclick="setStageBg('black')" title="পিচ ব্ল্যাক" class="w-5 h-5 rounded bg-black border border-white/20 cursor-pointer"></button>
-                            <button type="button" onclick="setStageBg('checker')" title="স্বচ্ছতা টেস্ট (চেকারবোর্ড)" class="w-5 h-5 rounded checker-bg border border-white/20 cursor-pointer"></button>
+                            <span class="text-[10px] text-gray-400 px-1">BG:</span>
+                            <button type="button" onclick="setStageBg('dark')" title="Dark Space" class="w-5 h-5 rounded bg-[#080a18] border border-white/20 cursor-pointer"></button>
+                            <button type="button" onclick="setStageBg('black')" title="Pitch Black" class="w-5 h-5 rounded bg-black border border-white/20 cursor-pointer"></button>
+                            <button type="button" onclick="setStageBg('checker')" title="Checkerboard (Transparent Test)" class="w-5 h-5 rounded checker-bg border border-white/20 cursor-pointer"></button>
                         </div>
 
                     </div>
@@ -885,25 +872,25 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         </div>
                     </div>
 
-                    <!-- Live Metadata Badges (Bengali) -->
+                    <!-- Live Metadata Badges -->
                     <div class="grid grid-cols-2 gap-2 text-xs">
                         <div class="bg-[#080a18] p-2.5 rounded-xl border border-white/5 space-y-0.5">
-                            <span class="text-[10px] text-gray-400 uppercase">বারুদ স্টার:</span>
-                            <div class="font-bold text-amber-300 font-mono text-xs" id="metaStars">১৬টি স্টার (গোল্ড)</div>
+                            <span class="text-[10px] text-gray-400 uppercase font-mono">Active Stars:</span>
+                            <div class="font-bold text-amber-300 font-mono text-xs" id="metaStars">16 Stars (gold)</div>
                         </div>
 
                         <div class="bg-[#080a18] p-2.5 rounded-xl border border-white/5 space-y-0.5">
-                            <span class="text-[10px] text-gray-400 uppercase">মেটালিক সোয়াইপ:</span>
-                            <div class="font-bold text-yellow-300 font-mono text-xs" id="metaSheen">↗ কোণাকুণি (২.২s)</div>
+                            <span class="text-[10px] text-gray-400 uppercase font-mono">Metallic Sheen:</span>
+                            <div class="font-bold text-yellow-300 font-mono text-xs" id="metaSheen">↗ Diag (2.2s)</div>
                         </div>
 
                         <div class="bg-[#080a18] p-2.5 rounded-xl border border-white/5 space-y-0.5">
-                            <span class="text-[10px] text-gray-400 uppercase">রত্ন তারা ফ্ল্যাশ:</span>
-                            <div class="font-bold text-cyan-300 font-mono text-xs" id="metaGlint">✨ সক্রিয় গ্লিন্ট</div>
+                            <span class="text-[10px] text-gray-400 uppercase font-mono">Gem Glint:</span>
+                            <div class="font-bold text-cyan-300 font-mono text-xs" id="metaGlint">✨ Active Glint</div>
                         </div>
 
                         <div class="bg-[#080a18] p-2.5 rounded-xl border border-white/5 space-y-0.5">
-                            <span class="text-[10px] text-gray-400 uppercase">ব্যাজ আইডি:</span>
+                            <span class="text-[10px] text-gray-400 uppercase font-mono">Badge ID:</span>
                             <div class="font-bold text-emerald-400 font-mono text-xs" id="metaBadgeId">#<?= $suggested_id ?></div>
                         </div>
                     </div>
@@ -911,24 +898,24 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <!-- Quick Copy Studio Actions -->
                     <div class="space-y-2 pt-2 border-t border-white/5">
                         <div class="flex items-center justify-between text-xs font-bold text-gray-300">
-                            <span>কোড ও লিংক এক ক্লিকে কপি:</span>
+                            <span>Quick Copy Code & Links:</span>
                         </div>
 
                         <div class="grid grid-cols-2 gap-2">
                             <button type="button" onclick="copyActiveBadgeId()" class="p-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
-                                <i class="fas fa-barcode"></i> <span>আইডি কপি</span>
+                                <i class="fas fa-barcode"></i> <span>Copy ID</span>
                             </button>
 
                             <button type="button" onclick="copyActiveCDN()" class="p-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
-                                <i class="fas fa-link"></i> <span>সিডিএন লিংক কপি</span>
+                                <i class="fas fa-link"></i> <span>Copy CDN</span>
                             </button>
 
                             <button type="button" onclick="copyActiveWebTag()" class="p-2 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
-                                <i class="fas fa-code"></i> <span>ওয়েব ট্যাগ কপি</span>
+                                <i class="fas fa-code"></i> <span>Copy Tag</span>
                             </button>
 
                             <button type="button" onclick="copyActivePHP()" class="p-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[11px] font-mono flex items-center justify-center gap-1.5 transition cursor-pointer">
-                                <i class="fab fa-php text-xs"></i> <span>পিএইচপি কল কপি</span>
+                                <i class="fab fa-php text-xs"></i> <span>Copy PHP</span>
                             </button>
                         </div>
                     </div>
@@ -945,14 +932,14 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <div class="space-y-0.5">
                     <h3 class="text-base font-black font-orbitron text-white flex items-center gap-2">
                         <i class="fas fa-layer-group text-cyan-400"></i>
-                        <span>বিদ্যমান সকল ব্যাজ ও প্রাইম অ্যাসেট (মোট <?= count($current_badges) ?>টি)</span>
+                        <span>Existing Badges & Prime Assets (<?= count($current_badges) ?> Total)</span>
                     </h3>
-                    <p class="text-xs text-gray-400">যে ব্যাজটিতে ক্লিক করবেন বা 'এডিট' চাপবেন, সেটি সরাসরি উপরের স্টুডিওতে লোড হয়ে যাবে।</p>
+                    <p class="text-xs text-gray-400">Click any row or 'Edit' button to instantly load that badge into the studio above.</p>
                 </div>
 
                 <!-- Filter & Search -->
                 <div class="flex items-center gap-3">
-                    <input type="text" id="adminSearchInput" oninput="filterAdminBadges(this.value)" placeholder="নাম অথবা ১২...৮০ আইডি দিয়ে খুঁজুন..." class="bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition w-64">
+                    <input type="text" id="adminSearchInput" oninput="filterAdminBadges(this.value)" placeholder="Search name or 12...80 ID..." class="bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition w-64">
                 </div>
             </div>
 
@@ -960,31 +947,55 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             <div class="overflow-x-auto custom-scroll">
                 <table class="w-full text-left text-xs border-collapse">
                     <thead>
-                        <tr class="border-b border-[#1f2544] text-[11px] uppercase text-gray-400">
-                            <th class="py-3 px-3">লাইভ ব্যাজ</th>
-                            <th class="py-3 px-3">আইটেম আইডি (১২...৮০)</th>
-                            <th class="py-3 px-3">ব্যাজের নাম</th>
-                            <th class="py-3 px-3">ক্যাটাগরি</th>
-                            <th class="py-3 px-3">রেয়ারিটি</th>
-                            <th class="py-3 px-3">ভিএফএক্স সেটিংস</th>
-                            <th class="py-3 px-3">সিডিএন ও কোড</th>
-                            <th class="py-3 px-3 text-right">অ্যাকশন</th>
+                        <tr class="border-b border-[#1f2544] text-[11px] uppercase text-gray-400 font-mono">
+                            <th class="py-3 px-3">Live Badge</th>
+                            <th class="py-3 px-3">Item ID (12...80)</th>
+                            <th class="py-3 px-3">Badge Name</th>
+                            <th class="py-3 px-3">Category</th>
+                            <th class="py-3 px-3">Rarity</th>
+                            <th class="py-3 px-3">VFX Parameters</th>
+                            <th class="py-3 px-3">CDN & Snippets</th>
+                            <th class="py-3 px-3 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="adminBadgesTbody" class="divide-y divide-[#151934]">
                         <?php foreach ($current_badges as $b): ?>
                             <?php
-                                $img_cdn = $CDN_BASE . ($b['file'] ?? '');
+                                $bFile = htmlspecialchars($b['file'] ?? 'ff_ui_prime_icon_08.png');
+                                $img_cdn = $CDN_BASE . $bFile;
+                                $bStars = intval($b['star_density'] ?? 0);
+                                $bSweep = !empty($b['sweep_enabled']);
+                                $bDir = htmlspecialchars($b['sweep_direction'] ?? 'diag_bl_tr');
+                                $bSpd = htmlspecialchars($b['sweep_speed'] ?? '2.2s');
+                                $bTheme = htmlspecialchars($b['star_theme'] ?? 'gold');
+                                $bGlint = !empty($b['has_gem_glint']);
+                                $bGlow = htmlspecialchars($b['glow_color'] ?? 'rgba(255, 215, 0, 0.85)');
                                 $isPrime = ($b['type'] === 'prime_image' || !empty($b['prime_level']));
-                                $bStars = $b['star_density'] ?? 0;
-                                $bSweep = ($b['sweep_enabled'] !== false && $b['sweep_enabled'] !== 'false');
+                                $isFullyStatic = (!$bSweep && $bStars === 0 && !$bGlint);
                             ?>
                             <tr class="hover:bg-white/[0.04] transition admin-badge-row cursor-pointer" onclick="handleRowClick(event, '<?= $b['id'] ?>')" data-name="<?= strtolower($b['name']) ?>" data-id="<?= strtolower($b['id']) ?>">
                                 
-                                <!-- Preview (100% Transparent Live Badge) -->
+                                <!-- Preview Cell (Direct Rock-Solid Live Rendering with Local Fallback) -->
                                 <td class="py-3 px-3">
                                     <div class="w-12 h-12 rounded-xl bg-[#080a18] border border-white/5 flex items-center justify-center p-1 relative overflow-hidden">
-                                        <ff-badge id="<?= $b['id'] ?>" size="36"></ff-badge>
+                                        <div class="ff-prime-badge-wrap <?= $isFullyStatic ? 'ff-anim-off' : '' ?>" style="width:38px;height:38px;position:relative;background:transparent !important;filter:drop-shadow(0 0 6px <?= $bGlow ?>);">
+                                            <?php if ($bStars > 0 && $bSweep): ?>
+                                                <div class="ff-prime-stars-layer star-theme-<?= $bTheme ?>">
+                                                    <?php for ($si = 1; $si <= min($bStars, 16); $si++): ?>
+                                                        <svg class="ff-pinpoint-star star-pos-<?= $si ?>" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="#FFFCE0"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>
+                                                    <?php endfor; ?>
+                                                </div>
+                                            <?php endif; ?>
+                                            <img src="badges/<?= $bFile ?>" onerror="this.src='<?= $img_cdn ?>'" class="ff-badge-img <?= $isFullyStatic ? 'style="animation:none !important;"' : '' ?>" alt="<?= htmlspecialchars($b['name']) ?>">
+                                            <?php if ($bSweep): ?>
+                                                <span class="ff-badge-shine sweep-dir-<?= $bDir ?>" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('badges/<?= $bFile ?>');mask-image:url('badges/<?= $bFile ?>');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                                                    <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:<?= $bSpd ?>;mix-blend-mode:screen;display:block;"></span>
+                                                </span>
+                                            <?php endif; ?>
+                                            <?php if ($bGlint): ?>
+                                                <div class="ff-gem-glint"></div>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 </td>
 
@@ -992,7 +1003,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 <td class="py-3 px-3">
                                     <div class="flex items-center gap-1.5">
                                         <span class="font-mono font-bold text-emerald-400">#<?= $b['id'] ?></span>
-                                        <button type="button" onclick="event.stopPropagation(); copyText('<?= $b['id'] ?>', 'আইডি কপি হয়েছে!')" class="text-gray-500 hover:text-white cursor-pointer" title="আইডি কপি">
+                                        <button type="button" onclick="event.stopPropagation(); copyText('<?= $b['id'] ?>', 'ID Copied!')" class="text-gray-500 hover:text-white cursor-pointer" title="Copy ID">
                                             <i class="fas fa-copy text-[10px]"></i>
                                         </button>
                                     </div>
@@ -1022,10 +1033,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 <td class="py-3 px-3 font-mono text-[11px]">
                                     <div class="flex flex-col gap-0.5">
                                         <?php if ($bSweep || $bStars > 0): ?>
-                                            <span class="text-amber-300">⭐ <?= $bStars ?> স্টার (<?= htmlspecialchars($b['star_theme'] ?? 'gold') ?>)</span>
-                                            <span class="text-gray-400">⚡ <?= htmlspecialchars($b['sweep_direction'] ?? 'diag_bl_tr') ?></span>
+                                            <span class="text-amber-300">⭐ <?= $bStars ?> Stars (<?= $bTheme ?>)</span>
+                                            <span class="text-gray-400">⚡ <?= $bDir ?> (<?= $bSpd ?>)</span>
                                         <?php else: ?>
-                                            <span class="text-gray-500">স্ট্যাটিক ব্যাজ (অ্যানিমেশন বন্ধ)</span>
+                                            <span class="text-gray-500">Static Badge (No VFX)</span>
                                         <?php endif; ?>
                                     </div>
                                 </td>
@@ -1033,15 +1044,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 <!-- CDN Link & Snippets -->
                                 <td class="py-3 px-3">
                                     <div class="flex items-center gap-1.5" onclick="event.stopPropagation()">
-                                        <button type="button" onclick="copyText('<?= $img_cdn ?>', 'সিডিএন লিংক কপি হয়েছে!')" class="px-2 py-1 rounded bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-mono flex items-center gap-1 transition cursor-pointer">
+                                        <button type="button" onclick="copyText('<?= $img_cdn ?>', 'CDN URL Copied!')" class="px-2 py-1 rounded bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-[10px] font-mono flex items-center gap-1 transition cursor-pointer">
                                             <i class="fas fa-link text-[9px]"></i> <span>CDN</span>
                                         </button>
 
-                                        <button type="button" onclick="copyText(<?= htmlspecialchars(json_encode($b['fn_call'] ?? '')) ?>, 'পিএইচপি কল কপি হয়েছে!')" class="px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-mono flex items-center gap-1 transition cursor-pointer">
+                                        <button type="button" onclick="copyText(<?= htmlspecialchars(json_encode($b['fn_call'] ?? '')) ?>, 'PHP Call Copied!')" class="px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-mono flex items-center gap-1 transition cursor-pointer">
                                             <i class="fab fa-php text-[10px]"></i> <span>PHP</span>
                                         </button>
 
-                                        <button type="button" onclick="copyText('<ff-badge id=\'<?= $b['id'] ?>\' size=\'<?= $b['default_size'] ?>\'></ff-badge>', 'ওয়েব ট্যাগ কপি হয়েছে!')" class="px-2 py-1 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-mono flex items-center gap-1 transition cursor-pointer">
+                                        <button type="button" onclick="copyText('<ff-badge id=\'<?= $b['id'] ?>\' size=\'<?= $b['default_size'] ?>\'></ff-badge>', 'Web Tag Copied!')" class="px-2 py-1 rounded bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-mono flex items-center gap-1 transition cursor-pointer">
                                             <i class="fas fa-code text-[9px]"></i> <span>Tag</span>
                                         </button>
                                     </div>
@@ -1050,15 +1061,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 <!-- Actions -->
                                 <td class="py-3 px-3 text-right">
                                     <div class="flex items-center justify-end gap-2" onclick="event.stopPropagation()">
-                                        <button type="button" onclick="loadBadgeToEditor('<?= $b['id'] ?>')" class="px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-[11px] flex items-center gap-1 transition shadow cursor-pointer" title="স্টুডিওতে কাস্টমাইজ করুন">
-                                            <i class="fas fa-pen-to-square"></i> <span>এডিট</span>
+                                        <button type="button" onclick="loadBadgeToEditor('<?= $b['id'] ?>')" class="px-2.5 py-1 rounded-lg bg-amber-400 hover:bg-amber-500 text-black font-extrabold text-[11px] flex items-center gap-1 transition shadow cursor-pointer" title="Edit and customize in studio">
+                                            <i class="fas fa-pen-to-square"></i> <span>Edit</span>
                                         </button>
                                         
-                                        <a href="index.php?item=<?= $b['id'] ?>" target="_blank" class="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition" title="এক্সপ্লোরারে দেখুন">
+                                        <a href="index.php?item=<?= $b['id'] ?>" target="_blank" class="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white flex items-center justify-center transition" title="View in Explorer">
                                             <i class="fas fa-eye text-xs"></i>
                                         </a>
 
-                                        <a href="admin.php?delete=<?= $b['id'] ?>" onclick="return confirm('আপনি কি নিশ্চিত যে ব্যাজ #<?= $b['id'] ?> মুছে ফেলতে চান?');" class="w-7 h-7 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 flex items-center justify-center transition" title="মুছে ফেলুন">
+                                        <a href="admin.php?delete=<?= $b['id'] ?>" onclick="return confirm('Are you sure you want to delete badge #<?= $b['id'] ?>?');" class="w-7 h-7 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 flex items-center justify-center transition" title="Delete Badge">
                                             <i class="fas fa-trash-can text-xs"></i>
                                         </a>
                                     </div>
@@ -1077,7 +1088,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     <!-- Toast Notification -->
     <div id="adminToast" class="fixed bottom-6 right-6 bg-amber-400 text-black font-extrabold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 transform translate-y-24 opacity-0 transition-all duration-300 z-50 pointer-events-none">
         <i class="fas fa-check-circle text-lg"></i>
-        <span id="adminToastMsg">কপি হয়েছে!</span>
+        <span id="adminToastMsg">Copied!</span>
     </div>
 
     <!-- CLIENT DATA & SCRIPT ENGINE -->
@@ -1093,7 +1104,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         let stageDisplaySize = 110;
 
         // Copy text helper
-        function copyText(text, msg = 'কপি হয়েছে!') {
+        function copyText(text, msg = 'Copied!') {
             if (!navigator.clipboard) {
                 const ta = document.createElement('textarea');
                 ta.value = text;
@@ -1124,7 +1135,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             const newId = '12' + middle + '80';
             document.getElementById('badgeIdInput').value = newId;
             updateLivePreviewStudio();
-            showToast('নতুন ১২...৮০ আইডি তৈরি হয়েছে: #' + newId);
+            showToast('New 12...80 ID generated: #' + newId);
         }
 
         // Set Star fireworks count (0 to 50)
@@ -1132,7 +1143,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             val = Math.max(0, Math.min(50, parseInt(val) || 0));
             document.getElementById('starRangeSlider').value = val;
             document.getElementById('starDensityInput').value = val;
-            document.getElementById('starCountDisplay').textContent = val + 'টি তারা';
+            document.getElementById('starCountDisplay').textContent = val + ' Stars';
             updateLivePreviewStudio();
         }
 
@@ -1140,7 +1151,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         function selectExistingAsset(val) {
             if (!val) return;
             currentPreviewImg = 'badges/' + val;
-            document.getElementById('uploadPromptText').textContent = 'অ্যাসেট: ' + val;
+            document.getElementById('uploadPromptText').textContent = 'Asset: ' + val;
             updateLivePreviewStudio();
         }
 
@@ -1149,7 +1160,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             const file = event.target.files[0];
             if (!file) return;
 
-            document.getElementById('uploadPromptText').textContent = 'ফাইল: ' + file.name;
+            document.getElementById('uploadPromptText').textContent = 'File: ' + file.name;
             document.getElementById('existingFileSelect').value = '';
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1215,7 +1226,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         function handleQuickSearchLoad() {
             const query = (document.getElementById('quickBadgeSearchInput').value || '').trim();
             if (!query) {
-                showToast('দয়া করে একটি ব্যাজ আইডি পেস্ট করুন অথবা নাম লিখুন!');
+                showToast('Please paste a badge ID or enter a name!');
                 return;
             }
             searchAndLoadBadge(query);
@@ -1242,7 +1253,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             if (found) {
                 loadBadgeToEditor(found.id);
             } else {
-                showToast('এই নামে বা আইডিতে কোনো ব্যাজ পাওয়া যায়নি: ' + q);
+                showToast('No badge found matching: ' + q);
             }
         }
 
@@ -1260,11 +1271,11 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
             // Update Header & Mode
             document.getElementById('originalIdInput').value = b.id;
-            document.getElementById('formPanelTitle').textContent = 'সম্পাদনা: ' + b.name + ' (#' + b.id + ')';
-            document.getElementById('formPanelSub').textContent = 'এই ব্যাজের নাম, আইডি বা অ্যানিমেশন অন/অফ করে সেভ করলেই সিডিএন আপডেট হয়ে যাবে।';
-            document.getElementById('editorModeText').textContent = 'মোড: সম্পাদনা চলছে #' + b.id;
+            document.getElementById('formPanelTitle').textContent = 'Editing: ' + b.name + ' (#' + b.id + ')';
+            document.getElementById('formPanelSub').textContent = 'Modify name, 12...80 ID, or VFX parameters and save to update CDN immediately.';
+            document.getElementById('editorModeText').textContent = 'Editing: #' + b.id;
             document.getElementById('editorModeBadge').className = 'px-3.5 py-1.5 rounded-xl bg-amber-950/60 border border-amber-500/50 text-amber-300 text-xs font-mono flex items-center gap-2';
-            document.getElementById('saveBtnText').textContent = 'আপডেট ও ডিপ্লয় করুন #' + b.id;
+            document.getElementById('saveBtnText').textContent = 'Update & Redeploy #' + b.id;
 
             // Form Fields
             document.getElementById('badgeNameInput').value = b.name;
@@ -1278,7 +1289,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
             // Icon Asset
             currentPreviewImg = 'badges/' + (b.file || 'ff_ui_prime_icon_08.png');
-            document.getElementById('uploadPromptText').textContent = 'অ্যাসেট: ' + (b.file || 'ff_ui_prime_icon_08.png');
+            document.getElementById('uploadPromptText').textContent = 'Asset: ' + (b.file || 'ff_ui_prime_icon_08.png');
             
             const efSelect = document.getElementById('existingFileSelect');
             for (let i = 0; i < efSelect.options.length; i++) {
@@ -1310,7 +1321,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             document.getElementById('pulseEnabledCheck').checked = hasAnimation && (b.pulse_enabled !== false);
 
             updateLivePreviewStudio();
-            showToast('লোড হয়েছে: ' + b.name + ' (#' + b.id + ')');
+            showToast('Loaded: ' + b.name + ' (#' + b.id + ')');
 
             // Smooth scroll to top of editor
             window.scrollTo({ top: 120, behavior: 'smooth' });
@@ -1324,14 +1335,14 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             
             randomizeId();
 
-            document.getElementById('formPanelTitle').textContent = 'নতুন ব্যাজ বা প্রাইম আইকন আপলোড ও সিডিএন জেনারেটর';
-            document.getElementById('formPanelSub').textContent = 'স্বচ্ছ ব্যাকগ্রাউন্ডের (Transparent PNG) ব্যাজ আপলোড করলে স্বয়ংক্রিয়ভাবে ১২...৮০ আইডি তৈরি হবে।';
-            document.getElementById('editorModeText').textContent = 'মোড: নতুন ব্যাজ তৈরি';
+            document.getElementById('formPanelTitle').textContent = 'Badge Studio & VFX Customizer';
+            document.getElementById('formPanelSub').textContent = 'Upload transparent PNG badge or select existing asset to generate 12...80 ID and CDN link.';
+            document.getElementById('editorModeText').textContent = 'Mode: New Badge';
             document.getElementById('editorModeBadge').className = 'px-3.5 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs font-mono flex items-center gap-2';
-            document.getElementById('saveBtnText').textContent = 'সেভ করুন ও গ্লোবাল সিডিএন আপডেট করুন';
+            document.getElementById('saveBtnText').textContent = 'Save & Generate Global CDN Asset';
 
             currentPreviewImg = 'badges/ff_ui_prime_icon_08.png';
-            document.getElementById('uploadPromptText').textContent = 'PNG ফাইল সিলেক্ট করতে ক্লিক করুন';
+            document.getElementById('uploadPromptText').textContent = 'Click to select PNG';
             document.getElementById('existingFileSelect').value = 'ff_ui_prime_icon_08.png';
 
             document.getElementById('masterAnimCheck').checked = true;
@@ -1346,7 +1357,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             document.getElementById('glowEnabledCheck').checked = true;
 
             updateLivePreviewStudio();
-            showToast('নতুন ব্যাজ তৈরির জন্য ফর্ম রিসেট হয়েছে');
+            showToast('Editor reset for New Badge creation');
         }
 
         // Apply one of the 50 Numbered Effect Presets
@@ -1377,7 +1388,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             document.getElementById('pulseEnabledCheck').checked = true;
 
             updateLivePreviewStudio();
-            showToast('প্রিসেট সক্রিয় হয়েছে: ' + p.name);
+            showToast('Applied Preset: ' + p.name);
         }
 
         // Remove All Effects (Clean Static Badge - 100% Frozen & Transparent)
@@ -1390,7 +1401,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             document.getElementById('presetSelect').value = '';
             toggleMasterAnimation(false);
             updateLivePreviewStudio();
-            showToast('সকল অ্যানিমেশন বন্ধ: ব্যাজটি সম্পূর্ণ স্ট্যাটিক ও স্বচ্ছ!');
+            showToast('All effects removed: Clean static transparent badge!');
         }
 
         // MASTER LIVE PREVIEW STUDIO RENDERER (Radially Scattered Stars & Universal On/Off)
@@ -1467,7 +1478,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             stage.innerHTML = `
                 <div class="ff-prime-badge-wrap ff-prime-lvl-8${animOffClass}" style="width:${stageDisplaySize}px;height:${stageDisplaySize}px;position:relative;background:transparent !important;${filterDrop}">
                     ${starsHtml}
-                    <img src="${currentPreviewImg}" class="ff-badge-img" style="${imgStyle}" alt="লাইভ ব্যাজ প্রিভিউ" onerror="this.src='badges/ff_ui_prime_icon_08.png'">
+                    <img src="${currentPreviewImg}" class="ff-badge-img" style="${imgStyle}" alt="Live Preview" onerror="this.onerror=null;this.src='${CDN_BASE + (currentActiveBadge ? currentActiveBadge.file : 'ff_ui_prime_icon_08.png')}';">
                     ${shineHtml}
                     ${glintHtml}
                 </div>
@@ -1476,47 +1487,47 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             // Update Status Badge on top of stage
             const statusBadge = document.getElementById('previewAnimStatusBadge');
             if (isMasterAnim && (isSheenActive || starCount > 0 || hasGlint)) {
-                statusBadge.textContent = 'অ্যানিমেশন সক্রিয়';
+                statusBadge.textContent = 'Animation Active';
                 statusBadge.className = 'text-[10px] font-mono text-emerald-300 bg-emerald-400/10 px-2.5 py-0.5 rounded-full border border-emerald-400/30';
             } else {
-                statusBadge.textContent = 'স্ট্যাটিক (অ্যানিমেশন বন্ধ)';
+                statusBadge.textContent = 'Static (VFX Disabled)';
                 statusBadge.className = 'text-[10px] font-mono text-gray-400 bg-white/5 px-2.5 py-0.5 rounded-full border border-white/10';
             }
 
             // Update Live Metadata
-            document.getElementById('metaStars').textContent = starCount > 0 ? (starCount + 'টি তারা (' + starTheme + ')') : 'কোনো তারা নেই (০)';
+            document.getElementById('metaStars').textContent = starCount > 0 ? (starCount + ' Stars (' + starTheme + ')') : '0 Stars (None)';
             
-            let dirBn = 'কোণাকুণি (↖)';
-            if (sweepDir === 'diag_bl_tr') dirBn = '↗ কোণাকুণি';
-            else if (sweepDir === 'diag_br_tl') dirBn = '↖ উল্টো কোণাকুণি';
-            else if (sweepDir === 'diag_tl_br') dirBn = '↘ নিচে কোণাকুণি';
-            else if (sweepDir === 'diag_tr_bl') dirBn = '↙ নিচে-বামে';
-            else if (sweepDir === 'up') dirBn = '↑ সোজা উপরে';
-            else if (sweepDir === 'down') dirBn = '↓ সোজা নিচে';
-            else if (sweepDir === 'right') dirBn = '→ সোজা ডানে';
-            else if (sweepDir === 'left') dirBn = '← সোজা বামে';
+            let dirTxt = '↗ Diag';
+            if (sweepDir === 'diag_bl_tr') dirTxt = '↗ Diag (BL-TR)';
+            else if (sweepDir === 'diag_br_tl') dirTxt = '↖ Diag (BR-TL)';
+            else if (sweepDir === 'diag_tl_br') dirTxt = '↘ Diag (TL-BR)';
+            else if (sweepDir === 'diag_tr_bl') dirTxt = '↙ Diag (TR-BL)';
+            else if (sweepDir === 'up') dirTxt = '↑ Up';
+            else if (sweepDir === 'down') dirTxt = '↓ Down';
+            else if (sweepDir === 'right') dirTxt = '→ Right';
+            else if (sweepDir === 'left') dirTxt = '← Left';
 
-            document.getElementById('metaSheen').textContent = isSheenActive ? (dirBn + ' ' + sweepSpeed) : 'সোয়াইপ বন্ধ';
-            document.getElementById('metaGlint').textContent = hasGlint ? '✨ সক্রিয় গ্লিন্ট' : 'ফ্ল্যাশ বন্ধ';
+            document.getElementById('metaSheen').textContent = isSheenActive ? (dirTxt + ' (' + sweepSpeed + ')') : 'Disabled';
+            document.getElementById('metaGlint').textContent = hasGlint ? '✨ Active Glint' : 'Off';
             document.getElementById('metaBadgeId').textContent = '#' + badgeId;
         }
 
         // Quick Copy Actions for active badge
         function copyActiveBadgeId() {
             const id = document.getElementById('badgeIdInput').value || '120000000080';
-            copyText(id, 'আইটেম আইডি #' + id + ' কপি হয়েছে!');
+            copyText(id, 'Badge ID #' + id + ' Copied!');
         }
 
         function copyActiveCDN() {
             const fileName = document.getElementById('existingFileSelect').value || 'ff_ui_prime_icon_08.png';
             const url = CDN_BASE + fileName;
-            copyText(url, 'সিডিএন লিংক কপি হয়েছে!');
+            copyText(url, 'CDN URL Copied!');
         }
 
         function copyActiveWebTag() {
             const id = document.getElementById('badgeIdInput').value || '120000000080';
             const sz = document.getElementById('badgeSizeInput').value || '54';
-            copyText('<ff-badge id="' + id + '" size="' + sz + '"></ff-badge>', 'ওয়েব কম্পোনেন্ট ট্যাগ কপি হয়েছে!');
+            copyText('<ff-badge id="' + id + '" size="' + sz + '"></ff-badge>', 'Web Component Tag Copied!');
         }
 
         function copyActivePHP() {
@@ -1526,7 +1537,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             const call = isPrime ? 
                 ("generate_ff_prime_badge_html('" + fileName + "', 8, '" + sz + "px');") :
                 ("generate_ff_badge_html('" + fileName + "', '" + document.getElementById('badgeNameInput').value + "', '" + document.getElementById('glowSelect').value + "', 'top-right', '" + sz + "px');");
-            copyText(call, 'পিএইচপি ফাংশন কোড কপি হয়েছে!');
+            copyText(call, 'PHP Function Call Copied!');
         }
 
         // Search & Filter badges table

@@ -3,7 +3,7 @@
   "presets": [
     {
       "id": 1,
-      "name": "[01] প্রাইম ৮ সুপ্রিম গড (গোল্ড সোয়াইপ + ১৬ বারুদ স্টার + রত্ন ফ্ল্যাশ)",
+      "name": "[01] Prime 8 Supreme God (Gold Sheen + 16 Stars + Glint)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 0.85)",
@@ -17,7 +17,7 @@
     },
     {
       "id": 2,
-      "name": "[02] সেলেস্টিয়াল গ্র্যান্ডমাস্টার (১২ গোল্ড স্টার + রত্ন তারা ফ্ল্যাশ)",
+      "name": "[02] Celestial Mythic Grandmaster (12 Stars + Gem Flare)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 0.85)",
@@ -31,7 +31,7 @@
     },
     {
       "id": 3,
-      "name": "[03] ক্রিমসন হেলফায়ার ড্রাগন (রুবি লাল বারুদ + দ্রুত উল্টো সোয়াইপ)",
+      "name": "[03] Crimson Hellfire Dragon (Ruby Sparkles + Fast Reverse Sheen)",
       "category": "Competitive & Esports",
       "rarity": "LEGENDARY",
       "glow": "rgba(239, 68, 68, 0.85)",
@@ -45,7 +45,7 @@
     },
     {
       "id": 4,
-      "name": "[04] সাইবারপাঙ্ক নিয়ন হরাইজন (সায়ান লেজার + ২০ আইস স্টার)",
+      "name": "[04] Cyberpunk Neon Horizon (Cyan Beam + 20 Ice Stars)",
       "category": "Special Editions",
       "rarity": "EPIC",
       "glow": "rgba(6, 182, 212, 0.9)",
@@ -59,7 +59,7 @@
     },
     {
       "id": 5,
-      "name": "[05] গ্লাসিয়াল সাবজিরো ক্রিস্টাল (শুভ্র ডায়মন্ড দ্যুতি + ডায়াগনাল ডাউন)",
+      "name": "[05] Glacial Subzero Crystal (Pure Diamond Luster + Diagonal Down)",
       "category": "Crystal VIP Partner",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 255, 255, 0.9)",
@@ -73,7 +73,7 @@
     },
     {
       "id": 6,
-      "name": "[06] কসমিক নেবুলা ভয়েড (পার্পল গ্যালাক্সি + ২৪ মহাজাগতিক স্টার)",
+      "name": "[06] Cosmic Nebula Void (Ultra Violet Warp + 24 Purple Stars)",
       "category": "Official Partner (KOL)",
       "rarity": "MYTHIC",
       "glow": "rgba(168, 85, 247, 0.9)",
@@ -87,7 +87,7 @@
     },
     {
       "id": 7,
-      "name": "[07] ভেনম এসিড কোবরা (টক্সিক এমারেল্ড লাইটনিং + ১৬ সবুজ স্টার)",
+      "name": "[07] Venom Acid Cobra (Electric Toxic Emerald Radiance)",
       "category": "Competitive & Esports",
       "rarity": "EPIC",
       "glow": "rgba(16, 185, 129, 0.9)",
@@ -101,7 +101,7 @@
     },
     {
       "id": 8,
-      "name": "[08] অবসিডিয়ান শ্যাডো মনার্ক (ভায়োলেট গ্লো + ধীর ও মসৃণ সোয়াইপ)",
+      "name": "[08] Obsidian Shadow Monarch (Smoky Violet Glow + Slow Sweep)",
       "category": "Administration & Authority",
       "rarity": "LEGENDARY",
       "glow": "rgba(139, 92, 246, 0.8)",
@@ -115,7 +115,7 @@
     },
     {
       "id": 9,
-      "name": "[09] সোলার এক্লিপ্স করোনা (অ্যাম্বার শিখা + কোণাকুণি আলো)",
+      "name": "[09] Solar Eclipse Corona (Amber Solar Flare + Diagonal Sweep)",
       "category": "Special Editions",
       "rarity": "LEGENDARY",
       "glow": "rgba(249, 115, 22, 0.9)",
@@ -129,7 +129,7 @@
     },
     {
       "id": 10,
-      "name": "[10] রেইনবো প্রিজম্যাটিক ক্রোমা (সাতরঙা রংধনু বারুদ + ৩০ স্টার)",
+      "name": "[10] Rainbow Prismatic Chroma (Iridescent Spectrum Shimmer + 30 Stars)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(236, 72, 153, 0.9)",
@@ -143,7 +143,7 @@
     },
     {
       "id": 11,
-      "name": "[11] এস্পোর্টস চ্যাম্পিয়নস কাপ (স্বর্ণালি মুকুট + ১০ গোল্ডেন স্টার)",
+      "name": "[11] Esports Champions Cup (Golden Crown + 10 Gold Stars)",
       "category": "Competitive & Esports",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 0.95)",
@@ -157,7 +157,7 @@
     },
     {
       "id": 12,
-      "name": "[12] অফিসিয়াল কেওএল ভি-ব্যাজ ভিআইপি (অথেনটিক গোল্ড সোয়াইপ + ৬ স্টার)",
+      "name": "[12] Official KOL V-Badge VIP (Authentic Gold Sheen + 6 Stars)",
       "category": "Official Partner (KOL)",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 0.85)",
@@ -171,7 +171,7 @@
     },
     {
       "id": 13,
-      "name": "[13] ক্রিয়েটর্স স্পার্ক অরোরা (হিমশীতল নীল + ১২ সায়ান স্টার)",
+      "name": "[13] Creators Spark Aurora (Frost Blue + 12 Cyan Stars)",
       "category": "Creators & Architects",
       "rarity": "EPIC",
       "glow": "rgba(6, 182, 212, 0.85)",
@@ -185,7 +185,7 @@
     },
     {
       "id": 14,
-      "name": "[14] ডায়মন্ড পার্টনার রয়্যাল (শুভ্র হীরা ঝলক + ১৬ ডায়মন্ড স্টার)",
+      "name": "[14] Diamond Partner Royal (White Diamond Luster + 16 Stars)",
       "category": "Crystal VIP Partner",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 255, 255, 0.95)",
@@ -199,7 +199,7 @@
     },
     {
       "id": 15,
-      "name": "[15] রুবি গডফায়ার ফিনিক্স (জ্বলন্ত শিখা + ১৮ রুবি স্টার)",
+      "name": "[15] Ruby Godfire Phoenix (Blazing Wings + 18 Ruby Stars)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(239, 68, 68, 0.95)",
@@ -213,7 +213,7 @@
     },
     {
       "id": 16,
-      "name": "[16] জিএম অথরিটি কমান্ড (পবিত্র স্বর্ণালি আভা + ধীর সোয়াইপ)",
+      "name": "[16] GM Authority Command (Sacred Gold Aura + Smooth Sweep)",
       "category": "Administration & Authority",
       "rarity": "LEGENDARY",
       "glow": "rgba(255, 215, 0, 0.8)",
@@ -227,7 +227,7 @@
     },
     {
       "id": 17,
-      "name": "[17] আল্ট্রা ভায়োলেট পালসার (ডিপ পার্পল + ১৬ কসমিক স্টার)",
+      "name": "[17] Ultra Violet Pulsar (Deep Purple Radiant Flare + 16 Stars)",
       "category": "Special Editions",
       "rarity": "EPIC",
       "glow": "rgba(168, 85, 247, 0.85)",
@@ -241,7 +241,7 @@
     },
     {
       "id": 18,
-      "name": "[18] সুপারসনিক কাইনেটিক থ্রাস্ট (অতি দ্রুত অনুভূমিক সোয়াইপ)",
+      "name": "[18] Supersonic Kinetic Thrust (High-Speed Horizontal Sheen)",
       "category": "Competitive & Esports",
       "rarity": "LEGENDARY",
       "glow": "rgba(249, 115, 22, 0.9)",
@@ -255,7 +255,7 @@
     },
     {
       "id": 19,
-      "name": "[19] অ্যাবসল্যুট জিরো পোলার (ক্রিস্টাল আইস গ্লো + ২০ হোয়াইট স্টার)",
+      "name": "[19] Absolute Zero Polar (Crystal Ice Aura + 20 White Stars)",
       "category": "Crystal VIP Partner",
       "rarity": "MYTHIC",
       "glow": "rgba(6, 182, 212, 0.95)",
@@ -269,7 +269,7 @@
     },
     {
       "id": 20,
-      "name": "[20] গোল্ডেন সানরাইজ ভেটেরান (উষ্ণ গোল্ডেন আভা + ৮ স্টার)",
+      "name": "[20] Golden Sunrise Veteran (Warm Gold Contour + 8 Stars)",
       "category": "Prime System",
       "rarity": "LEGENDARY",
       "glow": "rgba(255, 215, 0, 0.85)",
@@ -283,7 +283,7 @@
     },
     {
       "id": 21,
-      "name": "[21] প্লাজমা স্টর্ম আর্চ (উচ্চ শক্তির সায়ান লাইটনিং)",
+      "name": "[21] Plasma Storm Arc (High Energy Cyan Lightning Sheen)",
       "category": "Competitive & Esports",
       "rarity": "EPIC",
       "glow": "rgba(6, 182, 212, 0.85)",
@@ -297,7 +297,7 @@
     },
     {
       "id": 22,
-      "name": "[22] অ্যাম্বার লাভা মেল্ট (জ্বলন্ত অঙ্গার + ১৪ অ্যাম্বার স্টার)",
+      "name": "[22] Amber Lava Melt (Molten Embers + 14 Amber Stars)",
       "category": "Prime System",
       "rarity": "LEGENDARY",
       "glow": "rgba(249, 115, 22, 0.9)",
@@ -311,7 +311,7 @@
     },
     {
       "id": 23,
-      "name": "[23] রয়্যাল ইম্পেরিয়াল ক্রেস্ট (অভিজাত পার্পল গোল্ড কম্বো)",
+      "name": "[23] Royal Imperial Crest (Regal Purple & Gold Shimmer)",
       "category": "Official Partner (KOL)",
       "rarity": "MYTHIC",
       "glow": "rgba(168, 85, 247, 0.9)",
@@ -325,7 +325,7 @@
     },
     {
       "id": 24,
-      "name": "[24] কোয়ান্টাম ডট ম্যাট্রিক্স (সাতরঙা রংধনু স্পার্ক + ২৫ স্টার)",
+      "name": "[24] Quantum Dot Matrix (Multicolor Spectral Sparks + 25 Stars)",
       "category": "Special Editions",
       "rarity": "MYTHIC",
       "glow": "rgba(236, 72, 153, 0.95)",
@@ -339,7 +339,7 @@
     },
     {
       "id": 25,
-      "name": "[25] ক্রাফটল্যান্ড আর্কিটেক্ট ব্লুপ্রিন্ট (ইঞ্জিনিয়ার সায়ান গ্লো)",
+      "name": "[25] Craftland Architect Blueprint (Cyan Schematic Sheen)",
       "category": "Creators & Architects",
       "rarity": "EPIC",
       "glow": "rgba(6, 182, 212, 0.85)",
@@ -353,7 +353,7 @@
     },
     {
       "id": 26,
-      "name": "[26] গামা রেডিয়েশন ফ্র্যাকচার (তীব্র এমারেল্ড সবুজ আভা)",
+      "name": "[26] Gamma Radiation Fracture (Vibrant Emerald Green Flash)",
       "category": "Special Editions",
       "rarity": "LEGENDARY",
       "glow": "rgba(16, 185, 129, 0.95)",
@@ -367,7 +367,7 @@
     },
     {
       "id": 27,
-      "name": "[27] ব্ল্যাক হোল ইভেন্ট হরাইজন (ডার্ক ভায়োলেট পালস + রত্ন তারা)",
+      "name": "[27] Black Hole Event Horizon (Dark Violet Pulse + Gem Glint)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(139, 92, 246, 0.9)",
@@ -381,7 +381,7 @@
     },
     {
       "id": 28,
-      "name": "[28] ইনফিনিট স্ট্রেঞ্জনেস (সাতরঙা রংধনু + ৩৫টি বারুদ স্টার)",
+      "name": "[28] Infinite Strangeness (Rainbow Chroma + 35 Fireworks Stars)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 1.0)",
@@ -395,7 +395,7 @@
     },
     {
       "id": 29,
-      "name": "[29] ব্লাড মুন ইক্লিপ্স (গাঢ় রুবি রক্তিম আভা + ১৬ স্টার)",
+      "name": "[29] Blood Moon Eclipse (Deep Ruby Red Flare + 16 Stars)",
       "category": "Competitive & Esports",
       "rarity": "MYTHIC",
       "glow": "rgba(239, 68, 68, 0.95)",
@@ -409,7 +409,7 @@
     },
     {
       "id": 30,
-      "name": "[30] এঞ্জেলিক হ্যালো অফ লাইট (শুভ্র আলোর বলয় + ২২ ডায়মন্ড স্টার)",
+      "name": "[30] Angelic Halo of Light (Pure White Radiance + 22 Stars)",
       "category": "Crystal VIP Partner",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 255, 255, 0.95)",
@@ -423,7 +423,7 @@
     },
     {
       "id": 31,
-      "name": "[31] ভেনাস গোল্ডেন ক্লাউড (উষ্ণ সোনালী দ্যুতি + ১০ স্টার)",
+      "name": "[31] Venus Golden Cloud (Warm Sunburst + 10 Gold Stars)",
       "category": "Official Partner (KOL)",
       "rarity": "LEGENDARY",
       "glow": "rgba(255, 215, 0, 0.85)",
@@ -437,7 +437,7 @@
     },
     {
       "id": 32,
-      "name": "[32] আর্কটিক ব্লিজার্ড সাইক্লোন (ঘূর্ণিঝড় সায়ান উইন্ড + ১৬ স্টার)",
+      "name": "[32] Arctic Blizzard Cyclone (Cyan Whirlwind + 16 Stars)",
       "category": "Special Editions",
       "rarity": "EPIC",
       "glow": "rgba(6, 182, 212, 0.9)",
@@ -451,7 +451,7 @@
     },
     {
       "id": 33,
-      "name": "[33] সুপারনোভা কোর ডিটোনেশন (বিস্ফোরক গোল্ডেন বারুদ + ২৪ স্টার)",
+      "name": "[33] Supernova Core Detonation (Gold Gunpowder Sparkles + 24 Stars)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 1.0)",
@@ -465,7 +465,7 @@
     },
     {
       "id": 34,
-      "name": "[34] ডাইমেনশনাল রিং ওয়ার্প (মহাজাগতিক বেগুনি রিং সোয়াইপ)",
+      "name": "[34] Dimensional Ring Warp (Cosmic Purple Ring Sweep)",
       "category": "Special Editions",
       "rarity": "MYTHIC",
       "glow": "rgba(168, 85, 247, 0.9)",
@@ -479,7 +479,7 @@
     },
     {
       "id": 35,
-      "name": "[35] ভাইপার ফ্যান শার্প (বিষাক্ত সবুজ ধারালো সোয়াইপ)",
+      "name": "[35] Viper Fang Sharp (Venom Green Sharp Laser Sweep)",
       "category": "Competitive & Esports",
       "rarity": "EPIC",
       "glow": "rgba(16, 185, 129, 0.85)",
@@ -493,7 +493,7 @@
     },
     {
       "id": 36,
-      "name": "[36] ড্রাগন ব্রেথ ইগনিশন (অগ্নিশিখা উল্টো সোয়াইপ + ২০ স্টার)",
+      "name": "[36] Dragon Breath Ignition (Flame Reverse Sheen + 20 Stars)",
       "category": "Competitive & Esports",
       "rarity": "LEGENDARY",
       "glow": "rgba(249, 115, 22, 0.95)",
@@ -507,7 +507,7 @@
     },
     {
       "id": 37,
-      "name": "[37] স্টিলথ শ্যাডো ড্রপ (ধীর নিম্নমুখী সোয়াইপ + ৬ স্টার)",
+      "name": "[37] Stealth Shadow Drop (Smooth Vertical Down Sheen + 6 Stars)",
       "category": "Administration & Authority",
       "rarity": "RARE",
       "glow": "rgba(100, 116, 139, 0.75)",
@@ -521,7 +521,7 @@
     },
     {
       "id": 38,
-      "name": "[38] প্রিজম্যাটিক অপটিক ফাইবার (রংধনু আলোর ঝলকানি)",
+      "name": "[38] Prismatic Optic Fiber (Rainbow Spectrum Shimmer)",
       "category": "Creators & Architects",
       "rarity": "EPIC",
       "glow": "rgba(236, 72, 153, 0.85)",
@@ -535,7 +535,7 @@
     },
     {
       "id": 39,
-      "name": "[39] সেলেস্টিয়াল পলস্টার (উত্তর মেরুর স্থির শুভ্র তারা + রত্ন)",
+      "name": "[39] Celestial Polestar (Steady Diamond White Star + Core Glint)",
       "category": "Crystal VIP Partner",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 255, 255, 1.0)",
@@ -549,7 +549,7 @@
     },
     {
       "id": 40,
-      "name": "[40] প্রাইম ৭ মিথিক ক্রেস্ট (অথেনটিক প্রাইম ৭ - ১২ গোল্ডেন স্টার)",
+      "name": "[40] Prime 7 Mythic Crest (Authentic Prime 7 - 12 Gold Stars)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 0.85)",
@@ -563,7 +563,7 @@
     },
     {
       "id": 41,
-      "name": "[41] প্রাইম ৬ অ্যাম্বার উইং (অথেনটিক প্রাইম ৬ - ৮ অ্যাম্বার স্টার)",
+      "name": "[41] Prime 6 Amber Wings (Authentic Prime 6 - 8 Amber Stars)",
       "category": "Prime System",
       "rarity": "LEGENDARY",
       "glow": "rgba(249, 115, 22, 0.85)",
@@ -577,7 +577,7 @@
     },
     {
       "id": 42,
-      "name": "[42] প্রাইম ৫ রেডিয়েন্ট কনট্যুর (অথেনটিক প্রাইম ৫ - ৬ গোল্ড স্টার)",
+      "name": "[42] Prime 5 Radiant Contour (Authentic Prime 5 - 6 Gold Stars)",
       "category": "Prime System",
       "rarity": "LEGENDARY",
       "glow": "rgba(255, 215, 0, 0.8)",
@@ -591,7 +591,7 @@
     },
     {
       "id": 43,
-      "name": "[43] প্রাইম ৪ ক্রিস্টাল সায়ান (অথেনটিক প্রাইম ৪ - ৪ সায়ান স্টার)",
+      "name": "[43] Prime 4 Crystal Cyan (Authentic Prime 4 - 4 Cyan Stars)",
       "category": "Prime System",
       "rarity": "EPIC",
       "glow": "rgba(6, 182, 212, 0.8)",
@@ -605,7 +605,7 @@
     },
     {
       "id": 44,
-      "name": "[44] ক্লাসিক ভি-ব্যাজ গোল্ড গ্লিম (অথেনটিক ভি-ব্যাজ সোয়াইপ)",
+      "name": "[44] Classic Gold V-Badge Sheen (Authentic V-Badge Sheen)",
       "category": "Official Partner (KOL)",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 0.85)",
@@ -619,7 +619,7 @@
     },
     {
       "id": 45,
-      "name": "[45] ইস্পোর্টস ক্রাউন ডায়মন্ড (মুকুট সোয়াইপ + ৮ স্টার)",
+      "name": "[45] Esports Crown Diamond (Royal Crown Sheen + 8 Stars)",
       "category": "Competitive & Esports",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 0.9)",
@@ -633,7 +633,7 @@
     },
     {
       "id": 46,
-      "name": "[46] কোবরা স্ট্রাইক লেজার (দ্রুত বামমুখী সোয়াইপ + ১২ স্টার)",
+      "name": "[46] Cobra Strike Laser (High Speed Left Sheen + 12 Stars)",
       "category": "Special Editions",
       "rarity": "EPIC",
       "glow": "rgba(16, 185, 129, 0.9)",
@@ -647,7 +647,7 @@
     },
     {
       "id": 47,
-      "name": "[47] রুবি হার্ট বিট (ধীর রুবি পালস + রত্ন তারা)",
+      "name": "[47] Ruby Heart Beat (Deep Ruby Pulse + Center Gem Glint)",
       "category": "Custom VIP",
       "rarity": "MYTHIC",
       "glow": "rgba(239, 68, 68, 0.95)",
@@ -661,7 +661,7 @@
     },
     {
       "id": 48,
-      "name": "[48] গ্যালাক্সি ওয়ার্প জাম্প (সায়ান ও পার্পল কম্বো + ২৫ স্টার)",
+      "name": "[48] Galaxy Warp Jump (Cyan & Purple Combo + 25 Stars)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(168, 85, 247, 0.95)",
@@ -675,7 +675,7 @@
     },
     {
       "id": 49,
-      "name": "[49] আলটিমেট ফায়ারওয়ার্কস ব্লাস্ট (৪০টি বারুদ স্টার burst)",
+      "name": "[49] Ultimate Fireworks Burst (40 Radially Scattered Stars)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 1.0)",
@@ -689,7 +689,7 @@
     },
     {
       "id": 50,
-      "name": "[50] গড-টিয়ার ইনফিনিট ফায়ারওয়ার্কস (সর্বোচ্চ ৫০টি বারুদ স্টার + সুপার সোয়াইপ)",
+      "name": "[50] God-Tier Infinite Sparkler (50 Fireworks Star Burst + Ultra Sheen)",
       "category": "Prime System",
       "rarity": "MYTHIC",
       "glow": "rgba(255, 215, 0, 1.0)",
