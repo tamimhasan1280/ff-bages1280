@@ -402,6 +402,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             </div>
 
             <div class="flex items-center gap-3">
+                <a href="ai-integration.php" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 hover:text-emerald-200 border border-emerald-500/30 text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-500/10">
+                    <i class="fas fa-robot text-emerald-400"></i>
+                    <span>AI Integration</span>
+                </a>
                 <a href="index.php" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold flex items-center gap-2 transition">
                     <i class="fas fa-eye text-cyan-400"></i>
                     <span>Open Live Explorer</span>
