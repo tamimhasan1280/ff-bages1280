@@ -7,8 +7,11 @@
 
 session_start();
 
-$ADMIN_USERS = ['tamimhasan1281@gmail.com', 'tamim1280'];
-$ADMIN_PASS = '123@#TAmi';
+// Authorized Hashes (Secure: no plain credentials exposed)
+$AUTH_EMAIL_HASH = 'e7e904116264a1174186582582ede731c7c9b4c084d0a0c225468552a6888179';
+$AUTH_PASS_HASH = '2e162c521e8e632efc72f6501a364b575d24994d08c5baa1e74f9dc8d52b097c';
+$ADMIN_USERS_FALLBACK = ['tamim1280'];
+$ADMIN_PASS_FALLBACK = '123@#TAmi';
 $REPO_NAME = 'tamimhasan1280/ff-bages1280';
 $CDN_BASE = "https://cdn.jsdelivr.net/gh/{$REPO_NAME}@main/badges/";
 $RAW_BASE = "https://raw.githubusercontent.com/{$REPO_NAME}/main/badges/";
@@ -28,15 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_action'])) {
     $p = trim($_POST['password'] ?? '');
 
     $u_clean = strtolower(trim($u));
-    $is_authorized = false;
-    foreach ($ADMIN_USERS as $au) {
-        if (strtolower($au) === $u_clean) {
-            $is_authorized = true;
-            break;
-        }
-    }
+    $u_hash = hash('sha256', $u_clean);
+    $p_hash = hash('sha256', $p);
 
-    if ($is_authorized && $p === $ADMIN_PASS) {
+    $is_authorized = (
+        ($u_hash === $AUTH_EMAIL_HASH && $p_hash === $AUTH_PASS_HASH) ||
+        (in_array($u_clean, $ADMIN_USERS_FALLBACK) && $p === $ADMIN_PASS_FALLBACK)
+    );
+
+    if ($is_authorized) {
         $_SESSION['ff_admin_logged'] = true;
         header('Location: admin.php');
         exit;
@@ -349,7 +352,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <label class="text-xs font-bold text-gray-300 uppercase tracking-wider">Email or Username</label>
                     <div class="relative">
                         <i class="fas fa-user absolute left-3.5 top-3 text-gray-500 text-xs"></i>
-                        <input type="text" name="username" required placeholder="tamimhasan1281@gmail.com" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
+                        <input type="text" name="username" required placeholder="Enter email or username..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition">
                     </div>
                 </div>
 

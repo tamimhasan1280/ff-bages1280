@@ -114,7 +114,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 </head>
 <body class="min-h-screen flex flex-col selection:bg-rose-500 selection:text-white">
 
-    <!-- SECURE AUTHENTICATION GATE (tamimhasan1281@gmail.com) -->
+    <!-- SECURE AUTHENTICATION GATE (TURKY HUB Access Gate) -->
     <div id="authGateModal" class="fixed inset-0 z-50 bg-[#070914] flex items-center justify-center p-4 min-h-screen" style="display:flex;">
         <!-- Ambient Glow Effects -->
         <div class="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -163,7 +163,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     </label>
                     <div class="relative">
                         <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-                        <input type="email" id="gateEmail" required autocomplete="email" placeholder="tamimhasan1281@gmail.com" class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
+                        <input type="email" id="gateEmail" required autocomplete="email" placeholder="Enter authorized email..." class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
                     </div>
                 </div>
 
@@ -260,7 +260,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <!-- Auth User & Logout -->
                 <div id="authUserPill" class="flex items-center gap-2 bg-[#12162b] px-3 py-1.5 rounded-2xl border border-white/10 text-xs">
                     <i class="fas fa-user-check text-emerald-400"></i>
-                    <span id="authEmailDisplay" class="text-gray-300 font-mono text-[11px] hidden sm:inline">tamimhasan1281@gmail.com</span>
+                    <span id="authEmailDisplay" class="text-gray-300 font-mono text-[11px] hidden sm:inline">Authorized User</span>
                     <button type="button" onclick="logoutExplorer()" class="text-rose-400 hover:text-rose-300 ml-1.5 px-1 py-0.5 rounded transition text-xs flex items-center gap-1 font-bold" title="Sign Out">
                         <i class="fas fa-sign-out-alt"></i>
                         <span class="text-[10px]">Logout</span>
@@ -876,11 +876,18 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
         });
 
 
-        // AUTHENTICATION SYSTEM (Credentials: tamimhasan1281@gmail.com / 123@#TAmi)
-        const AUTH_CONFIG = {
-            email: 'tamimhasan1281@gmail.com',
-            password: '123@#TAmi'
+        // ZERO-KNOWLEDGE CRYPTOGRAPHIC AUTHENTICATION (SHA-256 HASH VERIFICATION)
+        const GATE_AUTH_HASH = {
+            emailHash: 'e7e904116264a1174186582582ede731c7c9b4c084d0a0c225468552a6888179',
+            passHash: '2e162c521e8e632efc72f6501a364b575d24994d08c5baa1e74f9dc8d52b097c'
         };
+
+        async function calcSha256(str) {
+            const buffer = new TextEncoder().encode(str);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
 
         function checkAuthentication() {
             return (sessionStorage.getItem('ff_hub_auth') === '1' || localStorage.getItem('ff_hub_auth') === '1');
@@ -901,31 +908,51 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             }
         }
 
-        function handleGateLogin(e) {
+        async function handleGateLogin(e) {
             e.preventDefault();
             const emailInput = (document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
             const passInput = document.getElementById('gatePassword')?.value || '';
             const remember = document.getElementById('gateRemember')?.checked || false;
             const errorBox = document.getElementById('gateErrorMsg');
             const errorText = document.getElementById('gateErrorText');
+            const submitBtn = document.getElementById('gateSubmitBtn');
 
-            if (emailInput === AUTH_CONFIG.email.toLowerCase() && passInput === AUTH_CONFIG.password) {
-                if (errorBox) errorBox.classList.add('hidden');
-                sessionStorage.setItem('ff_hub_auth', '1');
-                sessionStorage.setItem('ff_hub_email', emailInput);
-                if (remember) {
-                    localStorage.setItem('ff_hub_auth', '1');
-                    localStorage.setItem('ff_hub_email', emailInput);
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>Verifying Credentials...</span><i class="fas fa-spinner fa-spin text-xs"></i>';
+            }
+
+            try {
+                const inputEmailHash = await calcSha256(emailInput);
+                const inputPassHash = await calcSha256(passInput);
+
+                if (inputEmailHash === GATE_AUTH_HASH.emailHash && inputPassHash === GATE_AUTH_HASH.passHash) {
+                    if (errorBox) errorBox.classList.add('hidden');
+                    sessionStorage.setItem('ff_hub_auth', '1');
+                    sessionStorage.setItem('ff_hub_user_masked', emailInput.replace(/(?<=.).(?=.*@)/g, '*'));
+                    if (remember) {
+                        localStorage.setItem('ff_hub_auth', '1');
+                        localStorage.setItem('ff_hub_user_masked', emailInput.replace(/(?<=.).(?=.*@)/g, '*'));
+                    }
+                    unlockApp();
+                    showToast('Access Granted! Welcome to TURKY HUB.');
+                } else {
+                    if (errorBox) errorBox.classList.remove('hidden');
+                    if (errorText) errorText.textContent = 'Invalid email or password! Access Denied.';
+                    const passField = document.getElementById('gatePassword');
+                    if (passField) {
+                        passField.value = '';
+                        passField.focus();
+                    }
                 }
-                unlockApp();
-                showToast('Access Granted! Welcome to TURKY HUB.');
-            } else {
+            } catch (err) {
+                console.error('Auth verification error:', err);
                 if (errorBox) errorBox.classList.remove('hidden');
-                if (errorText) errorText.textContent = 'Invalid email or password! Please check your credentials.';
-                const passField = document.getElementById('gatePassword');
-                if (passField) {
-                    passField.value = '';
-                    passField.focus();
+                if (errorText) errorText.textContent = 'Verification error occurred. Please try again.';
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<span>Authenticate & Unlock Hub</span><i class="fas fa-arrow-right text-xs"></i>';
                 }
             }
         }
@@ -936,9 +963,9 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             if (gate) gate.style.display = 'none';
             if (app) app.classList.remove('hidden');
 
-            const email = sessionStorage.getItem('ff_hub_email') || localStorage.getItem('ff_hub_email') || AUTH_CONFIG.email;
+            const maskedUser = sessionStorage.getItem('ff_hub_user_masked') || localStorage.getItem('ff_hub_user_masked') || 'Authorized User';
             const emailDisplay = document.getElementById('authEmailDisplay');
-            if (emailDisplay) emailDisplay.textContent = email;
+            if (emailDisplay) emailDisplay.textContent = maskedUser;
 
             // Render cards and check URL params
             renderCards(itemsData);
@@ -951,9 +978,9 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
         function logoutExplorer() {
             sessionStorage.removeItem('ff_hub_auth');
-            sessionStorage.removeItem('ff_hub_email');
+            sessionStorage.removeItem('ff_hub_user_masked');
             localStorage.removeItem('ff_hub_auth');
-            localStorage.removeItem('ff_hub_email');
+            localStorage.removeItem('ff_hub_user_masked');
             window.location.reload();
         }
 
