@@ -496,3 +496,10 @@
 .ff-no-anim .ff-gem-glint {
   display: none !important;
 }
+
+
+/* Bone Accent Light Keyframes */
+@keyframes pulse_bone {
+    0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.85; }
+    100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}

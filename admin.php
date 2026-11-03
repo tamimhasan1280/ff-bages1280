@@ -95,6 +95,10 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
     $glow_enabled = !empty($_POST['glow_enabled']);
     $pulse_enabled = !empty($_POST['pulse_enabled']);
 
+    // Multiple Bone Highlights Data
+    $bone_data_raw = trim($_POST['bone_data'] ?? '');
+    $bone_data = !empty($bone_data_raw) ? json_decode($bone_data_raw, true) : null;
+
     // Ensure star_density within 0 to 50
     if ($star_density < 0) $star_density = 0;
     if ($star_density > 50) $star_density = 50;
@@ -186,6 +190,8 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             'star_theme' => $star_theme,
             'has_gem_glint' => $has_gem_glint,
             'pulse_enabled' => $pulse_enabled,
+            'bone_data' => $bone_data,
+            'bone_mode' => $bone_mode,
             'description' => $description ?: ($is_prime ? "Free Fire Prime Level {$prime_lvl} authentic insignia deployed via Turky Hub Monster CDN." : "Official Free Fire verified asset deployed via Turky Hub Monster CDN."),
             'fn_call' => $is_prime ? "generate_ff_prime_badge_html('{$filename}', {$prime_lvl}, '{$size}px');" : "generate_ff_badge_html('{$filename}', '{$name}', '{$glow_color}', 'top-right', '{$size}px');",
             'cdn_urls' => [
@@ -627,7 +633,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <span id="editorModeText">Mode: Ready</span>
                     </div>
 
-                    <button type="button" onclick="resetToNewBadge()" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 border border-white/10 transition cursor-pointer">
+                    <button type="button" onclick="startNewBadgeCreation()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer">
                         <i class="fas fa-plus text-amber-400"></i>
                         <span>Create New Badge</span>
                     </button>
@@ -748,7 +754,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     </div>
 
                     <!-- Fast Save Button Available from Any Tab -->
-                    <button type="button" onclick="document.getElementById('badgeEditorForm').requestSubmit()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-500 hover:to-orange-600 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition transform active:scale-95 cursor-pointer whitespace-nowrap">
+                    <button type="button" onclick="handleBadgeSubmit(event)" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 hover:from-amber-500 hover:to-orange-600 text-black font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 transition transform active:scale-95 cursor-pointer whitespace-nowrap">
                         <i class="fas fa-cloud-arrow-up text-sm"></i>
                         <span id="saveBtnTextTop">Save Badge / Deploy</span>
                     </button>
@@ -773,7 +779,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 </div>
 
                 <!-- MAIN FORM CONTAINER (WRAPS ALL TABS FOR SEAMLESS SUBMIT) -->
-                <form method="POST" action="admin.php" enctype="multipart/form-data" id="badgeEditorForm" class="space-y-6">
+                <form method="POST" action="admin.php" enctype="multipart/form-data" id="badgeEditorForm" onsubmit="return handleBadgeSubmit(event)" class="space-y-6">
                     <input type="hidden" name="save_badge" value="1">
                     <input type="hidden" name="original_id" id="originalIdInput" value="">
 
@@ -943,53 +949,48 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             </div>
                         </div>
 
-                        <!-- Bone & Focal Accent Light Module -->
-                        <div class="p-4 rounded-2xl bg-[#080a18] border border-amber-500/30 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300 uppercase tracking-wider">
-                                    <input type="checkbox" id="boneLightCheck" onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-amber-500 cursor-pointer">
-                                    <span>Enable Bone / Focal Accent Light</span>
+                        <!-- Bone & Focal Accent Light Manager -->
+                        <div class="p-4 sm:p-5 rounded-2xl bg-[#080a18] border border-amber-500/30 space-y-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
+                                <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300 uppercase tracking-wider font-orbitron">
+                                    <input type="checkbox" id="boneLightCheck" onchange="toggleBoneLighting(this.checked)" checked class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-amber-500 cursor-pointer">
+                                    <span>Enable Bone / Focal Accent Highlights</span>
                                 </label>
-                                <button type="button" onclick="resetSingleSlider('sliderBoneRadius', 45)" class="text-[10px] font-mono text-gray-400 hover:text-white px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer flex items-center gap-1">
-                                    <i class="fas fa-rotate-left text-[9px]"></i> Reset Light
+                                <button type="button" onclick="addNewBonePoint()" class="px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-black text-xs font-extrabold flex items-center gap-1.5 transition shadow-lg shadow-amber-400/20 cursor-pointer">
+                                    <i class="fas fa-plus text-[10px]"></i>
+                                    <span>Add Bone Spot</span>
                                 </button>
                             </div>
 
                             <p class="text-[11px] text-gray-400">
-                                Click any spot preset below to focus radiant light. Expanding the light radius visibly beams light outward across that side of the badge:
+                                Add multiple small or large bone highlights to illuminate specific parts of the badge (crown, wings, gem, or apex). Highlights sit strictly inside the badge texture with zero spillover, or radiate outward:
                             </p>
 
-                            <!-- Clickable Bone Spot Presets -->
-                            <div class="space-y-1.5">
-                                <span class="text-[11px] text-slate-300 block font-medium">Select Bone Focal Spot:</span>
-                                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                                    <button type="button" onclick="setBoneSpot('crown')" id="boneBtn-crown" class="bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 transition cursor-pointer text-center">👑 Top Crown</button>
-                                    <button type="button" onclick="setBoneSpot('left_wing')" id="boneBtn-left_wing" class="bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:border-amber-400 transition cursor-pointer text-center">🦅 Left Wing</button>
-                                    <button type="button" onclick="setBoneSpot('right_wing')" id="boneBtn-right_wing" class="bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:border-amber-400 transition cursor-pointer text-center">🦅 Right Wing</button>
-                                    <button type="button" onclick="setBoneSpot('center_gem')" id="boneBtn-center_gem" class="bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:border-amber-400 transition cursor-pointer text-center">💎 Center Gem</button>
-                                    <button type="button" onclick="setBoneSpot('bottom_apex')" id="boneBtn-bottom_apex" class="bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:border-amber-400 transition cursor-pointer text-center">⚡ Bottom Apex</button>
-                                </div>
-                                <input type="hidden" id="bonePosSelect" value="crown">
-                            </div>
-
-                            <!-- Color & Radius Control -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-white/5">
-                                <div class="space-y-1.5">
-                                    <span class="text-[11px] text-slate-300 block">Light Flare Color:</span>
-                                    <div class="flex items-center gap-2">
-                                        <input type="color" id="boneColorHex" value="#FFD700" oninput="updateLivePreviewStudio()" class="w-9 h-9 rounded-lg border border-white/20 cursor-pointer bg-transparent">
-                                        <input type="text" id="boneColorHexText" value="#FFD700" oninput="document.getElementById('boneColorHex').value=this.value; updateLivePreviewStudio()" class="flex-1 bg-[#050711] border border-white/10 rounded-lg px-2.5 py-1.5 text-xs font-mono text-amber-300">
-                                    </div>
-                                </div>
-
-                                <div class="space-y-1.5">
-                                    <div class="flex items-center justify-between text-xs">
-                                        <span class="text-slate-300">Light Outward Radius:</span>
-                                        <span class="font-mono text-amber-400 font-bold" id="valBoneRadius">45px</span>
-                                    </div>
-                                    <input type="range" id="sliderBoneRadius" min="15" max="100" value="45" oninput="updateLivePreviewStudio()" class="w-full accent-amber-400 cursor-pointer">
+                            <!-- Global Bone Layer Mode Selector -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-xl bg-[#050713] border border-white/5 text-xs">
+                                <span class="text-slate-300 font-medium text-[11px]">Light Layer Mode:</span>
+                                <div class="flex flex-wrap items-center gap-4 text-[11px]">
+                                    <label class="flex items-center gap-1.5 cursor-pointer text-cyan-300">
+                                        <input type="radio" name="global_bone_mode" value="inside" onchange="setGlobalBoneMode(this.value)" class="text-cyan-400 cursor-pointer">
+                                        <span>Inside Badge (Masked to Metal)</span>
+                                    </label>
+                                    <label class="flex items-center gap-1.5 cursor-pointer text-amber-300">
+                                        <input type="radio" name="global_bone_mode" value="dual" checked onchange="setGlobalBoneMode(this.value)" class="text-amber-400 cursor-pointer">
+                                        <span>Dual (Inner Core + Ambient Halo)</span>
+                                    </label>
+                                    <label class="flex items-center gap-1.5 cursor-pointer text-purple-300">
+                                        <input type="radio" name="global_bone_mode" value="outer" onchange="setGlobalBoneMode(this.value)" class="text-purple-400 cursor-pointer">
+                                        <span>Outer Radiant Halo</span>
+                                    </label>
                                 </div>
                             </div>
+
+                            <!-- Dynamic Active Bones List Container -->
+                            <div id="activeBonesList" class="space-y-3 pt-1">
+                                <!-- Populated dynamically by JS -->
+                            </div>
+
+                            <input type="hidden" name="bone_data" id="boneDataJsonInput" value="">
                         </div>
 
                         <!-- Aura Glow & Silhouette Contour Module -->
@@ -1202,7 +1203,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                     <span>Badge Name <span class="text-rose-500">*</span></span>
                                     <span class="text-[10px] text-gray-400 font-normal">Editable anytime</span>
                                 </label>
-                                <input type="text" name="badge_name" id="badgeNameInput" required placeholder="e.g. Free Fire Prime Level 8 or OFFICIAL V BAGE" value="Free Fire Prime Level 8" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition font-mono">
+                                <input type="text" name="badge_name" id="badgeNameInput" placeholder="e.g. Free Fire Prime Level 8 or OFFICIAL V BAGE" value="Free Fire Prime Level 8" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition font-mono">
                             </div>
 
                             <!-- 2. Badge ID (Strict 12...80 Format) -->
@@ -1212,7 +1213,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                     <span class="text-[10px] text-emerald-400 font-mono font-bold">12 Digits Strict Format</span>
                                 </div>
                                 <div class="relative flex items-center">
-                                    <input type="text" name="badge_id" id="badgeIdInput" value="<?= $suggested_id ?>" pattern="^12[0-9]{8}80$" required oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs font-mono font-bold text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-400 transition">
+                                    <input type="text" name="badge_id" id="badgeIdInput" value="<?= $suggested_id ?>" pattern="^12[0-9]{8}80$" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs font-mono font-bold text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-400 transition">
                                     <button type="button" onclick="randomizeId()" class="absolute right-2 px-2.5 py-1 bg-white/5 hover:bg-white/10 text-gray-300 text-[11px] rounded-lg font-mono transition cursor-pointer" title="Randomize ID">
                                         <i class="fas fa-rotate"></i>
                                     </button>
@@ -1513,6 +1514,14 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         let currentPreviewImg = 'badges/ff_ui_prime_icon_08.png';
         let stageDisplaySize = 110;
 
+        // Multi-Bone Management State
+        let activeBones = [
+            { id: 1, name: 'Crown Apex', x: 50, y: 14, size: 20, color: '#FFD700' },
+            { id: 2, name: 'Center Gem', x: 50, y: 52, size: 24, color: '#FFFFFF' }
+        ];
+        let globalBoneMode = 'dual'; // 'inside' | 'dual' | 'outer'
+        let isBoneLightingEnabled = true;
+
         // Copy text helper
         function copyText(text, msg = 'Copied!') {
             if (!navigator.clipboard) {
@@ -1726,6 +1735,24 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             document.getElementById('hasGemGlintCheck').checked = hasAnimation && (b.has_gem_glint === true || b.has_gem_glint === '1' || b.has_gem_glint === 1);
             document.getElementById('pulseEnabledCheck').checked = hasAnimation && (b.pulse_enabled !== false);
 
+            // Load Multi-Bone Focal Highlights if present
+            if (b.bone_data && Array.isArray(b.bone_data) && b.bone_data.length > 0) {
+                activeBones = JSON.parse(JSON.stringify(b.bone_data));
+            } else {
+                activeBones = [
+                    { id: 1, name: 'Crown Apex', x: 50, y: 14, size: 20, color: '#FFD700' },
+                    { id: 2, name: 'Center Gem', x: 50, y: 52, size: 24, color: '#FFFFFF' }
+                ];
+            }
+            if (b.bone_mode) {
+                globalBoneMode = b.bone_mode;
+                const modeRadios = document.getElementsByName('global_bone_mode');
+                for (let r of modeRadios) {
+                    r.checked = (r.value === globalBoneMode);
+                }
+            }
+            renderBoneList();
+
             // Update Stage immediately
             updateLivePreviewStudio();
             showToast('Loaded: ' + b.name + ' (#' + b.id + ')');
@@ -1734,32 +1761,111 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             window.scrollTo({ top: 120, behavior: 'smooth' });
         }
 
-        // Reset to Create New Badge Mode
-        function resetToNewBadge() {
+        // Form Submit Handler (Works from Any Tab, Validates JS & Serializes Bones)
+        function handleBadgeSubmit(e) {
+            if (e && e.preventDefault) e.preventDefault();
+
+            const nameInput = document.getElementById('badgeNameInput');
+            const idInput = document.getElementById('badgeIdInput');
+            const name = nameInput ? nameInput.value.trim() : '';
+            const id = idInput ? idInput.value.trim() : '';
+
+            if (!name) {
+                switchStudioTab('identity');
+                if (nameInput) nameInput.focus();
+                showToast('Please enter a Badge Name in the Identity tab!');
+                return false;
+            }
+
+            if (!id || !/^\d{6,14}$/.test(id)) {
+                switchStudioTab('identity');
+                if (idInput) idInput.focus();
+                showToast('Please enter a valid numeric Item ID (6 to 14 digits)!');
+                return false;
+            }
+
+            // Serialize bone data
+            const boneInput = document.getElementById('boneDataJsonInput');
+            if (boneInput) {
+                boneInput.value = JSON.stringify(activeBones);
+            }
+
+            const form = document.getElementById('badgeEditorForm');
+            if (form) {
+                form.submit();
+            }
+            return true;
+        }
+
+        // Start New Badge Creation (Switches to Identity Tab, Randomizes ID & Clears Fields)
+        function startNewBadgeCreation() {
             currentActiveBadge = null;
-            document.getElementById('badgeEditorForm').reset();
             document.getElementById('originalIdInput').value = '';
-            
+
+            const nameInput = document.getElementById('badgeNameInput');
+            if (nameInput) {
+                nameInput.value = '';
+                nameInput.placeholder = 'e.g. Free Fire Prime Level 8 or OFFICIAL V BAGE';
+            }
+
             randomizeId();
 
-            document.getElementById('formPanelTitle').textContent = 'Badge Studio & VFX Customizer';
-            document.getElementById('formPanelSub').textContent = 'Switch tabs to customize Color Grading, VFX Animations, or Badge Identity.';
-            document.getElementById('editorModeText').textContent = 'Mode: New Badge';
-            document.getElementById('editorModeBadge').className = 'px-3.5 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs font-mono flex items-center gap-2';
-            document.getElementById('saveBtnText').textContent = 'Save Badge & Deploy to CDN';
-            document.getElementById('saveBtnTextTop').textContent = 'Save & Deploy';
+            const catSelect = document.getElementById('badgeCatSelect');
+            if (catSelect) catSelect.value = 'Prime System';
+            const rarSelect = document.getElementById('badgeRaritySelect');
+            if (rarSelect) rarSelect.value = 'MYTHIC';
+            const sizeInput = document.getElementById('badgeSizeInput');
+            if (sizeInput) sizeInput.value = 54;
+            const glowSelect = document.getElementById('glowSelect');
+            if (glowSelect) glowSelect.value = 'rgba(255, 215, 0, 0.85)';
+            const glowCheck = document.getElementById('glowEnabledCheck');
+            if (glowCheck) glowCheck.checked = true;
+            const descInput = document.getElementById('badgeDescInput');
+            if (descInput) descInput.value = '';
 
             currentPreviewImg = 'badges/ff_ui_prime_icon_08.png';
-            document.getElementById('uploadPromptText').textContent = 'Upload Transparent PNG';
+            const uploadText = document.getElementById('uploadPromptText');
+            if (uploadText) uploadText.textContent = 'Upload Transparent PNG';
+            const efSelect = document.getElementById('existingFileSelect');
+            if (efSelect) efSelect.selectedIndex = 0;
+
+            document.getElementById('formPanelTitle').textContent = 'Create New Badge & Deploy';
+            document.getElementById('formPanelSub').textContent = 'Fill in identity fields, choose asset, customize VFX, and deploy to CDN.';
+            document.getElementById('editorModeText').textContent = 'Mode: New Badge';
+            document.getElementById('editorModeBadge').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs font-mono flex items-center gap-2';
+            document.getElementById('saveBtnText').textContent = 'Create & Deploy New Badge';
+            document.getElementById('saveBtnTextTop').textContent = 'Create & Deploy';
 
             document.getElementById('masterAnimCheck').checked = true;
             document.getElementById('sheenActiveCheck').checked = true;
             setStarDensity(16);
+            document.getElementById('starThemeSelect').value = 'gold';
+            document.getElementById('hasGemGlintCheck').checked = true;
+            document.getElementById('pulseEnabledCheck').checked = true;
 
             resetAllAdjustments();
-            switchStudioTab('color');
+
+            // Default bone spots
+            activeBones = [
+                { id: 1, name: 'Crown Apex', x: 50, y: 14, size: 20, color: '#FFD700' },
+                { id: 2, name: 'Center Gem', x: 50, y: 52, size: 24, color: '#FFFFFF' }
+            ];
+            renderBoneList();
+
+            // Immediately switch to Identity tab so user can enter badge details!
+            switchStudioTab('identity');
+
+            setTimeout(() => {
+                if (nameInput) nameInput.focus();
+            }, 120);
+
             updateLivePreviewStudio();
-            showToast('Switched to New Badge mode.');
+            showToast('New Badge Mode Activated! Enter details in the Identity tab.');
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+
+        function resetToNewBadge() {
+            startNewBadgeCreation();
         }
 
         // Apply Numbered Effect Preset
@@ -1809,22 +1915,176 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             showToast('Reset ' + id.replace('slider', '') + ' to default.');
         }
 
-        // BONE FOCAL SPOT PRESET SELECTOR
-        function setBoneSpot(spot) {
-            const posInput = document.getElementById('bonePosSelect');
-            if (posInput) posInput.value = spot;
+        // MULTI-BONE MANAGEMENT FUNCTIONS (RENDER, ADD, REMOVE, UPDATE)
+        function renderBoneList() {
+            const listEl = document.getElementById('activeBonesList');
+            if (!listEl) return;
 
-            document.querySelectorAll('.bone-spot-btn').forEach(btn => {
-                btn.className = 'bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-white/5 text-gray-300 border border-white/10 hover:border-amber-400 transition cursor-pointer text-center';
-            });
-            const activeBtn = document.getElementById('boneBtn-' + spot);
-            if (activeBtn) {
-                activeBtn.className = 'bone-spot-btn py-2 px-2 rounded-xl text-[11px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-lg shadow-amber-500/20 transition cursor-pointer text-center';
+            if (!activeBones || activeBones.length === 0) {
+                listEl.innerHTML = `
+                    <div class="p-4 rounded-xl bg-black/30 border border-dashed border-gray-700 text-center text-xs text-gray-400">
+                        <i class="fas fa-lightbulb text-amber-400/50 text-base mb-1 block"></i>
+                        No focal bone spots added yet. Click <span class="text-amber-400 font-bold cursor-pointer underline" onclick="addNewBonePoint()">+ Add Bone Spot</span> to highlight crown, wings, or gems.
+                    </div>
+                `;
+                return;
             }
 
-            document.getElementById('boneLightCheck').checked = true;
+            let html = '';
+            activeBones.forEach((b, idx) => {
+                const x = Math.round(parseFloat(b.x) || 50);
+                const y = Math.round(parseFloat(b.y) || 50);
+                const size = Math.round(parseFloat(b.size) || 20);
+                const color = b.color || '#FFD700';
+                const name = b.name || ('Spot #' + (idx + 1));
+
+                html += `
+                    <div class="p-3.5 rounded-xl bg-[#050713] border border-amber-500/20 space-y-3 relative group" id="boneCard-${b.id}">
+                        <!-- Header: Spot Name & Delete Button -->
+                        <div class="flex items-center justify-between gap-2 border-b border-white/5 pb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-md bg-amber-400/10 border border-amber-400/30 text-amber-400 text-[10px] font-mono font-bold flex items-center justify-center">
+                                    ${idx + 1}
+                                </span>
+                                <input type="text" value="${name}" oninput="updateBoneProp(${b.id}, 'name', this.value)" 
+                                    class="bg-transparent border-b border-transparent hover:border-white/20 focus:border-amber-400 text-xs font-bold text-slate-200 focus:outline-none transition font-sans w-36 sm:w-48 px-1 py-0.5" 
+                                    placeholder="Spot label...">
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-mono text-gray-400">(${x}%, ${y}%)</span>
+                                <button type="button" onclick="removeBonePoint(${b.id})" class="text-gray-500 hover:text-rose-400 px-2 py-1 rounded transition text-xs cursor-pointer" title="Delete this bone spot">
+                                    <i class="fas fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Presets -->
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-gray-400 font-medium">Quick Presets:</span>
+                            <div class="grid grid-cols-5 gap-1.5 text-[10px]">
+                                <button type="button" onclick="setBonePreset(${b.id}, 50, 14, 'Crown Apex')" class="py-1 px-1 rounded bg-white/5 hover:bg-amber-400/20 hover:text-amber-300 text-gray-300 transition text-center truncate cursor-pointer">Crown</button>
+                                <button type="button" onclick="setBonePreset(${b.id}, 20, 36, 'Left Wing')" class="py-1 px-1 rounded bg-white/5 hover:bg-amber-400/20 hover:text-amber-300 text-gray-300 transition text-center truncate cursor-pointer">L-Wing</button>
+                                <button type="button" onclick="setBonePreset(${b.id}, 80, 36, 'Right Wing')" class="py-1 px-1 rounded bg-white/5 hover:bg-amber-400/20 hover:text-amber-300 text-gray-300 transition text-center truncate cursor-pointer">R-Wing</button>
+                                <button type="button" onclick="setBonePreset(${b.id}, 50, 52, 'Center Gem')" class="py-1 px-1 rounded bg-white/5 hover:bg-amber-400/20 hover:text-amber-300 text-gray-300 transition text-center truncate cursor-pointer">Center</button>
+                                <button type="button" onclick="setBonePreset(${b.id}, 50, 86, 'Bottom Apex')" class="py-1 px-1 rounded bg-white/5 hover:bg-amber-400/20 hover:text-amber-300 text-gray-300 transition text-center truncate cursor-pointer">Apex</button>
+                            </div>
+                        </div>
+
+                        <!-- Custom Position Sliders & Size Slider -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                            <!-- Size Slider (5px to 80px) -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-300">Size:</span>
+                                    <span id="boneSizeVal-${b.id}" class="text-amber-400 font-mono text-[10px]">${size}px</span>
+                                </div>
+                                <input type="range" min="5" max="80" value="${size}" oninput="updateBoneProp(${b.id}, 'size', this.value)" class="w-full accent-amber-400 cursor-pointer">
+                            </div>
+
+                            <!-- Horizontal X% Slider (0% to 100%) -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-300">Pos X:</span>
+                                    <span id="boneXVal-${b.id}" class="text-cyan-400 font-mono text-[10px]">${x}%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="${x}" oninput="updateBoneProp(${b.id}, 'x', this.value)" class="w-full accent-cyan-400 cursor-pointer">
+                            </div>
+
+                            <!-- Vertical Y% Slider (0% to 100%) -->
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-[11px]">
+                                    <span class="text-slate-300">Pos Y:</span>
+                                    <span id="boneYVal-${b.id}" class="text-pink-400 font-mono text-[10px]">${y}%</span>
+                                </div>
+                                <input type="range" min="0" max="100" value="${y}" oninput="updateBoneProp(${b.id}, 'y', this.value)" class="w-full accent-pink-400 cursor-pointer">
+                            </div>
+                        </div>
+
+                        <!-- Color Palette -->
+                        <div class="flex items-center justify-between gap-2 pt-1 border-t border-white/5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[11px] text-slate-300">Light Color:</span>
+                                <input type="color" value="${color}" oninput="updateBoneProp(${b.id}, 'color', this.value)" class="w-6 h-6 rounded border border-white/20 bg-transparent cursor-pointer">
+                            </div>
+                            <div class="flex items-center gap-1">
+                                <button type="button" onclick="updateBoneProp(${b.id}, 'color', '#FFD700')" class="w-4 h-4 rounded-full bg-[#FFD700] border border-white/40 cursor-pointer" title="Gold"></button>
+                                <button type="button" onclick="updateBoneProp(${b.id}, 'color', '#FFFFFF')" class="w-4 h-4 rounded-full bg-[#FFFFFF] border border-white/40 cursor-pointer" title="Pure White"></button>
+                                <button type="button" onclick="updateBoneProp(${b.id}, 'color', '#00F0FF')" class="w-4 h-4 rounded-full bg-[#00F0FF] border border-white/40 cursor-pointer" title="Cyan"></button>
+                                <button type="button" onclick="updateBoneProp(${b.id}, 'color', '#FF2A6D')" class="w-4 h-4 rounded-full bg-[#FF2A6D] border border-white/40 cursor-pointer" title="Ruby"></button>
+                                <button type="button" onclick="updateBoneProp(${b.id}, 'color', '#00FF9F')" class="w-4 h-4 rounded-full bg-[#00FF9F] border border-white/40 cursor-pointer" title="Emerald"></button>
+                                <button type="button" onclick="updateBoneProp(${b.id}, 'color', '#A855F7')" class="w-4 h-4 rounded-full bg-[#A855F7] border border-white/40 cursor-pointer" title="Purple"></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            listEl.innerHTML = html;
+        }
+
+        function addNewBonePoint() {
+            const newId = Date.now() + Math.floor(Math.random() * 1000);
+            const newIdx = activeBones.length + 1;
+            activeBones.push({
+                id: newId,
+                name: 'Spot #' + newIdx,
+                x: 50,
+                y: 50,
+                size: 20,
+                color: '#FFD700'
+            });
+            renderBoneList();
             updateLivePreviewStudio();
-            showToast('Bone focal spot set: ' + spot.replace('_', ' ').toUpperCase());
+            showToast('New bone spot added (Spot #' + newIdx + ')');
+        }
+
+        function removeBonePoint(id) {
+            activeBones = activeBones.filter(b => b.id !== id);
+            renderBoneList();
+            updateLivePreviewStudio();
+            showToast('Bone spot removed.');
+        }
+
+        function updateBoneProp(id, prop, val) {
+            const b = activeBones.find(x => x.id === id);
+            if (!b) return;
+            b[prop] = (prop === 'size' || prop === 'x' || prop === 'y') ? parseFloat(val) : val;
+
+            if (prop === 'size') {
+                const el = document.getElementById('boneSizeVal-' + id);
+                if (el) el.textContent = Math.round(val) + 'px';
+            } else if (prop === 'x') {
+                const el = document.getElementById('boneXVal-' + id);
+                if (el) el.textContent = Math.round(val) + '%';
+            } else if (prop === 'y') {
+                const el = document.getElementById('boneYVal-' + id);
+                if (el) el.textContent = Math.round(val) + '%';
+            }
+
+            updateLivePreviewStudio();
+        }
+
+        function setBonePreset(id, x, y, name) {
+            const b = activeBones.find(x => x.id === id);
+            if (!b) return;
+            b.x = x;
+            b.y = y;
+            if (name) b.name = name;
+            renderBoneList();
+            updateLivePreviewStudio();
+            showToast('Applied preset ' + name);
+        }
+
+        function setGlobalBoneMode(mode) {
+            globalBoneMode = mode;
+            updateLivePreviewStudio();
+        }
+
+        function toggleBoneLighting(enabled) {
+            isBoneLightingEnabled = enabled;
+            const chk = document.getElementById('boneLightCheck');
+            if (chk) chk.checked = enabled;
+            updateLivePreviewStudio();
         }
 
         // UNIVERSAL COLOR SHIFT SPECTRUM HANDLER
@@ -2107,37 +2367,51 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 contourDropFilter = `filter: drop-shadow(0 0 ${contourGlowRad}px ${contourGlowColor}) drop-shadow(0 0 ${contourGlowBlur}px ${contourGlowColor});`;
             }
 
-            // Compute Bone / Focal Accent Light
-            const isBoneLight = document.getElementById('boneLightCheck')?.checked;
-            let boneLightHtml = '';
-            if (isBoneLight) {
-                const bonePos = document.getElementById('bonePosSelect')?.value || 'crown';
-                const boneColor = document.getElementById('boneColorHex')?.value || '#FFD700';
-                const boneRad = parseInt(document.getElementById('sliderBoneRadius')?.value || 45);
+            // Compute Multi-Bone / Focal Accent Highlights
+            const isBoneLight = document.getElementById('boneLightCheck') ? document.getElementById('boneLightCheck').checked : isBoneLightingEnabled;
+            let innerBonesHtml = '';
+            let outerBonesHtml = '';
 
-                if (document.getElementById('valBoneRadius')) document.getElementById('valBoneRadius').textContent = boneRad + 'px';
-                if (document.getElementById('boneColorHexText')) document.getElementById('boneColorHexText').value = boneColor;
+            if (isBoneLight && activeBones && activeBones.length > 0) {
+                activeBones.forEach((b, idx) => {
+                    const x = parseFloat(b.x) || 50;
+                    const y = parseFloat(b.y) || 50;
+                    const sz = parseFloat(b.size) || 20;
+                    const col = b.color || '#FFD700';
 
-                let posX = '50%', posY = '14%';
-                if (bonePos === 'left_wing') { posX = '20%'; posY = '36%'; }
-                else if (bonePos === 'right_wing') { posX = '80%'; posY = '36%'; }
-                else if (bonePos === 'center_gem') { posX = '50%'; posY = '52%'; }
-                else if (bonePos === 'bottom_apex') { posX = '50%'; posY = '86%'; }
+                    // Inner highlight masked inside badge metal/gem
+                    innerBonesHtml += `
+                        <div class="ff-bone-inner-spot" style="position:absolute;top:${y}%;left:${x}%;transform:translate(-50%,-50%);width:${sz * 2.2}px;height:${sz * 2.2}px;border-radius:50%;background:radial-gradient(circle, #ffffff 0%, ${col} 35%, transparent 70%);mix-blend-mode:color-dodge;filter:blur(2px);opacity:0.95;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;"></div>
+                        <div class="ff-bone-inner-core" style="position:absolute;top:${y}%;left:${x}%;transform:translate(-50%,-50%);width:${Math.max(6, sz * 0.45)}px;height:${Math.max(6, sz * 0.45)}px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px #ffffff, 0 0 18px ${col};mix-blend-mode:screen;pointer-events:none;"></div>
+                    `;
 
-                boneLightHtml = `
-                    <div class="ff-bone-radiant-beam" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${boneRad * 2.5}px;height:${boneRad * 2.5}px;border-radius:50%;background:radial-gradient(circle, ${boneColor} 0%, rgba(255,255,255,0.7) 20%, ${boneColor} 40%, transparent 75%);mix-blend-mode:screen;pointer-events:none;z-index:9;filter:blur(6px);opacity:0.85;animation:pulse_bone 2.4s infinite alternate ease-in-out;"></div>
-                    <div class="ff-bone-core-glint" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${Math.max(12, boneRad * 0.4)}px;height:${Math.max(12, boneRad * 0.4)}px;border-radius:50%;background:#ffffff;box-shadow:0 0 14px #ffffff, 0 0 24px ${boneColor};mix-blend-mode:screen;pointer-events:none;z-index:10;"></div>
+                    // Outer ambient halo
+                    if (globalBoneMode === 'dual' || globalBoneMode === 'outer') {
+                        outerBonesHtml += `
+                            <div class="ff-bone-outer-radiance" style="position:absolute;top:${y}%;left:${x}%;transform:translate(-50%,-50%);width:${sz * 3.5}px;height:${sz * 3.5}px;border-radius:50%;background:radial-gradient(circle, ${col} 0%, rgba(255,255,255,0.4) 25%, transparent 70%);mix-blend-mode:screen;filter:blur(8px);opacity:0.65;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;z-index:9;"></div>
+                        `;
+                    }
+                });
+            }
+
+            let innerMaskContainerHtml = '';
+            if (innerBonesHtml && (globalBoneMode === 'inside' || globalBoneMode === 'dual')) {
+                innerMaskContainerHtml = `
+                    <div class="ff-bone-inside-container" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:hidden;-webkit-mask-image:url('${currentPreviewImg}');mask-image:url('${currentPreviewImg}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                        ${innerBonesHtml}
+                    </div>
                 `;
             }
 
-            // Render Live Stage with Image, VFX, Adjustments, Bone Outward Beams & Contour Glow
+            // Render Live Stage with Image, VFX, Adjustments, Masked Bones, Radiance & Contour Glow
             stage.innerHTML = `
                 <div class="ff-prime-badge-wrap ff-prime-lvl-8${animOffClass}" style="width:${stageDisplaySize}px;height:${stageDisplaySize}px;position:relative;background:transparent !important;${contourDropFilter}">
                     ${starsHtml}
                     <img src="${currentPreviewImg}" class="ff-badge-img" style="${imgStyle} filter:${imgAdjustmentFilter};" alt="Live Preview" onerror="this.onerror=null;this.src='${CDN_BASE + (currentActiveBadge ? currentActiveBadge.file : 'ff_ui_prime_icon_08.png')}';">
                     ${shineHtml}
                     ${glintHtml}
-                    ${boneLightHtml}
+                    ${innerMaskContainerHtml}
+                    ${outerBonesHtml}
                 </div>
             `;
 
@@ -2222,6 +2496,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
+            renderBoneList();
             updateLivePreviewStudio();
         });
     </script>

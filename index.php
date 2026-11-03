@@ -546,6 +546,20 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 const localUrl = 'badges/' + validFile;
                 
                 let previewHtml = '';
+
+                    let boneHtml = '';
+                    if (item.bone_data && Array.isArray(item.bone_data) && item.bone_data.length > 0) {
+                        const innerSpots = item.bone_data.map(b => `
+                            <div style="position:absolute;top:${b.y}%;left:${b.x}%;transform:translate(-50%,-50%);width:${(b.size||20)*2.2}px;height:${(b.size||20)*2.2}px;border-radius:50%;background:radial-gradient(circle, #ffffff 0%, ${b.color||'#FFD700'} 35%, transparent 70%);mix-blend-mode:color-dodge;filter:blur(2px);opacity:0.95;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;"></div>
+                            <div style="position:absolute;top:${b.y}%;left:${b.x}%;transform:translate(-50%,-50%);width:${Math.max(6, (b.size||20)*0.45)}px;height:${Math.max(6, (b.size||20)*0.45)}px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px #ffffff, 0 0 18px ${b.color||'#FFD700'};mix-blend-mode:screen;pointer-events:none;"></div>
+                        `).join('');
+                        boneHtml = `
+                            <div class="ff-bone-inside-container" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:hidden;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                                ${innerSpots}
+                            </div>
+                        `;
+                    }
+
                 if (isPrime) {
                     const lvl = item.prime_level || 1;
                     const hasGlint = (item.has_gem_glint !== undefined) ? item.has_gem_glint : (lvl >= 7);
@@ -576,6 +590,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                             <img src="${localUrl}" onerror="this.onerror=null; this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                             ${shineHtml}
                             ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
+                            ${boneHtml}
                         </div>
                     `;
                 } else if (item.type === 'image' && item.file) {
@@ -606,6 +621,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                             <img src="${localUrl}" onerror="this.onerror=null; this.src='${fileUrl}'" class="ff-badge-img" ${isFullyStatic ? 'style="animation:none !important;"' : ''} alt="${item.name}">
                             ${shineHtml}
                             ${item.has_gem_glint ? '<div class="ff-gem-glint"></div>' : ''}
+                            ${boneHtml}
                         </div>
                     `;
                 } else if (item.type === 'svg_code') {
