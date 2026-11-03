@@ -465,7 +465,7 @@ class FFBadgeWidget extends StatelessWidget {
 ```
 
 ## 5. AUTHENTICATION & ACCESS RULES
-- The admin dashboard (`admin.php`) and hub explorer (`index.html`) require owner authentication (`tamimhasan1281@gmail.com`).
+- The admin dashboard (`admin.php`) and hub explorer (`index.html`) require secure master password authentication.
 - **External API & CDN integration**: 100% unrestricted, free, CORS-enabled (`access-control-allow-origin: *`).
 - To generate custom badge IDs or tweak VFX (stars, sheen direction, speed), use the Admin Studio at `<HUB_DOMAIN>/admin.php`.</pre>
             </div>

@@ -1,5 +1,7 @@
 <?php
 header('Connection: close');
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
+ini_set('display_errors', '0');
 /**
  * TURKY HUB - Badges Admin Studio & Live VFX Customizer
  * GitHub Repository: https://github.com/tamimhasan1280/ff-bages1280
@@ -333,6 +335,14 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-rose-500 selection:text-white">
+<!-- DIGITAL HIGH-PASS SHARPNESS CONVOLUTION FILTER -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden;" aria-hidden="true">
+    <defs>
+        <filter id="ffCustomSharpen" x="-20%" y="-20%" width="140%" height="140%">
+            <feConvolveMatrix id="ffSharpenMatrix" order="3" preserveAlpha="true" kernelMatrix="0 0 0  0 1 0  0 0 0" />
+        </filter>
+    </defs>
+</svg>
 
 <?php if (!$is_logged_in): ?>
     <!-- LOGIN SCREEN -->
@@ -645,175 +655,293 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                     </div>
 
-                                        <!-- CLEAR ADJUSTMENT & PRO ICON LAB (Background Remover, HD Clarity, Sliders & Bone Light) -->
-                    <div class="p-4 sm:p-5 rounded-2xl bg-[#090c21] border border-emerald-500/30 space-y-4">
-                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs">
-                                    <i class="fas fa-wand-magic-sparkles"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-xs font-bold text-white flex items-center gap-1.5">
-                                        <span>Clear Adjustment & Pro Icon Lab</span>
+                                                            <!-- ======================================================== -->
+                    <!-- SECTION: COLOR GRADING & PRO IMAGE STUDIO (100% English) -->
+                    <!-- ======================================================== -->
+                    <div class="p-5 rounded-2xl bg-[#090c22] border border-emerald-500/30 space-y-5 shadow-xl">
+                        
+                        <!-- Studio Header & 1-Click Magic Action Buttons -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4">
+                            <div class="space-y-0.5">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs">
+                                        <i class="fas fa-wand-magic-sparkles"></i>
+                                    </div>
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+                                        <span>Color Grading & Pro Image Studio</span>
                                         <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">Ultra Fast</span>
                                     </h3>
-                                    <p class="text-[11px] text-slate-300">1-Click Auto Background Remover, Full HD Clarity Boost, Color Sliders & Bone Light</p>
+                                </div>
+                                <p class="text-[11px] text-slate-300">1-Click Auto Background Remover, AI Enhancer, Color Shift Spectrum, Bone Lighting & Contour Glow.</p>
+                            </div>
+
+                            <button type="button" onclick="resetAllAdjustments()" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-[11px] font-semibold flex items-center gap-1.5 transition cursor-pointer self-start sm:self-auto">
+                                <i class="fas fa-rotate-left text-[10px]"></i> <span>Reset All Sliders</span>
+                            </button>
+                        </div>
+
+                        <!-- 1-Click Magic Actions Row -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                            <button type="button" onclick="aiAutoEnhance()" class="p-2.5 rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-500/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-amber-200 text-xs font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-amber-500/10 cursor-pointer">
+                                <i class="fas fa-sparkles text-amber-400"></i>
+                                <span>1-Click AI Auto Enhancer</span>
+                            </button>
+
+                            <button type="button" onclick="autoRemoveBackground()" class="p-2.5 rounded-xl bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 border border-emerald-500/40 text-emerald-200 text-xs font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/10 cursor-pointer">
+                                <i class="fas fa-eraser text-emerald-400"></i>
+                                <span>1-Click Auto Background Remove</span>
+                            </button>
+
+                            <button type="button" onclick="boostHdClarity()" class="p-2.5 rounded-xl bg-gradient-to-r from-cyan-600/20 to-blue-600/20 hover:from-cyan-600/30 hover:to-blue-600/30 border border-cyan-500/40 text-cyan-200 text-xs font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-cyan-500/10 cursor-pointer">
+                                <i class="fas fa-gem text-cyan-400"></i>
+                                <span>1-Click Full HD Clarity Boost</span>
+                            </button>
+                        </div>
+
+                        <!-- MODULE 1: UNIVERSAL COLOR SHIFT & TARGET RECOLORIZER -->
+                        <div class="p-4 rounded-xl bg-[#060818] border border-white/10 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-palette text-pink-400 text-xs"></i>
+                                    <span class="text-xs font-bold text-white">Universal Color Shift & Spectrum Recolorizer</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span id="valColorShift" class="font-mono text-pink-300 font-bold text-xs">0° (Original)</span>
+                                    <button type="button" onclick="resetSingleSlider('sliderColorShift', 0)" class="text-[10px] text-gray-400 hover:text-pink-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Color Shift to 0°">
+                                        <i class="fas fa-rotate-left"></i>
+                                    </button>
                                 </div>
                             </div>
-                            <button type="button" onclick="resetAdjustments()" class="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 text-[11px] flex items-center gap-1 transition cursor-pointer">
-                                <i class="fas fa-rotate-left text-[10px]"></i> <span>Reset Sliders</span>
-                            </button>
+
+                            <!-- Rainbow Spectrum Track -->
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative flex-1">
+                                        <input type="range" id="sliderColorShift" min="0" max="360" value="0" oninput="updateAdjustments()" ondblclick="document.getElementById('targetColorBox').click()" class="w-full h-2.5 rounded-lg appearance-none cursor-pointer" style="background: linear-gradient(to right, #ff0000 0%, #ff8800 17%, #ffff00 33%, #00ff00 50%, #00ffff 67%, #0000ff 83%, #ff00ff 92%, #ff0000 100%);">
+                                    </div>
+                                    
+                                    <!-- Interactive Color Box (Double-click or click to pick any color) -->
+                                    <div class="relative flex items-center gap-1.5 shrink-0" title="Click to pick custom target color">
+                                        <input type="color" id="targetColorBox" value="#FFD700" onchange="applyTargetColor(this.value)" class="w-7 h-7 rounded-lg border border-white/30 bg-transparent cursor-pointer p-0.5">
+                                        <span class="text-[10px] text-gray-400 font-mono hidden sm:inline">Color Picker</span>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Recolor Swatches -->
+                                <div class="flex items-center gap-1.5 flex-wrap pt-1 text-[11px]">
+                                    <span class="text-gray-400 text-[10px] mr-1">Quick Presets:</span>
+                                    <button type="button" onclick="setColorShift(0)" class="px-2 py-0.5 rounded bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 border border-yellow-500/30 cursor-pointer">🟡 Gold (0°)</button>
+                                    <button type="button" onclick="setColorShift(330)" class="px-2 py-0.5 rounded bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 cursor-pointer">🔴 Crimson (330°)</button>
+                                    <button type="button" onclick="setColorShift(180)" class="px-2 py-0.5 rounded bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 cursor-pointer">🔵 Cyan Ice (180°)</button>
+                                    <button type="button" onclick="setColorShift(270)" class="px-2 py-0.5 rounded bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 cursor-pointer">🟣 Cosmic (270°)</button>
+                                    <button type="button" onclick="setColorShift(110)" class="px-2 py-0.5 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 cursor-pointer">🟢 Emerald (110°)</button>
+                                    <button type="button" onclick="setColorShift(35)" class="px-2 py-0.5 rounded bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 border border-orange-500/30 cursor-pointer">🟠 Flame (35°)</button>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Action 1: 1-Click Auto Background Remover & HD Clarity -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                            <button type="button" onclick="autoRemoveBackground()" class="p-2.5 rounded-xl bg-gradient-to-r from-emerald-600/30 to-teal-600/30 hover:from-emerald-600/40 hover:to-teal-600/40 border border-emerald-500/40 text-emerald-200 text-xs font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-emerald-500/10 cursor-pointer">
-                                <i class="fas fa-eraser text-emerald-400"></i>
-                                <span>1-Click Auto Background Remove (স্বচ্ছ কাটআউট)</span>
-                            </button>
-
-                            <button type="button" onclick="boostHdClarity()" class="p-2.5 rounded-xl bg-gradient-to-r from-cyan-600/30 to-blue-600/30 hover:from-cyan-600/40 hover:to-blue-600/40 border border-cyan-500/40 text-cyan-200 text-xs font-bold flex items-center justify-center gap-2 transition shadow-lg shadow-cyan-500/10 cursor-pointer">
-                                <i class="fas fa-gem text-cyan-400"></i>
-                                <span>1-Click Full HD Clarity Boost (হাই-রেজোলিউশন)</span>
-                            </button>
-                        </div>
-
-                        <!-- Action 2: Image Color & Lighting Sliders Grid -->
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                            <!-- Brightness -->
-                            <div class="space-y-1">
+                        <!-- MODULE 2: PRO ADJUSTMENT SLIDERS (EACH WITH INDIVIDUAL RESET BUTTON) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            
+                            <!-- 1. Brightness -->
+                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
                                 <div class="flex items-center justify-between text-[11px]">
-                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-sun text-amber-400 text-[10px]"></i> Brightness (আলো):</span>
-                                    <span id="valBrightness" class="font-mono text-amber-300 font-bold">100%</span>
+                                    <div class="flex items-center gap-1.5 text-slate-200">
+                                        <i class="fas fa-sun text-amber-400 text-[10px]"></i>
+                                        <span class="font-medium">Brightness:</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span id="valBrightness" class="font-mono text-amber-300 font-bold text-xs">100%</span>
+                                        <button type="button" onclick="resetSingleSlider('sliderBrightness', 100)" class="text-[10px] text-gray-400 hover:text-amber-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Brightness">
+                                            <i class="fas fa-rotate-left"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <input type="range" id="sliderBrightness" min="50" max="200" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
                             </div>
 
-                            <!-- Contrast -->
-                            <div class="space-y-1">
+                            <!-- 2. Contrast -->
+                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
                                 <div class="flex items-center justify-between text-[11px]">
-                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-circle-half-stroke text-cyan-400 text-[10px]"></i> Contrast (কনট্রাস্ট):</span>
-                                    <span id="valContrast" class="font-mono text-cyan-300 font-bold">100%</span>
+                                    <div class="flex items-center gap-1.5 text-slate-200">
+                                        <i class="fas fa-circle-half-stroke text-cyan-400 text-[10px]"></i>
+                                        <span class="font-medium">Contrast:</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span id="valContrast" class="font-mono text-cyan-300 font-bold text-xs">100%</span>
+                                        <button type="button" onclick="resetSingleSlider('sliderContrast', 100)" class="text-[10px] text-gray-400 hover:text-cyan-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Contrast">
+                                            <i class="fas fa-rotate-left"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <input type="range" id="sliderContrast" min="50" max="200" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
                             </div>
 
-                            <!-- Saturation -->
-                            <div class="space-y-1">
+                            <!-- 3. Saturation (up to 250%) -->
+                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
                                 <div class="flex items-center justify-between text-[11px]">
-                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-palette text-pink-400 text-[10px]"></i> Saturation (রং তীব্রতা):</span>
-                                    <span id="valSaturation" class="font-mono text-pink-300 font-bold">100%</span>
+                                    <div class="flex items-center gap-1.5 text-slate-200">
+                                        <i class="fas fa-palette text-pink-400 text-[10px]"></i>
+                                        <span class="font-medium">Saturation:</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span id="valSaturation" class="font-mono text-pink-300 font-bold text-xs">100%</span>
+                                        <button type="button" onclick="resetSingleSlider('sliderSaturation', 100)" class="text-[10px] text-gray-400 hover:text-pink-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Saturation">
+                                            <i class="fas fa-rotate-left"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <input type="range" id="sliderSaturation" min="0" max="250" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-pink-400">
                             </div>
 
-                            <!-- Highlights -->
-                            <div class="space-y-1">
+                            <!-- 4. Highlights (up to 200%) -->
+                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
                                 <div class="flex items-center justify-between text-[11px]">
-                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-wand-magic text-yellow-300 text-[10px]"></i> Highlights (হাইলাইট):</span>
-                                    <span id="valHighlights" class="font-mono text-yellow-200 font-bold">100%</span>
+                                    <div class="flex items-center gap-1.5 text-slate-200">
+                                        <i class="fas fa-wand-magic text-yellow-300 text-[10px]"></i>
+                                        <span class="font-medium">Highlights:</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span id="valHighlights" class="font-mono text-yellow-200 font-bold text-xs">100%</span>
+                                        <button type="button" onclick="resetSingleSlider('sliderHighlights', 100)" class="text-[10px] text-gray-400 hover:text-yellow-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Highlights">
+                                            <i class="fas fa-rotate-left"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <input type="range" id="sliderHighlights" min="0" max="160" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-yellow-300">
+                                <input type="range" id="sliderHighlights" min="0" max="200" value="100" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-yellow-300">
                             </div>
 
-                            <!-- Hue Rotate -->
-                            <div class="space-y-1">
+                            <!-- 5. Hue / Tone Shift -->
+                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
                                 <div class="flex items-center justify-between text-[11px]">
-                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-rotate text-purple-400 text-[10px]"></i> Hue Tone (টোন শিফট):</span>
-                                    <span id="valHue" class="font-mono text-purple-300 font-bold">0°</span>
+                                    <div class="flex items-center gap-1.5 text-slate-200">
+                                        <i class="fas fa-rotate text-purple-400 text-[10px]"></i>
+                                        <span class="font-medium">Hue / Tone:</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span id="valHue" class="font-mono text-purple-300 font-bold text-xs">0°</span>
+                                        <button type="button" onclick="resetSingleSlider('sliderHue', 0)" class="text-[10px] text-gray-400 hover:text-purple-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Hue">
+                                            <i class="fas fa-rotate-left"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <input type="range" id="sliderHue" min="0" max="360" value="0" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-purple-400">
                             </div>
 
-                            <!-- HD Sharpness -->
-                            <div class="space-y-1">
+                            <!-- 6. Sharpness (Digital High-Pass Kernel - up to 200%) -->
+                            <div class="space-y-1 bg-[#060817] p-2.5 rounded-xl border border-white/5">
                                 <div class="flex items-center justify-between text-[11px]">
-                                    <span class="text-slate-200 flex items-center gap-1"><i class="fas fa-bolt text-emerald-400 text-[10px]"></i> Sharpness (শার্পনেস):</span>
-                                    <span id="valSharpness" class="font-mono text-emerald-300 font-bold">0</span>
+                                    <div class="flex items-center gap-1.5 text-slate-200">
+                                        <i class="fas fa-bolt text-emerald-400 text-[10px]"></i>
+                                        <span class="font-medium">HD Sharpness:</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span id="valSharpness" class="font-mono text-emerald-300 font-bold text-xs">0%</span>
+                                        <button type="button" onclick="resetSingleSlider('sliderSharpness', 0)" class="text-[10px] text-gray-400 hover:text-emerald-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Sharpness">
+                                            <i class="fas fa-rotate-left"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <input type="range" id="sliderSharpness" min="0" max="100" value="0" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-400">
+                                <input type="range" id="sliderSharpness" min="0" max="200" value="0" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-emerald-400">
                             </div>
+
                         </div>
 
-                        <!-- Action 3: BONE & FOCAL ACCENT LIGHT (বোন অ্যাড করে নির্দিষ্ট স্থানে আলো বাড়ানো/কমানো) -->
-                        <div class="p-3.5 rounded-xl bg-[#060817] border border-amber-500/20 space-y-3">
+                        <!-- MODULE 3: BONE & FOCAL ACCENT LIGHT (Click to position light, expand radius outward) -->
+                        <div class="p-4 rounded-xl bg-[#060818] border border-amber-500/20 space-y-3">
                             <div class="flex items-center justify-between">
                                 <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300">
                                     <input type="checkbox" id="boneLightCheck" onchange="updateAdjustments()" class="rounded bg-gray-800 border-gray-700 text-amber-500">
                                     <i class="fas fa-lightbulb text-amber-400"></i>
-                                    <span>Enable Bone / Focal Accent Light (নির্দিষ্ট জায়গায় আলো কমানো/ বাড়ানো)</span>
+                                    <span>Enable Bone / Focal Accent Light</span>
                                 </label>
-                                <span class="text-[10px] text-gray-400 font-mono">Pinpoint Radiant Flare</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-[10px] text-gray-400 font-mono">Pinpoint Radiant Outward Beam</span>
+                                    <button type="button" onclick="resetSingleSlider('sliderBoneRadius', 45)" class="text-[10px] text-gray-400 hover:text-amber-300 px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Light Radius">
+                                        <i class="fas fa-rotate-left"></i>
+                                    </button>
+                                </div>
                             </div>
 
-                            <div id="boneLightControls" class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-                                <!-- Bone Position -->
-                                <div class="space-y-1">
-                                    <label class="text-[11px] text-slate-300 block">Bone Spot (কোন জায়গায় আলো?):</label>
-                                    <select id="bonePosSelect" onchange="updateAdjustments()" class="w-full bg-[#090b1c] border border-[#23294c] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400 cursor-pointer">
-                                        <option value="crown" selected>👑 Top Crown (শীর্ষ মুকুট)</option>
-                                        <option value="left_wing">🦅 Left Wing Peak (বাম ডানা)</option>
-                                        <option value="right_wing">🦅 Right Wing Peak (ডান ডানা)</option>
-                                        <option value="center_gem">💎 Center Gem Core (কেন্দ্রীয় রত্ন)</option>
-                                        <option value="bottom_apex">⚡ Bottom Apex (নিচের তীক্ষ্ণ প্রান্ত)</option>
-                                    </select>
+                            <!-- Clickable Bone Spot Presets -->
+                            <div class="space-y-1.5">
+                                <span class="text-[11px] text-slate-300 block font-medium">Select Bone Focal Spot:</span>
+                                <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5 text-xs font-mono">
+                                    <button type="button" onclick="setBoneSpot('crown')" id="boneBtn-crown" class="bone-spot-btn px-2.5 py-1.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-center cursor-pointer transition">👑 Crown</button>
+                                    <button type="button" onclick="setBoneSpot('left_wing')" id="boneBtn-left_wing" class="bone-spot-btn px-2.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 text-center cursor-pointer transition">🦅 Left Wing</button>
+                                    <button type="button" onclick="setBoneSpot('right_wing')" id="boneBtn-right_wing" class="bone-spot-btn px-2.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 text-center cursor-pointer transition">🦅 Right Wing</button>
+                                    <button type="button" onclick="setBoneSpot('center_gem')" id="boneBtn-center_gem" class="bone-spot-btn px-2.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 text-center cursor-pointer transition">💎 Center Gem</button>
+                                    <button type="button" onclick="setBoneSpot('bottom_apex')" id="boneBtn-bottom_apex" class="bone-spot-btn px-2.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 text-center cursor-pointer transition">⚡ Bottom Apex</button>
                                 </div>
+                                <input type="hidden" id="bonePosSelect" value="crown">
+                            </div>
 
-                                <!-- Bone Color -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                                <!-- Bone Light Color -->
                                 <div class="space-y-1">
-                                    <label class="text-[11px] text-slate-300 block">Light Color (আলোর রং):</label>
+                                    <label class="text-[11px] text-slate-300 block font-medium">Focal Light Color:</label>
                                     <div class="flex items-center gap-2">
                                         <input type="color" id="boneColorPicker" value="#FFD700" onchange="document.getElementById('boneColorHex').value=this.value; updateAdjustments();" class="w-8 h-8 rounded border border-white/20 bg-transparent cursor-pointer p-0.5">
                                         <input type="text" id="boneColorHex" value="#FFD700" oninput="document.getElementById('boneColorPicker').value=this.value; updateAdjustments();" class="w-full bg-[#090b1c] border border-[#23294c] rounded-lg px-2 py-1.5 text-xs font-mono text-amber-300 uppercase">
                                     </div>
                                 </div>
 
-                                <!-- Bone Intensity / Radius Slider -->
+                                <!-- Bone Intensity / Outward Radius Slider -->
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between text-[11px]">
-                                        <span class="text-slate-300">Light Radius (আলোর বিস্তার):</span>
+                                        <span class="text-slate-300 font-medium">Light Radius & Outward Beam:</span>
                                         <span id="valBoneRadius" class="font-mono text-amber-300 font-bold">45px</span>
                                     </div>
-                                    <input type="range" id="sliderBoneRadius" min="10" max="100" value="45" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
+                                    <input type="range" id="sliderBoneRadius" min="10" max="150" value="45" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-amber-400">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Action 4: AURA GLOW & CONTOUR SHADOW (রাউন্ডেড বর্ডার কনট্যুর ধরে গ্লোয়িং কালার) -->
-                        <div class="p-3.5 rounded-xl bg-[#060817] border border-cyan-500/20 space-y-3">
+                        <!-- MODULE 4: AURA GLOW & CONTOUR SHADOW (STRICT SILHOUETTE HUGGING) -->
+                        <div class="p-4 rounded-xl bg-[#060818] border border-cyan-500/20 space-y-3">
                             <div class="flex items-center justify-between">
                                 <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-cyan-300">
                                     <input type="checkbox" id="contourGlowCheck" checked onchange="updateAdjustments()" class="rounded bg-gray-800 border-gray-700 text-cyan-500">
                                     <i class="fas fa-sun-plant-wilt text-cyan-400"></i>
-                                    <span>Enable Aura Glow & Contour Shadow (বর্ডার কনট্যুর ধরে ব্যাকগ্রাউন্ড গ্লো)</span>
+                                    <span>Enable Aura Glow & Contour Shadow</span>
                                 </label>
-                                <span class="text-[10px] text-emerald-400 font-mono">100% PNG Contour Silhouette</span>
+                                <span class="text-[10px] text-emerald-400 font-mono">100% PNG Silhouette Outline (No Square Box)</span>
                             </div>
 
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                                 <!-- Glow Color Picker Box -->
                                 <div class="space-y-1">
-                                    <label class="text-[11px] text-slate-300 block">Glow Color (গ্লোয়িং কালার বক্স):</label>
+                                    <label class="text-[11px] text-slate-300 block font-medium">Glow Color Box:</label>
                                     <div class="flex items-center gap-2">
                                         <input type="color" id="contourGlowColorPicker" value="#FFD700" onchange="document.getElementById('contourGlowColorHex').value=this.value; updateAdjustments();" class="w-8 h-8 rounded border border-white/20 bg-transparent cursor-pointer p-0.5">
                                         <input type="text" id="contourGlowColorHex" value="#FFD700" oninput="document.getElementById('contourGlowColorPicker').value=this.value; updateAdjustments();" class="w-full bg-[#090b1c] border border-[#23294c] rounded-lg px-2 py-1.5 text-xs font-mono text-yellow-300 uppercase">
                                     </div>
                                 </div>
 
-                                <!-- Glow Radius / Size Slider -->
+                                <!-- Glow Radius Slider -->
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between text-[11px]">
-                                        <span class="text-slate-300">Glow Radius (গ্লো সাইজ):</span>
-                                        <span id="valGlowRadius" class="font-mono text-cyan-300 font-bold">14px</span>
+                                        <span class="text-slate-300 font-medium">Glow Radius:</span>
+                                        <div class="flex items-center gap-1.5">
+                                            <span id="valGlowRadius" class="font-mono text-cyan-300 font-bold">14px</span>
+                                            <button type="button" onclick="resetSingleSlider('sliderGlowRadius', 14)" class="text-[10px] text-gray-400 hover:text-cyan-300 px-1 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Glow Radius">
+                                                <i class="fas fa-rotate-left"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <input type="range" id="sliderGlowRadius" min="0" max="60" value="14" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
                                 </div>
 
-                                <!-- Glow Blur / Softness Slider -->
+                                <!-- Glow Blur Slider -->
                                 <div class="space-y-1">
                                     <div class="flex items-center justify-between text-[11px]">
-                                        <span class="text-slate-300">Blur Softness (সফটনেস):</span>
-                                        <span id="valGlowBlur" class="font-mono text-cyan-300 font-bold">10px</span>
+                                        <span class="text-slate-300 font-medium">Blur Softness:</span>
+                                        <div class="flex items-center gap-1.5">
+                                            <span id="valGlowBlur" class="font-mono text-cyan-300 font-bold">10px</span>
+                                            <button type="button" onclick="resetSingleSlider('sliderGlowBlur', 10)" class="text-[10px] text-gray-400 hover:text-cyan-300 px-1 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer" title="Reset Blur">
+                                                <i class="fas fa-rotate-left"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <input type="range" id="sliderGlowBlur" min="0" max="40" value="10" oninput="updateAdjustments()" class="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer accent-cyan-400">
                                 </div>
@@ -831,6 +959,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 <button type="button" onclick="setGlowColor('#FFFFFF')" class="w-5 h-5 rounded-full border border-white/30 cursor-pointer shadow-sm hover:scale-110 transition" style="background:#FFFFFF" title="White"></button>
                             </div>
                         </div>
+
                     </div>
 
 
@@ -1184,10 +1313,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 $bTheme = htmlspecialchars($b['star_theme'] ?? 'gold');
                                 $bGlint = !empty($b['has_gem_glint']);
                                 $bGlow = htmlspecialchars($b['glow_color'] ?? 'rgba(255, 215, 0, 0.85)');
-                                $isPrime = ($b['type'] === 'prime_image' || !empty($b['prime_level']));
+                                $isPrime = (($b['type'] ?? '') === 'prime_image' || !empty($b['prime_level']));
                                 $isFullyStatic = (!$bSweep && $bStars === 0 && !$bGlint);
                             ?>
-                            <tr class="hover:bg-white/[0.04] transition admin-badge-row cursor-pointer" onclick="handleRowClick(event, '<?= $b['id'] ?>')" data-name="<?= strtolower($b['name']) ?>" data-id="<?= strtolower($b['id']) ?>">
+                            <tr class="hover:bg-white/[0.04] transition admin-badge-row cursor-pointer" onclick="handleRowClick(event, '<?= $b['id'] ?>')" data-name="<?= htmlspecialchars(strtolower($b['name'] ?? '')) ?>" data-id="<?= htmlspecialchars(strtolower($b['id'] ?? '')) ?>">
                                 
                                 <!-- Preview Cell (Direct Rock-Solid Live Rendering with Local Fallback) -->
                                 <td class="py-3 px-3">
@@ -1200,7 +1329,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                                     <?php endfor; ?>
                                                 </div>
                                             <?php endif; ?>
-                                            <img src="badges/<?= $bFile ?>" onerror="this.onerror=null; this.src='<?= $img_cdn ?>'" class="ff-badge-img <?= $isFullyStatic ? 'style="animation:none !important;"' : '' ?>" alt="<?= htmlspecialchars($b['name']) ?>">
+                                            <img src="badges/<?= $bFile ?>" onerror="this.onerror=null; this.src='<?= $img_cdn ?>'" class="ff-badge-img <?= $isFullyStatic ? 'style="animation:none !important;"' : '' ?>" alt="<?= htmlspecialchars($b['name'] ?? 'Untitled') ?>">
                                             <?php if ($bSweep): ?>
                                                 <span class="ff-badge-shine sweep-dir-<?= $bDir ?>" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('badges/<?= $bFile ?>');mask-image:url('badges/<?= $bFile ?>');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                                                     <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:<?= $bSpd ?>;mix-blend-mode:screen;display:block;"></span>
@@ -1225,21 +1354,21 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                                 <!-- Name -->
                                 <td class="py-3 px-3">
-                                    <div class="font-bold text-white"><?= htmlspecialchars($b['name']) ?></div>
+                                    <div class="font-bold text-white"><?= htmlspecialchars($b['name'] ?? 'Untitled') ?></div>
                                     <div class="text-[10px] text-gray-500 font-mono"><?= htmlspecialchars($b['icon_id'] ?? '') ?></div>
                                 </td>
 
                                 <!-- Category -->
                                 <td class="py-3 px-3">
                                     <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950/50 text-cyan-300 border border-cyan-800/40">
-                                        <?= htmlspecialchars($b['category']) ?>
+                                        <?= htmlspecialchars($b['category'] ?? 'Custom VIP') ?>
                                     </span>
                                 </td>
 
                                 <!-- Rarity -->
                                 <td class="py-3 px-3">
                                     <span class="text-[10px] font-bold uppercase tracking-wider text-yellow-300">
-                                        <?= htmlspecialchars($b['rarity']) ?>
+                                        <?= htmlspecialchars($b['rarity'] ?? 'MYTHIC') ?>
                                     </span>
                                 </td>
 
@@ -1727,6 +1856,228 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             showToast('💎 Full HD Clarity & Edge Definition Boosted!');
         }
 
+
+        // ========================================================
+        // COLOR GRADING & PRO IMAGE STUDIO LOGIC (100% English)
+        // ========================================================
+
+        function updateAdjustments() {
+            // Read slider values
+            const b = document.getElementById('sliderBrightness')?.value || 100;
+            const c = document.getElementById('sliderContrast')?.value || 100;
+            const s = document.getElementById('sliderSaturation')?.value || 100;
+            const hl = document.getElementById('sliderHighlights')?.value || 100;
+            const h = document.getElementById('sliderHue')?.value || 0;
+            const sharp = parseInt(document.getElementById('sliderSharpness')?.value || 0);
+            const colorShift = parseInt(document.getElementById('sliderColorShift')?.value || 0);
+
+            // Update display badges
+            if (document.getElementById('valBrightness')) document.getElementById('valBrightness').textContent = b + '%';
+            if (document.getElementById('valContrast')) document.getElementById('valContrast').textContent = c + '%';
+            if (document.getElementById('valSaturation')) document.getElementById('valSaturation').textContent = s + '%';
+            if (document.getElementById('valHighlights')) document.getElementById('valHighlights').textContent = hl + '%';
+            if (document.getElementById('valHue')) document.getElementById('valHue').textContent = h + '°';
+            if (document.getElementById('valSharpness')) document.getElementById('valSharpness').textContent = sharp + '%';
+            if (document.getElementById('valColorShift')) document.getElementById('valColorShift').textContent = colorShift === 0 ? '0° (Original)' : colorShift + '°';
+
+            const glowRad = document.getElementById('sliderGlowRadius')?.value || 14;
+            const glowBlur = document.getElementById('sliderGlowBlur')?.value || 10;
+            if (document.getElementById('valGlowRadius')) document.getElementById('valGlowRadius').textContent = glowRad + 'px';
+            if (document.getElementById('valGlowBlur')) document.getElementById('valGlowBlur').textContent = glowBlur + 'px';
+
+            const boneRad = document.getElementById('sliderBoneRadius')?.value || 45;
+            if (document.getElementById('valBoneRadius')) document.getElementById('valBoneRadius').textContent = boneRad + 'px';
+
+            // Update SVG High-Pass Sharpness Matrix
+            const matrixEl = document.getElementById('ffSharpenMatrix');
+            if (matrixEl) {
+                if (sharp > 0) {
+                    const factor = (sharp / 40); // 0 to 5
+                    const center = (1 + 4 * factor).toFixed(2);
+                    const edge = (-factor).toFixed(2);
+                    matrixEl.setAttribute('kernelMatrix', `0 ${edge} 0  ${edge} ${center} ${edge}  0 ${edge} 0`);
+                } else {
+                    matrixEl.setAttribute('kernelMatrix', '0 0 0  0 1 0  0 0 0');
+                }
+            }
+
+            // Re-render live preview stage with real-time adjustments
+            updateLivePreviewStudio();
+        }
+
+        // Reset an individual slider to its default value
+        function resetSingleSlider(sliderId, defaultVal) {
+            const el = document.getElementById(sliderId);
+            if (el) {
+                el.value = defaultVal;
+                updateAdjustments();
+                const name = sliderId.replace('slider', '');
+                showToast(`Reset ${name} to default (${defaultVal})`);
+            }
+        }
+
+        // Set Bone Spot Preset
+        function setBoneSpot(spotKey) {
+            document.getElementById('bonePosSelect').value = spotKey;
+            document.querySelectorAll('.bone-spot-btn').forEach(b => {
+                b.className = 'bone-spot-btn px-2.5 py-1.5 rounded-lg bg-white/5 text-slate-300 hover:bg-white/10 text-center cursor-pointer transition';
+            });
+            const activeBtn = document.getElementById('boneBtn-' + spotKey);
+            if (activeBtn) {
+                activeBtn.className = 'bone-spot-btn px-2.5 py-1.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-500/40 text-center cursor-pointer transition font-bold';
+            }
+            // Auto-enable bone light checkbox if user picked a spot
+            const check = document.getElementById('boneLightCheck');
+            if (check && !check.checked) check.checked = true;
+
+            updateAdjustments();
+            showToast(`Focal Light positioned at: ${spotKey.replace('_', ' ').toUpperCase()}`);
+        }
+
+        // Set Color Shift Slider
+        function setColorShift(deg) {
+            const slider = document.getElementById('sliderColorShift');
+            if (slider) {
+                slider.value = deg;
+                updateAdjustments();
+                showToast(`Color Palette shifted to ${deg}°`);
+            }
+        }
+
+        // Apply Target Color from Color Picker box
+        function applyTargetColor(hexColor) {
+            // Convert Hex to approximate Hue angle
+            const rgb = hexToRgb(hexColor);
+            if (rgb) {
+                const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+                const targetDeg = Math.round(hsv.h);
+                setColorShift(targetDeg);
+            }
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        function rgbToHsv(r, g, b) {
+            r /= 255; g /= 255; b /= 255;
+            const max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, v = max;
+            const d = max - min;
+            s = max === 0 ? 0 : d / max;
+            if (max === min) {
+                h = 0;
+            } else {
+                switch (max) {
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+            return { h: h * 360, s: s, v: v };
+        }
+
+        function setGlowColor(colorHex) {
+            document.getElementById('contourGlowColorPicker').value = colorHex;
+            document.getElementById('contourGlowColorHex').value = colorHex;
+            updateAdjustments();
+        }
+
+        // 1-Click AI Auto Enhancer
+        function aiAutoEnhance() {
+            document.getElementById('sliderBrightness').value = 108;
+            document.getElementById('sliderContrast').value = 118;
+            document.getElementById('sliderSaturation').value = 135;
+            document.getElementById('sliderHighlights').value = 112;
+            document.getElementById('sliderSharpness').value = 45;
+            document.getElementById('contourGlowCheck').checked = true;
+            document.getElementById('sliderGlowRadius').value = 18;
+            document.getElementById('sliderGlowBlur').value = 12;
+
+            updateAdjustments();
+            showToast('🪄 AI Auto-Enhance Applied! High-Definition Esports Look Active.');
+        }
+
+        // Reset all adjustments to default
+        function resetAllAdjustments() {
+            document.getElementById('sliderBrightness').value = 100;
+            document.getElementById('sliderContrast').value = 100;
+            document.getElementById('sliderSaturation').value = 100;
+            document.getElementById('sliderHighlights').value = 100;
+            document.getElementById('sliderHue').value = 0;
+            document.getElementById('sliderSharpness').value = 0;
+            document.getElementById('sliderColorShift').value = 0;
+
+            document.getElementById('boneLightCheck').checked = false;
+            document.getElementById('sliderBoneRadius').value = 45;
+            setBoneSpot('crown');
+
+            document.getElementById('contourGlowCheck').checked = true;
+            document.getElementById('sliderGlowRadius').value = 14;
+            document.getElementById('sliderGlowBlur').value = 10;
+            setGlowColor('#FFD700');
+
+            updateAdjustments();
+            showToast('All color grading & adjustments reset to default');
+        }
+
+        // 1-Click Auto Background Remover (Canvas Flood & Alpha Cutoff)
+        function autoRemoveBackground() {
+            const img = document.querySelector('#liveBadgeStage img');
+            if (!img) return;
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.naturalWidth || 512;
+            canvas.height = img.naturalHeight || 512;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imgData.data;
+
+            // Sample 4 corners to determine background color
+            const c1 = [data[0], data[1], data[2]];
+            const c2 = [data[(canvas.width - 1) * 4], data[(canvas.width - 1) * 4 + 1], data[(canvas.width - 1) * 4 + 2]];
+            const c3 = [data[(canvas.width * (canvas.height - 1)) * 4], data[(canvas.width * (canvas.height - 1)) * 4 + 1], data[(canvas.width * (canvas.height - 1)) * 4 + 2]];
+            const c4 = [data[(canvas.width * canvas.height - 1) * 4], data[(canvas.width * canvas.height - 1) * 4 + 1], data[(canvas.width * canvas.height - 1) * 4 + 2]];
+
+            const bgR = Math.round((c1[0] + c2[0] + c3[0] + c4[0]) / 4);
+            const bgG = Math.round((c1[1] + c2[1] + c3[1] + c4[1]) / 4);
+            const bgB = Math.round((c1[2] + c2[2] + c3[2] + c4[2]) / 4);
+
+            const tolerance = 42;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i], g = data[i + 1], b = data[i + 2];
+                const dist = Math.sqrt((r - bgR) ** 2 + (g - bgG) ** 2 + (b - bgB) ** 2);
+                if (dist < tolerance) {
+                    data[i + 3] = 0; // 100% transparent
+                } else if (dist < tolerance + 15) {
+                    data[i + 3] = Math.round(((dist - tolerance) / 15) * data[i + 3]); // smooth feather edge
+                }
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+            currentPreviewImg = canvas.toDataURL('image/png');
+            updateLivePreviewStudio();
+            showToast('🪄 100% Transparent Background Applied!');
+        }
+
+        // 1-Click Full HD Clarity Boost
+        function boostHdClarity() {
+            document.getElementById('sliderContrast').value = 118;
+            document.getElementById('sliderSharpness').value = 50;
+            document.getElementById('sliderHighlights').value = 112;
+            document.getElementById('sliderSaturation').value = 115;
+            updateAdjustments();
+            showToast('💎 Full HD Clarity & Edge Definition Boosted!');
+        }
+
         function updateLivePreviewStudio() {
             const stage = document.getElementById('liveBadgeStage');
             if (!stage) return;
@@ -1835,7 +2186,58 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 boneLightHtml = `<div class="ff-bone-accent-light" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${boneRad * 2}px;height:${boneRad * 2}px;border-radius:50%;background:radial-gradient(circle, ${boneColor} 0%, rgba(255,255,255,0.9) 25%, ${boneColor} 45%, transparent 70%);mix-blend-mode:screen;pointer-events:none;z-index:9;filter:blur(3px);animation:pulse_bone 2s infinite alternate ease-in-out;"></div>`;
             }
 
-            // Render Live Stage with Pro Lab Adjustments & Contour Glow
+            // Compute Pro Color & Lighting Adjustments
+            const adjB = (document.getElementById('sliderBrightness')?.value || 100) / 100;
+            const adjC = document.getElementById('sliderContrast')?.value || 100;
+            const adjS = document.getElementById('sliderSaturation')?.value || 100;
+            const adjHl = (document.getElementById('sliderHighlights')?.value || 100) / 100;
+            const adjH = parseInt(document.getElementById('sliderHue')?.value || 0);
+            const colorShift = parseInt(document.getElementById('sliderColorShift')?.value || 0);
+            const adjSharp = parseInt(document.getElementById('sliderSharpness')?.value || 0);
+
+            const totalHue = (adjH + colorShift) % 360;
+            const effectiveBrightness = (adjB * adjHl).toFixed(2);
+            
+            // Build Filter String
+            let imgAdjustmentFilter = `brightness(${effectiveBrightness}) contrast(${adjC}%) saturate(${adjS}%) hue-rotate(${totalHue}deg)`;
+            if (adjSharp > 0) {
+                imgAdjustmentFilter += ` url(#ffCustomSharpen)`;
+            }
+
+            // Compute Aura Contour Shadow (strictly hugs PNG outline, no square box!)
+            const isContourGlow = document.getElementById('contourGlowCheck')?.checked;
+            const contourGlowColor = document.getElementById('contourGlowColorHex')?.value || '#FFD700';
+            const contourGlowRad = parseInt(document.getElementById('sliderGlowRadius')?.value || 14);
+            const contourGlowBlur = parseInt(document.getElementById('sliderGlowBlur')?.value || 10);
+
+            let contourDropFilter = '';
+            if (isContourGlow && contourGlowRad > 0) {
+                contourDropFilter = `filter: drop-shadow(0 0 ${contourGlowRad}px ${contourGlowColor}) drop-shadow(0 0 ${contourGlowBlur}px ${contourGlowColor});`;
+            }
+
+            // Compute Bone / Focal Accent Light with Radiant Outward Beaming Flare
+            const isBoneLight = document.getElementById('boneLightCheck')?.checked;
+            let boneLightHtml = '';
+            if (isBoneLight) {
+                const bonePos = document.getElementById('bonePosSelect')?.value || 'crown';
+                const boneColor = document.getElementById('boneColorHex')?.value || '#FFD700';
+                const boneRad = parseInt(document.getElementById('sliderBoneRadius')?.value || 45);
+
+                let posX = '50%', posY = '12%';
+                if (bonePos === 'left_wing') { posX = '18%'; posY = '36%'; }
+                else if (bonePos === 'right_wing') { posX = '82%'; posY = '36%'; }
+                else if (bonePos === 'center_gem') { posX = '50%'; posY = '52%'; }
+                else if (bonePos === 'bottom_apex') { posX = '50%'; posY = '85%'; }
+
+                boneLightHtml = `
+                    <!-- Core Pinpoint Light -->
+                    <div class="ff-bone-core-glint" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${boneRad}px;height:${boneRad}px;border-radius:50%;background:radial-gradient(circle, #FFFFFF 0%, ${boneColor} 35%, transparent 70%);mix-blend-mode:screen;pointer-events:none;z-index:10;filter:drop-shadow(0 0 8px ${boneColor});"></div>
+                    <!-- Outward Radiant Aura Beam -->
+                    <div class="ff-bone-radiant-beam" style="position:absolute;top:${posY};left:${posX};transform:translate(-50%,-50%);width:${boneRad * 2.8}px;height:${boneRad * 2.8}px;border-radius:50%;background:radial-gradient(circle, ${boneColor} 0%, rgba(255,255,255,0.4) 20%, ${boneColor} 45%, transparent 75%);mix-blend-mode:screen;pointer-events:none;z-index:9;filter:blur(4px);opacity:0.95;animation:pulse_bone 2.2s infinite alternate ease-in-out;"></div>
+                `;
+            }
+
+            // Render Live Stage with Pro Lab Adjustments, Bone Outward Beams & Contour Glow
             stage.innerHTML = `
                 <div class="ff-prime-badge-wrap ff-prime-lvl-8${animOffClass}" style="width:${stageDisplaySize}px;height:${stageDisplaySize}px;position:relative;background:transparent !important;${contourDropFilter}">
                     ${starsHtml}

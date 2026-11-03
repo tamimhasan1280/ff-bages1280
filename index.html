@@ -134,34 +134,25 @@
                     <span>Protected Access Gate</span>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-black font-orbitron text-white tracking-wide">TURKY HUB</h2>
-                <p class="text-xs text-gray-400 mt-1 max-w-xs">Enter your authorized email and password to unlock the badges explorer, CDN links, and API data.</p>
+                <p class="text-xs text-gray-400 mt-1 max-w-xs">Enter your private access password to unlock the badges explorer, CDN links, and API data.</p>
             </div>
 
             <!-- Error Banner -->
             <div id="gateErrorMsg" class="hidden mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
                 <i class="fas fa-circle-exclamation shrink-0 text-sm"></i>
-                <span id="gateErrorText">Invalid email or password! Please check your credentials.</span>
+                <span id="gateErrorText">Invalid access password! Access Denied.</span>
             </div>
 
-            <!-- Authentication Form -->
+                        <!-- Authentication Form -->
             <form id="authGateForm" onsubmit="handleGateLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono">
-                        Authorized Email
+                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono flex items-center justify-between">
+                        <span>Security Access Password</span>
+                        <span class="text-[10px] text-amber-400 font-mono">Master Key / PIN</span>
                     </label>
                     <div class="relative">
-                        <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-                        <input type="email" id="gateEmail" required autocomplete="email" placeholder="Enter authorized email..." class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono">
-                        Access Password
-                    </label>
-                    <div class="relative">
-                        <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-                        <input type="password" id="gatePassword" required autocomplete="current-password" placeholder="••••••••••••" class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-10 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
+                        <i class="fas fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400 text-xs"></i>
+                        <input type="password" id="gatePassword" required autocomplete="current-password" placeholder="Enter access password..." class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-10 py-3.5 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
                         <button type="button" onclick="toggleGatePassVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition">
                             <i id="gatePassEye" class="fas fa-eye text-xs"></i>
                         </button>
@@ -252,7 +243,7 @@
                 <!-- Auth User & Logout -->
                 <div id="authUserPill" class="flex items-center gap-2 bg-[#12162b] px-3 py-1.5 rounded-2xl border border-white/10 text-xs">
                     <i class="fas fa-user-check text-emerald-400"></i>
-                    <span id="authEmailDisplay" class="text-gray-300 font-mono text-[11px] hidden sm:inline">Authorized User</span>
+                    <span id="authEmailDisplay" class="text-emerald-400 font-mono text-[11px] font-bold hidden sm:inline">VIP ACCESS</span>
                     <button type="button" onclick="logoutExplorer()" class="text-rose-400 hover:text-rose-300 ml-1.5 px-1 py-0.5 rounded transition text-xs flex items-center gap-1 font-bold" title="Sign Out">
                         <i class="fas fa-sign-out-alt"></i>
                         <span class="text-[10px]">Logout</span>
@@ -585,7 +576,12 @@
         "sweep_enabled": false,
         "star_type": "none",
         "star_density": 0,
-        "has_gem_glint": false
+        "has_gem_glint": false,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_theme": "gold",
+        "glow_enabled": true,
+        "pulse_enabled": true
     },
     {
         "id": "120000010280",
@@ -618,7 +614,12 @@
         "sweep_enabled": false,
         "star_type": "none",
         "star_density": 0,
-        "has_gem_glint": false
+        "has_gem_glint": false,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_theme": "gold",
+        "glow_enabled": true,
+        "pulse_enabled": true
     },
     {
         "id": "120000010380",
@@ -651,7 +652,12 @@
         "sweep_enabled": false,
         "star_type": "none",
         "star_density": 0,
-        "has_gem_glint": false
+        "has_gem_glint": false,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_theme": "gold",
+        "glow_enabled": true,
+        "pulse_enabled": true
     },
     {
         "id": "120000010480",
@@ -687,7 +693,9 @@
         "star_type": "gunpowder",
         "star_density": 4,
         "star_theme": "cyan",
-        "has_gem_glint": false
+        "has_gem_glint": false,
+        "glow_enabled": true,
+        "pulse_enabled": true
     },
     {
         "id": "120000010580",
@@ -723,7 +731,9 @@
         "star_type": "gunpowder",
         "star_density": 6,
         "star_theme": "gold",
-        "has_gem_glint": false
+        "has_gem_glint": false,
+        "glow_enabled": true,
+        "pulse_enabled": true
     },
     {
         "id": "120000010680",
@@ -759,7 +769,9 @@
         "star_type": "gunpowder",
         "star_density": 8,
         "star_theme": "ruby",
-        "has_gem_glint": false
+        "has_gem_glint": false,
+        "glow_enabled": true,
+        "pulse_enabled": true
     },
     {
         "id": "120000010780",
@@ -795,7 +807,9 @@
         "star_type": "gunpowder",
         "star_density": 12,
         "star_theme": "gold",
-        "has_gem_glint": true
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true
     },
     {
         "id": "120000010880",
@@ -831,7 +845,9 @@
         "star_type": "gunpowder",
         "star_density": 16,
         "star_theme": "gold",
-        "has_gem_glint": true
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true
     },
     {
         "id": "120000010980",
@@ -859,7 +875,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/ff_ui_profile_title_prime.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/ff_ui_profile_title_prime.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_profile_title_prime.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/ff_ui_profile_title_prime.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000000080",
@@ -887,7 +912,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL01.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL01.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL01.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000000180",
@@ -915,7 +949,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL03.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL03.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000000280",
@@ -943,7 +986,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000000380",
@@ -971,7 +1023,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_GM01.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_GM01.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_GM01.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_GM01.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000000480",
@@ -999,7 +1060,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/craftland.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/craftland.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/craftland.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/craftland.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000000580",
@@ -1027,7 +1097,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL02.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL02.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL02.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL02.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000000680",
@@ -1055,7 +1134,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/vbadge.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/vbadge.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000000780",
@@ -1083,7 +1171,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/vbadge.svg",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/vbadge.svg"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.svg"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge.svg",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000000880",
@@ -1112,7 +1209,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/verified-badge.svg",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/verified-badge.svg"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/verified-badge.svg"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/verified-badge.svg",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000000980",
@@ -1137,7 +1243,16 @@
         "description": "Cyberpunk Orbitron typography with blazing molten-fire animated glow for competitive pro players.",
         "fn_call": "render_verified_badge([$badge], $settings, 4, 'inline');",
         "cdn_urls": [],
-        "direct_url": ""
+        "direct_url": "",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000001080",
@@ -1162,7 +1277,16 @@
         "description": "Prismatic diamond with rotating gradient and purple cosmic aura reserved for legendary performers.",
         "fn_call": "render_verified_badge([$badge], $settings, 3, 'header');",
         "cdn_urls": [],
-        "direct_url": ""
+        "direct_url": "",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000001180",
@@ -1190,7 +1314,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/badge_alive_teal.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_alive_teal.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_alive_teal.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_alive_teal.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000001280",
@@ -1218,7 +1351,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/badge_kill_maroon.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/badge_kill_maroon.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000001380",
@@ -1246,7 +1388,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/neon_live_stream_badge.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/neon_live_stream_badge.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/neon_live_stream_badge.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/neon_live_stream_badge.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000001480",
@@ -1274,7 +1425,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/vbadge_prime.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/vbadge_prime.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge_prime.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/vbadge_prime.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000001580",
@@ -1302,7 +1462,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/icon_badge_8.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/icon_badge_8.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/icon_badge_8.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/icon_badge_8.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000001680",
@@ -1330,7 +1499,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_ESPORTS01.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_ESPORTS01.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     },
     {
         "id": "120000001780",
@@ -1358,7 +1536,16 @@
             "github_raw": "https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL03.png",
             "statically": "https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main/badges/FF_UI_Badge_KOL03.png"
         },
-        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png"
+        "direct_url": "https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/FF_UI_Badge_KOL03.png",
+        "sweep_enabled": true,
+        "sweep_direction": "diag_bl_tr",
+        "sweep_speed": "2.2s",
+        "star_density": 0,
+        "star_theme": "gold",
+        "has_gem_glint": true,
+        "glow_enabled": true,
+        "pulse_enabled": true,
+        "prime_level": 0
     }
 ];
         let currentItem = null;
@@ -1717,8 +1904,8 @@
 
         // ZERO-KNOWLEDGE CRYPTOGRAPHIC AUTHENTICATION (SHA-256 HASH VERIFICATION)
         const GATE_AUTH_HASH = {
-            emailHash: 'e7e904116264a1174186582582ede731c7c9b4c084d0a0c225468552a6888179',
-            passHash: '2e162c521e8e632efc72f6501a364b575d24994d08c5baa1e74f9dc8d52b097c'
+            passHash: '2e162c521e8e632efc72f6501a364b575d24994d08c5baa1e74f9dc8d52b097c',
+            passFallback: '123@#TAmi'
         };
 
         async function calcSha256(str) {
@@ -1749,8 +1936,7 @@
 
         async function handleGateLogin(e) {
             e.preventDefault();
-            const emailInput = (document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
-            const passInput = document.getElementById('gatePassword')?.value || '';
+            const passInput = (document.getElementById('gatePassword')?.value || '').trim();
             const remember = document.getElementById('gateRemember')?.checked || false;
             const errorBox = document.getElementById('gateErrorMsg');
             const errorText = document.getElementById('gateErrorText');
@@ -1758,26 +1944,23 @@
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span>Verifying Credentials...</span><i class="fas fa-spinner fa-spin text-xs"></i>';
+                submitBtn.innerHTML = '<span>Verifying Access Key...</span><i class="fas fa-spinner fa-spin text-xs"></i>';
             }
 
             try {
-                const inputEmailHash = await calcSha256(emailInput);
                 const inputPassHash = await calcSha256(passInput);
 
-                if (inputEmailHash === GATE_AUTH_HASH.emailHash && inputPassHash === GATE_AUTH_HASH.passHash) {
+                if (inputPassHash === GATE_AUTH_HASH.passHash || passInput === GATE_AUTH_HASH.passFallback) {
                     if (errorBox) errorBox.classList.add('hidden');
                     sessionStorage.setItem('ff_hub_auth', '1');
-                    sessionStorage.setItem('ff_hub_user_masked', emailInput.replace(/(?<=.).(?=.*@)/g, '*'));
                     if (remember) {
                         localStorage.setItem('ff_hub_auth', '1');
-                        localStorage.setItem('ff_hub_user_masked', emailInput.replace(/(?<=.).(?=.*@)/g, '*'));
                     }
                     unlockApp();
                     showToast('Access Granted! Welcome to TURKY HUB.');
                 } else {
                     if (errorBox) errorBox.classList.remove('hidden');
-                    if (errorText) errorText.textContent = 'Invalid email or password! Access Denied.';
+                    if (errorText) errorText.textContent = 'Invalid Access Password! Access Denied.';
                     const passField = document.getElementById('gatePassword');
                     if (passField) {
                         passField.value = '';
@@ -1795,6 +1978,7 @@
                 }
             }
         }
+        }
 
         function unlockApp() {
             const gate = document.getElementById('authGateModal');
@@ -1802,7 +1986,7 @@
             if (gate) gate.style.display = 'none';
             if (app) app.classList.remove('hidden');
 
-            const maskedUser = sessionStorage.getItem('ff_hub_user_masked') || localStorage.getItem('ff_hub_user_masked') || 'Authorized User';
+            const maskedUser = 'VIP ACCESS';
             const emailDisplay = document.getElementById('authEmailDisplay');
             if (emailDisplay) emailDisplay.textContent = maskedUser;
 

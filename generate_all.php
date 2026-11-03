@@ -402,34 +402,25 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     <span>Protected Access Gate</span>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-black font-orbitron text-white tracking-wide">TURKY HUB</h2>
-                <p class="text-xs text-gray-400 mt-1 max-w-xs">Enter your authorized email and password to unlock the badges explorer, CDN links, and API data.</p>
+                <p class="text-xs text-gray-400 mt-1 max-w-xs">Enter your private access password to unlock the badges explorer, CDN links, and API data.</p>
             </div>
 
             <!-- Error Banner -->
             <div id="gateErrorMsg" class="hidden mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
                 <i class="fas fa-circle-exclamation shrink-0 text-sm"></i>
-                <span id="gateErrorText">Invalid email or password! Please check your credentials.</span>
+                <span id="gateErrorText">Invalid access password! Access Denied.</span>
             </div>
 
-            <!-- Authentication Form -->
+                        <!-- Authentication Form -->
             <form id="authGateForm" onsubmit="handleGateLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono">
-                        Authorized Email
+                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono flex items-center justify-between">
+                        <span>Security Access Password</span>
+                        <span class="text-[10px] text-amber-400 font-mono">Master Key / PIN</span>
                     </label>
                     <div class="relative">
-                        <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-                        <input type="email" id="gateEmail" required autocomplete="email" placeholder="Enter authorized email..." class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono">
-                        Access Password
-                    </label>
-                    <div class="relative">
-                        <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-                        <input type="password" id="gatePassword" required autocomplete="current-password" placeholder="••••••••••••" class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-10 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
+                        <i class="fas fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400 text-xs"></i>
+                        <input type="password" id="gatePassword" required autocomplete="current-password" placeholder="Enter access password..." class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-10 py-3.5 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
                         <button type="button" onclick="toggleGatePassVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition">
                             <i id="gatePassEye" class="fas fa-eye text-xs"></i>
                         </button>
@@ -520,7 +511,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <!-- Auth User & Logout -->
                 <div id="authUserPill" class="flex items-center gap-2 bg-[#12162b] px-3 py-1.5 rounded-2xl border border-white/10 text-xs">
                     <i class="fas fa-user-check text-emerald-400"></i>
-                    <span id="authEmailDisplay" class="text-gray-300 font-mono text-[11px] hidden sm:inline">Authorized User</span>
+                    <span id="authEmailDisplay" class="text-emerald-400 font-mono text-[11px] font-bold hidden sm:inline">VIP ACCESS</span>
                     <button type="button" onclick="logoutExplorer()" class="text-rose-400 hover:text-rose-300 ml-1.5 px-1 py-0.5 rounded transition text-xs flex items-center gap-1 font-bold" title="Sign Out">
                         <i class="fas fa-sign-out-alt"></i>
                         <span class="text-[10px]">Logout</span>
@@ -1140,8 +1131,8 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
         // ZERO-KNOWLEDGE CRYPTOGRAPHIC AUTHENTICATION (SHA-256 HASH VERIFICATION)
         const GATE_AUTH_HASH = {
-            emailHash: 'e7e904116264a1174186582582ede731c7c9b4c084d0a0c225468552a6888179',
-            passHash: '2e162c521e8e632efc72f6501a364b575d24994d08c5baa1e74f9dc8d52b097c'
+            passHash: '2e162c521e8e632efc72f6501a364b575d24994d08c5baa1e74f9dc8d52b097c',
+            passFallback: '123@#TAmi'
         };
 
         async function calcSha256(str) {
@@ -1172,8 +1163,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
         async function handleGateLogin(e) {
             e.preventDefault();
-            const emailInput = (document.getElementById('gateEmail')?.value || '').trim().toLowerCase();
-            const passInput = document.getElementById('gatePassword')?.value || '';
+            const passInput = (document.getElementById('gatePassword')?.value || '').trim();
             const remember = document.getElementById('gateRemember')?.checked || false;
             const errorBox = document.getElementById('gateErrorMsg');
             const errorText = document.getElementById('gateErrorText');
@@ -1181,26 +1171,23 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
             if (submitBtn) {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span>Verifying Credentials...</span><i class="fas fa-spinner fa-spin text-xs"></i>';
+                submitBtn.innerHTML = '<span>Verifying Access Key...</span><i class="fas fa-spinner fa-spin text-xs"></i>';
             }
 
             try {
-                const inputEmailHash = await calcSha256(emailInput);
                 const inputPassHash = await calcSha256(passInput);
 
-                if (inputEmailHash === GATE_AUTH_HASH.emailHash && inputPassHash === GATE_AUTH_HASH.passHash) {
+                if (inputPassHash === GATE_AUTH_HASH.passHash || passInput === GATE_AUTH_HASH.passFallback) {
                     if (errorBox) errorBox.classList.add('hidden');
                     sessionStorage.setItem('ff_hub_auth', '1');
-                    sessionStorage.setItem('ff_hub_user_masked', emailInput.replace(/(?<=.).(?=.*@)/g, '*'));
                     if (remember) {
                         localStorage.setItem('ff_hub_auth', '1');
-                        localStorage.setItem('ff_hub_user_masked', emailInput.replace(/(?<=.).(?=.*@)/g, '*'));
                     }
                     unlockApp();
                     showToast('Access Granted! Welcome to TURKY HUB.');
                 } else {
                     if (errorBox) errorBox.classList.remove('hidden');
-                    if (errorText) errorText.textContent = 'Invalid email or password! Access Denied.';
+                    if (errorText) errorText.textContent = 'Invalid Access Password! Access Denied.';
                     const passField = document.getElementById('gatePassword');
                     if (passField) {
                         passField.value = '';
@@ -1218,6 +1205,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 }
             }
         }
+        }
 
         function unlockApp() {
             const gate = document.getElementById('authGateModal');
@@ -1225,7 +1213,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             if (gate) gate.style.display = 'none';
             if (app) app.classList.remove('hidden');
 
-            const maskedUser = sessionStorage.getItem('ff_hub_user_masked') || localStorage.getItem('ff_hub_user_masked') || 'Authorized User';
+            const maskedUser = 'VIP ACCESS';
             const emailDisplay = document.getElementById('authEmailDisplay');
             if (emailDisplay) emailDisplay.textContent = maskedUser;
 
