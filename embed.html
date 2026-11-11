@@ -50,6 +50,18 @@
             0% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.85; }
             100% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
         }
+        @keyframes pulse_gold {
+            0%, 100% { filter: drop-shadow(0 0 2px gold) drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
+            50% { filter: drop-shadow(0 0 10px gold) drop-shadow(0 0 16px rgba(255,215,0,0.6)); }
+        }
+        @keyframes fire_text {
+            from { text-shadow: 0 0 2px #ff8c00, 0 0 5px #ff4500; }
+            to { text-shadow: 0 0 6px #ff4500, 0 0 14px #ff8c00, 0 0 20px #ff2200; }
+        }
+        @keyframes glow_legend {
+            0%, 100% { filter: drop-shadow(0 0 3px #8e2de2) drop-shadow(0 1px 3px rgba(0,0,0,0.9)); }
+            50% { filter: drop-shadow(0 0 12px #a855f7) drop-shadow(0 0 20px rgba(168,85,247,0.7)); }
+        }
 
         .sweep-dir-diag_bl_tr .ff-badge-shine-beam,
         .sweep-dir-bl-tr .ff-badge-shine-beam,
@@ -190,28 +202,37 @@
             copyText('<ff-badge id="' + id + '" size="' + reqSize + '"></ff-badge>', 'Web Component Tag Copied!');
         }
 
-        // Fetch Badge Data from API
+        // Fetch Badge Data from API with jsDelivr fallback
         async function loadBadge() {
             let badge = null;
-            try {
-                // Try single item JSON endpoint
-                const res = await fetch(`api/v1/badge/${reqId}.json`);
-                if (res.ok) {
-                    const data = await res.json();
-                    badge = data.item || data;
-                }
-            } catch (e) {}
-
-            if (!badge) {
+            const endpoints = [
+                `api/v1/badge/${reqId}.json`,
+                `${CDN_BASE}api/v1/badge/${reqId}.json`
+            ];
+            for (const ep of endpoints) {
                 try {
-                    // Try master badges.json
-                    const res2 = await fetch('api/badges.json');
-                    if (res2.ok) {
-                        const all = await res2.json();
-                        const list = all.badges || all;
-                        badge = list.find(b => b.id === reqId || (b.slug && b.slug === reqId) || (b.file && b.file.includes(reqId)));
+                    const res = await fetch(ep);
+                    if (res.ok) {
+                        const data = await res.json();
+                        badge = data.item || data;
+                        if (badge && badge.id) break;
                     }
                 } catch (e) {}
+            }
+
+            if (!badge) {
+                const catalogUrls = ['api/badges.json', `${CDN_BASE}api/badges.json`];
+                for (const cu of catalogUrls) {
+                    try {
+                        const res2 = await fetch(cu);
+                        if (res2.ok) {
+                            const all = await res2.json();
+                            const list = all.badges || all;
+                            badge = list.find(b => b.id === reqId || (b.slug && b.slug === reqId) || (b.file && b.file.includes(reqId)));
+                            if (badge) break;
+                        }
+                    } catch (e) {}
+                }
             }
 
             // Fallback default Prime Level 8 if not found
@@ -228,7 +249,8 @@
                     star_theme: 'gold',
                     has_gem_glint: true,
                     pulse_enabled: true,
-                    glow_color: 'rgba(255, 215, 0, 0.85)'
+                    glow_color: 'rgba(255, 215, 0, 0.85)',
+                    bone_data: []
                 };
             }
 
@@ -239,11 +261,24 @@
 
         function renderBadgeOnStage(b) {
             const stage = document.getElementById('badgeStage');
+            const size = reqSize;
+            const glowFilter = (b.glow_enabled !== false && b.glow_color) ? `filter: drop-shadow(0 0 8px ${b.glow_color});` : '';
+
+            if (b.type === 'svg_code' && b.svg_code) {
+                stage.innerHTML = `<div class="ff-badge" style="width:${size}px;height:${size}px;display:inline-flex;align-items:center;justify-content:center;background:transparent !important;${glowFilter}">${b.svg_code}</div>`;
+                return;
+            }
+            if (b.type === 'text_code' && b.text_code) {
+                const scaleFactor = Math.max(1, (size / 24)).toFixed(2);
+                stage.innerHTML = `<div class="ff-badge" style="display:inline-flex;align-items:center;justify-content:center;transform:scale(${scaleFactor});background:transparent !important;${glowFilter}">${b.text_code}</div>`;
+                return;
+            }
+
             const fileName = (b.file && b.file.trim() !== '') ? b.file.trim() : 'ff_ui_prime_icon_08.png';
             const fileUrl = 'badges/' + fileName;
-            const isPrime = (b.prime_level !== undefined && b.prime_level > 0) || (b.name && b.name.toLowerCase().includes('prime'));
-            const lvl = b.prime_level || 8;
-            const size = reqSize;
+            const cdnFileUrl = CDN_BASE + 'badges/' + fileName;
+            const isPrime = (b.type === 'prime_image') || (parseInt(b.prime_level || 0) > 0);
+            const lvl = parseInt(b.prime_level || 0);
 
             const isAnimated = (b.sweep_enabled !== false);
             const sweepDir = b.sweep_direction || 'diag_bl_tr';
@@ -251,14 +286,15 @@
             const sweepSpd = b.sweep_speed || '2.2s';
 
             // Stars
-            const starCount = Math.min(Math.max(parseInt(b.star_density) || (lvl === 8 ? 16 : 0), 0), 50);
+            const rawDensity = (b.star_density !== undefined && b.star_density !== null) ? parseInt(b.star_density) : (lvl === 8 ? 16 : 0);
+            const starCount = Math.min(Math.max(isNaN(rawDensity) ? 0 : rawDensity, 0), 50);
             const starTheme = b.star_theme || 'gold';
             const colorMap = { cyan: '#00f0ff', ruby: '#ef4444', purple: '#c084fc', white: '#ffffff', emerald: '#10b981', amber: '#f59e0b', rainbow: '#ff007f', gold: '#FFFCE0' };
             const starColor = colorMap[starTheme] || '#FFFCE0';
             const starThemeClass = 'star-theme-' + starTheme;
 
             const starList = Array.from({ length: starCount }, (_, i) => 'star-pos-' + (i + 1));
-            const starsHtml = (starCount > 0 && isAnimated) ? `
+            const starsHtml = (starCount > 0) ? `
                 <div class="ff-prime-stars-layer ${starThemeClass}">
                     ${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`).join('')}
                 </div>
@@ -266,22 +302,20 @@
 
             // Continuous Sheen Beam
             const shineHtml = isAnimated ? `
-                <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}'),url('${cdnFileUrl}');mask-image:url('${fileUrl}'),url('${cdnFileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                     <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:${sweepSpd};mix-blend-mode:screen;display:block;"></span>
                 </span>
             ` : '';
 
             // Gem Glint
-            const hasGlint = (b.has_gem_glint !== false) && isAnimated;
+            const hasGlint = (b.has_gem_glint === true || b.has_gem_glint === 'true' || b.has_gem_glint === 1);
             const glintHtml = hasGlint ? '<div class="ff-gem-glint"></div>' : '';
 
-            // Multi-Bone Focal Highlights (Masked inside Badge Metal Texture)
+            // Multi-Bone Focal Highlights (only when bone_data is explicitly configured)
             let innerBonesHtml = '';
             let outerBonesHtml = '';
-            const bones = b.bone_data || [
-                { id: 1, name: 'Crown Apex', x: 50, y: 14, size: 20, color: '#FFD700' },
-                { id: 2, name: 'Center Gem', x: 50, y: 52, size: 24, color: '#FFFFFF' }
-            ];
+            const boneMode = b.bone_mode || 'inside';
+            const bones = Array.isArray(b.bone_data) ? b.bone_data : [];
 
             bones.forEach(pt => {
                 const x = pt.x || 50;
@@ -294,24 +328,26 @@
                     <div style="position:absolute;top:${y}%;left:${x}%;transform:translate(-50%,-50%);width:${Math.max(6, sz * 0.45)}px;height:${Math.max(6, sz * 0.45)}px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px #ffffff, 0 0 18px ${col};mix-blend-mode:screen;pointer-events:none;"></div>
                 `;
 
-                outerBonesHtml += `
-                    <div style="position:absolute;top:${y}%;left:${x}%;transform:translate(-50%,-50%);width:${sz * 3.5}px;height:${sz * 3.5}px;border-radius:50%;background:radial-gradient(circle, ${col} 0%, rgba(255,255,255,0.4) 25%, transparent 70%);mix-blend-mode:screen;filter:blur(8px);opacity:0.65;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;z-index:9;"></div>
-                `;
+                if (boneMode === 'outer' || boneMode === 'dual') {
+                    outerBonesHtml += `
+                        <div style="position:absolute;top:${y}%;left:${x}%;transform:translate(-50%,-50%);width:${sz * 3.5}px;height:${sz * 3.5}px;border-radius:50%;background:radial-gradient(circle, ${col} 0%, rgba(255,255,255,0.4) 25%, transparent 70%);mix-blend-mode:screen;filter:blur(8px);opacity:0.65;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;z-index:9;"></div>
+                    `;
+                }
             });
 
-            const boneInsideHtml = innerBonesHtml ? `
-                <div style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:hidden;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+            const boneInsideHtml = (innerBonesHtml && (boneMode === 'inside' || boneMode === 'dual')) ? `
+                <div style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:hidden;-webkit-mask-image:url('${fileUrl}'),url('${cdnFileUrl}');mask-image:url('${fileUrl}'),url('${cdnFileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                     ${innerBonesHtml}
                 </div>
             ` : '';
 
-            // Aura drop shadow
-            const glowFilter = b.glow_color ? `filter: drop-shadow(0 0 8px ${b.glow_color});` : 'filter: drop-shadow(0 0 8px rgba(255,215,0,0.8));';
+            const wrapClass = isPrime && lvl > 0 ? `ff-prime-badge-wrap ff-prime-lvl-${lvl}` : 'ff-prime-badge-wrap';
+            const animOffClass = (!isAnimated && starCount === 0 && !hasGlint && bones.length === 0) ? ' ff-anim-off' : '';
 
             stage.innerHTML = `
-                <div class="ff-prime-badge-wrap ff-prime-lvl-${lvl}" style="width:${size}px;height:${size}px;position:relative;background:transparent !important;${glowFilter}">
+                <div class="${wrapClass}${animOffClass}" style="width:${size}px;height:${size}px;position:relative;background:transparent !important;${glowFilter}">
                     ${starsHtml}
-                    <img src="${fileUrl}" onerror="this.onerror=null;this.src='${CDN_BASE + 'badges/' + fileName}';" class="ff-badge-img" alt="${b.name}" style="width:100%;height:100%;object-fit:contain;background:transparent !important;display:block;">
+                    <img src="${fileUrl}" onerror="this.onerror=null;this.src='${cdnFileUrl}';" class="ff-badge-img" alt="${b.name}" style="width:100%;height:100%;object-fit:contain;background:transparent !important;display:block;${!isAnimated ? 'animation:none !important;' : ''}">
                     ${shineHtml}
                     ${glintHtml}
                     ${boneInsideHtml}

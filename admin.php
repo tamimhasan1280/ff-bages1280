@@ -157,8 +157,8 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             $filename = 'ff_ui_prime_icon_08.png'; // Sensible default
         }
 
-        $slug = strtolower(preg_replace('/[^a-z0-9-]+/', '-', trim($name)));
-        $cat_slug = strtolower(preg_replace('/[^a-z0-9-]+/', '-', $category));
+        $slug = trim(preg_replace('/[^a-z0-9-]+/', '-', strtolower(trim($name))), '-');
+        $cat_slug = trim(preg_replace('/[^a-z0-9-]+/', '-', strtolower(trim($category))), '-');
 
         // Determine badge type: Prime or Standard Image
         $is_prime = (strpos(strtolower($name), 'prime') !== false || strpos(strtolower($category), 'prime') !== false);
@@ -207,7 +207,7 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
                 'github_raw' => $RAW_BASE . $filename,
                 'statically' => "https://cdn.statically.io/gh/{$REPO_NAME}/main/badges/" . $filename
             ],
-            'direct_url' => "https://cdn.jsdelivr.net/gh/{$REPO_NAME}@main/cdn/embed.html?id={$id}"
+            'direct_url' => "https://cdn.jsdelivr.net/gh/{$REPO_NAME}@main/badges/svg/{$id}.svg"
         ];
 
         // Filter out old badge if original_id or id existed
@@ -2486,15 +2486,16 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         }
 
         function copyActiveAnimatedCDN() {
-            const id = document.getElementById('badgeIdInput')?.value || '120000000880';
-            const url = 'https://cdn.jsdelivr.net/gh/' + '<?= $REPO_NAME ?>' + '@main/cdn/embed.html?id=' + id;
-            copyText(url, 'Animated CDN Player URL Copied! Full live animation with 100% transparency.');
+            const id = document.getElementById('badgeIdInput')?.value || '126393684880';
+            const isHttpHost = (window.location?.protocol || '').startsWith('http') && !(window.location?.hostname || '').includes('jsdelivr');
+            const url = isHttpHost ? (window.location.origin + '/embed.html?id=' + id) : ('embed.html?id=' + id);
+            copyText(url, 'Interactive HTML Player URL Copied! (Serve from web host for full interactive player).');
         }
 
         function copyActiveSvgCDN() {
-            const id = document.getElementById('badgeIdInput')?.value || '120000000880';
+            const id = document.getElementById('badgeIdInput')?.value || '126393684880';
             const url = 'https://cdn.jsdelivr.net/gh/' + '<?= $REPO_NAME ?>' + '@main/badges/svg/' + id + '.svg';
-            copyText(url, 'Animated SVG Image URL Copied! Works inside <img> tag with full animations.');
+            copyText(url, 'Animated SVG CDN URL Copied! 100% transparent & works directly in <img> tags or browsers.');
         }
 
         function copyActiveRawPNG() {
@@ -2504,7 +2505,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         }
 
         function copyActiveCDN() {
-            copyActiveAnimatedCDN();
+            copyActiveSvgCDN();
         }
 
         function copyActiveWebTag() {

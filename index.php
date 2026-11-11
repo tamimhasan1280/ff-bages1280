@@ -1,10 +1,4 @@
 <?php
-// Security Hardening Headers
-header('X-Robots-Tag: noindex, nofollow, noarchive, nosnippet');
-header('X-Content-Type-Options: nosniff');
-header('X-Frame-Options: SAMEORIGIN');
-header('Referrer-Policy: strict-origin-when-cross-origin');
-
 header('Connection: close');
 /**
  * TURKY HUB - Free Fire Items & Badges EXPLORER (OB55 Engine)
@@ -494,28 +488,28 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                                 <button type="button" onclick="copyText(document.getElementById('modalDirectUrl').textContent, 'Direct Image URL copied!')" class="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-[10px] shrink-0 hover:bg-emerald-500/30">Copy</button>
                             </div>
                         </div>
-                        <!-- Live Animated CDN Player URL -->
+                        <!-- Animated SVG CDN URL (Primary Global CDN) -->
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-purple-400 uppercase font-mono font-bold flex items-center gap-1">
+                                <i class="fas fa-file-code"></i> Global Animated SVG CDN URL (for &lt;img&gt; & Browser):
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <code id="modalAnimatedSvgUrl" class="text-[10px] font-mono text-purple-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
+                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedSvgUrl').textContent, 'Animated SVG CDN URL copied!')" class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-[10px] shrink-0 hover:bg-purple-500/30">Copy</button>
+                            </div>
+                        </div>
+
+                        <!-- Live Interactive HTML Player URL -->
                         <div class="space-y-1">
                             <div class="flex items-center justify-between">
                                 <span class="text-[10px] text-amber-400 uppercase font-mono font-bold flex items-center gap-1">
-                                    <i class="fas fa-bolt text-amber-400"></i> Live Animated CDN Player URL:
+                                    <i class="fas fa-bolt text-amber-400"></i> Interactive HTML Player URL (Hosted):
                                 </span>
                                 <a id="modalPlayerOpenLink" href="#" target="_blank" class="text-[9px] text-cyan-400 hover:underline font-mono">Open in New Tab <i class="fas fa-external-link-alt text-[8px]"></i></a>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <code id="modalAnimatedPlayerUrl" class="text-[10px] font-mono text-amber-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
-                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedPlayerUrl').textContent, 'Live Animated Player URL copied!')" class="px-2 py-1 bg-amber-500/20 text-amber-300 rounded text-[10px] shrink-0 hover:bg-amber-500/30">Copy</button>
-                            </div>
-                        </div>
-
-                        <!-- Animated SVG Image URL -->
-                        <div class="space-y-1">
-                            <span class="text-[10px] text-purple-400 uppercase font-mono font-bold flex items-center gap-1">
-                                <i class="fas fa-file-code"></i> Animated SVG Image URL (for &lt;img&gt; tag):
-                            </span>
-                            <div class="flex items-center gap-1.5">
-                                <code id="modalAnimatedSvgUrl" class="text-[10px] font-mono text-purple-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
-                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedSvgUrl').textContent, 'Animated SVG URL copied!')" class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-[10px] shrink-0 hover:bg-purple-500/30">Copy</button>
+                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedPlayerUrl').textContent, 'Interactive HTML Player URL copied!')" class="px-2 py-1 bg-amber-500/20 text-amber-300 rounded text-[10px] shrink-0 hover:bg-amber-500/30">Copy</button>
                             </div>
                         </div>
 
@@ -591,6 +585,19 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
         }
 
         // Render card HTML
+        function buildBoneHtml(item, maskUrl) {
+            if (!item.bone_data || !Array.isArray(item.bone_data) || item.bone_data.length === 0) return '';
+            const innerSpots = item.bone_data.map(b => `
+                <div style="position:absolute;top:${b.y}%;left:${b.x}%;transform:translate(-50%,-50%);width:${(b.size||20)*2.2}px;height:${(b.size||20)*2.2}px;border-radius:50%;background:radial-gradient(circle, #ffffff 0%, ${b.color||'#FFD700'} 35%, transparent 70%);mix-blend-mode:color-dodge;filter:blur(2px);opacity:0.95;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;"></div>
+                <div style="position:absolute;top:${b.y}%;left:${b.x}%;transform:translate(-50%,-50%);width:${Math.max(6, (b.size||20)*0.45)}px;height:${Math.max(6, (b.size||20)*0.45)}px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px #ffffff, 0 0 18px ${b.color||'#FFD700'};mix-blend-mode:screen;pointer-events:none;"></div>
+            `).join('');
+            return `
+                <div class="ff-bone-inside-container" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:hidden;-webkit-mask-image:url('${maskUrl}');mask-image:url('${maskUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                    ${innerSpots}
+                </div>
+            `;
+        }
+
         function renderCards(list) {
             const container = document.getElementById('itemsGrid');
             if (!list || list.length === 0) {
@@ -604,24 +611,13 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
             container.innerHTML = list.map(item => {
                 const isPrime = item.type === 'prime_image' || !!item.prime_level;
-                const fileUrl = item.cdn_urls?.jsdelivr || (CDN_BASE + validFile);
                 const validFile = (item.file && item.file.trim() !== '') ? item.file.trim() : 'FF_UI_Badge_KOL01.png';
+                const fileUrl = item.cdn_urls?.jsdelivr || (CDN_BASE + validFile);
                 const localUrl = 'badges/' + validFile;
                 
                 let previewHtml = '';
 
-                    let boneHtml = '';
-                    if (item.bone_data && Array.isArray(item.bone_data) && item.bone_data.length > 0) {
-                        const innerSpots = item.bone_data.map(b => `
-                            <div style="position:absolute;top:${b.y}%;left:${b.x}%;transform:translate(-50%,-50%);width:${(b.size||20)*2.2}px;height:${(b.size||20)*2.2}px;border-radius:50%;background:radial-gradient(circle, #ffffff 0%, ${b.color||'#FFD700'} 35%, transparent 70%);mix-blend-mode:color-dodge;filter:blur(2px);opacity:0.95;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;"></div>
-                            <div style="position:absolute;top:${b.y}%;left:${b.x}%;transform:translate(-50%,-50%);width:${Math.max(6, (b.size||20)*0.45)}px;height:${Math.max(6, (b.size||20)*0.45)}px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px #ffffff, 0 0 18px ${b.color||'#FFD700'};mix-blend-mode:screen;pointer-events:none;"></div>
-                        `).join('');
-                        boneHtml = `
-                            <div class="ff-bone-inside-container" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:hidden;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
-                                ${innerSpots}
-                            </div>
-                        `;
-                    }
+                const boneHtml = buildBoneHtml(item, localUrl);
 
                 if (isPrime) {
                     const lvl = item.prime_level || 1;
@@ -793,16 +789,25 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             const itemDirect = item.file ? (hostBase + '/badges/' + item.file) : '';
             const itemApi = hostBase + '/api/v1/badge/' + item.id + '.json';
             const itemCdn = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
+            const isHttpHost = (window.location?.protocol || '').startsWith('http') && !(window.location?.hostname || '').includes('jsdelivr');
+            const animPlayerUrl = isHttpHost ? (hostBase + '/embed.html?id=' + item.id) : ('embed.html?id=' + item.id);
+            const animSvgUrl = item.cdn_urls?.animated_svg || ('https://cdn.jsdelivr.net/gh/' + REPO_NAME + '@main/badges/svg/' + item.id + '.svg');
+            const webTagCode = '<ff-badge id="' + item.id + '" size="' + (item.default_size || 32) + '"></ff-badge>';
             
             if (document.getElementById('modalDirectUrl')) document.getElementById('modalDirectUrl').textContent = itemDirect;
             if (document.getElementById('modalCdnUrl')) document.getElementById('modalCdnUrl').textContent = itemCdn;
             if (document.getElementById('modalApiUrl')) document.getElementById('modalApiUrl').textContent = itemApi;
+            if (document.getElementById('modalAnimatedPlayerUrl')) document.getElementById('modalAnimatedPlayerUrl').textContent = animPlayerUrl;
+            if (document.getElementById('modalAnimatedSvgUrl')) document.getElementById('modalAnimatedSvgUrl').textContent = animSvgUrl;
+            if (document.getElementById('modalWebTagCode')) document.getElementById('modalWebTagCode').textContent = webTagCode;
+            if (document.getElementById('modalPlayerOpenLink')) document.getElementById('modalPlayerOpenLink').href = 'embed.html?id=' + item.id;
 
             // Render Modal Preview (Authentic High-Res VFX)
             const previewContainer = document.getElementById('modalItemPreview');
-            const fileUrl = item.cdn_urls?.jsdelivr || (CDN_BASE + validFile);
             const validFile = (item.file && item.file.trim() !== '') ? item.file.trim() : 'FF_UI_Badge_KOL01.png';
-                const localUrl = 'badges/' + validFile;
+            const fileUrl = item.cdn_urls?.jsdelivr || (CDN_BASE + validFile);
+            const localUrl = 'badges/' + validFile;
+            const boneHtml = buildBoneHtml(item, localUrl);
 
             if (item.type === 'prime_image' || item.prime_level) {
                 const lvl = item.prime_level || 1;
@@ -823,7 +828,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 const starsHtml = (starCount > 0) ? `<div class="ff-prime-stars-layer ${starThemeClass}">${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`).join('')}</div>` : '';
 
                 const shineHtml = hasShine ? `
-                    <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                    <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${localUrl}');mask-image:url('${localUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                         <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:${sweepSpd};mix-blend-mode:screen;display:block;"></span>
                     </span>
                 ` : '';
@@ -834,6 +839,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                         <img src="${localUrl}" onerror="this.onerror=null; this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                         ${shineHtml}
                         ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
+                        ${boneHtml}
                     </div>
                 `;
             } else if (item.type === 'image' && item.file) {
@@ -851,7 +857,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 const starsHtml = (starCount > 0) ? `<div class="ff-prime-stars-layer ${starThemeClass}">${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`).join('')}</div>` : '';
 
                 const shineHtml = hasShine ? `
-                    <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                    <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${localUrl}');mask-image:url('${localUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                         <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:${sweepSpd};mix-blend-mode:screen;display:block;"></span>
                     </span>` : '';
 
@@ -864,6 +870,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                         <img src="${localUrl}" onerror="this.onerror=null; this.src='${fileUrl}'" class="ff-badge-img" ${isFullyStatic ? 'style="animation:none !important;"' : ''} alt="${item.name}">
                         ${shineHtml}
                         ${item.has_gem_glint ? '<div class="ff-gem-glint"></div>' : ''}
+                        ${boneHtml}
                     </div>
                 `;
             } else if (item.type === 'svg_code') {

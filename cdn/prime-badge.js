@@ -11,7 +11,10 @@
 
       this.level = Math.max(1, Math.min(8, parseInt(options.level) || 8));
       this.size = options.size || 'md';
-      this.assetPath = (options.assetPath || './').replace(/\/+$/, '') + '/';
+      const defaultCdnAssets = 'https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/';
+      const isLocalHost = (typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname || ''));
+      this.assetPath = options.assetPath ? (options.assetPath.replace(/\/+$/, '') + '/') : (isLocalHost ? 'badges/' : defaultCdnAssets);
+      this.cdnFallbackPath = defaultCdnAssets;
       this.enableTilt = options.tilt !== undefined ? options.tilt : (this.size === 'lg' || this.size === 'xl');
       
       this.particles = [];
@@ -61,6 +64,10 @@
       const fileName = `ff_ui_prime_icon_0${this.level}.png`;
       const fileFullPath = `${this.assetPath}${fileName}`;
       this.img = document.createElement('img');
+      this.img.onerror = () => {
+        this.img.onerror = null;
+        this.img.src = `${this.cdnFallbackPath}${fileName}`;
+      };
       this.img.src = fileFullPath;
       this.img.alt = `Free Fire Prime Level ${this.level}`;
       this.img.className = 'ff-badge-img';

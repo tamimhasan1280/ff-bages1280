@@ -47,11 +47,19 @@ foreach ($badges as $b) {
     if (isset($b['svg_code'])) $entry['svgCode'] = $b['svg_code'];
     if (isset($b['text_code'])) $entry['textCode'] = $b['text_code'];
 
+    $entry['glow_enabled'] = $b['glow_enabled'] ?? true;
+    $entry['pulse_enabled'] = $b['pulse_enabled'] ?? true;
+    $entry['bone_data'] = $b['bone_data'] ?? [];
+    $entry['bone_mode'] = $b['bone_mode'] ?? 'inside';
+    $entry['animated_svg'] = $b['cdn_urls']['animated_svg'] ?? ("https://cdn.jsdelivr.net/gh/{$repo}@main/badges/svg/" . $b['id'] . ".svg");
     $db_entries[$b['slug']] = $entry;
     $db_entries[$b['id']] = $entry;
 }
 
 $db_json = json_encode($db_entries, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+$ff_css_bundle = (file_exists(__DIR__ . '/cdn/prime-badge.css') ? file_get_contents(__DIR__ . '/cdn/prime-badge.css') : '') . "\n" . (file_exists(__DIR__ . '/cdn/ff-badges.css') ? file_get_contents(__DIR__ . '/cdn/ff-badges.css') : '');
+$ff_css_bundle = preg_replace('/[^\x00-\x7F]+/u', '', $ff_css_bundle);
+$ff_css_bundle_json = json_encode($ff_css_bundle);
 
 $js_code = <<<JSEOF
 /**
@@ -68,6 +76,14 @@ $js_code = <<<JSEOF
         github_raw: 'https://raw.githubusercontent.com/{REPO}/main/badges/',
         statically: 'https://cdn.statically.io/gh/{REPO}/main/badges/'
     };
+    const EMBEDDED_CSS = {$ff_css_bundle_json};
+
+    if (typeof document !== 'undefined' && document.head && !document.getElementById('ff-badges-cdn-styles')) {
+        const styleTag = document.createElement('style');
+        styleTag.id = 'ff-badges-cdn-styles';
+        styleTag.textContent = EMBEDDED_CSS + ' @keyframes pulse_bone{0%{transform:translate(-50%,-50%) scale(0.9);opacity:0.85;}100%{transform:translate(-50%,-50%) scale(1.15);opacity:1;}}';
+        document.head.appendChild(styleTag);
+    }
 
     let activeRepo = DEFAULT_REPO;
     let activeCDN = 'jsdelivr';
@@ -156,30 +172,36 @@ $js_code = <<<JSEOF
                 posStyle = 'position:absolute;bottom:-4px;left:-4px;z-index:25;';
             }
 
+            const glowColor = b.glowColor || b.glow_color || 'rgba(255, 215, 0, 0.85)';
+            const glowFilter = (b.glow_enabled !== false) ? ('filter:drop-shadow(0 0 6px ' + glowColor + ') drop-shadow(0 2px 4px rgba(0,0,0,0.85));') : '';
+
             if (b.type === 'svg_code') {
-                return '<div class="ff-badge" style="' + posStyle + 'width:' + size + ';height:' + size + ';user-select:none;" title="' + b.title + '">' + b.svgCode + '</div>';
+                return '<div class="ff-badge" style="' + posStyle + 'width:' + size + ';height:' + size + ';' + glowFilter + 'background:transparent !important;user-select:none;" title="' + b.title + '">' + (b.svgCode || b.svg_code || '') + '</div>';
             }
 
             if (b.type === 'text_code') {
-                return '<span class="ff-badge" style="' + posStyle + 'user-select:none;" title="' + b.title + '">' + b.textCode + '</span>';
+                return '<span class="ff-badge" style="' + posStyle + glowFilter + 'background:transparent !important;user-select:none;" title="' + b.title + '">' + (b.textCode || b.text_code || '') + '</span>';
             }
 
             // Universal Image Asset Renderer (Supports Prime Badges, V-Badges, KOL, Esports, etc.)
             const imgUrl = this.getImageUrl(b.file);
-            const lvl = b.prime_level || 0;
+            const lvl = parseInt(b.prime_level || 0);
             const isPrime = (b.type === 'prime_image' || lvl > 0);
 
             // Independent VFX Controls (Universal for ALL badges, can be turned ON/OFF anytime)
             const hasShine = (b.sweep_enabled === true || b.sweep_enabled === 'true' || b.sweep_enabled === 1);
             const hasGlint = (b.has_gem_glint === true || b.has_gem_glint === 'true' || b.has_gem_glint === 1);
-            let density = (b.star_density !== undefined) ? parseInt(b.star_density) : (lvl === 8 ? 16 : (lvl === 7 ? 12 : (lvl === 6 ? 8 : (lvl === 5 ? 6 : (lvl === 4 ? 4 : 0)))));
-            const starCount = Math.min(Math.max(density, 0), 50);
+            const density = (b.star_density !== undefined && b.star_density !== null) ? parseInt(b.star_density) : (lvl === 8 ? 16 : (lvl === 7 ? 12 : (lvl === 6 ? 8 : (lvl === 5 ? 6 : (lvl === 4 ? 4 : 0)))));
+            const starCount = Math.min(Math.max(isNaN(density) ? 0 : density, 0), 50);
+
+            // Bone Highlights
+            const bones = Array.isArray(b.bone_data) ? b.bone_data : [];
+            const boneMode = b.bone_mode || 'inside';
 
             // Is the badge completely static?
-            const isFullyStatic = (!hasShine && starCount === 0 && !hasGlint);
+            const isFullyStatic = (!hasShine && starCount === 0 && !hasGlint && bones.length === 0);
 
-            const glowColor = b.glowColor || b.glow_color || 'rgba(255, 215, 0, 0.85)';
-            const filterStyle = (b.glow_enabled !== false) ? ('filter:drop-shadow(0 0 6px ' + glowColor + ') drop-shadow(0 2px 4px rgba(0,0,0,0.85));') : '';
+            const filterStyle = glowFilter;
 
             // Radially scattered stars (360 degrees around badge)
             let starsHtml = '';
@@ -191,7 +213,7 @@ $js_code = <<<JSEOF
 
                 const starList = Array.from({length: starCount}, (_, i) => 'star-pos-' + (i + 1));
                 const starDots = starList.map(pos => '<svg class="ff-pinpoint-star ' + pos + '" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="' + starColor + '"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>').join('');
-                starsHtml = '  <div class="ff-prime-stars-layer ' + starThemeClass + '">' + starDots + '</div>\n';
+                starsHtml = '  <div class="ff-prime-stars-layer ' + starThemeClass + '">' + starDots + '</div>';
             }
 
             // Directional Metallic Sheen Sweep
@@ -200,21 +222,44 @@ $js_code = <<<JSEOF
                 const sweepDir = b.sweep_direction || 'diag_bl_tr';
                 const sweepClass = 'sweep-dir-' + sweepDir;
                 const sweepSpd = b.sweep_speed || speed || '2.2s';
-                shineHtml = '  <span class="ff-badge-shine ' + sweepClass + '" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url(\'' + imgUrl + '\');mask-image:url(\'' + imgUrl + '\');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">\n' +
-                            '    <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:' + sweepSpd + ';mix-blend-mode:screen;display:block;"></span>\n' +
-                            '  </span>\n';
+                shineHtml = '  <span class="ff-badge-shine ' + sweepClass + '" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url(\'' + imgUrl + '\');mask-image:url(\'' + imgUrl + '\');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">' +
+                            '    <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:' + sweepSpd + ';mix-blend-mode:screen;display:block;"></span>' +
+                            '  </span>';
             }
 
-            const glintHtml = hasGlint ? '  <div class="ff-gem-glint"></div>\n' : '';
-            const wrapClass = isPrime ? ('ff-prime-badge-wrap ff-prime-lvl-' + lvl) : 'ff-prime-badge-wrap';
+            // Multi-bone focal highlights
+            let boneHtml = '';
+            if (bones.length > 0) {
+                let innerBones = '';
+                let outerBones = '';
+                bones.forEach(pt => {
+                    const bx = pt.x || 50;
+                    const by = pt.y || 50;
+                    const bsz = pt.size || 20;
+                    const bcol = pt.color || '#FFD700';
+                    innerBones += '<div style="position:absolute;top:' + by + '%;left:' + bx + '%;transform:translate(-50%,-50%);width:' + (bsz * 2.2) + 'px;height:' + (bsz * 2.2) + 'px;border-radius:50%;background:radial-gradient(circle,#ffffff 0%,' + bcol + ' 35%,transparent 70%);mix-blend-mode:color-dodge;filter:blur(2px);opacity:0.95;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;"></div>' +
+                                  '<div style="position:absolute;top:' + by + '%;left:' + bx + '%;transform:translate(-50%,-50%);width:' + Math.max(6, bsz * 0.45) + 'px;height:' + Math.max(6, bsz * 0.45) + 'px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px #ffffff,0 0 18px ' + bcol + ';mix-blend-mode:screen;pointer-events:none;"></div>';
+                    if (boneMode === 'outer' || boneMode === 'dual') {
+                        outerBones += '<div style="position:absolute;top:' + by + '%;left:' + bx + '%;transform:translate(-50%,-50%);width:' + (bsz * 3.5) + 'px;height:' + (bsz * 3.5) + 'px;border-radius:50%;background:radial-gradient(circle,' + bcol + ' 0%,rgba(255,255,255,0.4) 25%,transparent 70%);mix-blend-mode:screen;filter:blur(8px);opacity:0.65;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;z-index:9;"></div>';
+                    }
+                });
+                if (boneMode === 'inside' || boneMode === 'dual') {
+                    boneHtml += '<div style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:hidden;-webkit-mask-image:url(\'' + imgUrl + '\');mask-image:url(\'' + imgUrl + '\');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">' + innerBones + '</div>';
+                }
+                boneHtml += outerBones;
+            }
+
+            const glintHtml = hasGlint ? '  <div class="ff-gem-glint"></div>' : '';
+            const wrapClass = (isPrime && lvl > 0) ? ('ff-prime-badge-wrap ff-prime-lvl-' + lvl) : 'ff-prime-badge-wrap';
             const animClass = isFullyStatic ? ' ff-anim-off' : '';
             const imgStyle = isFullyStatic ? 'style="animation:none !important;"' : '';
 
-            return '<div class="' + wrapClass + animClass + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';' + filterStyle + 'position:relative;background:transparent !important;user-select:none;" title="' + b.title + '">\n' +
+            return '<div class="' + wrapClass + animClass + '" style="' + posStyle + 'width:' + size + ';height:' + size + ';' + filterStyle + 'position:relative;background:transparent !important;user-select:none;" title="' + b.title + '">' +
                    starsHtml +
-                   '  <img src="' + imgUrl + '" class="ff-badge-img" ' + imgStyle + ' alt="' + b.name + '">\n' +
+                   '  <img src="' + imgUrl + '" class="ff-badge-img" ' + imgStyle + ' alt="' + b.name + '">' +
                    shineHtml +
                    glintHtml +
+                   boneHtml +
                    '</div>';
         },
 
@@ -749,28 +794,28 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                                 <button type="button" onclick="copyText(document.getElementById('modalDirectUrl').textContent, 'Direct Image URL copied!')" class="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-[10px] shrink-0 hover:bg-emerald-500/30">Copy</button>
                             </div>
                         </div>
-                        <!-- Live Animated CDN Player URL -->
+                        <!-- Animated SVG CDN URL (Primary Global CDN) -->
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-purple-400 uppercase font-mono font-bold flex items-center gap-1">
+                                <i class="fas fa-file-code"></i> Global Animated SVG CDN URL (for &lt;img&gt; & Browser):
+                            </span>
+                            <div class="flex items-center gap-1.5">
+                                <code id="modalAnimatedSvgUrl" class="text-[10px] font-mono text-purple-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
+                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedSvgUrl').textContent, 'Animated SVG CDN URL copied!')" class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-[10px] shrink-0 hover:bg-purple-500/30">Copy</button>
+                            </div>
+                        </div>
+
+                        <!-- Live Interactive HTML Player URL -->
                         <div class="space-y-1">
                             <div class="flex items-center justify-between">
                                 <span class="text-[10px] text-amber-400 uppercase font-mono font-bold flex items-center gap-1">
-                                    <i class="fas fa-bolt text-amber-400"></i> Live Animated CDN Player URL:
+                                    <i class="fas fa-bolt text-amber-400"></i> Interactive HTML Player URL (Hosted):
                                 </span>
                                 <a id="modalPlayerOpenLink" href="#" target="_blank" class="text-[9px] text-cyan-400 hover:underline font-mono">Open in New Tab <i class="fas fa-external-link-alt text-[8px]"></i></a>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <code id="modalAnimatedPlayerUrl" class="text-[10px] font-mono text-amber-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
-                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedPlayerUrl').textContent, 'Live Animated Player URL copied!')" class="px-2 py-1 bg-amber-500/20 text-amber-300 rounded text-[10px] shrink-0 hover:bg-amber-500/30">Copy</button>
-                            </div>
-                        </div>
-
-                        <!-- Animated SVG Image URL -->
-                        <div class="space-y-1">
-                            <span class="text-[10px] text-purple-400 uppercase font-mono font-bold flex items-center gap-1">
-                                <i class="fas fa-file-code"></i> Animated SVG Image URL (for &lt;img&gt; tag):
-                            </span>
-                            <div class="flex items-center gap-1.5">
-                                <code id="modalAnimatedSvgUrl" class="text-[10px] font-mono text-purple-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
-                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedSvgUrl').textContent, 'Animated SVG URL copied!')" class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-[10px] shrink-0 hover:bg-purple-500/30">Copy</button>
+                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedPlayerUrl').textContent, 'Interactive HTML Player URL copied!')" class="px-2 py-1 bg-amber-500/20 text-amber-300 rounded text-[10px] shrink-0 hover:bg-amber-500/30">Copy</button>
                             </div>
                         </div>
 
@@ -846,6 +891,19 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
         }
 
         // Render card HTML
+        function buildBoneHtml(item, maskUrl) {
+            if (!item.bone_data || !Array.isArray(item.bone_data) || item.bone_data.length === 0) return '';
+            const innerSpots = item.bone_data.map(b => `
+                <div style="position:absolute;top:${b.y}%;left:${b.x}%;transform:translate(-50%,-50%);width:${(b.size||20)*2.2}px;height:${(b.size||20)*2.2}px;border-radius:50%;background:radial-gradient(circle, #ffffff 0%, ${b.color||'#FFD700'} 35%, transparent 70%);mix-blend-mode:color-dodge;filter:blur(2px);opacity:0.95;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;"></div>
+                <div style="position:absolute;top:${b.y}%;left:${b.x}%;transform:translate(-50%,-50%);width:${Math.max(6, (b.size||20)*0.45)}px;height:${Math.max(6, (b.size||20)*0.45)}px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px #ffffff, 0 0 18px ${b.color||'#FFD700'};mix-blend-mode:screen;pointer-events:none;"></div>
+            `).join('');
+            return `
+                <div class="ff-bone-inside-container" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:hidden;-webkit-mask-image:url('${maskUrl}');mask-image:url('${maskUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                    ${innerSpots}
+                </div>
+            `;
+        }
+
         function renderCards(list) {
             const container = document.getElementById('itemsGrid');
             if (!list || list.length === 0) {
@@ -859,24 +917,13 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
             container.innerHTML = list.map(item => {
                 const isPrime = item.type === 'prime_image' || !!item.prime_level;
-                const fileUrl = item.cdn_urls?.jsdelivr || (CDN_BASE + validFile);
                 const validFile = (item.file && item.file.trim() !== '') ? item.file.trim() : 'FF_UI_Badge_KOL01.png';
+                const fileUrl = item.cdn_urls?.jsdelivr || (CDN_BASE + validFile);
                 const localUrl = 'badges/' + validFile;
                 
                 let previewHtml = '';
 
-                    let boneHtml = '';
-                    if (item.bone_data && Array.isArray(item.bone_data) && item.bone_data.length > 0) {
-                        const innerSpots = item.bone_data.map(b => `
-                            <div style="position:absolute;top:${b.y}%;left:${b.x}%;transform:translate(-50%,-50%);width:${(b.size||20)*2.2}px;height:${(b.size||20)*2.2}px;border-radius:50%;background:radial-gradient(circle, #ffffff 0%, ${b.color||'#FFD700'} 35%, transparent 70%);mix-blend-mode:color-dodge;filter:blur(2px);opacity:0.95;animation:pulse_bone 2.4s infinite alternate ease-in-out;pointer-events:none;"></div>
-                            <div style="position:absolute;top:${b.y}%;left:${b.x}%;transform:translate(-50%,-50%);width:${Math.max(6, (b.size||20)*0.45)}px;height:${Math.max(6, (b.size||20)*0.45)}px;border-radius:50%;background:#ffffff;box-shadow:0 0 10px #ffffff, 0 0 18px ${b.color||'#FFD700'};mix-blend-mode:screen;pointer-events:none;"></div>
-                        `).join('');
-                        boneHtml = `
-                            <div class="ff-bone-inside-container" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:8;overflow:hidden;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
-                                ${innerSpots}
-                            </div>
-                        `;
-                    }
+                const boneHtml = buildBoneHtml(item, localUrl);
 
                 if (isPrime) {
                     const lvl = item.prime_level || 1;
@@ -1048,16 +1095,25 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             const itemDirect = item.file ? (hostBase + '/badges/' + item.file) : '';
             const itemApi = hostBase + '/api/v1/badge/' + item.id + '.json';
             const itemCdn = item.cdn_urls?.jsdelivr || (item.file ? CDN_BASE + item.file : '');
+            const isHttpHost = (window.location?.protocol || '').startsWith('http') && !(window.location?.hostname || '').includes('jsdelivr');
+            const animPlayerUrl = isHttpHost ? (hostBase + '/embed.html?id=' + item.id) : ('embed.html?id=' + item.id);
+            const animSvgUrl = item.cdn_urls?.animated_svg || ('https://cdn.jsdelivr.net/gh/' + REPO_NAME + '@main/badges/svg/' + item.id + '.svg');
+            const webTagCode = '<ff-badge id="' + item.id + '" size="' + (item.default_size || 32) + '"></ff-badge>';
             
             if (document.getElementById('modalDirectUrl')) document.getElementById('modalDirectUrl').textContent = itemDirect;
             if (document.getElementById('modalCdnUrl')) document.getElementById('modalCdnUrl').textContent = itemCdn;
             if (document.getElementById('modalApiUrl')) document.getElementById('modalApiUrl').textContent = itemApi;
+            if (document.getElementById('modalAnimatedPlayerUrl')) document.getElementById('modalAnimatedPlayerUrl').textContent = animPlayerUrl;
+            if (document.getElementById('modalAnimatedSvgUrl')) document.getElementById('modalAnimatedSvgUrl').textContent = animSvgUrl;
+            if (document.getElementById('modalWebTagCode')) document.getElementById('modalWebTagCode').textContent = webTagCode;
+            if (document.getElementById('modalPlayerOpenLink')) document.getElementById('modalPlayerOpenLink').href = 'embed.html?id=' + item.id;
 
             // Render Modal Preview (Authentic High-Res VFX)
             const previewContainer = document.getElementById('modalItemPreview');
-            const fileUrl = item.cdn_urls?.jsdelivr || (CDN_BASE + validFile);
             const validFile = (item.file && item.file.trim() !== '') ? item.file.trim() : 'FF_UI_Badge_KOL01.png';
-                const localUrl = 'badges/' + validFile;
+            const fileUrl = item.cdn_urls?.jsdelivr || (CDN_BASE + validFile);
+            const localUrl = 'badges/' + validFile;
+            const boneHtml = buildBoneHtml(item, localUrl);
 
             if (item.type === 'prime_image' || item.prime_level) {
                 const lvl = item.prime_level || 1;
@@ -1078,7 +1134,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 const starsHtml = (starCount > 0) ? `<div class="ff-prime-stars-layer ${starThemeClass}">${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`).join('')}</div>` : '';
 
                 const shineHtml = hasShine ? `
-                    <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                    <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${localUrl}');mask-image:url('${localUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                         <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:${sweepSpd};mix-blend-mode:screen;display:block;"></span>
                     </span>
                 ` : '';
@@ -1089,6 +1145,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                         <img src="${localUrl}" onerror="this.onerror=null; this.src='${fileUrl}'" class="ff-badge-img" alt="${item.name}">
                         ${shineHtml}
                         ${hasGlint ? '<div class="ff-gem-glint"></div>' : ''}
+                        ${boneHtml}
                     </div>
                 `;
             } else if (item.type === 'image' && item.file) {
@@ -1106,7 +1163,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 const starsHtml = (starCount > 0) ? `<div class="ff-prime-stars-layer ${starThemeClass}">${starList.map(p => `<svg class="ff-pinpoint-star ${p}" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="${starColor}"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>`).join('')}</div>` : '';
 
                 const shineHtml = hasShine ? `
-                    <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileUrl}');mask-image:url('${fileUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                    <span class="ff-badge-shine ${sweepClass}" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${localUrl}');mask-image:url('${localUrl}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
                         <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:${sweepSpd};mix-blend-mode:screen;display:block;"></span>
                     </span>` : '';
 
@@ -1119,6 +1176,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                         <img src="${localUrl}" onerror="this.onerror=null; this.src='${fileUrl}'" class="ff-badge-img" ${isFullyStatic ? 'style="animation:none !important;"' : ''} alt="${item.name}">
                         ${shineHtml}
                         ${item.has_gem_glint ? '<div class="ff-gem-glint"></div>' : ''}
+                        ${boneHtml}
                     </div>
                 `;
             } else if (item.type === 'svg_code') {
@@ -1376,4 +1434,169 @@ $bundle_code = <<<BUN
 BUN;
 file_put_contents(__DIR__ . '/cdn/prime-badge.bundle.js', $bundle_code);
 
-echo "index.php, index.html, cdn/ff-badges.js, and cdn/prime-badge.bundle.js re-generated with 1:1 Free Fire Prime VFX!\n";
+// 5. GENERATE 100% TRANSPARENT ANIMATED SVGs FOR ALL BADGES (badges/svg/{id}.svg)
+$svg_out_dir = __DIR__ . '/badges/svg';
+if (!is_dir($svg_out_dir)) {
+    @mkdir($svg_out_dir, 0777, true);
+}
+$star_color_map = [
+    'cyan' => '#00f0ff',
+    'ruby' => '#ef4444',
+    'purple' => '#c084fc',
+    'white' => '#ffffff',
+    'emerald' => '#10b981',
+    'amber' => '#f59e0b',
+    'rainbow' => '#ff007f',
+    'gold' => '#FFFCE0'
+];
+$generated_svg_count = 0;
+foreach ($badges as $b) {
+    $bid = $b['id'] ?? '';
+    if (empty($bid)) continue;
+
+    $sweep_enabled = !isset($b['sweep_enabled']) || filter_var($b['sweep_enabled'], FILTER_VALIDATE_BOOLEAN);
+    $sweep_dir = $b['sweep_direction'] ?? 'diag_bl_tr';
+    $sweep_speed = preg_replace('/[^0-9.ms]/', '', (string)($b['sweep_speed'] ?? '2.2s')) ?: '2.2s';
+    $star_density = max(0, min(50, intval($b['star_density'] ?? 0)));
+    $star_theme = $b['star_theme'] ?? 'gold';
+    $star_color = $star_color_map[$star_theme] ?? '#FFFCE0';
+    $bones = (isset($b['bone_data']) && is_array($b['bone_data'])) ? $b['bone_data'] : [];
+    $bone_mode = $b['bone_mode'] ?? 'inside';
+    $glow_enabled = !isset($b['glow_enabled']) || filter_var($b['glow_enabled'], FILTER_VALIDATE_BOOLEAN);
+    $hex_glow = $b['hex_glow'] ?? '#FFD700';
+
+    // Build sheen keyframes for selected direction
+    $sheen_kf = "0% { transform: translate(-140px, 140px) rotate(45deg); } 100% { transform: translate(140px, -140px) rotate(45deg); }";
+    if ($sweep_dir === 'diag_br_tl' || $sweep_dir === 'br_tl') {
+        $sheen_kf = "0% { transform: translate(140px, 140px) rotate(-45deg); } 100% { transform: translate(-140px, -140px) rotate(-45deg); }";
+    } elseif ($sweep_dir === 'diag_tl_br' || $sweep_dir === 'tl_br') {
+        $sheen_kf = "0% { transform: translate(-140px, -140px) rotate(135deg); } 100% { transform: translate(140px, 140px) rotate(135deg); }";
+    } elseif ($sweep_dir === 'diag_tr_bl' || $sweep_dir === 'tr_bl') {
+        $sheen_kf = "0% { transform: translate(140px, -140px) rotate(-135deg); } 100% { transform: translate(-140px, 140px) rotate(-135deg); }";
+    } elseif ($sweep_dir === 'up') {
+        $sheen_kf = "0% { transform: translate(0px, 160px) rotate(90deg); } 100% { transform: translate(0px, -160px) rotate(90deg); }";
+    } elseif ($sweep_dir === 'down') {
+        $sheen_kf = "0% { transform: translate(0px, -160px) rotate(90deg); } 100% { transform: translate(0px, 160px) rotate(90deg); }";
+    } elseif ($sweep_dir === 'right') {
+        $sheen_kf = "0% { transform: translate(-160px, 0px); } 100% { transform: translate(160px, 0px); }";
+    } elseif ($sweep_dir === 'left') {
+        $sheen_kf = "0% { transform: translate(160px, 0px); } 100% { transform: translate(-160px, 0px); }";
+    }
+
+    // Radially distributed pinpoint gunpowder stars (strictly inside 200x200 bounds)
+    $stars_svg = '';
+    if ($star_density > 0) {
+        for ($si = 0; $si < $star_density; $si++) {
+            $angle = ($si * 2 * M_PI / $star_density) - (M_PI / 2);
+            $rad = ($si % 2 === 0) ? 84 : 74;
+            $sx = round(100 + $rad * cos($angle), 1);
+            $sy = round(100 + $rad * sin($angle), 1);
+            $sscale = ($si % 3 === 0) ? 0.52 : 0.38;
+            $sdelay = round(fmod($si * 0.14, 1.8), 2);
+            $stars_svg .= "\n    <g transform=\"translate({$sx}, {$sy}) scale({$sscale})\"><path class=\"star-anim\" style=\"animation-delay:{$sdelay}s;\" d=\"M0,-12 L2.5,-2.5 L12,0 L2.5,2.5 L0,12 L-2.5,2.5 L-12,0 L-2.5,-2.5 Z\" fill=\"{$star_color}\"/><circle cx=\"0\" cy=\"0\" r=\"2.2\" fill=\"#FFFFFF\"/></g>";
+        }
+    }
+
+    // Bone highlight markup (only when bone_data is non-empty)
+    $bones_inside_svg = '';
+    $bones_outer_svg = '';
+    foreach ($bones as $pt) {
+        $bx = floatval($pt['x'] ?? 50) * 2;
+        $by = floatval($pt['y'] ?? 50) * 2;
+        $bsz = max(5, floatval($pt['size'] ?? 20));
+        $bcol = htmlspecialchars((string)($pt['color'] ?? '#FFD700'), ENT_QUOTES, 'UTF-8');
+        $br1 = round($bsz * 0.9, 1);
+        $br2 = round(max(3, $bsz * 0.25), 1);
+        $bones_inside_svg .= "\n    <circle class=\"bone-spot\" cx=\"{$bx}\" cy=\"{$by}\" r=\"{$br1}\" fill=\"{$bcol}\" opacity=\"0.85\" style=\"mix-blend-mode:screen;filter:blur(2px);\"/><circle cx=\"{$bx}\" cy=\"{$by}\" r=\"{$br2}\" fill=\"#FFFFFF\" opacity=\"0.95\"/>";
+        if ($bone_mode === 'outer' || $bone_mode === 'dual') {
+            $bro = round($bsz * 1.4, 1);
+            $bones_outer_svg .= "\n    <circle class=\"bone-spot\" cx=\"{$bx}\" cy=\"{$by}\" r=\"{$bro}\" fill=\"{$bcol}\" opacity=\"0.5\" style=\"mix-blend-mode:screen;filter:blur(6px);\"/>";
+        }
+    }
+
+    // Resolve badge asset geometry into <g id="badgeAsset"> or <image id="badgeAsset">
+    $extra_defs = '';
+    $asset_def_svg = '';
+    $btype = $b['type'] ?? 'image';
+    if ($btype === 'svg_code' && !empty($b['svg_code'])) {
+        $raw_svg = $b['svg_code'];
+        $vb_w = 24;
+        $vb_h = 24;
+        if (preg_match('/viewBox=["\']\s*[0-9.-]+\s+[0-9.-]+\s+([0-9.]+)\s+([0-9.]+)/i', $raw_svg, $vm)) {
+            $vb_w = max(1, floatval($vm[1]));
+            $vb_h = max(1, floatval($vm[2]));
+        }
+        $inner = preg_replace('/^<svg[^>]*>|<\/svg>\s*$/i', '', trim($raw_svg));
+        $inner = preg_replace('/\bid=(["\'])([^"\']+)\1/i', 'id="$2_' . $bid . '"', $inner);
+        $inner = preg_replace('/url\(#([^)]+)\)/i', 'url(#$1_' . $bid . ')', $inner);
+        if (preg_match_all('/<defs[^>]*>(.*?)<\/defs>/is', $inner, $dm)) {
+            $extra_defs .= implode("\n    ", $dm[1]);
+            $inner = preg_replace('/<defs[^>]*>.*?<\/defs>/is', '', $inner);
+        }
+        $scale = round(min(168 / $vb_w, 168 / $vb_h), 4);
+        $tx = round((200 - $vb_w * $scale) / 2, 2);
+        $ty = round((200 - $vb_h * $scale) / 2, 2);
+        $asset_def_svg = "<g id=\"badgeAsset\" transform=\"translate({$tx}, {$ty}) scale({$scale})\">{$inner}</g>";
+    } elseif ($btype === 'text_code') {
+        $txt_label = 'PRO';
+        if (!empty($b['text_code'])) {
+            $plain = trim(strip_tags($b['text_code']));
+            if ($plain !== '') $txt_label = htmlspecialchars($plain, ENT_QUOTES, 'UTF-8');
+        }
+        $extra_defs .= "<linearGradient id=\"fireTxtGrad_{$bid}\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\"><stop offset=\"0%\" stop-color=\"#FFFCE0\"/><stop offset=\"45%\" stop-color=\"#F9D423\"/><stop offset=\"100%\" stop-color=\"#FF5100\"/></linearGradient>";
+        $asset_def_svg = "<g id=\"badgeAsset\"><text x=\"100\" y=\"122\" text-anchor=\"middle\" font-family=\"Orbitron, Arial Black, Impact, sans-serif\" font-weight=\"900\" font-size=\"62\" letter-spacing=\"4\" fill=\"url(#fireTxtGrad_{$bid})\" stroke=\"#FF4500\" stroke-width=\"2\">{$txt_label}</text></g>";
+    } else {
+        $bfile = $b['file'] ?? 'ff_ui_prime_icon_08.png';
+        $fpath = __DIR__ . '/badges/' . $bfile;
+        if (!file_exists($fpath)) {
+            $fpath = __DIR__ . '/badges/ff_ui_prime_icon_08.png';
+        }
+        $ext = strtolower(pathinfo($fpath, PATHINFO_EXTENSION));
+        $mime = ($ext === 'svg') ? 'image/svg+xml' : (($ext === 'webp') ? 'image/webp' : (($ext === 'jpg' || $ext === 'jpeg') ? 'image/jpeg' : 'image/png'));
+        $b64 = base64_encode(file_get_contents($fpath));
+        $asset_def_svg = "<image id=\"badgeAsset\" href=\"data:{$mime};base64,{$b64}\" width=\"200\" height=\"200\" preserveAspectRatio=\"xMidYMid meet\" />";
+    }
+
+    $glow_filter_attr = $glow_enabled ? "filter=\"url(#badgeGlow)\"" : "";
+    $glow_def = $glow_enabled ? "<filter id=\"badgeGlow\" x=\"-25%\" y=\"-25%\" width=\"150%\" height=\"150%\"><feDropShadow dx=\"0\" dy=\"0\" stdDeviation=\"4\" flood-color=\"" . htmlspecialchars($hex_glow, ENT_QUOTES, 'UTF-8') . "\" flood-opacity=\"0.65\"/></filter>" : "";
+    $sheen_layer = $sweep_enabled ? "\n  <g mask=\"url(#badgeMask)\">\n    <rect class=\"sheen-beam\" x=\"-60\" y=\"-60\" width=\"320\" height=\"70\" fill=\"url(#sheenGrad)\" />\n  </g>" : "";
+    $bones_inside_layer = (!empty($bones_inside_svg) && ($bone_mode === 'inside' || $bone_mode === 'dual')) ? "\n  <g mask=\"url(#badgeMask)\">{$bones_inside_svg}\n  </g>" : "";
+    $bones_outer_layer = !empty($bones_outer_svg) ? "\n  <g>{$bones_outer_svg}\n  </g>" : "";
+
+    $svg_doc = <<<SVGEOF
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 200" width="200" height="200" style="background:transparent;">
+  <defs>
+    <style>
+      @keyframes ff_sheen { {$sheen_kf} }
+      @keyframes ff_star_twinkle { 0%, 100% { transform: scale(0.55) rotate(0deg); opacity: 0.35; } 50% { transform: scale(1.2) rotate(180deg); opacity: 1; } }
+      @keyframes ff_bone_pulse { 0% { transform: scale(0.88); opacity: 0.75; } 100% { transform: scale(1.12); opacity: 1; } }
+      .sheen-beam { animation: ff_sheen {$sweep_speed} infinite linear; }
+      .star-anim { transform-box: fill-box; transform-origin: center; animation: ff_star_twinkle 1.8s infinite ease-in-out; }
+      .bone-spot { transform-box: fill-box; transform-origin: center; animation: ff_bone_pulse 2s infinite alternate ease-in-out; }
+    </style>
+    <filter id="alphaWhite"><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/></filter>
+    {$glow_def}
+    {$extra_defs}
+    {$asset_def_svg}
+    <mask id="badgeMask" style="mask-type:alpha">
+      <use href="#badgeAsset" filter="url(#alphaWhite)" />
+    </mask>
+    <linearGradient id="sheenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="35%" stop-color="white" stop-opacity="0"/>
+      <stop offset="50%" stop-color="white" stop-opacity="0.95"/>
+      <stop offset="65%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g id="starsLayer">{$stars_svg}
+  </g>
+  <g {$glow_filter_attr}>
+    <use href="#badgeAsset" />
+  </g>{$sheen_layer}{$bones_inside_layer}{$bones_outer_layer}
+</svg>
+SVGEOF;
+
+    file_put_contents($svg_out_dir . '/' . $bid . '.svg', $svg_doc);
+    $generated_svg_count++;
+}
+
+echo "index.php, index.html, cdn/ff-badges.js, cdn/prime-badge.bundle.js, and {$generated_svg_count} SVGs re-generated with 100% transparency!\n";
