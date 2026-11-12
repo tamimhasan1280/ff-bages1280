@@ -647,17 +647,13 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     <i class="fas fa-user-astronaut text-xs"></i>
                     <span>Player Inspector</span>
                 </a>
-                <a href="admin.php" class="apple-nav-item px-3.5 py-1.5 text-xs flex items-center gap-2">
-                    <i class="fas fa-crown text-xs"></i>
-                    <span>Admin Panel</span>
-                </a>
                 <a href="ai-integration.php" class="apple-nav-item px-3.5 py-1.5 text-xs flex items-center gap-2">
                     <i class="fas fa-robot text-xs"></i>
                     <span>AI Integration</span>
                 </a>
             </nav>
 
-            <!-- Right Actions: Theme Switcher, Auth Pill, Admin Pill & Mobile Toggle -->
+            <!-- Right Actions: Theme Switcher, Auth Pill & Mobile Toggle -->
             <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
                 <!-- Sun / Moon Theme Switcher -->
                 <button type="button" data-theme-toggle class="theme-toggle-btn" aria-label="Switch Theme" aria-pressed="false">
@@ -678,17 +674,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     </button>
                 </div>
 
-                <!-- Admin Profile Pill -->
-                <a href="admin.php" class="hidden sm:flex apple-surface-secondary items-center gap-2 px-3 py-1.5 hover:border-red-500/40 transition">
-                    <div class="w-6 h-6 rounded-lg bg-red-500 flex items-center justify-center font-bold text-white apple-keep-white text-[11px]">
-                        A
-                    </div>
-                    <div class="hidden xl:block text-left leading-tight">
-                        <div class="text-xs font-semibold text-white">Admin</div>
-                        <div class="text-[9px] text-gray-400 font-medium">Studio</div>
-                    </div>
-                </a>
-
                 <!-- Mobile Menu Toggle -->
                 <button type="button" data-mobile-nav-toggle aria-controls="mobileNavDrawer" aria-expanded="false" aria-label="Toggle Menu" class="lg:hidden apple-btn-secondary w-9 h-9 flex items-center justify-center cursor-pointer">
                     <i class="fas fa-bars text-xs"></i>
@@ -707,10 +692,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <i class="fas fa-shield-halved text-red-500 w-4"></i>
                 <span>Prime Level (1-8)</span>
             </button>
-            <a href="admin.php" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-white/5 text-white">
-                <i class="fas fa-crown text-red-500 w-4"></i>
-                <span>Admin Panel</span>
-            </a>
             <a href="ai-integration.php" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-white/5 text-white">
                 <i class="fas fa-robot text-red-500 w-4"></i>
                 <span>AI Integration</span>
@@ -752,10 +733,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                         OB55 Engine Active
                     </span>
-                    <a href="admin.php?new=1" class="apple-btn-primary apple-keep-white px-4 py-2 text-xs flex items-center gap-2">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Add Badge in Admin</span>
-                    </a>
                 </div>
             </div>
         </section>
@@ -845,7 +822,6 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <span>· OB55 Headless Badge CDN</span>
             </div>
             <div class="flex flex-wrap items-center gap-4">
-                <a href="admin.php" class="hover:text-red-500 transition">Admin Studio</a>
                 <a href="ai-integration.php" class="hover:text-red-500 transition">AI Integration</a>
                 <span class="font-mono text-[11px]">Transparent Vector &amp; PNG Delivery</span>
             </div>

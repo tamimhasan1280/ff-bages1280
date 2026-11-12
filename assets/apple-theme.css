@@ -541,16 +541,20 @@ html[data-theme="light"] .apple-ui .cyber-code-block pre {
     border: 1px solid var(--apple-accent-border) !important;
 }
 
-/* Respect Reduced Motion Accessibility */
+/* Respect Reduced Motion Accessibility for UI chrome while preserving live Badge VFX animations */
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
     }
-    .apple-ui *,
-    .apple-ui *::before,
-    .apple-ui *::after {
+    body.apple-ui,
+    .apple-ui .apple-navbar,
+    .apple-ui .apple-window,
+    .apple-ui .item-card,
+    .apple-ui .apple-btn-primary,
+    .apple-ui .apple-btn-secondary,
+    .apple-ui .apple-nav-item,
+    .apple-ui .theme-toggle-btn,
+    .apple-ui .macos-dot {
         transition-duration: 0.01ms !important;
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
     }
 }
