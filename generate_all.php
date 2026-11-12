@@ -680,7 +680,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     OB55 Engine Active
                 </span>
-                <a href="admin.php" class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-yellow-300 border border-yellow-500/30 text-xs font-bold flex items-center gap-2 transition">
+                <a href="admin.php?new=1" class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-yellow-300 border border-yellow-500/30 text-xs font-bold flex items-center gap-2 transition">
                     <i class="fas fa-plus-circle"></i>
                     <span>Add Badge in Admin</span>
                 </a>

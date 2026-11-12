@@ -104,6 +104,118 @@ $effects_file = __DIR__ . '/api/effects.json';
 $effects_data = file_exists($effects_file) ? json_decode(file_get_contents($effects_file), true) : ['presets' => []];
 $presets_list = $effects_data['presets'] ?? [];
 
+$batch_notice = '';
+if ($is_logged_in && isset($_GET['batch_done'])) {
+    $batch_notice = trim((string)($_GET['msg'] ?? 'Batch action applied across selected badges!'));
+}
+
+// Handle Batch Actions for Multi-Selected Badges
+if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['batch_action'])) {
+    $action = trim($_POST['batch_action'] ?? '');
+    $raw_ids = json_decode($_POST['selected_ids'] ?? '[]', true);
+    if (!is_array($raw_ids)) {
+        $raw_ids = array_filter(array_map('trim', explode(',', (string)($_POST['selected_ids'] ?? ''))));
+    }
+    $selected_map = [];
+    foreach ($raw_ids as $sid) {
+        $sid = trim((string)$sid);
+        if ($sid !== '') $selected_map[$sid] = true;
+    }
+
+    if (empty($selected_map)) {
+        $error_msg = 'Please select at least one badge first.';
+    } else {
+        $data = file_exists($json_file) ? json_decode(file_get_contents($json_file), true) : ['badges' => []];
+        $badges_list = $data['badges'] ?? [];
+        $affected = 0;
+        $purge_paths = ['api/badges.json', 'api/v1/badges.json', 'cdn/ff-badges.js'];
+
+        if ($action === 'delete_selected') {
+            $kept = [];
+            foreach ($badges_list as $b) {
+                $bid = (string)($b['id'] ?? '');
+                if (isset($selected_map[$bid])) {
+                    $affected++;
+                    $bslug = trim((string)($b['slug'] ?? ''));
+                    @unlink(__DIR__ . "/api/v1/badge/{$bid}.json");
+                    if ($bslug !== '') @unlink(__DIR__ . "/api/v1/badge/{$bslug}.json");
+                    @unlink(__DIR__ . "/badges/svg/{$bid}.svg");
+                } else {
+                    $kept[] = $b;
+                }
+            }
+            $badges_list = $kept;
+            $batch_notice = "Deleted {$affected} selected badge(s) and cleaned up CDN assets.";
+        } else {
+            foreach ($badges_list as &$b) {
+                $bid = (string)($b['id'] ?? '');
+                if (!isset($selected_map[$bid])) continue;
+                $affected++;
+                $bslug = trim((string)($b['slug'] ?? ''));
+                $purge_paths[] = "badges/svg/{$bid}.svg";
+                $purge_paths[] = "api/v1/badge/{$bid}.json";
+                if ($bslug !== '') $purge_paths[] = "api/v1/badge/{$bslug}.json";
+
+                if ($action === 'enable_vfx') {
+                    $b['sweep_enabled'] = true;
+                    $b['has_gem_glint'] = true;
+                    $b['pulse_enabled'] = true;
+                    if (!empty($b['prime_level']) && intval($b['star_density'] ?? 0) === 0) {
+                        $b['star_density'] = (intval($b['prime_level']) >= 8) ? 16 : 8;
+                        $b['star_type'] = 'gunpowder';
+                    }
+                } elseif ($action === 'disable_vfx') {
+                    $b['sweep_enabled'] = false;
+                    $b['has_gem_glint'] = false;
+                    $b['pulse_enabled'] = false;
+                    $b['star_density'] = 0;
+                    $b['star_type'] = 'none';
+                } elseif ($action === 'enable_glow') {
+                    $b['glow_enabled'] = true;
+                } elseif ($action === 'disable_glow') {
+                    $b['glow_enabled'] = false;
+                } elseif ($action === 'apply_studio_vfx') {
+                    $st = json_decode($_POST['studio_vfx_payload'] ?? '{}', true);
+                    if (is_array($st)) {
+                        $m = !empty($st['master']);
+                        $b['sweep_enabled'] = $m && !empty($st['sweep']);
+                        $b['sweep_direction'] = trim((string)($st['dir'] ?? ($b['sweep_direction'] ?? 'diag_bl_tr')));
+                        $b['sweep_speed'] = trim((string)($st['speed'] ?? ($b['sweep_speed'] ?? '2.2s')));
+                        $b['star_density'] = $m ? max(0, min(50, intval($st['stars'] ?? 0))) : 0;
+                        $b['star_type'] = ($b['star_density'] > 0) ? 'gunpowder' : 'none';
+                        $b['star_theme'] = trim((string)($st['theme'] ?? ($b['star_theme'] ?? 'gold')));
+                        $b['has_gem_glint'] = $m && !empty($st['glint']);
+                        $b['pulse_enabled'] = $m && !empty($st['pulse']);
+                        if (array_key_exists('glow', $st)) {
+                            $b['glow_enabled'] = !empty($st['glow']);
+                        }
+                    }
+                }
+            }
+            unset($b);
+            $batch_notice = "Updated {$affected} selected badge(s) & synced CDN/SVGs.";
+        }
+
+        $data['badges'] = array_values($badges_list);
+        $data['total_badges'] = count($data['badges']);
+        $encoded_json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        file_put_contents($json_file, $encoded_json);
+        file_put_contents($v1_json, $encoded_json);
+
+        if (file_exists(__DIR__ . '/generate_all.php')) {
+            shell_exec('php ' . escapeshellarg(__DIR__ . '/generate_all.php') . ' 2>&1');
+        }
+        if (is_dir('D:\\espors update\\ff all vages')) {
+            shell_exec('robocopy "' . __DIR__ . '" "D:\\espors update\\ff all vages" /MIR /FFT /Z /NP /R:1 /W:1 >nul 2>&1');
+        }
+        shell_exec('git -C ' . escapeshellarg(__DIR__) . ' add -A && git -C ' . escapeshellarg(__DIR__) . ' commit -m "feat(admin): batch ' . addslashes($action) . ' (' . $affected . ' badges)" >nul 2>&1');
+        shell_exec('git -C ' . escapeshellarg(__DIR__) . ' push origin main >nul 2>&1');
+        purge_jsdelivr_paths($REPO_NAME, array_unique($purge_paths));
+
+        $current_badges = $data['badges'];
+    }
+}
+
 // Handle Badge Creation or In-Place Update
 if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_badge'])) {
     $original_id = trim($_POST['original_id'] ?? '');
@@ -170,21 +282,39 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
 
         $filename = '';
         $has_uploaded_new = (isset($_FILES['badge_file']) && $_FILES['badge_file']['error'] === UPLOAD_ERR_OK);
+        $processed_png_data = trim($_POST['processed_png_data'] ?? '');
 
-        // Handle File Upload
-        if ($has_uploaded_new) {
+        // Priority 1: Background-removed / processed transparent PNG Data URL from Studio Canvas
+        if ($processed_png_data !== '' && strpos($processed_png_data, 'data:image/png;base64,') === 0) {
+            $b64_payload = substr($processed_png_data, strlen('data:image/png;base64,'));
+            $bin = base64_decode($b64_payload, true);
+            if ($bin !== false && @getimagesizefromstring($bin) !== false) {
+                $clean_slug = strtolower(preg_replace('/[^a-z0-9_-]/', '', str_replace(' ', '_', $name)));
+                if ($clean_slug === '') $clean_slug = 'badge';
+                $filename = 'badge_' . $clean_slug . '_' . time() . '.png';
+                if (file_put_contents(__DIR__ . '/badges/' . $filename, $bin) !== false) {
+                    $has_uploaded_new = true;
+                } else {
+                    $filename = '';
+                }
+            }
+        }
+
+        // Priority 2: Direct Uploaded File from Folder
+        if ($filename === '' && isset($_FILES['badge_file']) && $_FILES['badge_file']['error'] === UPLOAD_ERR_OK) {
             $ext = strtolower(pathinfo($_FILES['badge_file']['name'], PATHINFO_EXTENSION));
             if (!in_array($ext, ['png', 'svg', 'webp', 'jpg'])) {
                 $ext = 'png';
             }
             $clean_slug = strtolower(preg_replace('/[^a-z0-9_-]/', '', str_replace(' ', '_', $name)));
+            if ($clean_slug === '') $clean_slug = 'badge';
             $filename = 'badge_' . $clean_slug . '_' . time() . '.' . $ext;
             $target_path = __DIR__ . '/badges/' . $filename;
             
             if (!move_uploaded_file($_FILES['badge_file']['tmp_name'], $target_path)) {
                 $filename = '';
             }
-        } elseif (!empty($_POST['existing_file'])) {
+        } elseif ($filename === '' && !empty($_POST['existing_file'])) {
             $filename = trim($_POST['existing_file']);
         }
 
@@ -629,6 +759,23 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
     <main class="flex-1 max-w-[1780px] mx-auto px-4 sm:px-6 py-6 space-y-6 w-full">
 
+        <?php if (!empty($error_msg)): ?>
+            <div class="p-4 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-200 text-xs font-bold flex items-center gap-2">
+                <i class="fas fa-triangle-exclamation text-rose-400"></i>
+                <span><?= htmlspecialchars($error_msg) ?></span>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($batch_notice)): ?>
+            <div class="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-200 text-xs font-bold flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-check-double text-emerald-400"></i>
+                    <span><?= htmlspecialchars($batch_notice) ?></span>
+                </div>
+                <span class="text-[10px] font-mono text-emerald-300/80">Synced across CDN, SVGs &amp; API</span>
+            </div>
+        <?php endif; ?>
+
         <!-- SUCCESS ALERT: INSTANT CDN LINKS FOR DEPLOYED BADGE -->
         <?php if ($success_item): ?>
             <section class="glass-panel p-6 border-emerald-500/40 relative overflow-hidden bg-gradient-to-r from-emerald-950/30 via-[#0e1224] to-[#0e1224] animate-in fade-in duration-300">
@@ -721,15 +868,20 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     </div>
                 </div>
 
-                <!-- Mode Indicator & Create New Reset Button -->
-                <div class="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
+                <!-- Mode Indicator, Add Badge & Create New Reset Buttons -->
+                <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto justify-between lg:justify-end">
                     <div id="editorModeBadge" class="px-3.5 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-800/50 text-cyan-300 text-xs font-mono flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
                         <span id="editorModeText">Mode: Ready</span>
                     </div>
 
-                    <button type="button" onclick="startNewBadgeCreation()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer">
-                        <i class="fas fa-plus text-amber-400"></i>
+                    <button type="button" id="addBadgeFolderBtn" onclick="triggerAddBadgeFromFolder()" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-black font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-amber-500/20 transition cursor-pointer">
+                        <i class="fas fa-folder-plus"></i>
+                        <span>Add Badge (Folder)</span>
+                    </button>
+
+                    <button type="button" id="createNewBadgeBtn" onclick="startNewBadgeCreation(false)" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition cursor-pointer">
+                        <i class="fas fa-plus text-amber-300"></i>
                         <span>Create New Badge</span>
                     </button>
                 </div>
@@ -781,6 +933,24 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <div id="liveStageContainer" class="checker-bg w-full h-64 rounded-2xl flex items-center justify-center p-4 border border-[#23294c] relative overflow-hidden transition-all duration-300 shadow-inner">
                         <div id="liveBadgeStage" class="relative z-10 flex items-center justify-center w-full h-full">
                             <!-- Populated in real-time by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Stage Quick Upload & Background Removal Bar -->
+                    <div class="space-y-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" onclick="triggerFolderPickInCurrentMode()" class="py-2 px-3 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[11px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer">
+                                <i class="fas fa-folder-open text-amber-400"></i>
+                                <span>Upload From Folder</span>
+                            </button>
+                            <button type="button" id="stageRemoveBgBtn" onclick="autoRemoveBackground()" class="py-2 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/40 text-[11px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer">
+                                <i class="fas fa-scissors text-emerald-400"></i>
+                                <span>Remove Background</span>
+                            </button>
+                        </div>
+                        <div id="cutoutStatusRow" class="hidden items-center justify-between px-3 py-1.5 rounded-xl bg-emerald-950/50 border border-emerald-500/30 text-[10px] font-mono text-emerald-300">
+                            <span><i class="fas fa-check-circle text-emerald-400 mr-1"></i>Transparent Cutout Ready to Save</span>
+                            <button type="button" onclick="restoreOriginalUpload()" class="text-amber-300 hover:underline cursor-pointer">Reset Original</button>
                         </div>
                     </div>
 
@@ -894,6 +1064,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <form method="POST" action="admin.php" enctype="multipart/form-data" id="badgeEditorForm" onsubmit="return handleBadgeSubmit(event)" class="space-y-6">
                     <input type="hidden" name="save_badge" value="1">
                     <input type="hidden" name="original_id" id="originalIdInput" value="">
+                    <input type="hidden" name="processed_png_data" id="processedPngDataInput" value="">
 
                     <!-- ============================================================== -->
                     <!-- TAB 1: COLOR GRADING & PRO IMAGE STUDIO (CLEAN, NO VFX CLUTTER) -->
@@ -1409,14 +1580,18 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                                 <!-- Upload Custom PNG -->
                                 <div class="space-y-1.5">
-                                    <span class="text-[11px] text-gray-400">Or Upload Custom PNG:</span>
+                                    <span class="text-[11px] text-gray-400">Or Upload From Folder:</span>
                                     <label class="flex flex-col items-center justify-center p-3 rounded-xl border border-dashed border-[#23294c] hover:border-amber-400/50 bg-[#080a18] cursor-pointer transition">
                                         <div class="flex items-center gap-2 text-xs text-gray-400">
                                             <i class="fas fa-cloud-arrow-up text-amber-400"></i>
-                                            <span id="uploadPromptText">Upload Transparent PNG</span>
+                                            <span id="uploadPromptText">Upload Image From Folder</span>
                                         </div>
-                                        <input type="file" name="badge_file" id="badgeFileInput" accept=".png,.svg,.webp,.jpg" onchange="previewSelectedFile(event)" class="hidden">
+                                        <input type="file" name="badge_file" id="badgeFileInput" accept=".png,.svg,.webp,.jpg,.jpeg" onchange="previewSelectedFile(event)" class="hidden">
                                     </label>
+                                    <button type="button" onclick="autoRemoveBackground()" class="w-full py-1.5 px-3 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold flex items-center justify-center gap-1.5 transition cursor-pointer">
+                                        <i class="fas fa-scissors"></i>
+                                        <span>Remove Uploaded Image Background (1-Click Cutout)</span>
+                                    </button>
                                 </div>
 
                             </div>
@@ -1456,16 +1631,60 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 </div>
 
                 <!-- Filter & Search -->
-                <div class="flex items-center gap-3">
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <button type="button" onclick="toggleSelectAllVisible(true)" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-200 border border-white/10 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer">
+                        <i class="fas fa-check-double text-amber-400"></i>
+                        <span>Select All</span>
+                    </button>
                     <input type="text" id="adminSearchInput" oninput="filterAdminBadges(this.value)" placeholder="Search name or 12...80 ID..." class="bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition w-64">
                 </div>
             </div>
+
+            <!-- Batch Action Toolbar (Shown when 1+ badges are selected) -->
+            <div id="batchActionBar" class="hidden flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-amber-500/10 border border-amber-400/40">
+                <div class="flex items-center gap-2.5 text-xs font-bold text-amber-200">
+                    <span class="px-2.5 py-1 rounded-lg bg-amber-400 text-black font-mono font-extrabold" id="selectedBadgeCount">0</span>
+                    <span>badge(s) selected</span>
+                </div>
+                <div class="flex flex-wrap items-center gap-2 text-[11px] font-bold">
+                    <button type="button" onclick="submitBatchAction('enable_vfx')" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 transition cursor-pointer">
+                        <i class="fas fa-wand-magic-sparkles mr-1"></i>Enable VFX
+                    </button>
+                    <button type="button" onclick="submitBatchAction('disable_vfx')" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-gray-200 border border-white/20 transition cursor-pointer">
+                        <i class="fas fa-ban mr-1"></i>Disable VFX (Static)
+                    </button>
+                    <button type="button" onclick="submitBatchAction('enable_glow')" class="px-3 py-1.5 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/40 transition cursor-pointer">
+                        <i class="fas fa-sun mr-1"></i>Glow ON
+                    </button>
+                    <button type="button" onclick="submitBatchAction('disable_glow')" class="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 border border-white/15 transition cursor-pointer">
+                        <i class="fas fa-moon mr-1"></i>Glow OFF
+                    </button>
+                    <button type="button" onclick="submitBatchAction('apply_studio_vfx')" class="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-400/40 transition cursor-pointer">
+                        <i class="fas fa-sliders mr-1"></i>Apply Studio VFX
+                    </button>
+                    <button type="button" onclick="submitBatchAction('delete_selected')" class="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 transition cursor-pointer">
+                        <i class="fas fa-trash-can mr-1"></i>Delete Selected
+                    </button>
+                    <button type="button" onclick="toggleSelectAllVisible(false)" class="px-2.5 py-1.5 rounded-xl bg-black/40 hover:bg-black/60 text-gray-400 hover:text-white border border-white/10 transition cursor-pointer">
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <form method="POST" action="admin.php" id="batchActionForm" class="hidden">
+                <input type="hidden" name="batch_action" id="batchActionInput" value="">
+                <input type="hidden" name="selected_ids" id="batchSelectedIdsInput" value="[]">
+                <input type="hidden" name="studio_vfx_payload" id="batchStudioVfxPayload" value="{}">
+            </form>
 
             <!-- Table of Badges -->
             <div class="overflow-x-auto custom-scroll">
                 <table class="w-full text-left text-xs border-collapse">
                     <thead>
                         <tr class="border-b border-[#1f2544] text-[11px] uppercase text-gray-400 font-mono">
+                            <th class="py-3 px-3 w-10" onclick="event.stopPropagation()">
+                                <input type="checkbox" id="selectAllBadgesCheck" onchange="toggleSelectAllVisible(this.checked)" class="w-4 h-4 rounded bg-gray-800 border-gray-600 text-amber-400 cursor-pointer" title="Select all visible badges">
+                            </th>
                             <th class="py-3 px-3">Live Badge</th>
                             <th class="py-3 px-3">Item ID (12...80)</th>
                             <th class="py-3 px-3">Badge Name</th>
@@ -1503,6 +1722,11 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             ?>
                             <tr class="hover:bg-white/[0.04] transition admin-badge-row cursor-pointer" onclick="handleRowClick(event, '<?= $bId ?>')" data-name="<?= htmlspecialchars(strtolower($bName)) ?>" data-id="<?= htmlspecialchars(strtolower($bId)) ?>">
                                 
+                                <!-- Multi-Select Checkbox -->
+                                <td class="py-3 px-3" onclick="event.stopPropagation()">
+                                    <input type="checkbox" class="badge-select-chk w-4 h-4 rounded bg-gray-800 border-gray-600 text-amber-400 cursor-pointer" value="<?= $bId ?>" onclick="handleBadgeCheckboxClick(event, this)">
+                                </td>
+
                                 <!-- Preview Cell -->
                                 <td class="py-3 px-3">
                                     <div class="w-12 h-12 rounded-xl bg-[#080a18] border border-white/5 flex items-center justify-center p-1 relative overflow-hidden">
@@ -1634,6 +1858,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
         let currentActiveBadge = null;
         let currentPreviewImg = 'badges/ff_ui_prime_icon_08.png';
+        let rawUploadedDataUrl = null;
+        let lastCheckedBadgeIdx = -1;
         let stageDisplaySize = 110;
 
         // Multi-Bone Management State
@@ -1710,23 +1936,76 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         }
 
         // Existing Asset Selection Dropdown
+        function clearCutoutState() {
+            const procInput = document.getElementById('processedPngDataInput');
+            if (procInput) procInput.value = '';
+            const statusRow = document.getElementById('cutoutStatusRow');
+            if (statusRow) {
+                statusRow.classList.add('hidden');
+                statusRow.classList.remove('flex');
+            }
+        }
+
+        function restoreOriginalUpload() {
+            if (rawUploadedDataUrl) {
+                currentPreviewImg = rawUploadedDataUrl;
+            } else if (currentActiveBadge && currentActiveBadge.file) {
+                currentPreviewImg = 'badges/' + currentActiveBadge.file;
+            }
+            clearCutoutState();
+            updateLivePreviewStudio();
+            showToast('Restored original uploaded image.');
+        }
+
         function selectExistingAsset(val) {
             if (!val) return;
+            rawUploadedDataUrl = null;
+            clearCutoutState();
+            const fileInput = document.getElementById('badgeFileInput');
+            if (fileInput) fileInput.value = '';
             currentPreviewImg = 'badges/' + val;
             document.getElementById('uploadPromptText').textContent = 'Selected: ' + val;
             updateLivePreviewStudio();
         }
 
-        // Custom PNG File Upload Preview
+        function triggerAddBadgeFromFolder() {
+            startNewBadgeCreation(true);
+        }
+
+        function triggerFolderPickInCurrentMode() {
+            const fileInput = document.getElementById('badgeFileInput');
+            if (fileInput) {
+                fileInput.value = '';
+                fileInput.click();
+            }
+        }
+
+        // Custom PNG File Upload Preview (From Folder -> Instant Stage Preview)
         function previewSelectedFile(event) {
-            const file = event.target.files[0];
+            const file = event && event.target && event.target.files ? event.target.files[0] : null;
             if (!file) return;
 
-            document.getElementById('uploadPromptText').textContent = 'Loaded: ' + file.name;
+            const promptEl = document.getElementById('uploadPromptText');
+            if (promptEl) promptEl.textContent = 'Loaded: ' + file.name;
+
+            // Auto-fill clean badge name in Create New mode if empty
+            const origId = document.getElementById('originalIdInput')?.value || '';
+            const nameInput = document.getElementById('badgeNameInput');
+            if (!origId && nameInput && !nameInput.value.trim()) {
+                const baseName = file.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim();
+                if (baseName) {
+                    nameInput.value = baseName.replace(/\b\w/g, ch => ch.toUpperCase());
+                }
+            }
+
             const reader = new FileReader();
             reader.onload = function(e) {
-                currentPreviewImg = e.target.result;
+                rawUploadedDataUrl = e.target.result;
+                currentPreviewImg = rawUploadedDataUrl;
+                clearCutoutState();
+                // Show stage + switch to Identity tab if nothing active yet so Save & Cutout are immediately accessible
                 updateLivePreviewStudio();
+                showToast('Loaded "' + file.name + '"! Click Remove Background or Save Badge.');
             };
             reader.readAsDataURL(file);
         }
@@ -1806,8 +2085,17 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             }
         }
 
-        // Table Row Click Handler
+        // Table Row Click Handler (Supports Ctrl/Cmd+Click multi-select, normal click loads editor)
         function handleRowClick(event, id) {
+            if (event && (event.ctrlKey || event.metaKey)) {
+                const row = event.currentTarget;
+                const chk = row ? row.querySelector('.badge-select-chk') : null;
+                if (chk) {
+                    chk.checked = !chk.checked;
+                    updateBatchSelectionUI();
+                    return;
+                }
+            }
             loadBadgeToEditor(id);
         }
 
@@ -1817,6 +2105,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             if (!b) return;
 
             currentActiveBadge = b;
+            rawUploadedDataUrl = null;
+            clearCutoutState();
+            const fileInput = document.getElementById('badgeFileInput');
+            if (fileInput) fileInput.value = '';
 
             // Form Headers
             document.getElementById('originalIdInput').value = b.id;
@@ -1937,9 +2229,15 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         }
 
         // Start New Badge Creation (Switches to Identity Tab, Randomizes ID & Clears Fields)
-        function startNewBadgeCreation() {
+        function startNewBadgeCreation(openUploadPicker = false) {
             currentActiveBadge = null;
-            document.getElementById('originalIdInput').value = '';
+            rawUploadedDataUrl = null;
+            clearCutoutState();
+            const fileInput = document.getElementById('badgeFileInput');
+            if (fileInput) fileInput.value = '';
+
+            const origEl = document.getElementById('originalIdInput');
+            if (origEl) origEl.value = '';
 
             const nameInput = document.getElementById('badgeNameInput');
             if (nameInput) {
@@ -1949,62 +2247,64 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
             randomizeId();
 
-            const catSelect = document.getElementById('badgeCatSelect');
-            if (catSelect) catSelect.value = 'Prime System';
-            const rarSelect = document.getElementById('badgeRaritySelect');
-            if (rarSelect) rarSelect.value = 'MYTHIC';
-            const sizeInput = document.getElementById('badgeSizeInput');
-            if (sizeInput) sizeInput.value = 54;
-            const glowSelect = document.getElementById('glowSelect');
-            if (glowSelect) glowSelect.value = 'rgba(255, 215, 0, 0.85)';
-            const glowCheck = document.getElementById('glowEnabledCheck');
-            if (glowCheck) glowCheck.checked = true;
-            const descInput = document.getElementById('badgeDescInput');
-            if (descInput) descInput.value = '';
+            const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+            const setChk = (id, b) => { const el = document.getElementById(id); if (el) el.checked = !!b; };
+            const setTxt = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+
+            setVal('badgeCatSelect', 'Prime System');
+            setVal('badgeRaritySelect', 'MYTHIC');
+            setVal('badgeSizeInput', 54);
+            setVal('glowSelect', 'rgba(255, 215, 0, 0.85)');
+            setChk('glowEnabledCheck', true);
+            setVal('badgeDescInput', '');
 
             currentPreviewImg = 'badges/ff_ui_prime_icon_08.png';
-            const uploadText = document.getElementById('uploadPromptText');
-            if (uploadText) uploadText.textContent = 'Upload Transparent PNG';
+            setTxt('uploadPromptText', 'Upload Image From Folder');
             const efSelect = document.getElementById('existingFileSelect');
             if (efSelect) efSelect.selectedIndex = 0;
 
-            document.getElementById('formPanelTitle').textContent = 'Create New Badge & Deploy';
-            document.getElementById('formPanelSub').textContent = 'Fill in identity fields, choose asset, customize VFX, and deploy to CDN.';
-            document.getElementById('editorModeText').textContent = 'Mode: New Badge';
-            document.getElementById('editorModeBadge').className = 'px-3.5 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs font-mono flex items-center gap-2';
-            document.getElementById('saveBtnText').textContent = 'Create & Deploy New Badge';
-            document.getElementById('saveBtnTextTop').textContent = 'Create & Deploy';
+            setTxt('formPanelTitle', 'Create New Badge & Deploy');
+            setTxt('formPanelSub', 'Fill in identity fields, upload/choose asset, customize VFX, and deploy to CDN.');
+            setTxt('editorModeText', 'Mode: New Badge');
+            const modeBadge = document.getElementById('editorModeBadge');
+            if (modeBadge) {
+                modeBadge.className = 'px-3.5 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-500/50 text-emerald-300 text-xs font-mono flex items-center gap-2';
+            }
+            setTxt('saveBtnText', 'Create & Deploy New Badge');
+            setTxt('saveBtnTextTop', 'Create & Deploy');
 
-            document.getElementById('masterAnimCheck').checked = true;
-            document.getElementById('sheenActiveCheck').checked = true;
+            setChk('masterAnimCheck', true);
+            setChk('sheenActiveCheck', true);
             setStarDensity(16);
-            document.getElementById('starThemeSelect').value = 'gold';
-            document.getElementById('hasGemGlintCheck').checked = true;
-            document.getElementById('pulseEnabledCheck').checked = true;
+            setVal('starThemeSelect', 'gold');
+            setChk('hasGemGlintCheck', true);
+            setChk('pulseEnabledCheck', true);
 
-            resetAllAdjustments();
+            resetAllAdjustments(true);
 
-            // Default bone spots
-            activeBones = [
-                { id: 1, name: 'Crown Apex', x: 50, y: 14, size: 20, color: '#FFD700' },
-                { id: 2, name: 'Center Gem', x: 50, y: 52, size: 24, color: '#FFFFFF' }
-            ];
+            // Empty bones by default for clean new badge (user can click + Add Bone Spot anytime)
+            activeBones = [];
+            setChk('boneLightCheck', false);
             renderBoneList();
 
-            // Immediately switch to Identity tab so user can enter badge details!
+            // Immediately switch to Identity tab so user can upload or enter badge details!
             switchStudioTab('identity');
 
-            setTimeout(() => {
-                if (nameInput) nameInput.focus();
-            }, 120);
+            if (openUploadPicker && fileInput) {
+                fileInput.click();
+            } else {
+                setTimeout(() => {
+                    if (nameInput) nameInput.focus();
+                }, 120);
+            }
 
             updateLivePreviewStudio();
-            showToast('New Badge Mode Activated! Enter details in the Identity tab.');
+            showToast(openUploadPicker ? 'Choose a badge image from your folder to preview & cut out background!' : 'New Badge Mode Activated! Enter details or upload an image.');
             window.scrollTo({ top: 120, behavior: 'smooth' });
         }
 
         function resetToNewBadge() {
-            startNewBadgeCreation();
+            startNewBadgeCreation(false);
         }
 
         // Apply Numbered Effect Preset
@@ -2304,71 +2604,178 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         }
 
         // RESET ALL COLOR GRADING & PRO ADJUSTMENTS
-        function resetAllAdjustments() {
-            document.getElementById('sliderBrightness').value = 100;
-            document.getElementById('sliderContrast').value = 100;
-            document.getElementById('sliderSaturation').value = 100;
-            document.getElementById('sliderHighlights').value = 100;
-            document.getElementById('sliderHue').value = 0;
-            document.getElementById('sliderSharpness').value = 100;
-            document.getElementById('sliderColorShift').value = 0;
-            document.getElementById('valColorShift').textContent = '0° (Original)';
+        function resetAllAdjustments(silent = false) {
+            const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+            const setChk = (id, b) => { const el = document.getElementById(id); if (el) el.checked = !!b; };
+            const setTxt = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
 
-            document.getElementById('boneLightCheck').checked = false;
-            document.getElementById('sliderBoneRadius').value = 45;
-            document.getElementById('boneColorHex').value = '#FFD700';
+            setVal('sliderBrightness', 100);
+            setVal('sliderContrast', 100);
+            setVal('sliderSaturation', 100);
+            setVal('sliderHighlights', 100);
+            setVal('sliderHue', 0);
+            setVal('sliderSharpness', 100);
+            setVal('sliderColorShift', 0);
+            setTxt('valColorShift', '0° (Original)');
 
-            document.getElementById('contourGlowCheck').checked = false;
-            document.getElementById('sliderGlowRadius').value = 14;
-            document.getElementById('sliderGlowBlur').value = 10;
-            document.getElementById('contourGlowColorHex').value = '#FFD700';
+            setChk('boneLightCheck', false);
+
+            setChk('contourGlowCheck', false);
+            setVal('sliderGlowRadius', 14);
+            setVal('sliderGlowBlur', 10);
+            setVal('contourGlowColorHex', '#FFD700');
 
             updateLivePreviewStudio();
-            showToast('All Color Grading and Studio adjustments reset to defaults.');
+            if (!silent) {
+                showToast('All Color Grading and Studio adjustments reset to defaults.');
+            }
         }
 
-        // 1-CLICK AUTO BACKGROUND REMOVE (Canvas Flood Erase + Edge Feathering)
-        function autoRemoveBackground() {
-            if (!currentPreviewImg) return;
-            showToast('Processing cutout... Removing background.');
+        // 1-CLICK AUTO BACKGROUND REMOVE (4-Edge BFS Flood-Fill + Edge Feathering; preserves interior highlights)
+        function autoRemoveBackground(tolerance = 48) {
+            const srcImg = rawUploadedDataUrl || currentPreviewImg;
+            if (!srcImg) {
+                showToast('Please select or upload a badge image first.');
+                return;
+            }
+            showToast('Removing outer background cleanly...');
 
             const img = new Image();
             img.crossOrigin = 'anonymous';
-            img.src = currentPreviewImg;
+            img.src = srcImg;
             img.onload = function() {
+                const w = img.naturalWidth || 500;
+                const h = img.naturalHeight || 500;
                 const canvas = document.createElement('canvas');
-                canvas.width = img.naturalWidth || 500;
-                canvas.height = img.naturalHeight || 500;
+                canvas.width = w;
+                canvas.height = h;
                 const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0);
+                ctx.drawImage(img, 0, 0, w, h);
 
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const imgData = ctx.getImageData(0, 0, w, h);
                 const data = imgData.data;
 
-                const c1 = [data[0], data[1], data[2]];
-                const c2 = [data[(canvas.width - 1) * 4], data[(canvas.width - 1) * 4 + 1], data[(canvas.width - 1) * 4 + 2]];
-                const c3 = [data[(canvas.width * (canvas.height - 1)) * 4], data[(canvas.width * (canvas.height - 1)) * 4 + 1], data[(canvas.width * (canvas.height - 1)) * 4 + 2]];
-                const c4 = [data[(canvas.width * canvas.height - 1) * 4], data[(canvas.width * canvas.height - 1) * 4 + 1], data[(canvas.width * canvas.height - 1) * 4 + 2]];
+                // Measure how much of border is already transparent
+                let borderTotal = 0;
+                let borderTransparent = 0;
+                const seedColors = [];
+                const sampleBorder = (x, y) => {
+                    const idx = (y * w + x) * 4;
+                    borderTotal++;
+                    if (data[idx + 3] < 20) {
+                        borderTransparent++;
+                    } else {
+                        seedColors.push([data[idx], data[idx + 1], data[idx + 2]]);
+                    }
+                };
+                for (let x = 0; x < w; x++) {
+                    sampleBorder(x, 0);
+                    if (h > 1) sampleBorder(x, h - 1);
+                }
+                for (let y = 1; y < h - 1; y++) {
+                    sampleBorder(0, y);
+                    if (w > 1) sampleBorder(w - 1, y);
+                }
 
-                const bgR = Math.round((c1[0] + c2[0] + c3[0] + c4[0]) / 4);
-                const bgG = Math.round((c1[1] + c2[1] + c3[1] + c4[1]) / 4);
-                const bgB = Math.round((c1[2] + c2[2] + c3[2] + c4[2]) / 4);
-                const tolerance = 42;
+                if (borderTotal > 0 && borderTransparent / borderTotal > 0.85 && seedColors.length === 0) {
+                    showToast('This image already has a 100% transparent background!');
+                    return;
+                }
 
-                for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i], g = data[i + 1], b = data[i + 2];
-                    const dist = Math.sqrt((r - bgR)**2 + (g - bgG)**2 + (b - bgB)**2);
-                    if (dist < tolerance) {
-                        data[i + 3] = 0; // Transparent
-                    } else if (dist < tolerance + 15) {
-                        data[i + 3] = Math.round(((dist - tolerance) / 15) * data[i + 3]); // Smooth feathering
+                // Sample 4 corner references + edge median color
+                const corners = [
+                    0,
+                    (w - 1) * 4,
+                    (w * (h - 1)) * 4,
+                    (w * h - 1) * 4
+                ].filter(idx => data[idx + 3] >= 20).map(idx => [data[idx], data[idx + 1], data[idx + 2]]);
+
+                const refs = corners.length > 0 ? corners : (seedColors.length > 0 ? [seedColors[0]] : [[255, 255, 255]]);
+                const tolSq = tolerance * tolerance;
+                const matchesBg = (pIdx) => {
+                    const a = data[pIdx + 3];
+                    if (a < 20) return true;
+                    const r = data[pIdx], g = data[pIdx + 1], b = data[pIdx + 2];
+                    for (let k = 0; k < refs.length; k++) {
+                        const dr = r - refs[k][0];
+                        const dg = g - refs[k][1];
+                        const db = b - refs[k][2];
+                        if ((dr * dr + dg * dg + db * db) <= tolSq) return true;
+                    }
+                    return false;
+                };
+
+                // BFS flood-fill strictly from connected outer border pixels
+                const visited = new Uint8Array(w * h);
+                const queue = new Int32Array(w * h);
+                let head = 0, tail = 0;
+
+                const enqueueIfMatch = (x, y) => {
+                    const pos = y * w + x;
+                    if (visited[pos]) return;
+                    if (matchesBg(pos * 4)) {
+                        visited[pos] = 1;
+                        queue[tail++] = pos;
+                    }
+                };
+
+                for (let x = 0; x < w; x++) {
+                    enqueueIfMatch(x, 0);
+                    enqueueIfMatch(x, h - 1);
+                }
+                for (let y = 0; y < h; y++) {
+                    enqueueIfMatch(0, y);
+                    enqueueIfMatch(w - 1, y);
+                }
+
+                while (head < tail) {
+                    const pos = queue[head++];
+                    data[pos * 4 + 3] = 0; // Erase connected background pixel
+                    const x = pos % w;
+                    const y = (pos - x) / w;
+                    if (x > 0) enqueueIfMatch(x - 1, y);
+                    if (x + 1 < w) enqueueIfMatch(x + 1, y);
+                    if (y > 0) enqueueIfMatch(x, y - 1);
+                    if (y + 1 < h) enqueueIfMatch(x, y + 1);
+                }
+
+                // Soft 1px anti-alias feather on foreground boundary pixels touching erased BG
+                const softTolSq = (tolerance + 22) * (tolerance + 22);
+                for (let y = 1; y < h - 1; y++) {
+                    for (let x = 1; x < w - 1; x++) {
+                        const pos = y * w + x;
+                        if (visited[pos]) continue;
+                        if (visited[pos - 1] || visited[pos + 1] || visited[pos - w] || visited[pos + w]) {
+                            const pIdx = pos * 4;
+                            const r = data[pIdx], g = data[pIdx + 1], b = data[pIdx + 2];
+                            let minD2 = Infinity;
+                            for (let k = 0; k < refs.length; k++) {
+                                const dr = r - refs[k][0], dg = g - refs[k][1], db = b - refs[k][2];
+                                const d2 = dr * dr + dg * dg + db * db;
+                                if (d2 < minD2) minD2 = d2;
+                            }
+                            if (minD2 < softTolSq) {
+                                data[pIdx + 3] = Math.round(data[pIdx + 3] * 0.45);
+                            }
+                        }
                     }
                 }
 
                 ctx.putImageData(imgData, 0, 0);
-                currentPreviewImg = canvas.toDataURL('image/png');
+                const cutoutDataUrl = canvas.toDataURL('image/png');
+                currentPreviewImg = cutoutDataUrl;
+
+                const procInput = document.getElementById('processedPngDataInput');
+                if (procInput) procInput.value = cutoutDataUrl;
+
+                const statusRow = document.getElementById('cutoutStatusRow');
+                if (statusRow) {
+                    statusRow.classList.remove('hidden');
+                    statusRow.classList.add('flex');
+                }
+
                 updateLivePreviewStudio();
-                showToast('Background removed! 100% transparent PNG cutout created.');
+                showToast('Background removed! Click Save Badge & Deploy to save transparent cutout.');
             };
             img.onerror = function() {
                 showToast('Unable to process external image directly due to CORS.');
@@ -2656,6 +3063,112 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             copyText(call, 'PHP Function Call Copied!');
         }
 
+        // Multi-Select Badges & Batch Action Controls
+        function handleBadgeCheckboxClick(event, chk) {
+            if (event) event.stopPropagation();
+            const allChks = Array.from(document.querySelectorAll('.badge-select-chk'));
+            const curIdx = allChks.indexOf(chk);
+            if (event && event.shiftKey && lastCheckedBadgeIdx >= 0 && curIdx >= 0) {
+                const start = Math.min(lastCheckedBadgeIdx, curIdx);
+                const end = Math.max(lastCheckedBadgeIdx, curIdx);
+                for (let i = start; i <= end; i++) {
+                    const row = allChks[i].closest('.admin-badge-row');
+                    if (!row || !row.classList.contains('hidden')) {
+                        allChks[i].checked = chk.checked;
+                    }
+                }
+            }
+            if (curIdx >= 0) lastCheckedBadgeIdx = curIdx;
+            updateBatchSelectionUI();
+        }
+
+        function toggleSelectAllVisible(checked) {
+            const rows = document.querySelectorAll('.admin-badge-row');
+            rows.forEach(r => {
+                if (!r.classList.contains('hidden')) {
+                    const chk = r.querySelector('.badge-select-chk');
+                    if (chk) chk.checked = !!checked;
+                }
+            });
+            updateBatchSelectionUI();
+        }
+
+        function getSelectedBadgeIds() {
+            return Array.from(document.querySelectorAll('.badge-select-chk:checked')).map(c => c.value);
+        }
+
+        function updateBatchSelectionUI() {
+            const allChks = Array.from(document.querySelectorAll('.badge-select-chk'));
+            const visibleChks = allChks.filter(c => {
+                const r = c.closest('.admin-badge-row');
+                return !r || !r.classList.contains('hidden');
+            });
+            const checkedIds = [];
+            allChks.forEach(c => {
+                const r = c.closest('.admin-badge-row');
+                if (c.checked) {
+                    checkedIds.push(c.value);
+                    if (r) r.classList.add('bg-amber-500/10');
+                } else {
+                    if (r) r.classList.remove('bg-amber-500/10');
+                }
+            });
+
+            const bar = document.getElementById('batchActionBar');
+            const cnt = document.getElementById('selectedBadgeCount');
+            if (cnt) cnt.textContent = checkedIds.length;
+            if (bar) {
+                if (checkedIds.length > 0) {
+                    bar.classList.remove('hidden');
+                    bar.classList.add('flex');
+                } else {
+                    bar.classList.add('hidden');
+                    bar.classList.remove('flex');
+                }
+            }
+
+            const masterChk = document.getElementById('selectAllBadgesCheck');
+            if (masterChk) {
+                const visChecked = visibleChks.filter(c => c.checked).length;
+                masterChk.checked = (visibleChks.length > 0 && visChecked === visibleChks.length);
+                masterChk.indeterminate = (visChecked > 0 && visChecked < visibleChks.length);
+            }
+        }
+
+        function submitBatchAction(action) {
+            const ids = getSelectedBadgeIds();
+            if (ids.length === 0) {
+                showToast('Please select one or more badges first.');
+                return;
+            }
+            if (action === 'delete_selected' && !confirm('Delete ' + ids.length + ' selected badge(s) permanently?')) {
+                return;
+            }
+            const form = document.getElementById('batchActionForm');
+            const actEl = document.getElementById('batchActionInput');
+            const idsEl = document.getElementById('batchSelectedIdsInput');
+            const payEl = document.getElementById('batchStudioVfxPayload');
+            if (!form || !actEl || !idsEl) return;
+
+            actEl.value = action;
+            idsEl.value = JSON.stringify(ids);
+            if (payEl) {
+                const studioPayload = {
+                    master: !!document.getElementById('masterAnimCheck')?.checked,
+                    sweep: !!document.getElementById('sheenActiveCheck')?.checked,
+                    dir: document.getElementById('sweepDirSelect')?.value || 'diag_bl_tr',
+                    speed: document.getElementById('sweepSpeedSelect')?.value || '2.2s',
+                    stars: parseInt(document.getElementById('starDensityInput')?.value || 0),
+                    theme: document.getElementById('starThemeSelect')?.value || 'gold',
+                    glint: !!document.getElementById('hasGemGlintCheck')?.checked,
+                    pulse: !!document.getElementById('pulseEnabledCheck')?.checked,
+                    glow: !!document.getElementById('glowEnabledCheck')?.checked
+                };
+                payEl.value = JSON.stringify(studioPayload);
+            }
+            form.submit();
+        }
+
         // Search & Filter badges table
         function filterAdminBadges(q) {
             q = q.toLowerCase().trim();
@@ -2669,12 +3182,19 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     r.classList.add('hidden');
                 }
             });
+            updateBatchSelectionUI();
         }
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             renderBoneList();
-            updateLivePreviewStudio();
+            const sp = new URLSearchParams(window.location.search);
+            if (sp.get('new') === '1') {
+                startNewBadgeCreation(false);
+            } else {
+                updateLivePreviewStudio();
+            }
+            updateBatchSelectionUI();
         });
     </script>
 
