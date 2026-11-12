@@ -598,8 +598,14 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 </button>
             </form>
 
-            <div class="mt-5 text-center">
-                <span class="text-[11px] text-gray-500 font-mono">TURKY HUB · Apple Minimalist System</span>
+            <div class="mt-5 text-center space-y-2">
+                <div>
+                    <a href="account.php" class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-400 hover:text-red-300 transition">
+                        <i class="fas fa-key text-[11px]"></i>
+                        <span>Client Account &amp; API Subscriptions &rarr;</span>
+                    </a>
+                </div>
+                <span class="block text-[11px] text-gray-500 font-mono">TURKY HUB · Apple Minimalist System</span>
             </div>
             </div>
         </div>
@@ -651,6 +657,10 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                     <i class="fas fa-robot text-xs"></i>
                     <span>AI Integration</span>
                 </a>
+                <a href="account.php" class="apple-nav-item px-3.5 py-1.5 text-xs flex items-center gap-2">
+                    <i class="fas fa-key text-xs"></i>
+                    <span>Account &amp; Plans</span>
+                </a>
             </nav>
 
             <!-- Right Actions: Theme Switcher, Auth Pill & Mobile Toggle -->
@@ -695,6 +705,10 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             <a href="ai-integration.php" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-white/5 text-white">
                 <i class="fas fa-robot text-red-500 w-4"></i>
                 <span>AI Integration</span>
+            </a>
+            <a href="account.php" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-white/5 text-white">
+                <i class="fas fa-key text-red-500 w-4"></i>
+                <span>Account &amp; Plans</span>
             </a>
         </div>
     </header>
@@ -788,6 +802,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <span>· OB55 Headless Badge CDN</span>
             </div>
             <div class="flex flex-wrap items-center gap-4">
+                <a href="account.php" class="hover:text-red-500 transition">Account &amp; Plans</a>
                 <a href="ai-integration.php" class="hover:text-red-500 transition">AI Integration</a>
                 <span class="font-mono text-[11px]">Transparent Vector &amp; PNG Delivery</span>
             </div>

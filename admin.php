@@ -59,6 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_action'])) {
 
 $is_logged_in = !empty($_SESSION['ff_admin_logged']);
 
+require_once __DIR__ . '/includes/admin_saas_panel.php';
+if ($is_logged_in) {
+    saas_admin_handle_post();
+}
+
 // Helper: Generate valid 12...80 ID (12 digits total)
 function generate_ff_id() {
     $middle = str_pad(mt_rand(10000000, 99999999), 8, '0', STR_PAD_LEFT);
@@ -534,6 +539,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="cdn/prime-badge.css">
     <link rel="stylesheet" href="assets/apple-theme.css">
+    <script src="assets/apple-theme.js"></script>
     <!-- Turky Hub Autonomous Security Guard (Admin Bypass Enabled) -->
     <script>window.__TURKY_ADMIN__ = <?= $is_logged_in ? "true" : "false" ?>;</script>
     <script src="cdn/turky-guard.js"></script>
@@ -790,6 +796,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     </span>
                     <span data-theme-label class="hidden sm:inline">Dark</span>
                 </button>
+                <a href="#saasManagerSection" class="apple-btn-secondary px-3 sm:px-3.5 py-1.5 text-xs flex items-center gap-2">
+                    <i class="fas fa-credit-card text-emerald-500"></i>
+                    <span class="hidden sm:inline">RivoPay &amp; Plans</span>
+                </a>
                 <a href="ai-integration.php" class="apple-btn-secondary px-3 sm:px-3.5 py-1.5 text-xs flex items-center gap-2">
                     <i class="fas fa-robot text-red-500"></i>
                     <span class="hidden sm:inline">AI Integration</span>
@@ -1894,6 +1904,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             </div>
 
         </section>
+
+        <?php saas_admin_render_section(); ?>
 
     </main>
 
@@ -3272,6 +3284,5 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     </script>
 
 <?php endif; ?>
-<script src="assets/apple-theme.js"></script>
 </body>
 </html>
