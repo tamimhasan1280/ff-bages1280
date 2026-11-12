@@ -243,7 +243,7 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
 
         // Mirror to D: drive automatically
         if (is_dir('D:\\espors update\\ff all vages')) {
-            shell_exec('robocopy "F:\\users\\Pictures\\Downloads\\ff all vages" "D:\\espors update\\ff all vages" /MIR /FFT /Z /NP /R:1 /W:1 >nul 2>&1');
+            shell_exec('robocopy "' . __DIR__ . '" "D:\\espors update\\ff all vages" /MIR /FFT /Z /NP /R:1 /W:1 >nul 2>&1');
         }
 
         // Auto Git Commit & Push

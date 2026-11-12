@@ -77,7 +77,7 @@ fetch('https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/api/badges.j
 Follow these simple steps in PowerShell or Command Prompt:
 
 ```bash
-cd "F:\users\Pictures\Downloads\ff all vages"
+cd "F:\users\Pictures\Downloads\ff items all\v bage"
 git remote add origin https://github.com/tamimhasan1280/ff-bages1280.git
 git push -u origin main
 ```
