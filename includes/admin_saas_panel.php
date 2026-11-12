@@ -254,27 +254,24 @@ function saas_admin_render_section(): void {
                 </div>
                 <div>
                     <h2 class="text-base sm:text-lg font-extrabold tracking-tight" style="color: var(--apple-text-primary);">
-                        RivoPay Gateway, Subscription Plans &amp; API Licenses
+                        RivoPay &amp; Plans
                     </h2>
-                    <p class="text-xs mt-0.5" style="color: var(--apple-text-secondary);">
-                        Dynamic payment config, custom durations (minute to lifetime), &amp; real-time token-gated API enforcement.
-                    </p>
                 </div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
                 <a href="account.php" target="_blank" rel="noopener" class="apple-btn-secondary px-3 py-1.5 text-xs flex items-center gap-1.5">
                     <i class="fas fa-external-link-alt text-[10px]"></i>
-                    <span>Customer Portal</span>
+                    <span>Portal</span>
                 </a>
                 <div class="inline-flex p-1 rounded-xl border gap-1" style="background: var(--apple-bg-tertiary); border-color: var(--apple-border);">
                     <button type="button" data-saas-tab-btn="gateway" onclick="switchSaasTab('gateway')" class="saas-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all <?php echo $activeTab === 'gateway' ? 'bg-red-500 text-white shadow' : ''; ?>">
-                        <i class="fas fa-sliders-h mr-1"></i> RivoPay Settings
+                        <i class="fas fa-sliders-h mr-1"></i> RivoPay
                     </button>
                     <button type="button" data-saas-tab-btn="plans" onclick="switchSaasTab('plans')" class="saas-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all <?php echo $activeTab === 'plans' ? 'bg-red-500 text-white shadow' : ''; ?>">
                         <i class="fas fa-layer-group mr-1"></i> Plans (<?php echo count($plans); ?>)
                     </button>
                     <button type="button" data-saas-tab-btn="subscribers" onclick="switchSaasTab('subscribers')" class="saas-tab-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all <?php echo $activeTab === 'subscribers' ? 'bg-red-500 text-white shadow' : ''; ?>">
-                        <i class="fas fa-users mr-1"></i> Users &amp; Orders (<?php echo count($users); ?>)
+                        <i class="fas fa-users mr-1"></i> Users (<?php echo count($users); ?>)
                     </button>
                 </div>
             </div>
@@ -302,10 +299,7 @@ function saas_admin_render_section(): void {
 
                 <div class="lg:col-span-7 space-y-4">
                     <div class="flex items-center justify-between p-3.5 rounded-xl border" style="background: var(--apple-bg-tertiary); border-color: var(--apple-border);">
-                        <div>
-                            <div class="text-xs font-bold" style="color: var(--apple-text-primary);">Gateway Status (Enable / Disable)</div>
-                            <div class="text-[11px] mt-0.5" style="color: var(--apple-text-secondary);">Turn off to pause new checkouts without breaking active subscriber keys.</div>
-                        </div>
+                        <div class="text-xs font-bold" style="color: var(--apple-text-primary);">Gateway Status</div>
                         <label class="inline-flex items-center gap-2 cursor-pointer select-none">
                             <input type="checkbox" name="status" value="1" <?php echo (int)$cfg['status'] === 1 ? 'checked' : ''; ?> class="w-4 h-4 accent-red-500 rounded">
                             <span class="text-xs font-bold <?php echo (int)$cfg['status'] === 1 ? 'text-emerald-400' : 'text-red-400'; ?>">
@@ -316,13 +310,13 @@ function saas_admin_render_section(): void {
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--apple-text-secondary);">Gateway Display Name</label>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--apple-text-secondary);">Display Name</label>
                             <input type="text" name="display_name" required value="<?php echo htmlspecialchars((string)$cfg['display_name'], ENT_QUOTES, 'UTF-8'); ?>"
                                 class="w-full px-3 py-2 rounded-xl border text-xs bg-transparent outline-none focus:border-red-500"
                                 style="border-color: var(--apple-border); color: var(--apple-text-primary);">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--apple-text-secondary);">Gateway Base URL</label>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--apple-text-secondary);">Base URL</label>
                             <input type="url" name="base_url" id="rivoBaseUrlInput" required value="<?php echo htmlspecialchars((string)$cfg['base_url'], ENT_QUOTES, 'UTF-8'); ?>"
                                 oninput="updateRivoEndpointPreview(this.value)"
                                 placeholder="https://checkout.rivopay.shop"
@@ -333,33 +327,30 @@ function saas_admin_render_section(): void {
 
                     <div>
                         <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--apple-text-secondary);">
-                            Brand API Key (<code class="text-red-400">API-KEY</code> header)
+                            Brand API Key
                         </label>
                         <div class="flex items-center gap-2">
                             <input type="password" name="brand_key" id="rivoBrandKeyInput" autocomplete="off"
                                 value="<?php echo htmlspecialchars((string)$cfg['brand_key'], ENT_QUOTES, 'UTF-8'); ?>"
-                                placeholder="Paste Brand API Key (leave unchanged to keep current)"
+                                placeholder="API-KEY"
                                 class="flex-1 px-3 py-2 rounded-xl border text-xs font-mono bg-transparent outline-none focus:border-red-500"
                                 style="border-color: var(--apple-border); color: var(--apple-text-primary);">
-                            <button type="button" onclick="toggleRivoKeyVisibility()" class="apple-btn-secondary px-3 py-2 text-xs shrink-0" title="Reveal / Hide Brand Key">
+                            <button type="button" onclick="toggleRivoKeyVisibility()" class="apple-btn-secondary px-3 py-2 text-xs shrink-0" title="Show/Hide">
                                 <i id="rivoKeyEyeIcon" class="fas fa-eye"></i>
                             </button>
                         </div>
-                        <p class="text-[11px] mt-1" style="color: var(--apple-text-secondary);">
-                            Masked by default. Stored server-side in SQLite and never exposed in public HTML/JS.
-                        </p>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--apple-text-secondary);">Gateway Currency</label>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--apple-text-secondary);">Currency</label>
                             <input type="text" name="currency" value="<?php echo htmlspecialchars((string)$cfg['currency'], ENT_QUOTES, 'UTF-8'); ?>"
                                 placeholder="BDT"
                                 class="w-full px-3 py-2 rounded-xl border text-xs font-mono uppercase bg-transparent outline-none focus:border-red-500"
                                 style="border-color: var(--apple-border); color: var(--apple-text-primary);">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--apple-text-secondary);">Exchange Rate Multiplier</label>
+                            <label class="block text-[11px] font-bold uppercase tracking-wider mb-1" style="color: var(--apple-text-secondary);">Exchange Rate</label>
                             <input type="number" step="0.0001" min="0.0001" name="exchange_rate" value="<?php echo htmlspecialchars((string)$cfg['exchange_rate'], ENT_QUOTES, 'UTF-8'); ?>"
                                 class="w-full px-3 py-2 rounded-xl border text-xs font-mono bg-transparent outline-none focus:border-red-500"
                                 style="border-color: var(--apple-border); color: var(--apple-text-primary);">
@@ -369,7 +360,7 @@ function saas_admin_render_section(): void {
                     <div class="pt-1">
                         <button type="submit" id="saveRivoSettingsBtn" class="apple-btn-primary px-5 py-2.5 text-xs font-bold inline-flex items-center gap-2">
                             <i class="fas fa-save"></i>
-                            <span>Save RivoPay Configuration</span>
+                            <span>Save Settings</span>
                         </button>
                     </div>
                 </div>
@@ -378,42 +369,42 @@ function saas_admin_render_section(): void {
                     <div class="p-4 rounded-xl border space-y-3" style="background: var(--apple-bg-tertiary); border-color: var(--apple-border);">
                         <div class="text-xs font-bold uppercase tracking-wider flex items-center gap-2" style="color: var(--apple-text-primary);">
                             <i class="fas fa-link text-red-500"></i>
-                            <span>Dynamic Endpoints &amp; Webhook URLs</span>
+                            <span>Endpoints</span>
                         </div>
 
                         <div>
-                            <div class="text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Server Create Endpoint (Auto-Computed)</div>
+                            <div class="text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Create URL</div>
                             <code id="rivoCreateUrlPreview" class="block px-2.5 py-1.5 rounded-lg text-[11px] font-mono break-all border" style="background: var(--apple-bg-secondary); border-color: var(--apple-border); color: var(--apple-text-primary);">
                                 <?php echo htmlspecialchars(rivopay_create_url($cfg), ENT_QUOTES, 'UTF-8'); ?>
                             </code>
                         </div>
 
                         <div>
-                            <div class="text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Server Verify Endpoint (Auto-Computed)</div>
+                            <div class="text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Verify URL</div>
                             <code id="rivoVerifyUrlPreview" class="block px-2.5 py-1.5 rounded-lg text-[11px] font-mono break-all border" style="background: var(--apple-bg-secondary); border-color: var(--apple-border); color: var(--apple-text-primary);">
                                 <?php echo htmlspecialchars(rivopay_verify_url($cfg), ENT_QUOTES, 'UTF-8'); ?>
                             </code>
                         </div>
 
                         <div>
-                            <div class="text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Callback / Redirect URL (Read-Only)</div>
+                            <div class="text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Callback URL</div>
                             <div class="flex items-center gap-1.5">
                                 <input type="text" readonly value="<?php echo htmlspecialchars($callbackUrl, ENT_QUOTES, 'UTF-8'); ?>"
                                     class="flex-1 px-2.5 py-1.5 rounded-lg text-[11px] font-mono border bg-transparent"
                                     style="border-color: var(--apple-border); color: var(--apple-text-primary);">
-                                <button type="button" onclick="copySaasText(<?php echo htmlspecialchars(json_encode($callbackUrl), ENT_QUOTES, 'UTF-8'); ?>, 'Callback URL copied!')" class="apple-btn-secondary px-2.5 py-1.5 text-xs">
+                                <button type="button" onclick="copySaasText(<?php echo htmlspecialchars(json_encode($callbackUrl), ENT_QUOTES, 'UTF-8'); ?>, 'Copied!')" class="apple-btn-secondary px-2.5 py-1.5 text-xs">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </div>
                         </div>
 
                         <div>
-                            <div class="text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Server Webhook URL (CSRF-Exempt POST, Read-Only)</div>
+                            <div class="text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Webhook URL</div>
                             <div class="flex items-center gap-1.5">
                                 <input type="text" readonly value="<?php echo htmlspecialchars($webhookUrl, ENT_QUOTES, 'UTF-8'); ?>"
                                     class="flex-1 px-2.5 py-1.5 rounded-lg text-[11px] font-mono border bg-transparent"
                                     style="border-color: var(--apple-border); color: var(--apple-text-primary);">
-                                <button type="button" onclick="copySaasText(<?php echo htmlspecialchars(json_encode($webhookUrl), ENT_QUOTES, 'UTF-8'); ?>, 'Webhook URL copied!')" class="apple-btn-secondary px-2.5 py-1.5 text-xs">
+                                <button type="button" onclick="copySaasText(<?php echo htmlspecialchars(json_encode($webhookUrl), ENT_QUOTES, 'UTF-8'); ?>, 'Copied!')" class="apple-btn-secondary px-2.5 py-1.5 text-xs">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </div>
@@ -433,7 +424,7 @@ function saas_admin_render_section(): void {
 
                 <div class="flex items-center justify-between gap-2">
                     <h3 id="planFormHeading" class="text-xs sm:text-sm font-bold" style="color: var(--apple-text-primary);">
-                        Create Custom Subscription Plan
+                        Plan Editor
                     </h3>
                     <button type="button" onclick="resetPlanEditor()" class="apple-btn-secondary px-3 py-1 text-[11px]">
                         <i class="fas fa-plus mr-1"></i> New Plan
@@ -442,14 +433,14 @@ function saas_admin_render_section(): void {
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     <div>
-                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Plan Name</label>
-                        <input type="text" name="name" id="planEditName" required placeholder="e.g., 5 Minute Flash Pass"
+                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Name</label>
+                        <input type="text" name="name" id="planEditName" required placeholder="Plan Name"
                             class="w-full px-3 py-2 rounded-xl border text-xs bg-transparent outline-none focus:border-red-500"
                             style="border-color: var(--apple-border); color: var(--apple-text-primary);">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Slug (Auto if blank)</label>
-                        <input type="text" name="slug" id="planEditSlug" placeholder="5-min-flash"
+                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Slug</label>
+                        <input type="text" name="slug" id="planEditSlug" placeholder="Auto"
                             class="w-full px-3 py-2 rounded-xl border text-xs font-mono bg-transparent outline-none focus:border-red-500"
                             style="border-color: var(--apple-border); color: var(--apple-text-primary);">
                     </div>
@@ -460,22 +451,22 @@ function saas_admin_render_section(): void {
                             style="border-color: var(--apple-border); color: var(--apple-text-primary);">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">API Call Limit (0 = Unlimited)</label>
+                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Limit (0 = Unlimited)</label>
                         <input type="number" min="0" name="api_limit" id="planEditLimit" required value="500"
                             class="w-full px-3 py-2 rounded-xl border text-xs font-mono bg-transparent outline-none focus:border-red-500"
                             style="border-color: var(--apple-border); color: var(--apple-text-primary);">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
                     <div>
-                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Duration Value</label>
+                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Duration</label>
                         <input type="number" min="0" name="duration_value" id="planEditDurVal" required value="1"
                             class="w-full px-3 py-2 rounded-xl border text-xs font-mono bg-transparent outline-none focus:border-red-500"
                             style="border-color: var(--apple-border); color: var(--apple-text-primary);">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Duration Unit</label>
+                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Unit</label>
                         <select name="duration_unit" id="planEditDurUnit"
                             class="w-full px-3 py-2 rounded-xl border text-xs bg-transparent outline-none focus:border-red-500"
                             style="border-color: var(--apple-border); color: var(--apple-text-primary); background: var(--apple-bg-secondary);">
@@ -485,35 +476,27 @@ function saas_admin_render_section(): void {
                         </select>
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Badge Tag</label>
-                        <input type="text" name="badge_label" id="planEditTag" placeholder="Popular / VIP"
+                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Tag</label>
+                        <input type="text" name="badge_label" id="planEditTag" placeholder="VIP"
                             class="w-full px-3 py-2 rounded-xl border text-xs bg-transparent outline-none focus:border-red-500"
                             style="border-color: var(--apple-border); color: var(--apple-text-primary);">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Sort Order</label>
+                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Order</label>
                         <input type="number" name="sort_order" id="planEditSort" value="60"
                             class="w-full px-3 py-2 rounded-xl border text-xs font-mono bg-transparent outline-none focus:border-red-500"
                             style="border-color: var(--apple-border); color: var(--apple-text-primary);">
                     </div>
-                    <div class="flex items-end pb-1.5">
+                    <div class="flex items-center justify-between gap-2 pb-1">
                         <label class="inline-flex items-center gap-2 cursor-pointer text-xs font-semibold" style="color: var(--apple-text-primary);">
                             <input type="checkbox" name="is_active" id="planEditActive" value="1" checked class="w-4 h-4 accent-red-500 rounded">
-                            <span>Active for Purchase</span>
+                            <span>Active</span>
                         </label>
+                        <input type="hidden" name="description" id="planEditDesc" value="">
+                        <button type="submit" id="savePlanBtn" class="apple-btn-primary px-4 py-2 text-xs font-bold shrink-0">
+                            <i class="fas fa-check mr-1"></i> Save
+                        </button>
                     </div>
-                </div>
-
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
-                    <div class="flex-1">
-                        <label class="block text-[11px] font-semibold mb-1" style="color: var(--apple-text-secondary);">Description</label>
-                        <input type="text" name="description" id="planEditDesc" placeholder="Short pitch visible to customers on checkout page"
-                            class="w-full px-3 py-2 rounded-xl border text-xs bg-transparent outline-none focus:border-red-500"
-                            style="border-color: var(--apple-border); color: var(--apple-text-primary);">
-                    </div>
-                    <button type="submit" id="savePlanBtn" class="apple-btn-primary px-5 py-2 text-xs font-bold shrink-0">
-                        <i class="fas fa-check mr-1"></i> Save Plan
-                    </button>
                 </div>
             </form>
 
@@ -593,19 +576,19 @@ function saas_admin_render_section(): void {
         <div id="saasTab-subscribers" class="saas-tab-panel space-y-5 <?php echo $activeTab === 'subscribers' ? '' : 'hidden'; ?>">
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <div class="p-3.5 rounded-xl border" style="background: var(--apple-bg-tertiary); border-color: var(--apple-border);">
-                    <div class="text-[11px] font-semibold" style="color: var(--apple-text-secondary);">Registered Customers</div>
+                    <div class="text-[11px] font-semibold" style="color: var(--apple-text-secondary);">Users</div>
                     <div class="text-lg font-extrabold mt-0.5" style="color: var(--apple-text-primary);"><?php echo count($users); ?></div>
                 </div>
                 <div class="p-3.5 rounded-xl border" style="background: var(--apple-bg-tertiary); border-color: var(--apple-border);">
-                    <div class="text-[11px] font-semibold" style="color: var(--apple-text-secondary);">Active Licenses</div>
+                    <div class="text-[11px] font-semibold" style="color: var(--apple-text-secondary);">Active</div>
                     <div class="text-lg font-extrabold mt-0.5 text-emerald-400"><?php echo $activeSubsCount; ?></div>
                 </div>
                 <div class="p-3.5 rounded-xl border" style="background: var(--apple-bg-tertiary); border-color: var(--apple-border);">
-                    <div class="text-[11px] font-semibold" style="color: var(--apple-text-secondary);">Paid RivoPay Orders</div>
+                    <div class="text-[11px] font-semibold" style="color: var(--apple-text-secondary);">Orders</div>
                     <div class="text-lg font-extrabold mt-0.5" style="color: var(--apple-text-primary);"><?php echo $paidOrdersCount; ?></div>
                 </div>
                 <div class="p-3.5 rounded-xl border" style="background: var(--apple-bg-tertiary); border-color: var(--apple-border);">
-                    <div class="text-[11px] font-semibold" style="color: var(--apple-text-secondary);">Total Revenue</div>
+                    <div class="text-[11px] font-semibold" style="color: var(--apple-text-secondary);">Revenue</div>
                     <div class="text-lg font-extrabold mt-0.5 text-red-400"><?php echo number_format($totalRevenue, 2); ?> BDT</div>
                 </div>
             </div>
@@ -615,7 +598,7 @@ function saas_admin_render_section(): void {
                     <input type="hidden" name="saas_csrf" value="<?php echo htmlspecialchars($csrf, ENT_QUOTES, 'UTF-8'); ?>">
                     <input type="hidden" name="saas_admin_action" value="grant_user_plan">
                     <input type="hidden" name="saas_tab" value="subscribers">
-                    <span class="text-xs font-bold" style="color: var(--apple-text-primary);">Manual Plan Grant:</span>
+                    <span class="text-xs font-bold" style="color: var(--apple-text-primary);">Grant Plan:</span>
                     <select name="user_id" class="px-3 py-1.5 rounded-xl border text-xs bg-transparent" style="border-color: var(--apple-border); color: var(--apple-text-primary); background: var(--apple-bg-secondary);">
                         <?php foreach ($users as $u): ?>
                             <option value="<?php echo (int)$u['id']; ?>">#<?php echo (int)$u['id']; ?> — <?php echo htmlspecialchars($u['email'], ENT_QUOTES, 'UTF-8'); ?></option>
@@ -626,7 +609,7 @@ function saas_admin_render_section(): void {
                             <option value="<?php echo (int)$p['id']; ?>"><?php echo htmlspecialchars($p['name'], ENT_QUOTES, 'UTF-8'); ?> (<?php echo number_format((float)$p['price_bdt'], 0); ?> BDT)</option>
                         <?php endforeach; ?>
                     </select>
-                    <button type="submit" class="apple-btn-primary px-4 py-1.5 text-xs font-bold">Activate Plan Now</button>
+                    <button type="submit" class="apple-btn-primary px-4 py-1.5 text-xs font-bold">Activate</button>
                 </form>
             <?php endif; ?>
 
@@ -634,17 +617,17 @@ function saas_admin_render_section(): void {
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
                         <tr class="border-b uppercase text-[10px] tracking-wider" style="background: var(--apple-bg-tertiary); border-color: var(--apple-border); color: var(--apple-text-secondary);">
-                            <th class="py-2.5 px-3">Customer</th>
-                            <th class="py-2.5 px-3">License API Key</th>
-                            <th class="py-2.5 px-3">Subscription</th>
-                            <th class="py-2.5 px-3">Quota</th>
-                            <th class="py-2.5 px-3 text-right">Controls</th>
+                            <th class="py-2.5 px-3">User</th>
+                            <th class="py-2.5 px-3">API Key</th>
+                            <th class="py-2.5 px-3">Plan</th>
+                            <th class="py-2.5 px-3">Usage</th>
+                            <th class="py-2.5 px-3 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y" style="border-color: var(--apple-border);">
                         <?php if (empty($users)): ?>
                             <tr>
-                                <td colspan="5" class="py-6 text-center text-xs" style="color: var(--apple-text-secondary);">No customers registered yet.</td>
+                                <td colspan="5" class="py-6 text-center text-xs" style="color: var(--apple-text-secondary);">No users</td>
                             </tr>
                         <?php else: foreach ($users as $u):
                             $sub = $subsByUser[(int)$u['id']] ?? null;
@@ -713,21 +696,21 @@ function saas_admin_render_section(): void {
 
             <div class="overflow-x-auto rounded-xl border" style="border-color: var(--apple-border);">
                 <div class="px-3 py-2 border-b text-xs font-bold" style="background: var(--apple-bg-tertiary); border-color: var(--apple-border); color: var(--apple-text-primary);">
-                    Recent RivoPay Transactions
+                    Orders
                 </div>
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
                         <tr class="border-b uppercase text-[10px] tracking-wider" style="border-color: var(--apple-border); color: var(--apple-text-secondary);">
-                            <th class="py-2 px-3">Order Ref</th>
-                            <th class="py-2 px-3">Customer / Plan</th>
+                            <th class="py-2 px-3">Order</th>
+                            <th class="py-2 px-3">User / Plan</th>
                             <th class="py-2 px-3">Amount</th>
-                            <th class="py-2 px-3">Transaction ID &amp; Method</th>
+                            <th class="py-2 px-3">TXN</th>
                             <th class="py-2 px-3">Status</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y" style="border-color: var(--apple-border);">
                         <?php if (empty($orders)): ?>
-                            <tr><td colspan="5" class="py-5 text-center text-xs" style="color: var(--apple-text-secondary);">No orders recorded yet.</td></tr>
+                            <tr><td colspan="5" class="py-5 text-center text-xs" style="color: var(--apple-text-secondary);">No orders</td></tr>
                         <?php else: foreach ($orders as $o): ?>
                             <tr>
                                 <td class="py-2 px-3 font-mono text-[11px] font-semibold" style="color: var(--apple-text-primary);">

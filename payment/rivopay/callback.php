@@ -29,7 +29,7 @@ if ($orderRef !== '') {
 if ($order && $order['status'] === 'paid') {
     $state = 'COMPLETED';
     $headline = 'Subscription Activated!';
-    $message = 'Your payment was verified and your subscription plan is active.';
+    $message = '';
     $sub = saas_get_active_subscription((int)$order['user_id']);
 } elseif ($isCancelled && $transactionId === '') {
     if ($order && $order['status'] === 'pending') {
@@ -38,7 +38,7 @@ if ($order && $order['status'] === 'paid') {
     }
     $state = 'CANCELLED';
     $headline = 'Payment Cancelled';
-    $message = 'You cancelled the payment on RivoPay. No charges were applied.';
+    $message = '';
 } elseif ($order && $transactionId !== '') {
     // Always verify server-side with RivoPay /api/payment/verify
     $res = rivopay_complete_order($orderRef, $transactionId, $paymentMethod, $paymentFee);
@@ -121,7 +121,9 @@ if ($order && $order['status'] === 'paid') {
 
             <div class="space-y-1.5">
                 <h1 class="text-xl sm:text-2xl font-bold text-white"><?= htmlspecialchars($headline) ?></h1>
-                <p class="text-xs sm:text-sm text-gray-400"><?= htmlspecialchars($message) ?></p>
+                <?php if ($state !== 'COMPLETED' && $message !== ''): ?>
+                    <p class="text-xs sm:text-sm text-gray-400"><?= htmlspecialchars($message) ?></p>
+                <?php endif; ?>
             </div>
 
             <?php if ($order): ?>
@@ -163,12 +165,12 @@ if ($order && $order['status'] === 'paid') {
                 <?php if ($state === 'PENDING'): ?>
                     <a href="<?= htmlspecialchars($origin . '/payment/rivopay/callback?order_id=' . urlencode($orderRef) . '&transactionId=' . urlencode($transactionId)) ?>" class="apple-btn-secondary px-5 py-2.5 text-xs flex items-center gap-2">
                         <i class="fas fa-rotate-right"></i>
-                        <span>Re-Check Verification</span>
+                        <span>Re-Check</span>
                     </a>
                 <?php endif; ?>
                 <a href="<?= htmlspecialchars($origin) ?>/account.php" class="apple-btn-primary apple-keep-white px-6 py-2.5 text-xs flex items-center gap-2">
                     <i class="fas fa-key"></i>
-                    <span>Go to My Account &amp; API Key</span>
+                    <span>Account</span>
                 </a>
                 <a href="<?= htmlspecialchars($origin) ?>/index.php" class="apple-btn-secondary px-5 py-2.5 text-xs">
                     Explorer

@@ -2,7 +2,7 @@
  * Free Fire Prime System - 1:1 In-Game Authentic Visual FX (OB55 Engine)
  * Features:
  *  1. ZERO Yellow Background Blobs (100% Transparent, No side yellow halos, No background streams)
- *  2. Crackling Gunpowder Micro-Sparkles ("বারুদ স্টার ইফেক্ট" - tiny, crisp, rapid popping diamond stars)
+ *  2. Crackling Gunpowder Micro-Sparkles (tiny, crisp, rapid popping diamond stars)
  *  3. In-Game Verify Badge Metallic Sheen Sweep (with customizable angles & directions)
  *  4. Center Gem Star Flare & Wing Pulse
  */
@@ -52,7 +52,7 @@
 }
 
 /* ========================================================
-   ★ 1. GUNPOWDER MICRO-STARS ("বারুদ স্টার ইফেক্ট") ★
+   ★ 1. GUNPOWDER MICRO-STARS ★
    Tiny, pinpoint, razor-sharp 4-point diamond sparkles
    ======================================================== */
 .ff-prime-stars-layer {

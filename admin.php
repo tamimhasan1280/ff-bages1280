@@ -784,7 +784,6 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             PRO STUDIO
                         </span>
                     </div>
-                    <p class="text-[11px] text-gray-400 font-mono truncate hidden sm:block">12...80 ID &amp; Live CDN Asset Generator</p>
                 </div>
             </div>
 
@@ -848,9 +847,6 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <?= htmlspecialchars($success_item['name'] ?? 'Untitled') ?>
                             <span class="text-sm font-mono text-emerald-400">#<?= htmlspecialchars($success_item['id'] ?? '') ?></span>
                         </h2>
-                        <p class="text-xs text-gray-300">
-                            Badge has been synchronized across local files, D: drive backup mirror, and deployed to jsDelivr Global CDN!
-                        </p>
                     </div>
 
                     <div class="flex items-center gap-2">
@@ -1092,11 +1088,9 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     <div class="space-y-1">
                         <h2 class="text-base font-black font-orbitron text-white flex items-center gap-2">
                             <i class="fas fa-sliders text-amber-400"></i>
-                            <span id="formPanelTitle">Badge Studio & VFX Customizer</span>
+                            <span id="formPanelTitle">Badge Studio</span>
                         </h2>
-                        <p class="text-xs text-gray-400" id="formPanelSub">
-                            Switch tabs to fine-tune Color Grading, VFX Animations, or Badge Identity. Live preview updates instantly!
-                        </p>
+                        <p class="hidden" id="formPanelSub"></p>
                     </div>
 
                     <!-- Fast Save Button Available from Any Tab -->
@@ -1174,13 +1168,9 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                     <span>Universal Color Changer & Recolorizer</span>
                                 </label>
                                 <button type="button" onclick="resetSingleSlider('sliderColorShift', 0)" class="text-[10px] font-mono text-gray-400 hover:text-white px-2 py-0.5 rounded bg-white/5 hover:bg-white/10 transition cursor-pointer flex items-center gap-1">
-                                    <i class="fas fa-rotate-left text-[9px]"></i> Reset Recolor
+                                    <i class="fas fa-rotate-left text-[9px]"></i> Reset
                                 </button>
                             </div>
-
-                            <p class="text-[11px] text-gray-400">
-                                Drag the spectrum slider or click the Color Box to select ANY color to instantly recolor the badge:
-                            </p>
 
                             <!-- Rainbow Spectrum Slider -->
                             <div class="space-y-1.5">
@@ -1309,10 +1299,6 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 </button>
                             </div>
 
-                            <p class="text-[11px] text-gray-400">
-                                Add multiple small or large bone highlights to illuminate specific parts of the badge (crown, wings, gem, or apex). Highlights sit strictly inside the badge texture with zero spillover, or radiate outward:
-                            </p>
-
                             <!-- Global Bone Layer Mode Selector -->
                             <div class="flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-xl bg-[#050713] border border-white/5 text-xs">
                                 <span class="text-slate-300 font-medium text-[11px]">Light Layer Mode:</span>
@@ -1345,14 +1331,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <div class="flex items-center justify-between">
                                 <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-cyan-300 uppercase tracking-wider">
                                     <input type="checkbox" id="contourGlowCheck" onchange="updateLivePreviewStudio()" class="rounded bg-gray-800 border-gray-700 text-cyan-500 cursor-pointer">
-                                    <span>Enable Aura Glow & Contour Shadow</span>
+                                    <span>Aura Glow</span>
                                 </label>
-                                <span class="text-[10px] font-mono text-emerald-400">Silhouette Outline (Zero Boxes)</span>
+                                <span class="text-[10px] font-mono text-emerald-400">Outline</span>
                             </div>
-
-                            <p class="text-[11px] text-gray-400">
-                                Strictly applies <code class="text-cyan-300 font-mono">filter: drop-shadow</code> conforming directly to the PNG silhouette with zero square box artifacts:
-                            </p>
 
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 <div class="space-y-1.5">
@@ -1401,12 +1383,9 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                     <span class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">Master VFX & Animation Toggle</span>
                                 </label>
                                 <span class="text-[10px] font-mono text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/30">
-                                    1-Click On/Off
+                                    On/Off
                                 </span>
                             </div>
-                            <p class="text-[11px] text-gray-400">
-                                Toggle OFF to instantly transform any badge into a 100% clean static emblem without sheen, glints, or moving stars.
-                            </p>
                         </div>
 
                         <!-- Directional Metallic Sheen Controls -->
@@ -1454,14 +1433,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <div class="flex items-center justify-between">
                                 <label class="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
                                     <i class="fas fa-sparkles text-amber-400"></i>
-                                    <span>Scattered Gunpowder Micro-Stars (0 to 50)</span>
+                                    <span>Micro-Stars (0-50)</span>
                                 </label>
                                 <span class="text-xs font-mono font-bold text-amber-400" id="starDensityVal">16 Stars</span>
                             </div>
-
-                            <p class="text-[11px] text-gray-400">
-                                In-game diamond sparkles scattered 360-degrees around badge perimeter. Set to 0 to disable stars completely:
-                            </p>
 
                             <input type="range" name="star_density" id="starDensityInput" min="0" max="50" value="16" oninput="setStarDensity(this.value)" class="w-full accent-amber-400 cursor-pointer">
 
@@ -1509,16 +1484,12 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <div class="flex items-center justify-between">
                                 <label class="text-xs font-bold text-cyan-300 uppercase tracking-wider flex items-center gap-1.5 font-orbitron">
                                     <i class="fas fa-wand-magic-sparkles text-amber-400"></i>
-                                    <span>50+ Numbered Effect Presets</span>
+                                    <span>VFX Presets (50+)</span>
                                 </label>
                                 <button type="button" onclick="removeAllEffects()" class="px-2.5 py-1 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 text-[11px] font-bold flex items-center gap-1 transition cursor-pointer">
-                                    <i class="fas fa-ban"></i> <span>Disable VFX (Static)</span>
+                                    <i class="fas fa-ban"></i> <span>Static</span>
                                 </button>
                             </div>
-
-                            <p class="text-[11px] text-gray-400">
-                                Click any preset below to instantly apply sheen direction, speed, scattered stars count, and glow color:
-                            </p>
 
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 max-h-72 overflow-y-auto custom-scroll pr-1">
                                 <?php foreach ($presets_list as $preset): ?>
@@ -1547,8 +1518,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <!-- 1. Badge Name (Editable) -->
                             <div class="space-y-1.5 sm:col-span-2">
                                 <label class="text-xs font-semibold text-slate-200 flex items-center justify-between">
-                                    <span>Badge Name <span class="text-rose-500">*</span></span>
-                                    <span class="text-[10px] text-gray-400 font-normal">Editable anytime</span>
+                                    <span>Name <span class="text-rose-500">*</span></span>
                                 </label>
                                 <input type="text" name="badge_name" id="badgeNameInput" placeholder="e.g. Free Fire Prime Level 8 or OFFICIAL V BAGE" value="Free Fire Prime Level 8" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition font-mono">
                             </div>
@@ -1556,8 +1526,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                             <!-- 2. Badge ID (Strict 12...80 Format) -->
                             <div class="space-y-1.5 sm:col-span-2">
                                 <div class="flex items-center justify-between">
-                                    <label class="text-xs font-semibold text-slate-200">Badge ID (Must start with 12 and end with 80) <span class="text-emerald-400">*</span></label>
-                                    <span class="text-[10px] text-emerald-400 font-mono font-bold">12 Digits Strict Format</span>
+                                    <label class="text-xs font-semibold text-slate-200">ID (12...80) <span class="text-emerald-400">*</span></label>
+                                    <span class="text-[10px] text-emerald-400 font-mono font-bold">12 Digits</span>
                                 </div>
                                 <div class="relative flex items-center">
                                     <input type="text" name="badge_id" id="badgeIdInput" value="<?= $suggested_id ?>" pattern="^12[0-9]{8}80$" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs font-mono font-bold text-emerald-400 tracking-wider focus:outline-none focus:border-emerald-400 transition">
@@ -1597,7 +1567,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 
                             <!-- 5. Default Size -->
                             <div class="space-y-1.5">
-                                <label class="text-xs font-semibold text-slate-200">Default Render Size (px)</label>
+                                <label class="text-xs font-semibold text-slate-200">Size (px)</label>
                                 <input type="number" name="badge_size" id="badgeSizeInput" value="54" min="20" max="250" oninput="updateLivePreviewStudio()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-amber-400 transition">
                             </div>
 
@@ -1624,7 +1594,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <!-- Icon Asset Selection (Dropdown OR Custom PNG Upload) -->
                         <div class="space-y-3 pt-2 border-t border-white/5">
                             <label class="text-xs font-semibold text-slate-200 block">
-                                Badge Icon Asset (Select Existing or Upload Transparent PNG) <span class="text-rose-500">*</span>
+                                Asset <span class="text-rose-500">*</span>
                             </label>
                             
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1662,10 +1632,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         </div>
 
                         <!-- Description Field -->
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-semibold text-slate-200">Badge Description</label>
-                            <textarea name="badge_description" id="badgeDescInput" rows="2" placeholder="e.g. Authentic Free Fire in-game badge with micro-stars and dynamic metallic sheen." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition custom-scroll"></textarea>
-                        </div>
+                        <input type="hidden" name="badge_description" id="badgeDescInput" value="">
 
                         <!-- Prominent Submit / Save Badge Button -->
                         <div class="pt-2">
@@ -1689,9 +1656,8 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <div class="space-y-0.5">
                     <h3 class="text-base font-black font-orbitron text-white flex items-center gap-2">
                         <i class="fas fa-layer-group text-cyan-400"></i>
-                        <span>Existing Badges & Prime Assets (<?= count($current_badges) ?> Total)</span>
+                        <span>Assets (<?= count($current_badges) ?>)</span>
                     </h3>
-                    <p class="text-xs text-gray-400">Click any row or 'Edit' button to instantly load that badge into the studio above.</p>
                 </div>
 
                 <!-- Filter & Search -->

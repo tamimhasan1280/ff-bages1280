@@ -556,23 +556,22 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 
                 <div class="apple-badge-red inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[10px] uppercase font-bold tracking-wider mb-2">
                     <i class="fas fa-shield-halved text-[9px]"></i>
-                    <span>Protected Access Gate</span>
+                    <span>Access Gate</span>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">TURKY HUB</h2>
-                <p class="text-xs text-gray-400 mt-1 max-w-xs">Enter your private access password to unlock the badges explorer, CDN links, and API data.</p>
             </div>
 
             <!-- Error Banner -->
             <div id="gateErrorMsg" class="hidden mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
                 <i class="fas fa-circle-exclamation shrink-0 text-sm"></i>
-                <span id="gateErrorText">Invalid access password! Access Denied.</span>
+                <span id="gateErrorText">Invalid password.</span>
             </div>
 
             <!-- Authentication Form -->
             <form id="authGateForm" onsubmit="handleGateLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-300 tracking-wide mb-1.5 flex items-center justify-between">
-                        <span>Security Access Password</span>
+                        <span>Password</span>
                         <span class="text-[10px] text-red-400 font-mono">Master Key / PIN</span>
                     </label>
                     <div class="relative">
@@ -587,13 +586,13 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <div class="flex items-center justify-between text-xs pt-1">
                     <label class="flex items-center gap-2 text-gray-400 cursor-pointer select-none">
                         <input type="checkbox" id="gateRemember" checked class="w-3.5 h-3.5 rounded accent-red-500 cursor-pointer">
-                        <span>Remember this device</span>
+                        <span>Remember</span>
                     </label>
-                    <span class="text-[11px] text-gray-500 font-mono">OB55 Engine</span>
+                    <span class="text-[11px] text-gray-500 font-mono">OB55</span>
                 </div>
 
                 <button type="submit" id="gateSubmitBtn" class="apple-btn-primary apple-keep-white w-full py-3.5 px-6 text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer">
-                    <span>Authenticate & Unlock Hub</span>
+                    <span>Unlock</span>
                     <i class="fas fa-arrow-right text-xs"></i>
                 </button>
             </form>
@@ -602,7 +601,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 <div>
                     <a href="account.php" class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-400 hover:text-red-300 transition">
                         <i class="fas fa-key text-[11px]"></i>
-                        <span>Client Account &amp; API Subscriptions &rarr;</span>
+                        <span>Account &amp; Plans &rarr;</span>
                     </a>
                 </div>
                 <span class="block text-[11px] text-gray-500 font-mono">TURKY HUB · Apple Minimalist System</span>
@@ -836,7 +835,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             <!-- Transparency Verification Quick Switcher -->
             <div class="flex items-center justify-center gap-2 mt-2.5">
                 <button type="button" onclick="toggleModalCheckerboard()" class="apple-btn-secondary text-[10px] font-mono px-3 py-1 rounded-lg transition flex items-center gap-1.5 cursor-pointer">
-                    <i class="fas fa-eye text-red-500"></i> <span>Verify 100% Transparency (Checkerboard)</span>
+                    <i class="fas fa-eye text-red-500"></i> <span>Checkerboard</span>
                 </button>
             </div>
 
@@ -850,7 +849,7 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                 
                 <!-- Item ID Row with Copy Button -->
                 <div class="bg-[#090b18] border border-white/5 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
-                    <span class="text-[#f97316] font-bold text-xs tracking-wide">Item ID:</span>
+                    <span class="text-[#f97316] font-bold text-xs tracking-wide">ID</span>
                     <div class="flex items-center gap-2">
                         <span id="modalItemId" class="text-emerald-400 font-mono font-bold text-xs tracking-wider">120000010880</span>
                         <button type="button" onclick="copyModalId()" class="bg-[#1b1f3b] hover:bg-[#282f56] text-gray-200 hover:text-white px-2.5 py-1 rounded-lg text-[11px] font-semibold flex items-center gap-1.5 transition">
@@ -861,65 +860,57 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
 
                 <!-- Icon ID Row -->
                 <div class="bg-[#090b18] border border-white/5 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
-                    <span class="text-[#f97316] font-bold text-xs tracking-wide">Icon ID:</span>
+                    <span class="text-[#f97316] font-bold text-xs tracking-wide">Icon</span>
                     <span id="modalIconId" class="text-emerald-400 font-mono text-xs">Icon_FF_Prime_Level_08</span>
                 </div>
 
                 <!-- Rarity Row -->
                 <div class="flex items-center justify-between px-2 py-1">
-                    <span class="text-gray-400 font-medium">Rarity:</span>
+                    <span class="text-gray-400 font-medium">Rarity</span>
                     <span id="modalRarity" class="text-white font-extrabold uppercase tracking-wider">MYTHIC</span>
                 </div>
 
                 <!-- Category Row -->
                 <div class="flex items-center justify-between px-2 py-1">
-                    <span class="text-gray-400 font-medium">Category:</span>
+                    <span class="text-gray-400 font-medium">Category</span>
                     <span id="modalCategory" class="text-white font-medium">Prime System</span>
                 </div>
 
-                <!-- Patch / Tag Row -->
+                <!-- Patch Row -->
                 <div class="flex items-center justify-between px-2 py-1">
-                    <span class="text-gray-400 font-medium">Patch / Tag:</span>
+                    <span class="text-gray-400 font-medium">Patch</span>
                     <span id="modalPatch" class="text-white font-medium">OB55</span>
                 </div>
 
-                <!-- Description Block -->
-                <div class="pt-1">
-                    <span class="text-gray-400 font-medium block mb-1 px-2">Description:</span>
-                    <div id="modalDescription" class="bg-[#090b18] border border-white/5 rounded-xl p-3 text-gray-300 italic text-xs leading-relaxed">
-                        <!-- Description -->
-                    </div>
-                </div>
-
-                <!-- Developer Logic accordion -->
+                <!-- Integration accordion -->
                 <div class="pt-1">
                     <button type="button" onclick="toggleDevInfo()" class="w-full text-left text-[11px] font-mono text-amber-400/90 hover:text-amber-300 flex items-center justify-between px-2 py-1">
-                        <span><i class="fas fa-code mr-1"></i> Developer Integration & Logic</span>
+                        <span><i class="fas fa-code mr-1"></i> Integration Links</span>
                         <i id="devInfoIcon" class="fas fa-chevron-down text-[10px]"></i>
                     </button>
                     <div id="devInfoBlock" class="hidden space-y-2 mt-1.5 bg-[#090b18] p-3 rounded-xl border border-white/5">
                         <div class="space-y-1">
-                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">PHP Logic Call:</span>
+                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">PHP</span>
                             <div class="flex items-center gap-1.5">
                                 <code id="modalPhpCall" class="text-[10px] font-mono text-amber-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
-                                <button type="button" onclick="copyText(document.getElementById('modalPhpCall').textContent, 'PHP Call copied!')" class="px-2 py-1 bg-amber-500/20 text-amber-300 rounded text-[10px] shrink-0 hover:bg-amber-500/30">Copy</button>
+                                <button type="button" onclick="copyText(document.getElementById('modalPhpCall').textContent, 'Copied!')" class="px-2 py-1 bg-amber-500/20 text-amber-300 rounded text-[10px] shrink-0 hover:bg-amber-500/30">Copy</button>
                             </div>
                         </div>
                         <div class="space-y-1">
-                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">Direct Host / Vercel Image URL:</span>
+                            <span class="text-[10px] text-gray-400 uppercase font-mono font-bold">Direct URL</span>
                             <div class="flex items-center gap-1.5">
                                 <code id="modalDirectUrl" class="text-[10px] font-mono text-emerald-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
-                                <button type="button" onclick="copyText(document.getElementById('modalDirectUrl').textContent, 'Direct Image URL copied!')" class="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-[10px] shrink-0 hover:bg-emerald-500/30">Copy</button>
+                                <button type="button" onclick="copyText(document.getElementById('modalDirectUrl').textContent, 'Copied!')" class="px-2 py-1 bg-emerald-500/20 text-emerald-300 rounded text-[10px] shrink-0 hover:bg-emerald-500/30">Copy</button>
                             </div>
                         </div>
-                        <!-- Animated SVG CDN URL (Primary Global CDN) -->
+                        <!-- Animated SVG CDN URL -->
                         <div class="space-y-1">
                             <span class="text-[10px] text-purple-400 uppercase font-mono font-bold flex items-center gap-1">
-                                <i class="fas fa-file-code"></i> Global Animated SVG CDN URL (for &lt;img&gt; & Browser):
+                                <i class="fas fa-file-code"></i> SVG URL
                             </span>
                             <div class="flex items-center gap-1.5">
                                 <code id="modalAnimatedSvgUrl" class="text-[10px] font-mono text-purple-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
-                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedSvgUrl').textContent, 'Animated SVG CDN URL copied!')" class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-[10px] shrink-0 hover:bg-purple-500/30">Copy</button>
+                                <button type="button" onclick="copyText(document.getElementById('modalAnimatedSvgUrl').textContent, 'Copied!')" class="px-2 py-1 bg-purple-500/20 text-purple-300 rounded text-[10px] shrink-0 hover:bg-purple-500/30">Copy</button>
                             </div>
                         </div>
 
@@ -927,9 +918,9 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
                         <div class="space-y-1">
                             <div class="flex items-center justify-between">
                                 <span class="text-[10px] text-amber-400 uppercase font-mono font-bold flex items-center gap-1">
-                                    <i class="fas fa-bolt text-amber-400"></i> Interactive HTML Player URL (Hosted):
+                                    <i class="fas fa-bolt text-amber-400"></i> Player URL
                                 </span>
-                                <a id="modalPlayerOpenLink" href="#" target="_blank" class="text-[9px] text-cyan-400 hover:underline font-mono">Open in New Tab <i class="fas fa-external-link-alt text-[8px]"></i></a>
+                                <a id="modalPlayerOpenLink" href="#" target="_blank" class="text-[9px] text-cyan-400 hover:underline font-mono">Open <i class="fas fa-external-link-alt text-[8px]"></i></a>
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <code id="modalAnimatedPlayerUrl" class="text-[10px] font-mono text-amber-300 bg-black/40 p-1.5 rounded flex-1 overflow-x-auto whitespace-nowrap custom-scroll"></code>
@@ -1227,7 +1218,9 @@ $selected_item_id = $_GET['item'] ?? $_GET['id'] ?? $_GET['badge'] ?? '';
             document.getElementById('modalRarity').textContent = item.rarity;
             document.getElementById('modalCategory').textContent = item.category;
             document.getElementById('modalPatch').textContent = item.patch || 'OB55';
-            document.getElementById('modalDescription').textContent = item.description || 'Exclusive Free Fire verification badge asset.';
+            if (document.getElementById('modalDescription')) {
+                document.getElementById('modalDescription').textContent = item.description || '';
+            }
 
             document.getElementById('modalPhpCall').textContent = item.fn_call || '';
             const hostBase = window.location.origin;

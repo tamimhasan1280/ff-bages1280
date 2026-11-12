@@ -267,13 +267,13 @@ if ($customer) {
                             <span class="macos-dot macos-dot-yellow"></span>
                             <span class="macos-dot macos-dot-green"></span>
                         </div>
-                        <span class="macos-window-title">Developer Account Access</span>
+                        <span class="macos-window-title">Account</span>
                         <span class="w-8" aria-hidden="true"></span>
                     </div>
 
                     <div class="p-6 space-y-5">
                         <div class="flex gap-1 apple-nav-pill">
-                            <button type="button" id="authTabBtnRegister" onclick="switchAuthTab('register')" class="apple-nav-item active flex-1 py-2 text-xs cursor-pointer">Create Account</button>
+                            <button type="button" id="authTabBtnRegister" onclick="switchAuthTab('register')" class="apple-nav-item active flex-1 py-2 text-xs cursor-pointer">Register</button>
                             <button type="button" id="authTabBtnLogin" onclick="switchAuthTab('login')" class="apple-nav-item flex-1 py-2 text-xs cursor-pointer">Sign In</button>
                         </div>
 
@@ -281,24 +281,24 @@ if ($customer) {
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
                             <input type="hidden" name="cust_action" value="register">
                             <div>
-                                <label class="block text-xs font-semibold text-gray-300 mb-1">Full Name</label>
-                                <input type="text" name="name" required placeholder="e.g. Rahim Ahmed" class="w-full border px-3.5 py-2.5 text-xs">
+                                <label class="block text-xs font-semibold text-gray-300 mb-1">Name</label>
+                                <input type="text" name="name" required placeholder="Name" class="w-full border px-3.5 py-2.5 text-xs">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-gray-300 mb-1">Email Address</label>
-                                <input type="email" name="email" required placeholder="you@example.com" class="w-full border px-3.5 py-2.5 text-xs">
+                                <label class="block text-xs font-semibold text-gray-300 mb-1">Email</label>
+                                <input type="email" name="email" required placeholder="Email" class="w-full border px-3.5 py-2.5 text-xs">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-gray-300 mb-1">Phone Number (for Checkout)</label>
+                                <label class="block text-xs font-semibold text-gray-300 mb-1">Phone</label>
                                 <input type="text" name="phone" placeholder="017XXXXXXXX" class="w-full border px-3.5 py-2.5 text-xs">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-gray-300 mb-1">Password (min 6 chars)</label>
-                                <input type="password" name="password" required minlength="6" placeholder="••••••••" class="w-full border px-3.5 py-2.5 text-xs">
+                                <label class="block text-xs font-semibold text-gray-300 mb-1">Password</label>
+                                <input type="password" name="password" required minlength="6" placeholder="Min 6 chars" class="w-full border px-3.5 py-2.5 text-xs">
                             </div>
                             <button type="submit" class="apple-btn-primary apple-keep-white w-full py-3 text-xs flex items-center justify-center gap-2 cursor-pointer">
                                 <i class="fas fa-user-plus"></i>
-                                <span>Create Account &amp; Get API Key</span>
+                                <span>Create Account</span>
                             </button>
                         </form>
 
@@ -306,16 +306,16 @@ if ($customer) {
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
                             <input type="hidden" name="cust_action" value="login">
                             <div>
-                                <label class="block text-xs font-semibold text-gray-300 mb-1">Email Address</label>
-                                <input type="email" name="email" required placeholder="you@example.com" class="w-full border px-3.5 py-2.5 text-xs">
+                                <label class="block text-xs font-semibold text-gray-300 mb-1">Email</label>
+                                <input type="email" name="email" required placeholder="Email" class="w-full border px-3.5 py-2.5 text-xs">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-300 mb-1">Password</label>
-                                <input type="password" name="password" required placeholder="••••••••" class="w-full border px-3.5 py-2.5 text-xs">
+                                <input type="password" name="password" required placeholder="Password" class="w-full border px-3.5 py-2.5 text-xs">
                             </div>
                             <button type="submit" class="apple-btn-primary apple-keep-white w-full py-3 text-xs flex items-center justify-center gap-2 cursor-pointer">
                                 <i class="fas fa-right-to-bracket"></i>
-                                <span>Sign In to Dashboard</span>
+                                <span>Sign In</span>
                             </button>
                         </form>
                     </div>
@@ -329,26 +329,22 @@ if ($customer) {
                             <span class="macos-dot macos-dot-yellow"></span>
                             <span class="macos-dot macos-dot-green"></span>
                         </div>
-                        <span class="macos-window-title">Available API Subscription Plans</span>
+                        <span class="macos-window-title">Plans</span>
                         <span class="text-[10px] font-mono text-gray-400"><?= htmlspecialchars($gwCfg['display_name']) ?></span>
                     </div>
                     <div class="p-6 space-y-4">
-                        <p class="text-xs text-gray-400">Create your free developer account on the left, then subscribe to unlock live animated Free Fire Badges, JSON APIs &amp; SVG/PNG assets with instant automatic activation.</p>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                             <?php foreach ($plans as $pl): ?>
                                 <div class="apple-surface-secondary p-4 flex flex-col justify-between gap-3">
-                                    <div class="space-y-1">
-                                        <div class="flex items-center justify-between gap-2">
-                                            <h3 class="text-sm font-bold text-white"><?= htmlspecialchars($pl['name']) ?></h3>
-                                            <?php if (!empty($pl['badge_label'])): ?>
-                                                <span class="apple-badge-red text-[10px] font-bold px-2 py-0.5 rounded-full"><?= htmlspecialchars($pl['badge_label']) ?></span>
-                                            <?php endif; ?>
-                                        </div>
-                                        <p class="text-[11px] text-gray-400"><?= htmlspecialchars($pl['description']) ?></p>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <h3 class="text-sm font-bold text-white"><?= htmlspecialchars($pl['name']) ?></h3>
+                                        <?php if (!empty($pl['badge_label'])): ?>
+                                            <span class="apple-badge-red text-[10px] font-bold px-2 py-0.5 rounded-full"><?= htmlspecialchars($pl['badge_label']) ?></span>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="pt-2 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                                        <span class="text-white font-bold text-base">৳<?= number_format((float)$pl['price_bdt'], 0) ?></span>
-                                        <span class="text-gray-400"><?= htmlspecialchars(saas_format_duration((int)$pl['duration_value'], (string)$pl['duration_unit'])) ?> · <?= (int)$pl['api_limit'] > 0 ? number_format((int)$pl['api_limit']) . ' req' : 'Unlimited' ?></span>
+                                        <span class="text-white font-bold text-base"><?= (float)$pl['price_bdt'] <= 0 ? 'FREE' : number_format((float)$pl['price_bdt'], 0) . ' BDT' ?></span>
+                                        <span class="text-gray-400"><?= htmlspecialchars(saas_format_duration((int)$pl['duration_value'], (string)$pl['duration_unit'])) ?> · <?= (int)$pl['api_limit'] > 0 ? number_format((int)$pl['api_limit']) : 'Unlimited' ?></span>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -369,7 +365,7 @@ if ($customer) {
                             <span class="macos-dot macos-dot-yellow"></span>
                             <span class="macos-dot macos-dot-green"></span>
                         </div>
-                        <span class="macos-window-title"><?= htmlspecialchars($customer['name']) ?> · Subscription License</span>
+                        <span class="macos-window-title"><?= htmlspecialchars($customer['name']) ?> · License</span>
                         <?php if ($subState === 'active'): ?>
                             <span id="subStatusPill" class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase">Active</span>
                         <?php elseif ($subState === 'limit_exceeded'): ?>
@@ -384,16 +380,16 @@ if ($customer) {
                     <div class="p-6 space-y-5">
                         <div class="apple-surface-secondary p-4 space-y-2.5 text-xs">
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-400">Current Plan</span>
-                                <span class="font-bold text-white"><?= htmlspecialchars($activeSub['plan_name'] ?? 'Free / No Active Subscription') ?></span>
+                                <span class="text-gray-400">Plan</span>
+                                <span class="font-bold text-white"><?= htmlspecialchars($activeSub['plan_name'] ?? 'None') ?></span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-400">Remaining Time</span>
+                                <span class="text-gray-400">Expires</span>
                                 <?php if ($activeSub && $activeSub['status'] === 'active'): ?>
                                     <?php if ($activeSub['expires_at'] === null): ?>
-                                        <span class="font-mono font-bold text-emerald-400">Lifetime / Never Expires</span>
+                                        <span class="font-mono font-bold text-emerald-400">Lifetime</span>
                                     <?php else: ?>
-                                        <span id="liveCountdown" data-expires="<?= (int)$activeSub['expires_at'] ?>" class="font-mono font-bold text-emerald-400">Calculating...</span>
+                                        <span id="liveCountdown" data-expires="<?= (int)$activeSub['expires_at'] ?>" class="font-mono font-bold text-emerald-400">...</span>
                                     <?php endif; ?>
                                 <?php elseif ($activeSub && $activeSub['status'] === 'expired'): ?>
                                     <span class="font-mono font-bold text-rose-400">Expired (<?= date('Y-m-d H:i:s', (int)$activeSub['expires_at']) ?>)</span>
@@ -402,7 +398,7 @@ if ($customer) {
                                 <?php endif; ?>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-400">API Request Usage</span>
+                                <span class="text-gray-400">Usage</span>
                                 <span class="font-mono font-bold text-white">
                                     <?= $activeSub ? number_format($subUsed) . ' / ' . ($subLimit > 0 ? number_format($subLimit) : 'Unlimited') : '0 / 0' ?>
                                 </span>
@@ -419,34 +415,33 @@ if ($customer) {
                         <!-- API License Key Box -->
                         <div class="space-y-2">
                             <div class="flex items-center justify-between">
-                                <label class="text-xs font-bold text-white uppercase tracking-wider">Your Project API Key</label>
-                                <span class="text-[10px] font-mono text-gray-400">Bound to Subscription</span>
+                                <label class="text-xs font-bold text-white uppercase tracking-wider">API Key</label>
                             </div>
                             <div class="flex items-center gap-2">
                                 <input type="text" id="myApiKeyInput" readonly value="<?= htmlspecialchars($customer['api_key']) ?>" class="w-full border px-3 py-2.5 text-xs font-mono">
-                                <button type="button" onclick="copyPortalText(document.getElementById('myApiKeyInput').value, 'API Key copied!')" class="apple-btn-primary apple-keep-white px-3.5 py-2.5 text-xs shrink-0 cursor-pointer">Copy</button>
+                                <button type="button" onclick="copyPortalText(document.getElementById('myApiKeyInput').value, 'Copied!')" class="apple-btn-primary apple-keep-white px-3.5 py-2.5 text-xs shrink-0 cursor-pointer">Copy</button>
                             </div>
                             <div class="flex items-center justify-between gap-2 pt-1">
-                                <form method="POST" action="account.php" onsubmit="return confirm('Rotate your API Key? Previously saved scripts using the old key will immediately stop working.');">
+                                <form method="POST" action="account.php" onsubmit="return confirm('Rotate API Key?');">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf) ?>">
                                     <input type="hidden" name="cust_action" value="rotate_key">
                                     <button type="submit" class="apple-btn-secondary px-3 py-1.5 text-[11px] flex items-center gap-1.5 cursor-pointer">
                                         <i class="fas fa-rotate"></i>
-                                        <span>Rotate Key</span>
+                                        <span>Rotate</span>
                                     </button>
                                 </form>
                                 <button type="button" onclick="testMyKey()" class="apple-btn-secondary px-3 py-1.5 text-[11px] flex items-center gap-1.5 cursor-pointer">
                                     <i class="fas fa-vial text-red-500"></i>
-                                    <span>Test Live API</span>
+                                    <span>Test API</span>
                                 </button>
                             </div>
                             <div id="liveKeyTestResult" class="hidden p-3 rounded-xl apple-surface-secondary text-[11px] font-mono"></div>
                         </div>
 
                         <?php if ($subState !== 'active'): ?>
-                            <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-400 space-y-1">
-                                <div class="font-bold flex items-center gap-1.5"><i class="fas fa-lock"></i> API &amp; Saved Snippets Currently Locked</div>
-                                <p class="text-[11px] opacity-90">All copied scripts, image URLs, and REST calls using your key return <strong>Locked / Expired</strong> until you activate or renew a plan below.</p>
+                            <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-400 font-semibold flex items-center gap-2">
+                                <i class="fas fa-lock"></i>
+                                <span>Locked — Subscribe below</span>
                             </div>
                         <?php endif; ?>
                     </div>
@@ -460,14 +455,14 @@ if ($customer) {
                             <span class="macos-dot macos-dot-yellow"></span>
                             <span class="macos-dot macos-dot-green"></span>
                         </div>
-                        <span class="macos-window-title">Purchase / Renew Subscription Plan</span>
-                        <span class="text-[10px] font-mono text-gray-400"><?= (int)$gwCfg['status'] === 1 ? htmlspecialchars($gwCfg['display_name']) : 'Gateway Disabled' ?></span>
+                        <span class="macos-window-title">Plans</span>
+                        <span class="text-[10px] font-mono text-gray-400"><?= (int)$gwCfg['status'] === 1 ? htmlspecialchars($gwCfg['display_name']) : 'Gateway Off' ?></span>
                     </div>
 
                     <div class="p-6 space-y-4">
                         <?php if ((int)$gwCfg['status'] !== 1): ?>
-                            <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-400">
-                                Payment gateway is currently disabled in Admin Panel settings. Paid checkout is paused.
+                            <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-400">
+                                Gateway disabled.
                             </div>
                         <?php endif; ?>
 
@@ -480,28 +475,25 @@ if ($customer) {
                                     <input type="hidden" name="cust_action" value="purchase_plan">
                                     <input type="hidden" name="plan_id" value="<?= (int)$pl['id'] ?>">
 
-                                    <div class="space-y-1.5">
-                                        <div class="flex items-center justify-between gap-2">
-                                            <h3 class="text-sm font-bold text-white"><?= htmlspecialchars($pl['name']) ?></h3>
-                                            <?php if (!empty($pl['badge_label'])): ?>
-                                                <span class="apple-badge-red text-[10px] font-bold px-2 py-0.5 rounded-full"><?= htmlspecialchars($pl['badge_label']) ?></span>
-                                            <?php endif; ?>
-                                        </div>
-                                        <p class="text-[11px] text-gray-400"><?= htmlspecialchars($pl['description']) ?></p>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <h3 class="text-sm font-bold text-white"><?= htmlspecialchars($pl['name']) ?></h3>
+                                        <?php if (!empty($pl['badge_label'])): ?>
+                                            <span class="apple-badge-red text-[10px] font-bold px-2 py-0.5 rounded-full"><?= htmlspecialchars($pl['badge_label']) ?></span>
+                                        <?php endif; ?>
                                     </div>
 
                                     <div class="space-y-3 pt-2 border-t border-white/10">
                                         <div class="flex items-baseline justify-between">
-                                            <span class="text-xl font-bold text-white font-mono"><?= $isFree ? 'FREE' : '৳' . number_format((float)$pl['price_bdt'], 2) ?></span>
+                                            <span class="text-xl font-bold text-white font-mono"><?= $isFree ? 'FREE' : number_format((float)$pl['price_bdt'], 2) . ' BDT' ?></span>
                                             <span class="text-[11px] font-mono text-gray-400">
                                                 <?= htmlspecialchars(saas_format_duration((int)$pl['duration_value'], (string)$pl['duration_unit'])) ?>
-                                                · <?= (int)$pl['api_limit'] > 0 ? number_format((int)$pl['api_limit']) . ' calls' : 'Unlimited calls' ?>
+                                                · <?= (int)$pl['api_limit'] > 0 ? number_format((int)$pl['api_limit']) . ' calls' : 'Unlimited' ?>
                                             </span>
                                         </div>
 
                                         <button type="submit" <?= (!$isFree && (int)$gwCfg['status'] !== 1) ? 'disabled' : '' ?> class="apple-btn-primary apple-keep-white w-full py-2.5 px-4 text-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
                                             <i class="fas fa-bolt"></i>
-                                            <span><?= $isFree ? 'Activate Free Plan' : 'Pay with ' . htmlspecialchars($gwCfg['display_name']) ?></span>
+                                            <span><?= $isFree ? 'Activate' : 'Pay Now' ?></span>
                                         </button>
                                     </div>
                                 </form>
@@ -511,7 +503,7 @@ if ($customer) {
                 </section>
             </div>
 
-            <!-- Licensed Project Integration Snippets (Enforces Plan Expiry & Limits!) -->
+            <!-- Snippets -->
             <section class="apple-window overflow-hidden">
                 <div class="macos-window-bar">
                     <div class="macos-traffic-lights" aria-hidden="true">
@@ -519,16 +511,16 @@ if ($customer) {
                         <span class="macos-dot macos-dot-yellow"></span>
                         <span class="macos-dot macos-dot-green"></span>
                     </div>
-                    <span class="macos-window-title">Licensed Code Snippets (Enforces Subscription Expiry &amp; API Limit)</span>
-                    <span class="text-[10px] font-mono text-emerald-400">Live Token Gated</span>
+                    <span class="macos-window-title">Snippets</span>
+                    <span class="text-[10px] font-mono text-emerald-400">Token Gated</span>
                 </div>
 
                 <?php $encKey = urlencode($customer['api_key']); ?>
                 <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                     <div class="apple-surface-secondary p-4 space-y-2">
                         <div class="flex items-center justify-between font-bold text-white">
-                            <span>1. Licensed Web SDK (&lt;ff-badge&gt;)</span>
-                            <button type="button" onclick="copyPortalText(document.getElementById('snipSdk').textContent, 'SDK snippet copied!')" class="text-red-500 hover:underline text-[11px] cursor-pointer">Copy</button>
+                            <span>1. Web SDK</span>
+                            <button type="button" onclick="copyPortalText(document.getElementById('snipSdk').textContent, 'Copied!')" class="text-red-500 hover:underline text-[11px] cursor-pointer">Copy</button>
                         </div>
                         <pre id="snipSdk" class="p-3 rounded-xl bg-black/80 text-zinc-100 text-[11px] overflow-x-auto font-mono">&lt;script src="<?= htmlspecialchars($origin) ?>/api/license/sdk.php?key=<?= htmlspecialchars($encKey) ?>"&gt;&lt;/script&gt;
 &lt;ff-badge id="126393684880" size="64"&gt;&lt;/ff-badge&gt;</pre>
@@ -536,24 +528,24 @@ if ($customer) {
 
                     <div class="apple-surface-secondary p-4 space-y-2">
                         <div class="flex items-center justify-between font-bold text-white">
-                            <span>2. Licensed Animated SVG URL (&lt;img&gt;)</span>
-                            <button type="button" onclick="copyPortalText(document.getElementById('snipImg').textContent, 'Image URL copied!')" class="text-red-500 hover:underline text-[11px] cursor-pointer">Copy</button>
+                            <span>2. SVG URL</span>
+                            <button type="button" onclick="copyPortalText(document.getElementById('snipImg').textContent, 'Copied!')" class="text-red-500 hover:underline text-[11px] cursor-pointer">Copy</button>
                         </div>
                         <pre id="snipImg" class="p-3 rounded-xl bg-black/80 text-zinc-100 text-[11px] overflow-x-auto font-mono">&lt;img src="<?= htmlspecialchars($origin) ?>/api/license/asset.php?id=126393684880&amp;format=svg&amp;key=<?= htmlspecialchars($encKey) ?>" width="64" height="64" /&gt;</pre>
                     </div>
 
                     <div class="apple-surface-secondary p-4 space-y-2">
                         <div class="flex items-center justify-between font-bold text-white">
-                            <span>3. Licensed Interactive Player (&lt;iframe&gt;)</span>
-                            <button type="button" onclick="copyPortalText(document.getElementById('snipPlayer').textContent, 'Player snippet copied!')" class="text-red-500 hover:underline text-[11px] cursor-pointer">Copy</button>
+                            <span>3. Player</span>
+                            <button type="button" onclick="copyPortalText(document.getElementById('snipPlayer').textContent, 'Copied!')" class="text-red-500 hover:underline text-[11px] cursor-pointer">Copy</button>
                         </div>
                         <pre id="snipPlayer" class="p-3 rounded-xl bg-black/80 text-zinc-100 text-[11px] overflow-x-auto font-mono">&lt;iframe src="<?= htmlspecialchars($origin) ?>/api/license/player.php?id=126393684880&amp;key=<?= htmlspecialchars($encKey) ?>" width="80" height="80" frameborder="0"&gt;&lt;/iframe&gt;</pre>
                     </div>
 
                     <div class="apple-surface-secondary p-4 space-y-2">
                         <div class="flex items-center justify-between font-bold text-white">
-                            <span>4. Licensed REST JSON Endpoint</span>
-                            <button type="button" onclick="copyPortalText(document.getElementById('snipJson').textContent, 'REST Endpoint copied!')" class="text-red-500 hover:underline text-[11px] cursor-pointer">Copy</button>
+                            <span>4. JSON API</span>
+                            <button type="button" onclick="copyPortalText(document.getElementById('snipJson').textContent, 'Copied!')" class="text-red-500 hover:underline text-[11px] cursor-pointer">Copy</button>
                         </div>
                         <pre id="snipJson" class="p-3 rounded-xl bg-black/80 text-zinc-100 text-[11px] overflow-x-auto font-mono"><?= htmlspecialchars($origin) ?>/api/license/badges.php?key=<?= htmlspecialchars($encKey) ?></pre>
                     </div>
@@ -568,29 +560,29 @@ if ($customer) {
                         <span class="macos-dot macos-dot-yellow"></span>
                         <span class="macos-dot macos-dot-green"></span>
                     </div>
-                    <span class="macos-window-title">Payment &amp; Order History</span>
-                    <span class="text-[10px] font-mono text-gray-400"><?= count($orders) ?> orders</span>
+                    <span class="macos-window-title">Orders</span>
+                    <span class="text-[10px] font-mono text-gray-400"><?= count($orders) ?></span>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs">
                         <thead class="text-[11px] uppercase text-gray-400">
                             <tr>
-                                <th class="py-3 px-4">Order Ref</th>
+                                <th class="py-3 px-4">Order</th>
                                 <th class="py-3 px-4">Plan</th>
                                 <th class="py-3 px-4">Amount</th>
-                                <th class="py-3 px-4">Method / TrxID</th>
+                                <th class="py-3 px-4">Trx ID</th>
                                 <th class="py-3 px-4">Status</th>
                                 <th class="py-3 px-4">Date</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-white/5">
                             <?php if (empty($orders)): ?>
-                                <tr><td colspan="6" class="py-6 px-4 text-center text-gray-400">No orders placed yet.</td></tr>
+                                <tr><td colspan="6" class="py-6 px-4 text-center text-gray-400">No orders</td></tr>
                             <?php else: foreach ($orders as $o): ?>
                                 <tr>
                                     <td class="py-3 px-4 font-mono text-white font-semibold"><?= htmlspecialchars($o['order_ref']) ?></td>
                                     <td class="py-3 px-4 text-white"><?= htmlspecialchars($o['plan_name'] ?? 'Plan #' . $o['plan_id']) ?></td>
-                                    <td class="py-3 px-4 font-mono text-white">৳<?= number_format((float)$o['amount_bdt'], 2) ?></td>
+                                    <td class="py-3 px-4 font-mono text-white"><?= number_format((float)$o['amount_bdt'], 2) ?> BDT</td>
                                     <td class="py-3 px-4 font-mono text-gray-400">
                                         <?= htmlspecialchars(($o['payment_method'] ?: '—') . (!empty($o['transaction_id']) ? ' · ' . $o['transaction_id'] : '')) ?>
                                     </td>

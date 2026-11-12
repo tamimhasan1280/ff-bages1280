@@ -181,10 +181,9 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
                 </div>
                 <div class="apple-badge-red inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[10px] uppercase font-bold tracking-wider mb-2">
                     <i class="fas fa-shield-halved text-[9px]"></i>
-                    <span>Restricted Studio Access</span>
+                    <span>Admin Access</span>
                 </div>
                 <h2 class="text-2xl font-bold text-white tracking-tight">AI INTEGRATION</h2>
-                <p class="text-xs text-gray-400 mt-1">Please enter your authorized credentials to access the AI Integration Studio.</p>
             </div>
 
             <?php if (!empty($login_error)): ?>
@@ -253,7 +252,6 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
                             AI STUDIO
                         </span>
                     </div>
-                    <p class="text-[11px] text-gray-400 font-mono truncate hidden sm:block">OB55 Universal AI Integration Directive &amp; SDK Guide</p>
                 </div>
             </div>
 
@@ -303,11 +301,8 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
                         <span>UNIVERSAL AI INTEGRATION DIRECTIVE</span>
                     </div>
                     <h1 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">
-                        AI INTEGRATION &amp; MASTER PROMPT STUDIO
+                        AI INTEGRATION STUDIO
                     </h1>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        Copy the single <strong class="text-white">Universal Master Prompt</strong> below and feed it into any AI system (<strong class="text-white">ChatGPT, Claude, Gemini, Cursor, Copilot, DeepSeek</strong>). It contains the complete technical logic, calling methods, 12-digit Badge ID matrix, authentic Prime Level (1-8) VFX rules, and headless CDN integration.
-                    </p>
                 </div>
 
                 <!-- Action Button: Copy Master Prompt -->
@@ -603,11 +598,8 @@ If the integrating project renders a dynamic list, badge picker, or user-selecte
             <div class="space-y-2">
                 <h2 class="text-xl font-bold text-white font-orbitron cyber-text-glow flex items-center gap-2">
                     <i class="fab fa-js text-yellow-400"></i>
-                    <span>Web & React Integration Guide</span>
+                    <span>Web &amp; React</span>
                 </h2>
-                <p class="text-xs text-gray-400">
-                    The easiest method to display Free Fire Badges & Prime VFX on any website, single-page application (React, Next.js, Vue, Svelte) or HTML landing page.
-                </p>
             </div>
 
             <!-- Snippet 1: Web Component -->
@@ -686,11 +678,8 @@ export const FFBadge: React.FC&lt;FFBadgeProps&gt; = ({ id, size = 54, anim, pul
             <div class="space-y-2">
                 <h2 class="text-xl font-bold text-white font-orbitron cyber-cyan-glow flex items-center gap-2">
                     <i class="fas fa-mobile-screen-button text-cyan-400"></i>
-                    <span>Mobile Apps Integration Guide (Flutter &amp; React Native)</span>
+                    <span>Mobile (Flutter &amp; React Native)</span>
                 </h2>
-                <p class="text-xs text-gray-400">
-                    Use Free Fire Badges &amp; Prime Level badges in Android and iOS native mobile applications.
-                </p>
             </div>
 
             <!-- Snippet: Flutter -->
@@ -767,11 +756,8 @@ class FFBadgeWidget extends StatelessWidget {
             <div class="space-y-2">
                 <h2 class="text-xl font-bold text-white font-orbitron cyber-text-glow flex items-center gap-2">
                     <i class="fas fa-server text-purple-400"></i>
-                    <span>Backend REST API Integration (Node / Python / PHP)</span>
+                    <span>REST API (Node / Python / PHP)</span>
                 </h2>
-                <p class="text-xs text-gray-400">
-                    Fetch badge metadata, verify 12-digit IDs, or resolve asset URLs programmatically.
-                </p>
             </div>
 
             <!-- Snippet: Node.js -->
@@ -836,11 +822,8 @@ print(get_badge_info("126393684880"))</pre>
                 <div class="space-y-1">
                     <h2 class="text-xl font-bold text-white font-orbitron cyber-amber-glow flex items-center gap-2">
                         <i class="fas fa-fingerprint text-amber-400"></i>
-                        <span>12...80 Badge ID Matrix & Cheat Sheet</span>
+                        <span>ID Matrix (<?= count($badges) ?>)</span>
                     </h2>
-                    <p class="text-xs text-gray-400">
-                        Total <?= count($badges) ?> badges available. Click any ID or CDN URL to copy instantly for your AI prompt or app integration.
-                    </p>
                 </div>
                 <input type="text" id="matrixSearchInput" oninput="filterMatrixTable(this.value)" placeholder="Search by name, ID or level..." class="bg-[#04060e] border border-emerald-500/30 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400 w-full sm:w-72 font-mono">
             </div>
