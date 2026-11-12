@@ -128,6 +128,7 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
         }
     </style>
     <!-- Turky Hub Autonomous Security Guard -->
+    <script>window.__TURKY_ADMIN__ = <?= $is_logged_in ? 'true' : 'false' ?>;</script>
     <script src="cdn/turky-guard.js"></script>
 </head>
 <body class="min-h-screen flex flex-col cyber-grid selection:bg-emerald-500 selection:text-black">
@@ -286,7 +287,7 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
             </button>
             <button type="button" onclick="switchTab('id-matrix')" id="tabBtn-id-matrix" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 border border-white/5 flex items-center gap-2 transition cursor-pointer">
                 <i class="fas fa-fingerprint text-amber-400"></i>
-                <span>12...80 Badge ID Matrix (28 Assets)</span>
+                <span>12...80 Badge ID Matrix (<?= count($badges) ?> Assets)</span>
             </button>
         </div>
 
@@ -310,154 +311,212 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
                     <span>// UNIVERSAL AI SYSTEM PROMPT - INSTRUCTS CHATGPT / CLAUDE / GEMINI / CURSOR</span>
                     <span>OB55_PRIME_ENGINE_V3.2</span>
                 </div>
-                <pre id="masterPromptText" class="font-fira text-xs sm:text-sm text-emerald-400 leading-relaxed overflow-x-auto whitespace-pre-wrap select-all custom-scroll max-h-[700px]"># FREE FIRE BADGES & PRIME SYSTEM (OB55) - UNIVERSAL AI INTEGRATION DIRECTIVE
+                <pre id="masterPromptText" class="font-fira text-xs sm:text-sm text-emerald-400 leading-relaxed overflow-x-auto whitespace-pre-wrap select-all custom-scroll max-h-[700px]"># FREE FIRE BADGES &amp; PRIME SYSTEM (OB55) - UNIVERSAL AI INTEGRATION DIRECTIVE
 
-You are an expert full-stack developer integrating the official Free Fire Badges & Prime Level (1-8) System (OB55 Engine) into an application (Web, Mobile App, Game, or Backend).
+You are an expert full-stack developer integrating the Free Fire Badges &amp; Prime Level (1-8) System (OB55 Engine) into an application (Web, React/Next.js, Vue, PHP, WordPress, Mobile App, Game UI, or Backend).
 
-## 1. ARCHITECTURE & ZERO-AUTH CDN
-- **Public & Headless**: The CDN, REST API, images, and Web Component SDK are 100% public.
-- **NO API KEY / NO CREDENTIALS REQUIRED**: Any client app (React, Vue, Flutter, HTML, Unity, iOS, Android, Node) can consume these assets without authentication headers or tokens.
-- **Base Domain**: Set `<HUB_DOMAIN>` to the hosted URL (e.g., `https://tamimhasan1280.vercel.app`, `https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main`, or local host).
+## 1. ARCHITECTURE &amp; LIVE ZERO-AUTH CDN
+- **100% Public &amp; Headless CDN**: The SDK, Animated SVGs, PNG assets, CSS, and JSON APIs require **NO API key, NO auth headers, NO cookies**, and support browser CORS (`Access-Control-Allow-Origin: *`).
+- **Primary Live CDN Base (`&lt;CDN_BASE&gt;`)**:
+  `https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main`
+- **Alternative Fallbacks**:
+  - Statically: `https://cdn.statically.io/gh/tamimhasan1280/ff-bages1280/main`
+  - GitHub Raw: `https://raw.githubusercontent.com/tamimhasan1280/ff-bages1280/main`
+  - Local Dev / Self-Hosted Server: `http://localhost:8085` (replace with your live server origin when self-hosting PHP)
 
-## 2. ASSET & ENDPOINT RESOLUTION
-For any badge identified by its 12-digit ID:
-1. **Direct PNG Image URL**:
-   `<HUB_DOMAIN>/badges/{filename}`
-   (Global CDN Fallback: `https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/{filename}`)
-2. **Badge Metadata JSON API**:
-   `<HUB_DOMAIN>/api/v1/badge/{12_digit_id}.json`
-3. **Full Badges Catalog API**:
-   `<HUB_DOMAIN>/api/v1/badges.json`
-4. **VFX Effects & Presets API**:
-   `<HUB_DOMAIN>/api/effects.json`
-5. **Web Component SDK & Stylesheet**:
-   - JS SDK: `<HUB_DOMAIN>/cdn/ff-badges.js`
-   - Authentic CSS VFX: `<HUB_DOMAIN>/cdn/prime-badge.css`
+## 2. VERIFIED ENDPOINTS &amp; ASSET TYPES
+Choose the right asset format for the target platform:
+1. **Interactive Web Component JS SDK (Best for Web / React / Next.js / Vue / PHP)**:
+   - Stylesheet (preload optional, SDK also auto-injects `#ff-badges-cdn-styles`):
+     `&lt;CDN_BASE&gt;/cdn/prime-badge.css`
+   - Master SDK (`&lt;ff-badge&gt;` Custom Element + `window.FFBadges` API):
+     `&lt;CDN_BASE&gt;/cdn/ff-badges.js`
+2. **Self-Contained Animated Transparent SVG (Zero JS, Works in plain `&lt;img&gt;` / React / Vue / Markdown / SVG Loaders)**:
+   - `&lt;CDN_BASE&gt;/badges/svg/{12_digit_id}.svg`
+   - Includes embedded animations (pulse, directional sheen beam, gem glint, 360deg gunpowder stars, bone lights) with **100% transparent background** and automatically reflects Admin ON/OFF toggles.
+3. **Raw Transparent Cutout PNG (Static fallback / Unity / Mobile `Image.network`)**:
+   - `&lt;CDN_BASE&gt;/badges/{file}` (Note: `svg_code` and `text_code` badges should use `&lt;ff-badge&gt;`, `FFBadges.render()`, or `/badges/svg/{id}.svg` instead of PNG).
+4. **Badge Metadata REST API (JSON by 12-digit ID or slug)**:
+   - Single Badge: `&lt;CDN_BASE&gt;/api/v1/badge/{12_digit_id_or_slug}.json` (reads `data.item`)
+   - Full Catalog: `&lt;CDN_BASE&gt;/api/v1/badges.json` or `&lt;CDN_BASE&gt;/api/badges.json`
+   - VFX Presets: `&lt;CDN_BASE&gt;/api/effects.json`
+5. **Iframe Animated Player (Self-Hosted / Local PHP Server ONLY)**:
+   - `http://localhost:8085/cdn/embed.html?id={12_digit_id}&amp;clean=1`
+   - IMPORTANT: Do NOT point an `&lt;iframe&gt;` to `cdn.jsdelivr.net/.../embed.html` because jsDelivr serves `.html` with `Content-Type: text/plain`. On external sites without a self-hosted web origin, ALWAYS use `&lt;ff-badge&gt;`, `window.FFBadges.render()`, or `&lt;img src=".../badges/svg/{id}.svg"&gt;`.
 
-## 3. BADGE ID FORMAT & SYSTEM MATRIX
-All Badge IDs are strictly 12 digits adhering to `^12\d{8}80$` (starts with `12`, ends with `80`).
-When a developer or AI uses a 12-digit ID, it yields the exact authentic badge and VFX:
+## 3. LIVE BADGE ID MATRIX (<?= count($badges) ?> ACTIVE ASSETS, REGEX: `^12\d{8}80$`)
+All Badge IDs strictly match `^12\d{8}80$` (or their `slug`). Never invent IDs; use only IDs below or fetch dynamically from `/api/v1/badges.json`:
 
-- **120000010880** / **126393684880** -> Free Fire Prime Level 8 (Mythic: Supreme Pinnacle Gold Ascending Energy Beam, 16-50 360° Gunpowder Sparkle Stars, Center Gem Glint, Multi-tier Aura).
-- **120000010780** -> Free Fire Prime Level 7 (Legendary: Ascending Sheen, 12 Stars, Gem Glint).
-- **120000010680** -> Free Fire Prime Level 6 (Epic: Diagonal Sheen, 8 Stars).
-- **120000010580** -> Free Fire Prime Level 5 (Rare: Golden Sheen, 6 Stars).
-- **120000010480** -> Free Fire Prime Level 4 (Special: Cyan Neon Sheen, 4 Cyan Stars).
-- **120000010380** -> Free Fire Prime Level 3 (Uncommon: Subtle Energy).
-- **120000010280** -> Free Fire Prime Level 2 (Subtle Glow).
-- **120000010180** -> Free Fire Prime Level 1 (Starter Prime Badge).
-- **120000000080** -> OFFICIAL V-BADGE (Verified Creator / KOL).
-- **120000000180** -> FF Diamond Partner (Crystal VIP).
-- **120000000280** -> FF Esports PRO Crown.
-- **120000000380** -> FF Official Staff / GM.
-- **120000000480** -> FF Craftland Creator.
-- **120000000580** -> FF Emerging Creator.
-- **120000000680** -> Classic Gold V-Badge.
-- **120000000880** -> Moderator Shield Badge.
-- **120000001180** -> HUD Alive Survivor Badge.
-- **120000001280** -> HUD Kill Elimination Badge.
-- **120000001480** -> Prime Aura V-Badge.
+<?php foreach ($badges as $idx => $b):
+    $id = htmlspecialchars($b['id'] ?? '');
+    $slug = htmlspecialchars($b['slug'] ?? '');
+    $name = htmlspecialchars($b['name'] ?? '');
+    $type = htmlspecialchars($b['type'] ?? 'image');
+    $file = htmlspecialchars($b['file'] ?? '');
+    $lvl = intval($b['prime_level'] ?? 0);
+    $stars = intval($b['star_density'] ?? 0);
+    $vfxParts = [];
+    if ($lvl > 0) $vfxParts[] = "Prime Lvl {$lvl}";
+    if (!empty($b['sweep_enabled'])) $vfxParts[] = "Sheen(" . htmlspecialchars($b['sweep_direction'] ?? 'diag_bl_tr') . ", " . htmlspecialchars($b['sweep_speed'] ?? '2.2s') . ")";
+    if ($stars > 0) $vfxParts[] = "{$stars} Stars(" . htmlspecialchars($b['star_theme'] ?? 'gold') . ")";
+    if (!empty($b['has_gem_glint'])) $vfxParts[] = "Gem Glint";
+    if (!isset($b['pulse_enabled']) || !empty($b['pulse_enabled'])) $vfxParts[] = "Pulse";
+    if (!isset($b['glow_enabled']) || !empty($b['glow_enabled'])) $vfxParts[] = "Glow";
+    $vfxSummary = !empty($vfxParts) ? implode(', ', $vfxParts) : 'Static Clean';
+    echo "- **{$id}** (`{$slug}`) -&gt; {$name} | type=`{$type}` | file=`{$file}` | VFX: {$vfxSummary}\n";
+endforeach; ?>
 
-## 4. HOW TO RENDER & IMPLEMENT IN CODE
+## 4. COMPLETE INTEGRATION RECIPES BY PLATFORM
 
-### Method A: 1-Line Web Component (Recommended for Web / React / Vue / HTML)
-Add the stylesheet & SDK in `<head>`:
+### Method A: 1-Line Universal Web Component (Vanilla HTML / PHP / Laravel / WordPress / Vue / Svelte)
+Include ONCE in `&lt;head&gt;` or before `&lt;/body&gt;`:
 ```html
-<link rel="stylesheet" href="<HUB_DOMAIN>/cdn/prime-badge.css">
-<script src="<HUB_DOMAIN>/cdn/ff-badges.js"></script>
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/prime-badge.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/ff-badges.js"&gt;&lt;/script&gt;
 ```
-Render anywhere using the 12-digit ID:
+Render any badge anywhere (supports ID or slug, 100% transparent, all Admin VFX synced):
 ```html
-<!-- Renders Prime 8 with authentic ascending energy beam, gem glint & scattered stars -->
-<ff-badge id="120000010880" size="54px"></ff-badge>
+&lt;!-- Live Admin-synced Prime Level 8 badge --&gt;
+&lt;ff-badge id="126393684880" size="54px"&gt;&lt;/ff-badge&gt;
 
-<!-- Renders Official V-Badge next to player name -->
-<div style="display:flex; align-items:center; gap:8px;">
-    <span style="font-weight:bold; color:#fff;">Player_Name</span>
-    <ff-badge id="120000000080" size="24px"></ff-badge>
-</div>
+&lt;!-- Verified V-Badge inline next to username --&gt;
+&lt;div style="display:inline-flex; align-items:center; gap:6px;"&gt;
+  &lt;span style="font-weight:700;"&gt;Player_Name&lt;/span&gt;
+  &lt;ff-badge id="120000000080" size="24px"&gt;&lt;/ff-badge&gt;
+&lt;/div&gt;
+
+&lt;!-- Optional per-instance overrides: anim="off" | pulse="off" | glow="off" | speed="2.2s" | position="inline|top-right|top-left|bottom-right|bottom-left" --&gt;
+&lt;ff-badge id="120000000080" size="28px" anim="off" glow="off"&gt;&lt;/ff-badge&gt;
 ```
-No base code, custom CSS, or manual keyframes are required. The Web Component automatically fetches metadata, renders the 100% transparent PNG, injects directional sheen sweeps, and spawns the 360° scattered gunpowder stars.
+JavaScript SDK methods exposed on `window.FFBadges`:
+- `FFBadges.render(idOrSlug, { size: 54, position: 'inline', speed: '2.2s', anim: true, pulse: true, glow: true })` -&gt; returns HTML string
+- `FFBadges.attachTo('#avatar-wrap', '126393684880', { size: 28, position: 'top-right' })` -&gt; mounts directly into container
+- `FFBadges.get(idOrSlug)` / `FFBadges.list()` -&gt; inspect bundled badge metadata synchronously
 
-### Method B: Pure React / Next.js Component
+### Method B: Zero-JS Self-Contained Animated SVG (Universal Safe Fallback / React / Emails / Markdown)
+Works inside any `&lt;img&gt;` tag without loading any JavaScript, keeping 100% transparency &amp; live Admin VFX:
+```html
+&lt;img src="https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/svg/126393684880.svg"
+     alt="Free Fire Prime Level 8"
+     width="54" height="54"
+     style="display:inline-block; vertical-align:middle; background:transparent;" /&gt;
+```
+
+### Method C: React / Next.js (Client Component with Full VFX + Zero SSR Hydration Errors)
+Do NOT put raw PNG inside `.ff-prime-badge-wrap` expecting JS/CSS layers to magically appear. Instead, render via `window.FFBadges.render(...)` (after loading `ff-badges.js` on the client) OR use the animated SVG `&lt;img&gt;`:
 ```tsx
-import React, { useEffect, useState } from 'react';
+'use client';
+import React, { useEffect, useRef, useState } from 'react';
+
+const CDN = 'https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main';
 
 interface FFBadgeProps {
-  id: string; // 12-digit ID, e.g. "120000010880"
-  size?: number; // size in px, default 54
-  domain?: string; // your hosted domain
+  id: string; // 12-digit ID or slug, e.g. "126393684880" or "official-v"
+  size?: number;
+  anim?: boolean;
+  pulse?: boolean;
+  glow?: boolean;
 }
 
-export const FFBadge: React.FC<FFBadgeProps> = ({ id, size = 54, domain = 'https://tamimhasan1280.vercel.app' }) => {
-  const [badge, setBadge] = useState<any>(null);
+export const FFBadge: React.FC&lt;FFBadgeProps&gt; = ({ id, size = 54, anim, pulse, glow }) =&gt; {
+  const hostRef = useRef&lt;HTMLSpanElement&gt;(null);
+  const [ready, setReady] = useState(false);
 
-  useEffect(() => {
-    fetch(`${domain}/api/v1/badge/${id}.json`)
-      .then(res => res.json())
-      .then(data => setBadge(data.item))
-      .catch(err => console.error("Badge load error:", err));
-  }, [id, domain]);
+  useEffect(() =&gt; {
+    if ((window as any).FFBadges) { setReady(true); return; }
+    if (!document.querySelector('script[data-ff-badges-sdk]')) {
+      const s = document.createElement('script');
+      s.src = `${CDN}/cdn/ff-badges.js`;
+      s.async = true;
+      s.dataset.ffBadgesSdk = '1';
+      s.onload = () =&gt; setReady(true);
+      document.head.appendChild(s);
+    } else {
+      const t = setInterval(() =&gt; {
+        if ((window as any).FFBadges) { setReady(true); clearInterval(t); }
+      }, 60);
+      return () =&gt; clearInterval(t);
+    }
+  }, []);
 
-  if (!badge) return <div style={{ width: size, height: size }} className="animate-pulse bg-white/5 rounded-full" />;
+  useEffect(() =&gt; {
+    if (ready &amp;&amp; hostRef.current &amp;&amp; (window as any).FFBadges) {
+      hostRef.current.innerHTML = (window as any).FFBadges.render(id, { size, anim, pulse, glow });
+    }
+  }, [ready, id, size, anim, pulse, glow]);
 
-  const imgUrl = `${domain}/badges/${badge.file}`;
-  return (
-    <div className={`ff-prime-badge-wrap ff-prime-lvl-${badge.prime_level || 1}`} style={{ width: size, height: size, position: 'relative' }}>
-      <img src={imgUrl} alt={badge.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-    </div>
-  );
+  if (!ready) {
+    return (
+      &lt;img
+        src={`${CDN}/badges/svg/${encodeURIComponent(id)}.svg`}
+        alt={`FF Badge ${id}`}
+        width={size}
+        height={size}
+        style={{ display: 'inline-block', verticalAlign: 'middle', background: 'transparent' }}
+      /&gt;
+    );
+  }
+  return &lt;span ref={hostRef} style={{ display: 'inline-flex', verticalAlign: 'middle' }} /&gt;;
 };
 ```
 
-### Method C: Flutter (Mobile App - Android & iOS)
+### Method D: Flutter (Android &amp; iOS)
+Note: `Image.network` with `.png` renders a static transparent cutout. For full animated SVG in Flutter, use `flutter_svg` (`SvgPicture.network(item['cdn_urls']['animated_svg'])`), or `Image.network` for lightweight transparent PNG:
 ```dart
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class FFBadgeWidget extends StatelessWidget {
-  final String badgeId; // e.g. '120000010880'
+  final String badgeId;
   final double size;
-  final String domain;
+  final String cdnBase;
 
   const FFBadgeWidget({
     Key? key,
     required this.badgeId,
     this.size = 54.0,
-    this.domain = 'https://tamimhasan1280.vercel.app',
+    this.cdnBase = 'https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main',
   }) : super(key: key);
 
-  Future<Map<String, dynamic>> fetchBadge() async {
-    final response = await http.get(Uri.parse('$domain/api/v1/badge/$badgeId.json'));
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      return json['item'];
+  Color _parseHexGlow(String? hex) {
+    final clean = (hex ?? '#FFD700').replaceAll('#', '');
+    final full = clean.length == 3 ? clean.split('').map((c) =&gt; '$c$c').join() : clean;
+    return Color(int.tryParse('88$full', radix: 16) ?? 0x88FFD700);
+  }
+
+  Future&lt;Map&lt;String, dynamic&gt;&gt; fetchBadge() async {
+    final res = await http.get(Uri.parse('$cdnBase/api/v1/badge/$badgeId.json'));
+    if (res.statusCode == 200) {
+      return Map&lt;String, dynamic&gt;.from(jsonDecode(res.body)['item']);
     }
-    throw Exception('Failed to load badge');
+    throw Exception('Failed to load badge $badgeId');
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
+    return FutureBuilder&lt;Map&lt;String, dynamic&gt;&gt;(
       future: fetchBadge(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return SizedBox(width: size, height: size);
         final item = snapshot.data!;
-        final imageUrl = '$domain/badges/${item['file']}';
+        final glowEnabled = item['glow_enabled'] != false;
+        final pngUrl = item['cdn_urls']?['jsdelivr'] ?? '$cdnBase/badges/${item['file']}';
         return Container(
           width: size,
           height: size,
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Color(int.parse((item['hex_glow'] ?? '#FFD700').replaceFirst('#', '0x88'))),
-                blurRadius: 12.0,
-                spreadRadius: 1.0,
-              ),
-            ],
-          ),
-          child: Image.network(imageUrl, fit: BoxFit.contain),
+          decoration: glowEnabled
+              ? BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: _parseHexGlow(item['hex_glow']?.toString()),
+                      blurRadius: 12.0,
+                      spreadRadius: 1.0,
+                    ),
+                  ],
+                )
+              : null,
+          child: Image.network(pngUrl, fit: BoxFit.contain),
         );
       },
     );
@@ -465,17 +524,13 @@ class FFBadgeWidget extends StatelessWidget {
 }
 ```
 
-### Method D: Direct Lightweight Static HTML
-```html
-<img src="<HUB_DOMAIN>/badges/ff_ui_prime_icon_08.png" 
-     alt="Prime 8" 
-     style="width:54px; height:54px; filter: drop-shadow(0 0 10px rgba(255,215,0,0.85));">
-```
+### Method E: Dynamic Catalog Fetching (Always Respects Future Badges Added in Admin)
+If the integrating project renders a dynamic list, badge picker, or user-selected ID, fetch `&lt;CDN_BASE&gt;/api/v1/badges.json` or `&lt;CDN_BASE&gt;/api/v1/badge/{id}.json` rather than hardcoding metadata. Every badge JSON returns `sweep_enabled`, `pulse_enabled`, `glow_enabled`, `has_gem_glint`, `star_density`, `direct_url`, and `cdn_urls`.
 
-## 5. AUTHENTICATION & ACCESS RULES
-- The admin dashboard (`admin.php`) and hub explorer (`index.html`) require secure master password authentication.
-- **External API & CDN integration**: 100% unrestricted, free, CORS-enabled (`access-control-allow-origin: *`).
-- To generate custom badge IDs or tweak VFX (stars, sheen direction, speed), use the Admin Studio at `<HUB_DOMAIN>/admin.php`.</pre>
+## 5. SECURITY, AUTH &amp; ADMIN STUDIO SYNC
+- **Public Headless Delivery**: `/cdn/*`, `/api/*`, and `/badges/*` on jsDelivr are completely public, free, and CORS-enabled (`*`).
+- **Admin-Only Management**: Managing badges (`admin.php`) and accessing this AI Hub (`ai-integration.php`) require Admin authentication. Saving or batch-updating in Admin triggers `generate_all.php`, pushes to GitHub `main`, and purges jsDelivr automatically so `/cdn/ff-badges.js`, `/badges/svg/{id}.svg`, and `/api/v1/badge/{id}.json` stay 100% synced.
+- **Anti-Tamper Note**: Do NOT inject `cdn/turky-guard.js` into third-party consumer apps unless explicit right-click/DevTools blocking is desired (it disables context menu, DevTools shortcuts, and blurs on focus loss for non-admin users).</pre>
             </div>
         </section>
 
@@ -499,53 +554,65 @@ class FFBadgeWidget extends StatelessWidget {
                         <i class="fas fa-copy mr-1"></i>Copy
                     </button>
                 </div>
-                <pre id="snippetWebComponent" class="font-fira text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap select-all">&lt;!-- 1. Include Authentic Styles & SDK in &lt;head&gt; --&gt;
-&lt;link rel="stylesheet" href="https://tamimhasan1280.vercel.app/cdn/prime-badge.css"&gt;
-&lt;script src="https://tamimhasan1280.vercel.app/cdn/ff-badges.js"&gt;&lt;/script&gt;
+                <pre id="snippetWebComponent" class="font-fira text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap select-all">&lt;!-- 1. Include Authentic Styles &amp; SDK in &lt;head&gt; --&gt;
+&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/prime-badge.css"&gt;
+&lt;script src="https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/cdn/ff-badges.js"&gt;&lt;/script&gt;
 
 &lt;!-- 2. Use the Custom Element with any 12-digit ID --&gt;
-&lt;ff-badge id="120000010880" size="64px"&gt;&lt;/ff-badge&gt;
-&lt;ff-badge id="120000000080" size="28px"&gt;&lt;/ff-badge&gt;</pre>
+&lt;ff-badge id="126393684880" size="64px"&gt;&lt;/ff-badge&gt;
+&lt;ff-badge id="120000000080" size="28px"&gt;&lt;/ff-badge&gt;
+
+&lt;!-- 3. Or Zero-JS Self-Contained Animated SVG --&gt;
+&lt;img src="https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main/badges/svg/120000000080.svg" width="28" height="28" alt="Official V Badge" style="background:transparent;" /&gt;</pre>
             </div>
 
             <!-- Snippet 2: React Component -->
             <div class="cyber-code-block rounded-2xl p-5 space-y-3">
                 <div class="flex items-center justify-between text-xs font-mono text-emerald-400/80">
-                    <span>2. React / Next.js Component (TypeScript)</span>
+                    <span>2. React / Next.js Client Component (TypeScript, Full VFX + Zero Hydration Errors)</span>
                     <button type="button" onclick="copySnippet('snippetReactComponent')" class="hover:text-emerald-300 cursor-pointer">
                         <i class="fas fa-copy mr-1"></i>Copy
                     </button>
                 </div>
-                <pre id="snippetReactComponent" class="font-fira text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap select-all">import React, { useEffect, useState } from 'react';
+                <pre id="snippetReactComponent" class="font-fira text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap select-all">'use client';
+import React, { useEffect, useRef, useState } from 'react';
+
+const CDN = 'https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main';
 
 interface FFBadgeProps {
-  id: string; // 12-digit ID, e.g. "120000010880"
-  size?: number; // size in px
-  domain?: string;
+  id: string; // 12-digit ID or slug, e.g. "126393684880"
+  size?: number;
+  anim?: boolean;
+  pulse?: boolean;
+  glow?: boolean;
 }
 
-export const FFBadge: React.FC&lt;FFBadgeProps&gt; = ({
-  id,
-  size = 54,
-  domain = 'https://tamimhasan1280.vercel.app'
-}) => {
-  const [item, setItem] = useState&lt;any&gt;(null);
+export const FFBadge: React.FC&lt;FFBadgeProps&gt; = ({ id, size = 54, anim, pulse, glow }) =&gt; {
+  const hostRef = useRef&lt;HTMLSpanElement&gt;(null);
+  const [ready, setReady] = useState(false);
 
-  useEffect(() => {
-    fetch(`${domain}/api/v1/badge/${id}.json`)
-      .then(res => res.json())
-      .then(data => setItem(data.item))
-      .catch(console.error);
-  }, [id, domain]);
+  useEffect(() =&gt; {
+    if ((window as any).FFBadges) { setReady(true); return; }
+    if (!document.querySelector('script[data-ff-badges-sdk]')) {
+      const s = document.createElement('script');
+      s.src = `${CDN}/cdn/ff-badges.js`;
+      s.async = true;
+      s.dataset.ffBadgesSdk = '1';
+      s.onload = () =&gt; setReady(true);
+      document.head.appendChild(s);
+    }
+  }, []);
 
-  if (!item) return &lt;div style={{ width: size, height: size }} className="rounded-full bg-white/5 animate-pulse" /&gt;;
+  useEffect(() =&gt; {
+    if (ready &amp;&amp; hostRef.current &amp;&amp; (window as any).FFBadges) {
+      hostRef.current.innerHTML = (window as any).FFBadges.render(id, { size, anim, pulse, glow });
+    }
+  }, [ready, id, size, anim, pulse, glow]);
 
-  const imgUrl = `${domain}/badges/${item.file}`;
-  return (
-    &lt;div className={`ff-prime-badge-wrap ff-prime-lvl-${item.prime_level || 1}`} style={{ width: size, height: size, position: 'relative' }}&gt;
-      &lt;img src={imgUrl} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /&gt;
-    &lt;/div&gt;
-  );
+  if (!ready) {
+    return &lt;img src={`${CDN}/badges/svg/${encodeURIComponent(id)}.svg`} alt={`Badge ${id}`} width={size} height={size} style={{ background: 'transparent' }} /&gt;;
+  }
+  return &lt;span ref={hostRef} style={{ display: 'inline-flex', verticalAlign: 'middle' }} /&gt;;
 };</pre>
             </div>
         </section>
@@ -555,10 +622,10 @@ export const FFBadge: React.FC&lt;FFBadgeProps&gt; = ({
             <div class="space-y-2">
                 <h2 class="text-xl font-bold text-white font-orbitron cyber-cyan-glow flex items-center gap-2">
                     <i class="fas fa-mobile-screen-button text-cyan-400"></i>
-                    <span>Mobile Apps Integration Guide (Flutter & React Native)</span>
+                    <span>Mobile Apps Integration Guide (Flutter &amp; React Native)</span>
                 </h2>
                 <p class="text-xs text-gray-400">
-                    Use Free Fire Badges & Prime Level badges in Android and iOS native mobile applications.
+                    Use Free Fire Badges &amp; Prime Level badges in Android and iOS native mobile applications.
                 </p>
             </div>
 
@@ -570,26 +637,32 @@ export const FFBadge: React.FC&lt;FFBadgeProps&gt; = ({
                         <i class="fas fa-copy mr-1"></i>Copy
                     </button>
                 </div>
-                <pre id="snippetFlutter" class="font-fira text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap select-all">import 'package:flutter/material.dart';
+                <pre id="snippetFlutter" class="font-fira text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap select-all">import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class FFBadgeWidget extends StatelessWidget {
   final String badgeId;
   final double size;
-  final String domain;
+  final String cdnBase;
 
   const FFBadgeWidget({
     Key? key,
     required this.badgeId,
     this.size = 54.0,
-    this.domain = 'https://tamimhasan1280.vercel.app',
+    this.cdnBase = 'https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main',
   }) : super(key: key);
 
+  Color _parseHexGlow(String? hex) {
+    final clean = (hex ?? '#FFD700').replaceAll('#', '');
+    final full = clean.length == 3 ? clean.split('').map((c) =&gt; '$c$c').join() : clean;
+    return Color(int.tryParse('88$full', radix: 16) ?? 0x88FFD700);
+  }
+
   Future&lt;Map&lt;String, dynamic&gt;&gt; fetchBadge() async {
-    final res = await http.get(Uri.parse('$domain/api/v1/badge/$badgeId.json'));
+    final res = await http.get(Uri.parse('$cdnBase/api/v1/badge/$badgeId.json'));
     if (res.statusCode == 200) {
-      return jsonDecode(res.body)['item'];
+      return Map&lt;String, dynamic&gt;.from(jsonDecode(res.body)['item']);
     }
     throw Exception('Failed to load badge');
   }
@@ -601,18 +674,21 @@ class FFBadgeWidget extends StatelessWidget {
       builder: (context, snapshot) {
         if (!snapshot.hasData) return SizedBox(width: size, height: size);
         final item = snapshot.data!;
-        final imageUrl = '$domain/badges/${item['file']}';
+        final glowEnabled = item['glow_enabled'] != false;
+        final imageUrl = item['cdn_urls']?['jsdelivr'] ?? '$cdnBase/badges/${item['file']}';
         return Container(
           width: size,
           height: size,
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Color(int.parse((item['hex_glow'] ?? '#FFD700').replaceFirst('#', '0x88'))),
-                blurRadius: 10.0,
-              ),
-            ],
-          ),
+          decoration: glowEnabled
+              ? BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: _parseHexGlow(item['hex_glow']?.toString()),
+                      blurRadius: 10.0,
+                    ),
+                  ],
+                )
+              : null,
           child: Image.network(imageUrl, fit: BoxFit.contain),
         );
       },
@@ -645,17 +721,18 @@ class FFBadgeWidget extends StatelessWidget {
                 <pre id="snippetNode" class="font-fira text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap select-all">const axios = require('axios');
 
 async function getBadge(badgeId) {
-  const domain = 'https://tamimhasan1280.vercel.app';
-  const url = `${domain}/api/v1/badge/${badgeId}.json`;
-  
+  const cdnBase = 'https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main';
+  const url = `${cdnBase}/api/v1/badge/${badgeId}.json`;
+
   const response = await axios.get(url);
   const badge = response.data.item;
-  
+
   return {
     id: badge.id,
     name: badge.name,
     primeLevel: badge.prime_level,
-    imageUrl: `${domain}/badges/${badge.file}`,
+    imageUrl: `${cdnBase}/badges/${badge.file}`,
+    animatedSvgUrl: badge.cdn_urls.animated_svg,
     cdnUrl: badge.cdn_urls.jsdelivr
   };
 }</pre>
@@ -671,20 +748,21 @@ async function getBadge(badgeId) {
                 </div>
                 <pre id="snippetPython" class="font-fira text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap select-all">import requests
 
-def get_badge_info(badge_id: str, domain: str = 'https://tamimhasan1280.vercel.app'):
-    url = f"{domain}/api/v1/badge/{badge_id}.json"
-    res = requests.get(url)
+def get_badge_info(badge_id: str, cdn_base: str = 'https://cdn.jsdelivr.net/gh/tamimhasan1280/ff-bages1280@main'):
+    url = f"{cdn_base}/api/v1/badge/{badge_id}.json"
+    res = requests.get(url, timeout=10)
     res.raise_for_status()
     data = res.json()["item"]
     return {
         "name": data["name"],
         "id": data["id"],
         "prime_level": data.get("prime_level"),
-        "image_url": f"{domain}/badges/{data['file']}"
+        "image_url": f"{cdn_base}/badges/{data['file']}",
+        "animated_svg_url": data.get("cdn_urls", {}).get("animated_svg")
     }
 
 # Example:
-print(get_badge_info("120000010880"))</pre>
+print(get_badge_info("126393684880"))</pre>
             </div>
         </section>
 
