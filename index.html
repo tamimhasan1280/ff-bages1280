@@ -323,48 +323,14 @@
     <!-- Main Content Area -->
     <main class="flex-1 max-w-[1720px] mx-auto px-4 sm:px-6 py-6 space-y-6 w-full">
 
-        <!-- Banner / Explorer Window Header -->
-        <section class="apple-window overflow-hidden">
-            <div class="macos-window-bar">
-                <div class="macos-traffic-lights" aria-hidden="true">
-                    <span class="macos-dot macos-dot-red"></span>
-                    <span class="macos-dot macos-dot-yellow"></span>
-                    <span class="macos-dot macos-dot-green"></span>
-                </div>
-                <span class="macos-window-title">TURKY HUB — FF Items Explorer</span>
-                <span class="text-[10px] font-mono text-gray-400">v3.2 CDN</span>
-            </div>
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 sm:p-6">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl apple-badge-red flex items-center justify-center text-xl shrink-0">
-                        <i class="fas fa-cubes"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-                            TURKY HUB — FF Items EXPLORER
-                        </h1>
-                        <p class="text-xs sm:text-sm text-gray-400 mt-0.5">
-                            <span class="text-white font-semibold" id="itemCountDisplay"><?= count($master_badges) ?> items available</span> · Headless CDN &amp; Transparent Assets
-                        </p>
-                    </div>
-                </div>
-
-                <div class="flex flex-wrap items-center gap-2.5">
-                    <span class="apple-surface-secondary px-3.5 py-2 text-xs font-semibold flex items-center gap-2 font-mono text-gray-300">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        OB55 Engine Active
-                    </span>
-                </div>
-            </div>
-        </section>
-
         <!-- Search & Filter Controls -->
         <section class="apple-window p-4 sm:p-5 space-y-4">
             
             <!-- Full Width Search Input -->
             <div class="relative">
                 <i class="fas fa-search absolute left-4 top-3.5 text-gray-400 text-sm"></i>
-                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search by Item Name, ID, or Keywords (e.g. prime, level 8, 126393684880)..." class="w-full border rounded-xl pl-11 pr-4 py-3 text-xs sm:text-sm placeholder-gray-500 focus:outline-none transition">
+                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search by Item Name, ID, or Keywords (e.g. prime, level 8, 126393684880)..." class="w-full border rounded-xl pl-11 pr-28 py-3 text-xs sm:text-sm placeholder-gray-500 focus:outline-none transition">
+                <span id="itemCountDisplay" class="hidden sm:inline-flex items-center absolute right-3.5 top-2.5 text-[11px] font-mono text-gray-400 pointer-events-none px-2 py-1 rounded-lg"><?= count($master_badges) ?> items available</span>
             </div>
 
             <!-- Filters Row: Categories, Patches, Rarities, Apply Button -->
@@ -1678,7 +1644,8 @@
             });
 
             renderCards(filtered);
-            document.getElementById('itemCountDisplay').textContent = `${filtered.length} items available`;
+            const countEl = document.getElementById('itemCountDisplay');
+            if (countEl) countEl.textContent = `${filtered.length} items available`;
         }
 
         // Open Modal matching Image 4
