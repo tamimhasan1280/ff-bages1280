@@ -509,6 +509,23 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     <title>TURKY HUB - Badges Admin Studio & Live VFX Customizer</title>
     <link rel="icon" type="image/png" href="badges/FF_UI_Badge_KOL01.png">
     
+    <!-- Zero-Flash Theme Bootstrap (Before Paint) -->
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('turky_theme');
+                if (t !== 'light' && t !== 'dark') {
+                    t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+                }
+                document.documentElement.setAttribute('data-theme', t);
+                document.documentElement.classList.add(t);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome 6 -->
@@ -516,6 +533,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="cdn/prime-badge.css">
+    <link rel="stylesheet" href="assets/apple-theme.css">
     <!-- Turky Hub Autonomous Security Guard (Admin Bypass Enabled) -->
     <script>window.__TURKY_ADMIN__ = <?= $is_logged_in ? "true" : "false" ?>;</script>
     <script src="cdn/turky-guard.js"></script>
@@ -655,7 +673,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-rose-500 selection:text-white">
+<body class="apple-ui min-h-screen flex flex-col selection:bg-red-500 selection:text-white">
 
 <!-- DIGITAL HIGH-PASS SHARPNESS CONVOLUTION FILTER -->
 <svg style="position:absolute;width:0;height:0;overflow:hidden;" aria-hidden="true">
@@ -667,19 +685,38 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
 </svg>
 
 <?php if (!$is_logged_in): ?>
-    <!-- LOGIN SCREEN (100% ENGLISH, SECURE, ZERO PLAIN CREDENTIALS) -->
-    <div class="min-h-screen flex items-center justify-center p-4 bg-radial from-[#151936] to-[#080915]">
-        <div class="w-full max-w-md glass-panel p-8 sm:p-10 shadow-2xl relative border-amber-500/20">
-            <div class="text-center space-y-3 mb-8">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/20">
-                    <i class="fas fa-shield-halved text-white text-2xl"></i>
+    <!-- LOGIN SCREEN (Apple macOS Minimalist Gate) -->
+    <div class="apple-login-backdrop min-h-screen flex items-center justify-center p-4">
+        <button type="button" data-theme-toggle class="theme-toggle-btn fixed top-5 right-5 z-50" aria-label="Switch Theme" aria-pressed="false">
+            <span class="theme-icon-wrap" aria-hidden="true">
+                <i class="fas fa-sun icon-sun text-xs"></i>
+                <i class="fas fa-moon icon-moon text-xs"></i>
+            </span>
+            <span data-theme-label>Dark</span>
+        </button>
+
+        <div class="w-full max-w-md apple-window overflow-hidden shadow-2xl relative">
+            <div class="macos-window-bar">
+                <div class="macos-traffic-lights" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
                 </div>
-                <h1 class="text-2xl font-black font-orbitron tracking-wider text-white">TURKY HUB</h1>
-                <p class="text-xs text-amber-400 font-mono tracking-widest uppercase">Admin Studio & CDN Portal</p>
+                <span class="macos-window-title">TURKY HUB — Admin Studio</span>
+                <span class="w-10" aria-hidden="true"></span>
+            </div>
+
+            <div class="p-8 sm:p-9">
+            <div class="text-center space-y-3 mb-8">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-red-500 flex items-center justify-center shadow-lg shadow-red-500/20">
+                    <i class="fas fa-shield-halved text-white apple-keep-white text-2xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold tracking-tight text-white">TURKY HUB</h1>
+                <p class="text-xs text-red-500 font-mono tracking-widest uppercase">Admin Studio &amp; CDN Portal</p>
             </div>
 
             <?php if (!empty($login_error)): ?>
-                <div class="mb-5 bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs p-3 rounded-xl flex items-center gap-2">
+                <div class="mb-5 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs p-3 rounded-xl flex items-center gap-2">
                     <i class="fas fa-triangle-exclamation"></i>
                     <span><?= htmlspecialchars($login_error) ?></span>
                 </div>
@@ -689,66 +726,79 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 <input type="hidden" name="login_action" value="1">
                 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-slate-200">Username or Email</label>
+                    <label class="text-xs font-semibold text-gray-300">Username or Email</label>
                     <div class="relative">
-                        <i class="fas fa-user absolute left-3.5 top-3 text-gray-500 text-xs"></i>
-                        <input type="text" name="username" required autocomplete="off" placeholder="Enter username or email..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition font-mono">
+                        <i class="fas fa-user absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+                        <input type="text" name="username" required autocomplete="off" placeholder="Enter username or email..." class="w-full border rounded-xl pl-9 pr-4 py-2.5 text-xs placeholder-gray-500 focus:outline-none transition font-mono">
                     </div>
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-semibold text-slate-200">Access Password</label>
+                    <label class="text-xs font-semibold text-gray-300">Access Password</label>
                     <div class="relative">
-                        <i class="fas fa-lock absolute left-3.5 top-3 text-gray-500 text-xs"></i>
-                        <input type="password" name="password" required autocomplete="off" placeholder="Enter security password..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 transition font-mono">
+                        <i class="fas fa-lock absolute left-3.5 top-3 text-gray-400 text-xs"></i>
+                        <input type="password" name="password" required autocomplete="off" placeholder="Enter security password..." class="w-full border rounded-xl pl-9 pr-4 py-2.5 text-xs placeholder-gray-500 focus:outline-none transition font-mono">
                     </div>
                 </div>
 
-                <button type="submit" class="w-full mt-2 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white font-bold text-xs py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition cursor-pointer">
+                <button type="submit" class="apple-btn-primary apple-keep-white w-full mt-2 text-xs py-3 flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fas fa-arrow-right-to-bracket"></i>
                     <span>Sign In to Admin Studio</span>
                 </button>
             </form>
 
             <div class="mt-6 text-center">
-                <a href="index.php" class="text-xs text-gray-500 hover:text-gray-300 transition flex items-center justify-center gap-1.5">
+                <a href="index.php" class="text-xs text-gray-500 hover:text-red-500 transition flex items-center justify-center gap-1.5">
                     <i class="fas fa-arrow-left text-[10px]"></i>
                     <span>Back to FF Badges Explorer</span>
                 </a>
+            </div>
             </div>
         </div>
     </div>
 <?php else: ?>
 
     <!-- TOP NAVBAR -->
-    <header class="border-b border-[#1c2242] bg-[#0c0f20]/95 sticky top-0 z-40 backdrop-blur-md">
-        <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
+    <header class="apple-navbar sticky top-0 z-40">
+        <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
             
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                    <i class="fas fa-fire-flame-curved text-white text-base"></i>
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="macos-traffic-lights hidden sm:inline-flex" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
                 </div>
-                <div>
+                <div class="w-8 h-8 rounded-xl bg-red-500 flex items-center justify-center shadow-sm shrink-0">
+                    <i class="fas fa-fire-flame-curved text-white apple-keep-white text-sm"></i>
+                </div>
+                <div class="min-w-0">
                     <div class="flex items-center gap-2">
-                        <span class="font-extrabold font-orbitron text-white text-base tracking-wider">TURKY HUB</span>
-                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-400 text-black font-extrabold font-mono uppercase tracking-wider">
+                        <span class="font-bold text-white text-sm sm:text-base tracking-tight">TURKY HUB</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full apple-badge-red font-bold font-mono uppercase tracking-wider">
                             PRO STUDIO
                         </span>
                     </div>
-                    <p class="text-[11px] text-gray-400 font-mono">12...80 ID & Live CDN Asset Generator</p>
+                    <p class="text-[11px] text-gray-400 font-mono truncate hidden sm:block">12...80 ID &amp; Live CDN Asset Generator</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <a href="ai-integration.php" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 hover:text-emerald-200 border border-emerald-500/30 text-xs font-bold flex items-center gap-2 transition shadow-lg shadow-emerald-500/10">
-                    <i class="fas fa-robot text-emerald-400"></i>
-                    <span>AI Integration</span>
+            <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                <button type="button" data-theme-toggle class="theme-toggle-btn" aria-label="Switch Theme" aria-pressed="false">
+                    <span class="theme-icon-wrap" aria-hidden="true">
+                        <i class="fas fa-sun icon-sun text-xs"></i>
+                        <i class="fas fa-moon icon-moon text-xs"></i>
+                    </span>
+                    <span data-theme-label class="hidden sm:inline">Dark</span>
+                </button>
+                <a href="ai-integration.php" class="apple-btn-secondary px-3 sm:px-3.5 py-1.5 text-xs flex items-center gap-2">
+                    <i class="fas fa-robot text-red-500"></i>
+                    <span class="hidden sm:inline">AI Integration</span>
                 </a>
-                <a href="index.php" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold flex items-center gap-2 transition">
-                    <i class="fas fa-eye text-cyan-400"></i>
-                    <span>Open Live Explorer</span>
+                <a href="index.php" target="_blank" class="apple-btn-secondary px-3 sm:px-3.5 py-1.5 text-xs flex items-center gap-2">
+                    <i class="fas fa-eye text-red-500"></i>
+                    <span class="hidden sm:inline">Open Live Explorer</span>
                 </a>
-                <a href="admin.php?action=logout" class="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition">
+                <a href="admin.php?action=logout" class="apple-btn-primary apple-keep-white px-3 sm:px-3.5 py-1.5 text-xs flex items-center gap-1.5">
                     <i class="fas fa-power-off text-xs"></i>
                     <span>Logout</span>
                 </a>
@@ -899,9 +949,13 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                     
                     <!-- Header -->
                     <div class="flex items-center justify-between border-b border-[#1f2544] pb-3">
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-                            <h3 class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">Live VFX Stage Preview</h3>
+                        <div class="flex items-center gap-2.5">
+                            <div class="macos-traffic-lights" aria-hidden="true">
+                                <span class="macos-dot macos-dot-red"></span>
+                                <span class="macos-dot macos-dot-yellow"></span>
+                                <span class="macos-dot macos-dot-green"></span>
+                            </div>
+                            <h3 class="text-xs font-bold text-white uppercase tracking-wider">Live VFX Stage Preview</h3>
                         </div>
                         <span id="previewAnimStatusBadge" class="text-[10px] font-mono text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/30">
                             Animation Active
@@ -1842,6 +1896,25 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         </section>
 
     </main>
+
+    <!-- Understated Apple Footer -->
+    <footer class="apple-footer mt-auto">
+        <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2.5">
+                <div class="macos-traffic-lights" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
+                </div>
+                <span class="font-semibold text-white">TURKY HUB Admin Studio</span>
+                <span>· OB55 Engine</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="index.php" class="hover:text-red-500 transition">Explorer</a>
+                <a href="ai-integration.php" class="hover:text-red-500 transition">AI Integration</a>
+            </div>
+        </div>
+    </footer>
 
     <!-- Toast Notification -->
     <div id="adminToast" class="fixed bottom-6 right-6 bg-amber-400 text-black font-extrabold px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-2 transform translate-y-24 opacity-0 transition duration-300 z-50 pointer-events-none text-xs">
@@ -3199,6 +3272,6 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
     </script>
 
 <?php endif; ?>
-
+<script src="assets/apple-theme.js"></script>
 </body>
 </html>

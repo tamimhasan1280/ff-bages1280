@@ -7,6 +7,23 @@
     <title>TURKY HUB - FF Items EXPLORER | OB55 ACTIVE</title>
     <link rel="icon" type="image/png" href="badges/FF_UI_Badge_KOL01.png">
     
+    <!-- Zero-Flash Theme Bootstrap (Before Paint) -->
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('turky_theme');
+                if (t !== 'light' && t !== 'dark') {
+                    t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+                }
+                document.documentElement.setAttribute('data-theme', t);
+                document.documentElement.classList.add(t);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome 6 -->
@@ -16,6 +33,8 @@
     
     <!-- Authentic Free Fire Prime Badges CSS (100% Transparent, Ascending Beam, Gem Glint) -->
     <link rel="stylesheet" href="cdn/prime-badge.css">
+    <!-- Centralized Apple macOS Design System -->
+    <link rel="stylesheet" href="assets/apple-theme.css">
     <!-- Turky Hub Autonomous Security Guard -->
     <script src="cdn/turky-guard.js"></script>
 
@@ -112,20 +131,35 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-rose-500 selection:text-white">
+<body class="apple-ui min-h-screen flex flex-col selection:bg-red-500 selection:text-white">
 
     <!-- SECURE AUTHENTICATION GATE (TURKY HUB Access Gate) -->
-    <div id="authGateModal" class="fixed inset-0 z-50 bg-[#070914] flex items-center justify-center p-4 min-h-screen" style="display:flex;">
-        <!-- Ambient Glow Effects -->
-        <div class="absolute -top-32 -left-32 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div id="authGateModal" class="apple-login-backdrop fixed inset-0 z-50 bg-[#09090B] flex items-center justify-center p-4 min-h-screen" style="display:flex;">
+        <!-- Floating Theme Toggle on Gate -->
+        <button type="button" data-theme-toggle class="theme-toggle-btn fixed top-5 right-5 z-50" aria-label="Switch Theme" aria-pressed="false">
+            <span class="theme-icon-wrap" aria-hidden="true">
+                <i class="fas fa-sun icon-sun text-xs"></i>
+                <i class="fas fa-moon icon-moon text-xs"></i>
+            </span>
+            <span data-theme-label>Dark</span>
+        </button>
 
-        <div class="relative w-full max-w-md bg-[#0c0f22]/95 border border-[#23294c] hover:border-amber-500/40 rounded-3xl p-7 sm:p-8 shadow-2xl backdrop-blur-xl transition duration-300">
-            
+        <div class="apple-window relative w-full max-w-md overflow-hidden shadow-2xl transition duration-300">
+            <!-- Decorative macOS Window Header -->
+            <div class="macos-window-bar">
+                <div class="macos-traffic-lights" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
+                </div>
+                <span class="macos-window-title">TURKY HUB — Access Verification</span>
+                <span class="w-10" aria-hidden="true"></span>
+            </div>
+
+            <div class="p-7 sm:p-8">
             <!-- Top Badge Logo Preview with Live VFX -->
             <div class="flex flex-col items-center text-center mb-6">
                 <div class="relative w-20 h-20 mb-3 flex items-center justify-center">
-                    <div class="absolute inset-0 bg-amber-400/20 rounded-full blur-xl animate-pulse"></div>
                     <div class="ff-prime-badge-wrap ff-prime-lvl-8" style="width:68px;height:68px;position:relative;background:transparent !important;filter:drop-shadow(0 0 10px rgba(255,215,0,0.8));">
                         <div class="ff-prime-stars-layer star-theme-gold">
                             <svg class="ff-pinpoint-star star-pos-1" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="#FFFCE0"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>
@@ -141,11 +175,11 @@
                     </div>
                 </div>
                 
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-[10px] uppercase font-bold tracking-wider mb-2">
+                <div class="apple-badge-red inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[10px] uppercase font-bold tracking-wider mb-2">
                     <i class="fas fa-shield-halved text-[9px]"></i>
                     <span>Protected Access Gate</span>
                 </div>
-                <h2 class="text-xl sm:text-2xl font-black font-orbitron text-white tracking-wide">TURKY HUB</h2>
+                <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">TURKY HUB</h2>
                 <p class="text-xs text-gray-400 mt-1 max-w-xs">Enter your private access password to unlock the badges explorer, CDN links, and API data.</p>
             </div>
 
@@ -155,17 +189,17 @@
                 <span id="gateErrorText">Invalid access password! Access Denied.</span>
             </div>
 
-                        <!-- Authentication Form -->
+            <!-- Authentication Form -->
             <form id="authGateForm" onsubmit="handleGateLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono flex items-center justify-between">
+                    <label class="block text-xs font-semibold text-gray-300 tracking-wide mb-1.5 flex items-center justify-between">
                         <span>Security Access Password</span>
-                        <span class="text-[10px] text-amber-400 font-mono">Master Key / PIN</span>
+                        <span class="text-[10px] text-red-400 font-mono">Master Key / PIN</span>
                     </label>
                     <div class="relative">
-                        <i class="fas fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400 text-xs"></i>
-                        <input type="password" id="gatePassword" required autocomplete="current-password" placeholder="Enter access password..." class="w-full bg-[#080a18] border border-[#23294c] focus:border-amber-400 rounded-xl pl-9 pr-10 py-3.5 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
-                        <button type="button" onclick="toggleGatePassVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition">
+                        <i class="fas fa-key absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="password" id="gatePassword" required autocomplete="current-password" placeholder="Enter access password..." class="w-full border rounded-xl pl-9 pr-10 py-3 text-xs placeholder-gray-500 focus:outline-none transition font-mono">
+                        <button type="button" onclick="toggleGatePassVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-red-500 transition cursor-pointer" aria-label="Toggle password visibility">
                             <i id="gatePassEye" class="fas fa-eye text-xs"></i>
                         </button>
                     </div>
@@ -173,20 +207,21 @@
 
                 <div class="flex items-center justify-between text-xs pt-1">
                     <label class="flex items-center gap-2 text-gray-400 cursor-pointer select-none">
-                        <input type="checkbox" id="gateRemember" checked class="w-3.5 h-3.5 rounded bg-[#080a18] border-[#23294c] text-amber-500 focus:ring-0 focus:ring-offset-0 cursor-pointer">
+                        <input type="checkbox" id="gateRemember" checked class="w-3.5 h-3.5 rounded accent-red-500 cursor-pointer">
                         <span>Remember this device</span>
                     </label>
                     <span class="text-[11px] text-gray-500 font-mono">OB55 Engine</span>
                 </div>
 
-                <button type="submit" id="gateSubmitBtn" class="w-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:to-orange-600 text-black font-extrabold py-3.5 px-6 rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition transform active:scale-[0.98] uppercase tracking-wider text-xs flex items-center justify-center gap-2 cursor-pointer font-orbitron">
+                <button type="submit" id="gateSubmitBtn" class="apple-btn-primary apple-keep-white w-full py-3.5 px-6 text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer">
                     <span>Authenticate & Unlock Hub</span>
                     <i class="fas fa-arrow-right text-xs"></i>
                 </button>
             </form>
 
             <div class="mt-5 text-center">
-                <span class="text-[11px] text-gray-500 font-mono">TURKY HUB Secure Verification System</span>
+                <span class="text-[11px] text-gray-500 font-mono">TURKY HUB · Apple Minimalist System</span>
+            </div>
             </div>
         </div>
     </div>
@@ -196,125 +231,163 @@
 
 
     <!-- Top Navigation Bar -->
-    <header class="border-b border-[#1c2242] bg-[#0c0f20]/95 sticky top-0 z-40 backdrop-blur-md">
-        <div class="max-w-[1720px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+    <header class="apple-navbar sticky top-0 z-40">
+        <div class="max-w-[1720px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
             
-            <!-- Left Brand -->
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 via-rose-500 to-red-600 flex items-center justify-center shadow-lg shadow-rose-500/20">
-                    <i class="fas fa-fire-flame-curved text-white text-base"></i>
+            <!-- Left Brand + Decorative macOS Dots -->
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="macos-traffic-lights hidden sm:inline-flex" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
                 </div>
-                <div class="flex items-center gap-2">
-                    <span class="font-extrabold font-orbitron text-white text-base tracking-wider">TURKY HUB</span>
-                    <span class="text-xs text-gray-400 font-medium hidden sm:inline">FF Items</span>
-                    <span class="text-[10px] px-2 py-0.5 rounded-full bg-[#122822] text-emerald-400 border border-emerald-500/30 font-bold uppercase tracking-wider">
-                        OB55 ACTIVE
+                <div class="w-8 h-8 rounded-xl bg-red-500 flex items-center justify-center shadow-sm shrink-0">
+                    <i class="fas fa-fire-flame-curved text-white apple-keep-white text-sm"></i>
+                </div>
+                <div class="flex items-center gap-2 min-w-0">
+                    <span class="font-bold text-white text-sm sm:text-base tracking-tight truncate">TURKY HUB</span>
+                    <span class="text-xs text-gray-400 font-medium hidden xl:inline">FF Items</span>
+                    <span class="hidden sm:inline-flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded-full apple-badge-red font-bold uppercase tracking-wider shrink-0">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                        OB55
                     </span>
                 </div>
             </div>
 
-            <!-- Center Navigation Tabs -->
-            <nav class="hidden md:flex items-center gap-1.5 bg-[#080a15] p-1 rounded-2xl border border-white/5">
-                <button type="button" onclick="filterCategory('all')" class="px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 to-pink-600 text-white shadow-md shadow-rose-500/20 flex items-center gap-2">
+            <!-- Center Navigation Tabs (Desktop) -->
+            <nav aria-label="Main Navigation" class="hidden lg:flex items-center gap-1 apple-nav-pill">
+                <button type="button" id="navTabAll" onclick="filterCategory('all')" class="apple-nav-item active px-3.5 py-1.5 text-xs flex items-center gap-2 cursor-pointer">
                     <i class="fas fa-book-bookmark text-xs"></i>
                     <span>Items Library</span>
                 </button>
-                <button type="button" onclick="filterCategory('prime')" class="px-4 py-2 rounded-xl text-xs font-semibold text-yellow-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
+                <button type="button" id="navTabPrime" onclick="filterCategory('prime')" class="apple-nav-item px-3.5 py-1.5 text-xs flex items-center gap-2 cursor-pointer">
                     <i class="fas fa-shield-halved text-xs"></i>
                     <span>Prime Level (1-8)</span>
                 </button>
-                <a href="#player-inspector" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition flex items-center gap-2">
+                <a href="#itemsGrid" class="apple-nav-item px-3.5 py-1.5 text-xs flex items-center gap-2">
                     <i class="fas fa-user-astronaut text-xs"></i>
                     <span>Player Inspector</span>
                 </a>
-                <a href="admin.php" class="px-4 py-2 rounded-xl text-xs font-semibold text-amber-400 hover:text-amber-300 hover:bg-amber-400/10 border border-amber-400/20 transition flex items-center gap-2">
+                <a href="admin.php" class="apple-nav-item px-3.5 py-1.5 text-xs flex items-center gap-2">
                     <i class="fas fa-crown text-xs"></i>
                     <span>Admin Panel</span>
                 </a>
-                <a href="ai-integration.php" class="px-4 py-2 rounded-xl text-xs font-semibold text-emerald-400 hover:text-emerald-300 hover:bg-emerald-400/10 border border-emerald-400/20 transition flex items-center gap-2">
+                <a href="ai-integration.php" class="apple-nav-item px-3.5 py-1.5 text-xs flex items-center gap-2">
                     <i class="fas fa-robot text-xs"></i>
                     <span>AI Integration</span>
                 </a>
             </nav>
 
-            <!-- Right Socials & Profile -->
-            <div class="flex items-center gap-3">
-                <div class="hidden lg:flex items-center gap-2 text-gray-400">
-                    <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
-                        <i class="fab fa-discord text-xs"></i>
-                    </a>
-                    <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
-                        <i class="fab fa-youtube text-xs"></i>
-                    </a>
-                    <a href="#" class="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 hover:text-white flex items-center justify-center transition border border-white/5">
-                        <i class="fab fa-telegram text-xs"></i>
-                    </a>
-                </div>
-
+            <!-- Right Actions: Theme Switcher, Auth Pill, Admin Pill & Mobile Toggle -->
+            <div class="flex items-center gap-2 sm:gap-2.5 shrink-0">
+                <!-- Sun / Moon Theme Switcher -->
+                <button type="button" data-theme-toggle class="theme-toggle-btn" aria-label="Switch Theme" aria-pressed="false">
+                    <span class="theme-icon-wrap" aria-hidden="true">
+                        <i class="fas fa-sun icon-sun text-xs"></i>
+                        <i class="fas fa-moon icon-moon text-xs"></i>
+                    </span>
+                    <span data-theme-label class="hidden sm:inline">Dark</span>
+                </button>
 
                 <!-- Auth User & Logout -->
-                <div id="authUserPill" class="flex items-center gap-2 bg-[#12162b] px-3 py-1.5 rounded-2xl border border-white/10 text-xs">
-                    <i class="fas fa-user-check text-emerald-400"></i>
-                    <span id="authEmailDisplay" class="text-emerald-400 font-mono text-[11px] font-bold hidden sm:inline">VIP ACCESS</span>
-                    <button type="button" onclick="logoutExplorer()" class="text-rose-400 hover:text-rose-300 ml-1.5 px-1 py-0.5 rounded transition text-xs flex items-center gap-1 font-bold" title="Sign Out">
+                <div id="authUserPill" class="apple-surface-secondary flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-xs">
+                    <i class="fas fa-user-check text-emerald-400 text-xs"></i>
+                    <span id="authEmailDisplay" class="text-emerald-400 font-mono text-[11px] font-bold hidden xl:inline">VIP ACCESS</span>
+                    <button type="button" onclick="logoutExplorer()" class="text-red-500 hover:text-red-600 px-1 py-0.5 rounded transition text-xs flex items-center gap-1 font-semibold cursor-pointer" title="Sign Out">
                         <i class="fas fa-sign-out-alt"></i>
-                        <span class="text-[10px]">Logout</span>
+                        <span class="text-[11px] hidden sm:inline">Logout</span>
                     </button>
                 </div>
 
                 <!-- Admin Profile Pill -->
-                <a href="admin.php" class="flex items-center gap-2 bg-[#12162b] hover:bg-[#1a203f] px-3 py-1.5 rounded-2xl border border-white/10 transition">
-                    <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center font-bold text-white text-xs">
+                <a href="admin.php" class="hidden sm:flex apple-surface-secondary items-center gap-2 px-3 py-1.5 hover:border-red-500/40 transition">
+                    <div class="w-6 h-6 rounded-lg bg-red-500 flex items-center justify-center font-bold text-white apple-keep-white text-[11px]">
                         A
                     </div>
-                    <div class="hidden sm:block text-left leading-tight">
-                        <div class="text-xs font-bold text-white">Admin</div>
-                        <div class="text-[9px] text-gray-400 font-medium">Studio Access</div>
+                    <div class="hidden xl:block text-left leading-tight">
+                        <div class="text-xs font-semibold text-white">Admin</div>
+                        <div class="text-[9px] text-gray-400 font-medium">Studio</div>
                     </div>
                 </a>
+
+                <!-- Mobile Menu Toggle -->
+                <button type="button" data-mobile-nav-toggle aria-controls="mobileNavDrawer" aria-expanded="false" aria-label="Toggle Menu" class="lg:hidden apple-btn-secondary w-9 h-9 flex items-center justify-center cursor-pointer">
+                    <i class="fas fa-bars text-xs"></i>
+                </button>
             </div>
 
+        </div>
+
+        <!-- Mobile Collapsible Navigation Drawer -->
+        <div id="mobileNavDrawer" class="hidden lg:hidden border-t border-white/10 px-4 py-3 space-y-1.5">
+            <button type="button" onclick="filterCategory('all')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-white/5 text-white">
+                <i class="fas fa-book-bookmark text-red-500 w-4"></i>
+                <span>Items Library</span>
+            </button>
+            <button type="button" onclick="filterCategory('prime')" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-white/5 text-white">
+                <i class="fas fa-shield-halved text-red-500 w-4"></i>
+                <span>Prime Level (1-8)</span>
+            </button>
+            <a href="admin.php" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-white/5 text-white">
+                <i class="fas fa-crown text-red-500 w-4"></i>
+                <span>Admin Panel</span>
+            </a>
+            <a href="ai-integration.php" class="w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 hover:bg-white/5 text-white">
+                <i class="fas fa-robot text-red-500 w-4"></i>
+                <span>AI Integration</span>
+            </a>
         </div>
     </header>
 
     <!-- Main Content Area -->
     <main class="flex-1 max-w-[1720px] mx-auto px-4 sm:px-6 py-6 space-y-6 w-full">
 
-        <!-- Banner / Explorer Header -->
-        <section class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#0d1022] p-5 sm:p-6 rounded-2xl border border-[#1d2342] relative overflow-hidden">
-            <div class="flex items-center gap-3.5 relative z-10">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-rose-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl shadow-inner">
-                    <i class="fas fa-cubes"></i>
+        <!-- Banner / Explorer Window Header -->
+        <section class="apple-window overflow-hidden">
+            <div class="macos-window-bar">
+                <div class="macos-traffic-lights" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
                 </div>
-                <div>
-                    <h1 class="text-xl sm:text-2xl font-black font-orbitron tracking-wide text-white flex items-center gap-2">
-                        TURKY HUB - FF Items EXPLORER
-                    </h1>
-                    <p class="text-xs sm:text-sm text-gray-400 font-rajdhani tracking-wider mt-0.5">
-                        <span class="text-white font-bold" id="itemCountDisplay"><?= count($master_badges) ?> items available</span> | Infinite Auto-Scroll Active
-                    </p>
-                </div>
+                <span class="macos-window-title">TURKY HUB — FF Items Explorer</span>
+                <span class="text-[10px] font-mono text-gray-400">v3.2 CDN</span>
             </div>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 sm:p-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl apple-badge-red flex items-center justify-center text-xl shrink-0">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                            TURKY HUB — FF Items EXPLORER
+                        </h1>
+                        <p class="text-xs sm:text-sm text-gray-400 mt-0.5">
+                            <span class="text-white font-semibold" id="itemCountDisplay"><?= count($master_badges) ?> items available</span> · Headless CDN &amp; Transparent Assets
+                        </p>
+                    </div>
+                </div>
 
-            <div class="flex items-center gap-3 relative z-10">
-                <span class="px-3.5 py-1.5 rounded-xl bg-[#0e271f] text-emerald-400 border border-emerald-500/30 text-xs font-semibold flex items-center gap-2 font-mono">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    OB55 Engine Active
-                </span>
-                <a href="admin.php?new=1" class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-yellow-300 border border-yellow-500/30 text-xs font-bold flex items-center gap-2 transition">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Add Badge in Admin</span>
-                </a>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <span class="apple-surface-secondary px-3.5 py-2 text-xs font-semibold flex items-center gap-2 font-mono text-gray-300">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        OB55 Engine Active
+                    </span>
+                    <a href="admin.php?new=1" class="apple-btn-primary apple-keep-white px-4 py-2 text-xs flex items-center gap-2">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Add Badge in Admin</span>
+                    </a>
+                </div>
             </div>
         </section>
 
         <!-- Search & Filter Controls -->
-        <section class="bg-[#0e1224] p-4 sm:p-5 rounded-2xl border border-[#1e2444] space-y-4">
+        <section class="apple-window p-4 sm:p-5 space-y-4">
             
             <!-- Full Width Search Input -->
             <div class="relative">
-                <i class="fas fa-search absolute left-4 top-3.5 text-gray-500 text-sm"></i>
-                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search by Item Name, ID, or Keywords (e.g. prime, level 8, 120000010880)..." class="w-full bg-[#080a18] border border-[#23294c] rounded-xl pl-11 pr-4 py-3 text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-rose-500 transition shadow-inner">
+                <i class="fas fa-search absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+                <input type="text" id="searchInput" oninput="applyFilters()" placeholder="Search by Item Name, ID, or Keywords (e.g. prime, level 8, 126393684880)..." class="w-full border rounded-xl pl-11 pr-4 py-3 text-xs sm:text-sm placeholder-gray-500 focus:outline-none transition">
             </div>
 
             <!-- Filters Row: Categories, Patches, Rarities, Apply Button -->
@@ -322,7 +395,7 @@
                 
                 <!-- Category Select -->
                 <div class="relative">
-                    <select id="catSelect" onchange="applyFilters()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-2.5 text-xs text-gray-200 focus:outline-none focus:border-rose-500 appearance-none cursor-pointer">
+                    <select id="catSelect" onchange="applyFilters()" class="w-full border rounded-xl px-3.5 py-2.5 text-xs focus:outline-none appearance-none cursor-pointer">
                         <option value="all">All Categories</option>
                         <option value="prime">Prime System (Free Fire Prime Lvl 1-8)</option>
                         <option value="official">Official Partner (KOL)</option>
@@ -335,23 +408,23 @@
                         <option value="tokens">Exchange Tokens</option>
                         <option value="misc">Misc Items</option>
                     </select>
-                    <i class="fas fa-chevron-down absolute right-3.5 top-3.5 text-gray-500 text-[10px] pointer-events-none"></i>
+                    <i class="fas fa-chevron-down absolute right-3.5 top-3.5 text-gray-400 text-[10px] pointer-events-none"></i>
                 </div>
 
                 <!-- Patches / Versions Select -->
                 <div class="relative">
-                    <select id="patchSelect" onchange="applyFilters()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-2.5 text-xs text-gray-200 focus:outline-none focus:border-rose-500 appearance-none cursor-pointer">
+                    <select id="patchSelect" onchange="applyFilters()" class="w-full border rounded-xl px-3.5 py-2.5 text-xs focus:outline-none appearance-none cursor-pointer">
                         <option value="all">All Patches / Versions</option>
                         <option value="ob55">OB55 (Current)</option>
                         <option value="ob54">OB54</option>
                         <option value="legacy">Legacy Editions</option>
                     </select>
-                    <i class="fas fa-chevron-down absolute right-3.5 top-3.5 text-gray-500 text-[10px] pointer-events-none"></i>
+                    <i class="fas fa-chevron-down absolute right-3.5 top-3.5 text-gray-400 text-[10px] pointer-events-none"></i>
                 </div>
 
                 <!-- Rarities Select -->
                 <div class="relative">
-                    <select id="raritySelect" onchange="applyFilters()" class="w-full bg-[#080a18] border border-[#23294c] rounded-xl px-3.5 py-2.5 text-xs text-gray-200 focus:outline-none focus:border-rose-500 appearance-none cursor-pointer">
+                    <select id="raritySelect" onchange="applyFilters()" class="w-full border rounded-xl px-3.5 py-2.5 text-xs focus:outline-none appearance-none cursor-pointer">
                         <option value="all">All Rarities</option>
                         <option value="MYTHIC">MYTHIC</option>
                         <option value="LEGENDARY">LEGENDARY</option>
@@ -359,12 +432,12 @@
                         <option value="PURPLE">PURPLE</option>
                         <option value="RARE">RARE</option>
                     </select>
-                    <i class="fas fa-chevron-down absolute right-3.5 top-3.5 text-gray-500 text-[10px] pointer-events-none"></i>
+                    <i class="fas fa-chevron-down absolute right-3.5 top-3.5 text-gray-400 text-[10px] pointer-events-none"></i>
                 </div>
 
                 <!-- Apply Filters Button -->
                 <div>
-                    <button type="button" onclick="applyFilters()" class="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-rose-500/20 transition">
+                    <button type="button" onclick="applyFilters()" class="apple-btn-primary apple-keep-white w-full text-xs py-2.5 px-4 flex items-center justify-center gap-2 cursor-pointer">
                         <i class="fas fa-sliders text-xs"></i>
                         <span>Apply Filters</span>
                     </button>
@@ -380,26 +453,54 @@
 
     </main>
 
-    <!-- Modal Dialog (Matching Image 4) -->
-    <div id="itemModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
-        <div class="modal-box w-full max-w-[460px] p-6 sm:p-7 relative my-auto animate-in fade-in zoom-in-95 duration-200">
-            
-            <!-- Close Button (X) -->
-            <button type="button" onclick="closeItemModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#1b1f3b] text-gray-400 hover:text-white flex items-center justify-center text-sm transition">
-                <i class="fas fa-xmark"></i>
-            </button>
+    <!-- Understated Apple Footer -->
+    <footer class="apple-footer mt-auto">
+        <div class="max-w-[1720px] mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2.5">
+                <div class="macos-traffic-lights" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
+                </div>
+                <span class="font-semibold text-white">TURKY HUB</span>
+                <span>· OB55 Headless Badge CDN</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-4">
+                <a href="admin.php" class="hover:text-red-500 transition">Admin Studio</a>
+                <a href="ai-integration.php" class="hover:text-red-500 transition">AI Integration</a>
+                <span class="font-mono text-[11px]">Transparent Vector &amp; PNG Delivery</span>
+            </div>
+        </div>
+    </footer>
 
+    <!-- Modal Dialog (macOS Window Inspector) -->
+    <div id="itemModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="modal-box w-full max-w-[460px] overflow-hidden relative my-auto">
+            <!-- macOS Window Title Bar -->
+            <div class="macos-window-bar">
+                <div class="macos-traffic-lights" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
+                </div>
+                <span class="macos-window-title">Asset Inspector</span>
+                <button type="button" onclick="closeItemModal()" aria-label="Close Inspector" class="w-7 h-7 rounded-full apple-surface-secondary text-gray-400 hover:text-red-500 flex items-center justify-center text-xs transition cursor-pointer">
+                    <i class="fas fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="p-6 sm:p-7">
             <!-- Preview Stage (100% Transparent, No Background) -->
-            <div id="modalPreviewBox" class="w-48 h-48 mx-auto rounded-2xl bg-[#090b18] border border-white/5 relative flex items-center justify-center overflow-hidden shadow-inner transition-colors duration-200">
-                <div id="modalAura" class="absolute inset-0 bg-gradient-to-tr from-purple-600/15 via-transparent to-pink-500/15 pointer-events-none"></div>
+            <div id="modalPreviewBox" class="w-48 h-48 mx-auto rounded-2xl bg-[#09090B] border border-white/10 relative flex items-center justify-center overflow-hidden shadow-inner transition-colors duration-200">
+                <div id="modalAura" class="absolute inset-0 bg-gradient-to-tr from-red-500/10 via-transparent to-amber-500/10 pointer-events-none"></div>
                 <div id="modalItemPreview" class="relative z-10 flex items-center justify-center w-full h-full p-2">
                     <!-- Image or Animation injected here -->
                 </div>
             </div>
             <!-- Transparency Verification Quick Switcher -->
-            <div class="flex items-center justify-center gap-2 mt-2">
-                <button type="button" onclick="toggleModalCheckerboard()" class="text-[10px] font-mono font-bold text-amber-300 hover:text-white bg-amber-400/10 hover:bg-amber-400/20 px-2.5 py-1 rounded-lg border border-amber-400/30 transition flex items-center gap-1 cursor-pointer">
-                    <i class="fas fa-eye"></i> <span>Verify 100% Transparency (Checkerboard)</span>
+            <div class="flex items-center justify-center gap-2 mt-2.5">
+                <button type="button" onclick="toggleModalCheckerboard()" class="apple-btn-secondary text-[10px] font-mono px-3 py-1 rounded-lg transition flex items-center gap-1.5 cursor-pointer">
+                    <i class="fas fa-eye text-red-500"></i> <span>Verify 100% Transparency (Checkerboard)</span>
                 </button>
             </div>
 
@@ -539,22 +640,22 @@
 
             <!-- Action Buttons: STRICTLY NO DOWNLOAD BUTTON! Only Share Link and Close -->
             <div class="flex items-center gap-3 mt-6 pt-2">
-                <button type="button" id="shareLinkBtn" onclick="shareCurrentItem()" class="flex-1 bg-gradient-to-r from-[#ea580c] to-[#f97316] hover:from-[#c2410c] hover:to-[#ea580c] text-white font-bold py-3 px-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 transition">
+                <button type="button" id="shareLinkBtn" onclick="shareCurrentItem()" class="apple-btn-primary apple-keep-white flex-1 py-3 px-4 flex items-center justify-center gap-2 cursor-pointer">
                     <i class="fas fa-share-nodes text-sm"></i>
                     <span>Share Link</span>
                 </button>
 
-                <button type="button" onclick="closeItemModal()" class="bg-[#1e2340] hover:bg-[#282f56] text-gray-300 font-bold py-3 px-6 rounded-2xl transition">
+                <button type="button" onclick="closeItemModal()" class="apple-btn-secondary py-3 px-6 cursor-pointer">
                     Close
                 </button>
             </div>
-
+            </div>
         </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="appToast" class="fixed bottom-6 right-6 bg-yellow-400 text-black font-extrabold px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none">
-        <i class="fas fa-check-circle text-base"></i>
+    <div id="appToast" class="fixed bottom-6 right-6 bg-[#18181B] text-white apple-keep-white border border-red-500/40 font-semibold text-xs px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 z-50 pointer-events-none">
+        <i class="fas fa-check-circle text-red-500 text-base"></i>
         <span id="appToastMsg">Copied!</span>
     </div>
 
@@ -1399,6 +1500,14 @@
 
         function filterCategory(cat) {
             document.getElementById('catSelect').value = cat;
+            const navAll = document.getElementById('navTabAll');
+            const navPrime = document.getElementById('navTabPrime');
+            if (navAll) navAll.classList.toggle('active', cat !== 'prime');
+            if (navPrime) navPrime.classList.toggle('active', cat === 'prime');
+            const mobileDrawer = document.getElementById('mobileNavDrawer');
+            if (mobileDrawer && !mobileDrawer.classList.contains('hidden')) {
+                mobileDrawer.classList.add('hidden');
+            }
             applyFilters();
         }
 
@@ -1841,6 +1950,7 @@
             }
         });
     </script>
+    <script src="assets/apple-theme.js"></script>
 
     </div>
 </body>

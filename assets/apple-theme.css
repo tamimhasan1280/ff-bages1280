@@ -1,0 +1,556 @@
+/**
+ * TURKY HUB — Apple macOS-Inspired Design System & Centralized Dual-Theme Engine
+ * Supports Dark Mode (#09090B / #EF4444) & Light Mode (#FFFFFF / #E53945)
+ * Preserves 100% of badge renders, transparent stages, and existing workflows.
+ */
+
+:root,
+html[data-theme="dark"] {
+    --apple-bg-main: #09090B;
+    --apple-bg-secondary: #111114;
+    --apple-bg-card: #18181B;
+    --apple-bg-elevated: rgba(24, 24, 27, 0.86);
+    --apple-bg-glass: rgba(9, 9, 11, 0.78);
+    --apple-text-primary: #FFFFFF;
+    --apple-text-secondary: #A1A1AA;
+    --apple-text-muted: #71717A;
+    --apple-border: #27272A;
+    --apple-border-subtle: rgba(255, 255, 255, 0.08);
+    --apple-accent: #EF4444;
+    --apple-accent-hover: #DC2626;
+    --apple-accent-soft: rgba(239, 68, 68, 0.14);
+    --apple-accent-border: rgba(239, 68, 68, 0.35);
+    --apple-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.35);
+    --apple-shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.65), 0 0 0 1px var(--apple-border);
+    --apple-shadow-lg: 0 24px 60px -15px rgba(0, 0, 0, 0.85), 0 0 0 1px var(--apple-border);
+    --apple-code-bg: #0D0D10;
+    --apple-code-text: #F4F4F5;
+    --apple-input-bg: #111114;
+    --apple-stage-bg: radial-gradient(circle at 50% 45%, rgba(239, 68, 68, 0.08) 0%, #09090B 78%);
+    color-scheme: dark;
+}
+
+html[data-theme="light"] {
+    --apple-bg-main: #FFFFFF;
+    --apple-bg-secondary: #F8F8FA;
+    --apple-bg-card: #FFFFFF;
+    --apple-bg-elevated: rgba(255, 255, 255, 0.92);
+    --apple-bg-glass: rgba(255, 255, 255, 0.84);
+    --apple-text-primary: #18181B;
+    --apple-text-secondary: #71717A;
+    --apple-text-muted: #52525B;
+    --apple-border: #E4E4E7;
+    --apple-border-subtle: rgba(24, 24, 27, 0.07);
+    --apple-accent: #E53945;
+    --apple-accent-hover: #C62836;
+    --apple-accent-soft: rgba(229, 57, 69, 0.10);
+    --apple-accent-border: rgba(229, 57, 69, 0.28);
+    --apple-shadow-sm: 0 1px 3px rgba(24, 24, 27, 0.06), 0 1px 2px rgba(24, 24, 27, 0.04);
+    --apple-shadow-md: 0 12px 32px -12px rgba(24, 24, 27, 0.12), 0 0 0 1px var(--apple-border);
+    --apple-shadow-lg: 0 28px 60px -18px rgba(24, 24, 27, 0.20), 0 0 0 1px var(--apple-border);
+    --apple-code-bg: #18181B;
+    --apple-code-text: #FAFAFA;
+    --apple-input-bg: #F8F8FA;
+    --apple-stage-bg: radial-gradient(circle at 50% 45%, rgba(229, 57, 69, 0.07) 0%, #F4F4F6 80%);
+    color-scheme: light;
+}
+
+/* Base Canvas & Apple Typography */
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+body.apple-ui {
+    background-color: var(--apple-bg-main) !important;
+    color: var(--apple-text-primary) !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Segoe UI", Roboto, sans-serif !important;
+    letter-spacing: -0.011em;
+    transition: background-color 0.25s cubic-bezier(0.22, 1, 0.36, 1), color 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    overflow-x: hidden;
+}
+
+.apple-ui h1,
+.apple-ui h2,
+.apple-ui .apple-display {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif !important;
+    letter-spacing: -0.025em;
+}
+
+.apple-ui .font-mono,
+.apple-ui .font-fira,
+.apple-ui .font-mono-code,
+.apple-ui code,
+.apple-ui pre {
+    font-family: "SF Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+}
+
+/* Remove cluttered cyberpunk grid if present */
+.apple-ui.cyber-grid {
+    background-image: none !important;
+}
+
+/* Sticky Frosted macOS Top Bar */
+.apple-navbar {
+    background: var(--apple-bg-glass) !important;
+    backdrop-filter: saturate(180%) blur(20px) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+    border-bottom: 1px solid var(--apple-border) !important;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* macOS Traffic-Light Dots (Decorative Chrome Only) */
+.macos-traffic-lights {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 2px;
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.macos-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    display: inline-block;
+    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.22);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.macos-dot-red { background: #FF5F57; }
+.macos-dot-yellow { background: #FEBC2E; }
+.macos-dot-green { background: #28C840; }
+
+.macos-window-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--apple-bg-secondary);
+    border-bottom: 1px solid var(--apple-border);
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
+}
+
+.macos-window-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--apple-text-secondary);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Surfaces / Windows / Panels */
+.apple-window,
+.apple-ui .glass-panel,
+.apple-ui .modal-box {
+    background-color: var(--apple-bg-card) !important;
+    background-image: none !important;
+    border: 1px solid var(--apple-border) !important;
+    border-radius: 18px !important;
+    box-shadow: var(--apple-shadow-md) !important;
+    transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.apple-surface-secondary {
+    background-color: var(--apple-bg-secondary) !important;
+    border: 1px solid var(--apple-border) !important;
+    border-radius: 14px;
+}
+
+/* Explorer Badge Cards */
+.apple-ui .item-card {
+    background: var(--apple-bg-card) !important;
+    border: 1px solid var(--apple-border) !important;
+    border-radius: 18px !important;
+    box-shadow: var(--apple-shadow-sm);
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.22s ease,
+                box-shadow 0.22s ease,
+                background-color 0.25s ease !important;
+}
+
+.apple-ui .item-card:hover {
+    transform: translateY(-3px) !important;
+    border-color: var(--apple-accent-border) !important;
+    box-shadow: 0 16px 34px -12px rgba(239, 68, 68, 0.22), 0 0 0 1px var(--apple-accent-border) !important;
+}
+
+.apple-ui .item-preview-box {
+    background: var(--apple-stage-bg) !important;
+    border: 1px solid var(--apple-border-subtle) !important;
+    border-radius: 14px !important;
+}
+
+/* Strategic Red Accent Primary Button */
+.apple-btn-primary {
+    background: var(--apple-accent) !important;
+    background-image: none !important;
+    color: #FFFFFF !important;
+    border: 1px solid transparent !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 14px -2px rgba(239, 68, 68, 0.35) !important;
+    transition: background-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+.apple-btn-primary:hover {
+    background: var(--apple-accent-hover) !important;
+    box-shadow: 0 8px 20px -4px rgba(239, 68, 68, 0.45) !important;
+}
+
+.apple-btn-primary:active {
+    transform: scale(0.98);
+}
+
+.apple-btn-secondary {
+    background: var(--apple-bg-secondary) !important;
+    color: var(--apple-text-primary) !important;
+    border: 1px solid var(--apple-border) !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease !important;
+}
+
+.apple-btn-secondary:hover {
+    border-color: var(--apple-accent-border) !important;
+    color: var(--apple-accent) !important;
+}
+
+/* Segmented Apple Pill Nav */
+.apple-nav-pill {
+    background: var(--apple-bg-secondary) !important;
+    border: 1px solid var(--apple-border) !important;
+    border-radius: 14px !important;
+    padding: 4px;
+}
+
+.apple-nav-item {
+    color: var(--apple-text-secondary) !important;
+    border-radius: 10px !important;
+    font-weight: 600;
+    transition: all 0.18s ease;
+}
+
+.apple-nav-item:hover {
+    color: var(--apple-text-primary) !important;
+    background: var(--apple-border-subtle) !important;
+}
+
+.apple-nav-item.active {
+    background: var(--apple-accent) !important;
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.30);
+}
+
+/* Accessible Animated Sun / Moon Theme Switcher */
+.theme-toggle-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 9999px;
+    background: var(--apple-bg-secondary);
+    border: 1px solid var(--apple-border);
+    color: var(--apple-text-primary);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--apple-accent-border);
+    box-shadow: 0 0 0 3px var(--apple-accent-soft);
+}
+
+.theme-toggle-btn:focus-visible {
+    outline: 2px solid var(--apple-accent);
+    outline-offset: 2px;
+}
+
+.theme-toggle-btn .theme-icon-wrap {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle-btn .icon-sun,
+.theme-toggle-btn .icon-moon {
+    position: absolute;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+}
+
+html[data-theme="dark"] .theme-toggle-btn .icon-sun {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}
+
+html[data-theme="dark"] .theme-toggle-btn .icon-moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+    color: #F4F4F5;
+}
+
+html[data-theme="light"] .theme-toggle-btn .icon-sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+    color: var(--apple-accent);
+}
+
+html[data-theme="light"] .theme-toggle-btn .icon-moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+}
+
+/* Inputs, Selects & Textareas */
+.apple-ui input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]),
+.apple-ui select,
+.apple-ui textarea {
+    background-color: var(--apple-input-bg) !important;
+    border-color: var(--apple-border) !important;
+    color: var(--apple-text-primary) !important;
+    border-radius: 12px;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.25s ease;
+}
+
+.apple-ui input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):focus,
+.apple-ui select:focus,
+.apple-ui textarea:focus {
+    border-color: var(--apple-accent) !important;
+    box-shadow: 0 0 0 3px var(--apple-accent-soft) !important;
+    outline: none !important;
+}
+
+/* Code Containers (AI Integration & Snippet Boxes) */
+.apple-ui .cyber-code-block {
+    background: var(--apple-bg-card) !important;
+    border: 1px solid var(--apple-border) !important;
+    box-shadow: var(--apple-shadow-md) !important;
+    color: var(--apple-text-primary) !important;
+    border-radius: 18px !important;
+}
+
+.apple-ui .cyber-code-block pre {
+    background: var(--apple-code-bg) !important;
+    color: #F4F4F5 !important;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--apple-border-subtle);
+}
+
+/* Auth Gates */
+.apple-ui #authGateModal,
+.apple-ui .apple-login-backdrop {
+    background: var(--apple-bg-main) !important;
+    background-image: radial-gradient(circle at 50% 20%, var(--apple-accent-soft), transparent 55%) !important;
+}
+
+/* Comprehensive Light Mode Overrides for Existing Tailwind Dark Utility Classes */
+html[data-theme="light"] body.apple-ui {
+    background-color: #FFFFFF !important;
+    color: #18181B !important;
+}
+
+html[data-theme="light"] .apple-ui header {
+    background: rgba(255, 255, 255, 0.86) !important;
+    border-color: #E4E4E7 !important;
+}
+
+html[data-theme="light"] .apple-ui [class*="bg-[#0"],
+html[data-theme="light"] .apple-ui [class*="bg-[#1"] {
+    background-color: #F8F8FA !important;
+}
+
+html[data-theme="light"] .apple-ui section.bg-\[\#0d1022\],
+html[data-theme="light"] .apple-ui section.bg-\[\#0e1224\],
+html[data-theme="light"] .apple-ui section.glass-panel,
+html[data-theme="light"] .apple-ui .glass-panel,
+html[data-theme="light"] .apple-ui .modal-box {
+    background-color: #FFFFFF !important;
+    border-color: #E4E4E7 !important;
+}
+
+/* Preserve intentionally dark/checkerboard badge stage previews */
+html[data-theme="light"] .apple-ui .checker-bg {
+    background-color: #F1F1F4 !important;
+    background-image:
+        linear-gradient(45deg, #E4E4E7 25%, transparent 25%),
+        linear-gradient(-45deg, #E4E4E7 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #E4E4E7 75%),
+        linear-gradient(-45deg, transparent 75%, #E4E4E7 75%) !important;
+    background-size: 16px 16px !important;
+}
+
+html[data-theme="light"] .apple-ui [data-stage-mode="dark"],
+html[data-theme="light"] .apple-ui #liveStageBg.bg-\[\#060812\] {
+    background-color: #09090B !important;
+}
+
+/* Typography contrast mappings in Light Mode (excluding solid red/accent buttons) */
+html[data-theme="light"] .apple-ui .text-white:not(.apple-btn-primary):not(.apple-btn-primary *):not(.apple-keep-white):not([class*="from-red-"]):not([class*="from-rose-"]):not([class*="bg-red-"]):not([class*="bg-rose-"]):not([class*="bg-emerald-500"]):not([class*="bg-emerald-600"]) {
+    color: #18181B !important;
+}
+
+html[data-theme="light"] .apple-ui .text-gray-200,
+html[data-theme="light"] .apple-ui .text-gray-300,
+html[data-theme="light"] .apple-ui .text-slate-200 {
+    color: #3F3F46 !important;
+}
+
+html[data-theme="light"] .apple-ui .text-gray-400,
+html[data-theme="light"] .apple-ui .text-gray-500 {
+    color: #71717A !important;
+}
+
+html[data-theme="light"] .apple-ui .text-emerald-400,
+html[data-theme="light"] .apple-ui .text-emerald-300 {
+    color: #047857 !important;
+}
+
+html[data-theme="light"] .apple-ui .text-amber-400,
+html[data-theme="light"] .apple-ui .text-amber-300,
+html[data-theme="light"] .apple-ui .text-yellow-300,
+html[data-theme="light"] .apple-ui .text-yellow-400 {
+    color: #B45309 !important;
+}
+
+html[data-theme="light"] .apple-ui .text-cyan-400,
+html[data-theme="light"] .apple-ui .text-cyan-300 {
+    color: #0369A1 !important;
+}
+
+html[data-theme="light"] .apple-ui .text-purple-400,
+html[data-theme="light"] .apple-ui .text-purple-300 {
+    color: #7E22CE !important;
+}
+
+html[data-theme="light"] .apple-ui .text-rose-300,
+html[data-theme="light"] .apple-ui .text-rose-400 {
+    color: #BE123C !important;
+}
+
+html[data-theme="light"] .apple-ui .border-white\/5,
+html[data-theme="light"] .apple-ui .border-white\/10,
+html[data-theme="light"] .apple-ui .border-white\/15,
+html[data-theme="light"] .apple-ui [class*="border-[#"] {
+    border-color: #E4E4E7 !important;
+}
+
+html[data-theme="light"] .apple-ui .bg-white\/5,
+html[data-theme="light"] .apple-ui .bg-white\/10 {
+    background-color: #F4F4F5 !important;
+}
+
+html[data-theme="light"] .apple-ui tr:hover,
+html[data-theme="light"] .apple-ui .hover\:bg-white\/\[0\.02\]:hover {
+    background-color: #F8F8FA !important;
+}
+
+html[data-theme="light"] .apple-ui #adminBadgesTbody tr.bg-amber-500\/\[0\.08\] {
+    background-color: rgba(229, 57, 69, 0.08) !important;
+}
+
+/* Light Mode: Preserve crisp dark Apple HUD toasts */
+html[data-theme="light"] .apple-ui #appToast,
+html[data-theme="light"] .apple-ui #aiToast {
+    background-color: #18181B !important;
+    color: #FFFFFF !important;
+    border-color: rgba(229, 57, 69, 0.45) !important;
+}
+
+html[data-theme="light"] .apple-ui #adminToast {
+    background-color: #18181B !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(229, 57, 69, 0.45) !important;
+}
+
+/* Light Mode: Remove dark gradient stops on AI action bar & status pills */
+html[data-theme="light"] .apple-ui [class*="via-[#0"] {
+    background-image: linear-gradient(90deg, #F8F8FA 0%, #FFFFFF 50%, #F8F8FA 100%) !important;
+    background-color: #F8F8FA !important;
+    border-color: #E4E4E7 !important;
+}
+
+html[data-theme="light"] .apple-ui #editorModeBadge.bg-cyan-950\/60 {
+    background-color: #F0F9FF !important;
+    border-color: #BAE6FD !important;
+    color: #0369A1 !important;
+}
+
+html[data-theme="light"] .apple-ui #editorModeBadge.bg-amber-950\/60 {
+    background-color: #FFFBEB !important;
+    border-color: #FDE68A !important;
+    color: #B45309 !important;
+}
+
+html[data-theme="light"] .apple-ui #editorModeBadge.bg-emerald-950\/60 {
+    background-color: #ECFDF5 !important;
+    border-color: #A7F3D0 !important;
+    color: #047857 !important;
+}
+
+/* Remove glow text-shadows that blur in Light Mode */
+html[data-theme="light"] .apple-ui .cyber-text-glow,
+html[data-theme="light"] .apple-ui .cyber-amber-glow,
+html[data-theme="light"] .apple-ui .cyber-cyan-glow {
+    text-shadow: none !important;
+}
+
+/* Code snippet inline labels inside dark code cards stay high contrast */
+html[data-theme="light"] .apple-ui .cyber-code-block pre {
+    background: #18181B !important;
+    color: #FAFAFA !important;
+    border-color: #27272A !important;
+}
+
+/* Table refinements */
+.apple-ui table thead tr {
+    border-bottom: 1px solid var(--apple-border) !important;
+}
+
+.apple-ui table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+/* Clean Apple Footer */
+.apple-footer {
+    border-top: 1px solid var(--apple-border);
+    background: var(--apple-bg-secondary);
+    color: var(--apple-text-secondary);
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* Accent Highlight Pills */
+.apple-badge-red {
+    background: var(--apple-accent-soft) !important;
+    color: var(--apple-accent) !important;
+    border: 1px solid var(--apple-accent-border) !important;
+}
+
+/* Respect Reduced Motion Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+    .apple-ui *,
+    .apple-ui *::before,
+    .apple-ui *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}

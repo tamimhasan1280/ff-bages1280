@@ -59,6 +59,23 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
     <title>AI Integration Hub & Master Prompt Studio | TURKY HUB</title>
     <link rel="icon" type="image/png" href="badges/FF_UI_Badge_KOL01.png">
     
+    <!-- Zero-Flash Theme Bootstrap (Before Paint) -->
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('turky_theme');
+                if (t !== 'light' && t !== 'dark') {
+                    t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+                }
+                document.documentElement.setAttribute('data-theme', t);
+                document.documentElement.classList.add(t);
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome 6 -->
@@ -68,6 +85,8 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
     
     <!-- Authentic Prime Badges CSS -->
     <link rel="stylesheet" href="cdn/prime-badge.css">
+    <!-- Centralized Apple macOS Design System -->
+    <link rel="stylesheet" href="assets/apple-theme.css">
 
     <style>
         body {
@@ -131,21 +150,40 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
     <script>window.__TURKY_ADMIN__ = <?= $is_logged_in ? 'true' : 'false' ?>;</script>
     <script src="cdn/turky-guard.js"></script>
 </head>
-<body class="min-h-screen flex flex-col cyber-grid selection:bg-emerald-500 selection:text-black">
+<body class="apple-ui min-h-screen flex flex-col selection:bg-red-500 selection:text-white">
 
 <?php if (!$is_logged_in): ?>
     <!-- ADMIN AUTHENTICATION GATE -->
-    <div class="fixed inset-0 z-50 bg-[#060814] flex items-center justify-center p-4">
-        <div class="relative w-full max-w-md bg-[#0a0d22]/95 border border-emerald-500/40 rounded-3xl p-8 shadow-2xl backdrop-blur-xl">
-            <div class="flex flex-col items-center text-center mb-6">
-                <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center mb-3 shadow-[0_0_25px_rgba(16,185,129,0.2)]">
-                    <i class="fas fa-robot text-2xl text-emerald-400"></i>
+    <div class="apple-login-backdrop fixed inset-0 z-50 bg-[#09090B] flex items-center justify-center p-4">
+        <button type="button" data-theme-toggle class="theme-toggle-btn fixed top-5 right-5 z-50" aria-label="Switch Theme" aria-pressed="false">
+            <span class="theme-icon-wrap" aria-hidden="true">
+                <i class="fas fa-sun icon-sun text-xs"></i>
+                <i class="fas fa-moon icon-moon text-xs"></i>
+            </span>
+            <span data-theme-label>Dark</span>
+        </button>
+
+        <div class="apple-window relative w-full max-w-md overflow-hidden shadow-2xl">
+            <div class="macos-window-bar">
+                <div class="macos-traffic-lights" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
                 </div>
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[10px] uppercase font-bold tracking-wider mb-2">
+                <span class="macos-window-title">TURKY HUB — AI Integration</span>
+                <span class="w-10" aria-hidden="true"></span>
+            </div>
+
+            <div class="p-8">
+            <div class="flex flex-col items-center text-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-red-500 flex items-center justify-center mb-3 shadow-lg shadow-red-500/20">
+                    <i class="fas fa-robot text-2xl text-white apple-keep-white"></i>
+                </div>
+                <div class="apple-badge-red inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-mono text-[10px] uppercase font-bold tracking-wider mb-2">
                     <i class="fas fa-shield-halved text-[9px]"></i>
                     <span>Restricted Studio Access</span>
                 </div>
-                <h2 class="text-2xl font-black font-orbitron text-white cyber-text-glow">AI INTEGRATION</h2>
+                <h2 class="text-2xl font-bold text-white tracking-tight">AI INTEGRATION</h2>
                 <p class="text-xs text-gray-400 mt-1">Please enter your authorized credentials to access the AI Integration Studio.</p>
             </div>
 
@@ -159,70 +197,83 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
             <form method="POST" action="ai-integration.php" class="space-y-4">
                 <input type="hidden" name="login_action" value="1">
                 <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono">
+                    <label class="block text-xs font-semibold text-gray-300 tracking-wide mb-1.5">
                         Email or Username
                     </label>
                     <div class="relative">
-                        <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-                        <input type="text" name="username" required placeholder="Enter email or username..." class="w-full bg-[#04060e] border border-[#23294c] focus:border-emerald-400 rounded-xl pl-9 pr-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
+                        <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="text" name="username" required placeholder="Enter email or username..." class="w-full border rounded-xl pl-9 pr-4 py-3 text-xs placeholder-gray-500 focus:outline-none transition font-mono">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1.5 font-mono">
+                    <label class="block text-xs font-semibold text-gray-300 tracking-wide mb-1.5">
                         Password
                     </label>
                     <div class="relative">
-                        <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-                        <input type="password" name="password" required placeholder="••••••••••••" class="w-full bg-[#04060e] border border-[#23294c] focus:border-emerald-400 rounded-xl pl-9 pr-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition font-mono">
+                        <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="password" name="password" required placeholder="••••••••••••" class="w-full border rounded-xl pl-9 pr-4 py-3 text-xs placeholder-gray-500 focus:outline-none transition font-mono">
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-600 hover:to-teal-600 text-black font-extrabold py-3.5 px-6 rounded-xl shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/40 transition transform active:scale-[0.98] uppercase tracking-wider text-xs flex items-center justify-center gap-2 cursor-pointer font-orbitron">
+                <button type="submit" class="apple-btn-primary apple-keep-white w-full py-3.5 px-6 uppercase tracking-wider text-xs flex items-center justify-center gap-2 cursor-pointer">
                     <span>Authenticate & Access AI Hub</span>
                     <i class="fas fa-arrow-right text-xs"></i>
                 </button>
             </form>
 
             <div class="mt-6 text-center">
-                <a href="index.php" class="text-xs text-gray-500 hover:text-gray-300 transition flex items-center justify-center gap-1.5">
+                <a href="index.php" class="text-xs text-gray-500 hover:text-red-500 transition flex items-center justify-center gap-1.5">
                     <i class="fas fa-arrow-left text-[10px]"></i>
                     <span>Back to FF Items Explorer</span>
                 </a>
+            </div>
             </div>
         </div>
     </div>
 
 <?php else: ?>
     <!-- TOP NAVIGATION BAR -->
-    <header class="border-b border-emerald-500/20 bg-[#080b1c]/95 sticky top-0 z-40 backdrop-blur-md">
-        <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-4">
+    <header class="apple-navbar sticky top-0 z-40">
+        <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
             
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/25">
-                    <i class="fas fa-robot text-black text-base"></i>
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="macos-traffic-lights hidden sm:inline-flex" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
                 </div>
-                <div>
+                <div class="w-8 h-8 rounded-xl bg-red-500 flex items-center justify-center shadow-sm shrink-0">
+                    <i class="fas fa-robot text-white apple-keep-white text-sm"></i>
+                </div>
+                <div class="min-w-0">
                     <div class="flex items-center gap-2">
-                        <span class="font-extrabold font-orbitron text-white text-base tracking-wider cyber-text-glow">TURKY HUB</span>
-                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-400 text-black font-extrabold font-mono uppercase tracking-wider">
+                        <span class="font-bold text-white text-sm sm:text-base tracking-tight">TURKY HUB</span>
+                        <span class="apple-badge-red text-[10px] px-2 py-0.5 rounded-full font-bold font-mono uppercase tracking-wider">
                             AI STUDIO
                         </span>
                     </div>
-                    <p class="text-[11px] text-emerald-400/80 font-mono">OB55 Universal AI Integration Directive & SDK Guide</p>
+                    <p class="text-[11px] text-gray-400 font-mono truncate hidden sm:block">OB55 Universal AI Integration Directive &amp; SDK Guide</p>
                 </div>
             </div>
 
-            <div class="flex items-center gap-3">
-                <a href="admin.php" class="px-3.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-bold flex items-center gap-2 transition">
-                    <i class="fas fa-crown text-amber-400"></i>
-                    <span>Admin Studio</span>
+            <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                <button type="button" data-theme-toggle class="theme-toggle-btn" aria-label="Switch Theme" aria-pressed="false">
+                    <span class="theme-icon-wrap" aria-hidden="true">
+                        <i class="fas fa-sun icon-sun text-xs"></i>
+                        <i class="fas fa-moon icon-moon text-xs"></i>
+                    </span>
+                    <span data-theme-label class="hidden sm:inline">Dark</span>
+                </button>
+                <a href="admin.php" class="apple-btn-secondary px-3 sm:px-3.5 py-1.5 text-xs flex items-center gap-2">
+                    <i class="fas fa-crown text-red-500"></i>
+                    <span class="hidden sm:inline">Admin Studio</span>
                 </a>
-                <a href="index.php" target="_blank" class="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs font-semibold flex items-center gap-2 transition">
-                    <i class="fas fa-eye text-cyan-400"></i>
-                    <span>Open Live Explorer</span>
+                <a href="index.php" target="_blank" class="apple-btn-secondary px-3 sm:px-3.5 py-1.5 text-xs flex items-center gap-2">
+                    <i class="fas fa-eye text-red-500"></i>
+                    <span class="hidden sm:inline">Open Live Explorer</span>
                 </a>
-                <a href="admin.php?action=logout" class="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-1.5 transition">
+                <a href="admin.php?action=logout" class="apple-btn-primary apple-keep-white px-3 sm:px-3.5 py-1.5 text-xs flex items-center gap-1.5">
                     <i class="fas fa-power-off text-xs"></i>
                     <span>Logout</span>
                 </a>
@@ -234,59 +285,65 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
     <main class="flex-1 max-w-[1780px] mx-auto px-4 sm:px-6 py-6 space-y-8 w-full">
 
         <!-- HERO BANNER -->
-        <section class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#090d24] via-[#060a1c] to-[#040816] border border-emerald-500/30 p-6 sm:p-8 shadow-2xl">
-            <!-- Ambient Glow -->
-            <div class="absolute -top-24 -right-24 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <section class="apple-window overflow-hidden">
+            <div class="macos-window-bar">
+                <div class="macos-traffic-lights" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
+                </div>
+                <span class="macos-window-title">TURKY HUB — Universal AI Prompt Studio</span>
+                <span class="text-[10px] font-mono text-gray-400">OB55 Engine</span>
+            </div>
 
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 p-6 sm:p-8">
                 <div class="space-y-3 max-w-3xl">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold tracking-wide">
+                    <div class="apple-badge-red inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wide">
                         <i class="fas fa-microchip"></i>
                         <span>UNIVERSAL AI INTEGRATION DIRECTIVE</span>
                     </div>
-                    <h1 class="text-2xl sm:text-4xl font-black font-orbitron text-white tracking-wide cyber-text-glow">
-                        AI INTEGRATION & MASTER PROMPT STUDIO
+                    <h1 class="text-2xl sm:text-4xl font-bold text-white tracking-tight">
+                        AI INTEGRATION &amp; MASTER PROMPT STUDIO
                     </h1>
-                    <p class="text-sm text-gray-300 leading-relaxed">
-                        Copy the single <strong class="text-emerald-400">Universal Master Prompt</strong> below and feed it into any AI system (<strong class="text-white">ChatGPT, Claude, Gemini, Cursor, Copilot, DeepSeek</strong>). It contains the complete technical logic, calling methods, 12-digit Badge ID matrix, authentic Prime Level (1-8) VFX rules, and headless CDN integration so any AI can build this into any website, app or game seamlessly.
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Copy the single <strong class="text-white">Universal Master Prompt</strong> below and feed it into any AI system (<strong class="text-white">ChatGPT, Claude, Gemini, Cursor, Copilot, DeepSeek</strong>). It contains the complete technical logic, calling methods, 12-digit Badge ID matrix, authentic Prime Level (1-8) VFX rules, and headless CDN integration.
                     </p>
                 </div>
 
                 <!-- Action Button: Copy Master Prompt -->
-                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                    <button type="button" onclick="copyMasterPrompt()" class="bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-600 hover:to-teal-600 text-black font-black px-6 py-4 rounded-2xl shadow-xl shadow-emerald-500/25 hover:shadow-emerald-500/40 transition transform active:scale-[0.98] font-orbitron text-xs sm:text-sm flex items-center justify-center gap-2.5 cursor-pointer">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+                    <button type="button" onclick="copyMasterPrompt()" class="apple-btn-primary apple-keep-white px-6 py-3.5 text-xs sm:text-sm flex items-center justify-center gap-2.5 cursor-pointer">
                         <i class="fas fa-copy text-sm"></i>
                         <span>COPY MASTER AI PROMPT</span>
                     </button>
-                    <a href="#quick-matrix" class="bg-[#0f142e] hover:bg-[#161c40] text-emerald-400 border border-emerald-500/30 font-bold px-5 py-4 rounded-2xl transition text-xs sm:text-sm flex items-center justify-center gap-2">
-                        <i class="fas fa-table-list"></i>
+                    <button type="button" onclick="switchTab('id-matrix')" class="apple-btn-secondary px-5 py-3.5 text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fas fa-table-list text-red-500"></i>
                         <span>ID Matrix</span>
-                    </a>
+                    </button>
                 </div>
             </div>
         </section>
 
         <!-- NAVIGATION TABS -->
-        <div class="flex flex-wrap items-center gap-2 border-b border-white/5 pb-3">
-            <button type="button" onclick="switchTab('master-prompt')" id="tabBtn-master-prompt" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-bold bg-emerald-500 text-black shadow-lg shadow-emerald-500/20 flex items-center gap-2 transition cursor-pointer">
+        <div class="flex flex-wrap items-center gap-1.5 apple-nav-pill w-fit">
+            <button type="button" onclick="switchTab('master-prompt')" id="tabBtn-master-prompt" class="tab-btn apple-nav-item active px-4 py-2 text-xs flex items-center gap-2 cursor-pointer">
                 <i class="fas fa-brain"></i>
                 <span>Master AI System Prompt</span>
             </button>
-            <button type="button" onclick="switchTab('web-integration')" id="tabBtn-web-integration" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 border border-white/5 flex items-center gap-2 transition cursor-pointer">
-                <i class="fab fa-js text-yellow-400"></i>
-                <span>Web & React (HTML/JS)</span>
+            <button type="button" onclick="switchTab('web-integration')" id="tabBtn-web-integration" class="tab-btn apple-nav-item px-4 py-2 text-xs flex items-center gap-2 cursor-pointer">
+                <i class="fab fa-js text-amber-500"></i>
+                <span>Web &amp; React (HTML/JS)</span>
             </button>
-            <button type="button" onclick="switchTab('mobile-integration')" id="tabBtn-mobile-integration" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 border border-white/5 flex items-center gap-2 transition cursor-pointer">
-                <i class="fas fa-mobile-screen-button text-cyan-400"></i>
-                <span>Mobile Apps (Flutter & React Native)</span>
+            <button type="button" onclick="switchTab('mobile-integration')" id="tabBtn-mobile-integration" class="tab-btn apple-nav-item px-4 py-2 text-xs flex items-center gap-2 cursor-pointer">
+                <i class="fas fa-mobile-screen-button text-cyan-500"></i>
+                <span>Mobile Apps (Flutter &amp; React Native)</span>
             </button>
-            <button type="button" onclick="switchTab('backend-api')" id="tabBtn-backend-api" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 border border-white/5 flex items-center gap-2 transition cursor-pointer">
-                <i class="fas fa-server text-purple-400"></i>
+            <button type="button" onclick="switchTab('backend-api')" id="tabBtn-backend-api" class="tab-btn apple-nav-item px-4 py-2 text-xs flex items-center gap-2 cursor-pointer">
+                <i class="fas fa-server text-purple-500"></i>
                 <span>Backend REST API (Node / Python / PHP)</span>
             </button>
-            <button type="button" onclick="switchTab('id-matrix')" id="tabBtn-id-matrix" class="tab-btn px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 border border-white/5 flex items-center gap-2 transition cursor-pointer">
-                <i class="fas fa-fingerprint text-amber-400"></i>
+            <button type="button" onclick="switchTab('id-matrix')" id="tabBtn-id-matrix" class="tab-btn apple-nav-item px-4 py-2 text-xs flex items-center gap-2 cursor-pointer">
+                <i class="fas fa-fingerprint text-red-500"></i>
                 <span>12...80 Badge ID Matrix (<?= count($badges) ?> Assets)</span>
             </button>
         </div>
@@ -294,23 +351,29 @@ $cdn_base = "https://cdn.jsdelivr.net/gh/{$repo_name}@main/badges/";
         <!-- TAB CONTENT 1: MASTER AI SYSTEM PROMPT -->
         <section id="tab-master-prompt" class="tab-content space-y-4">
             <div class="flex items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <h2 class="text-lg font-bold text-white font-orbitron cyber-text-glow">MASTER_AI_INTEGRATION_DIRECTIVE.md</h2>
-                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Markdown Ready</span>
+                <div class="flex items-center gap-2.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                    <h2 class="text-base sm:text-lg font-bold text-white">MASTER_AI_INTEGRATION_DIRECTIVE.md</h2>
+                    <span class="apple-badge-red text-[10px] font-mono px-2 py-0.5 rounded-full font-semibold">Markdown Ready</span>
                 </div>
-                <button type="button" onclick="copyMasterPrompt()" class="text-xs font-mono text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition cursor-pointer">
-                    <i class="fas fa-copy"></i>
+                <button type="button" onclick="copyMasterPrompt()" class="apple-btn-secondary text-xs font-mono px-3.5 py-1.5 flex items-center gap-1.5 cursor-pointer">
+                    <i class="fas fa-copy text-red-500"></i>
                     <span>Copy Text</span>
                 </button>
             </div>
 
-            <!-- Cyberpunk Green Code Container -->
-            <div class="relative cyber-code-block rounded-2xl p-5 sm:p-7 overflow-hidden">
-                <div class="flex items-center justify-between border-b border-emerald-500/20 pb-3 mb-4 text-xs font-mono text-emerald-400/70">
-                    <span>// UNIVERSAL AI SYSTEM PROMPT - INSTRUCTS CHATGPT / CLAUDE / GEMINI / CURSOR</span>
-                    <span>OB55_PRIME_ENGINE_V3.2</span>
+            <!-- macOS Code Container -->
+            <div class="relative cyber-code-block rounded-2xl overflow-hidden">
+                <div class="macos-window-bar">
+                    <div class="macos-traffic-lights" aria-hidden="true">
+                        <span class="macos-dot macos-dot-red"></span>
+                        <span class="macos-dot macos-dot-yellow"></span>
+                        <span class="macos-dot macos-dot-green"></span>
+                    </div>
+                    <span class="macos-window-title font-mono">// UNIVERSAL AI SYSTEM PROMPT — CHATGPT / CLAUDE / GEMINI / CURSOR</span>
+                    <span class="text-[10px] font-mono text-gray-400">OB55_PRIME_ENGINE_V3.2</span>
                 </div>
+                <div class="p-4 sm:p-6">
                 <pre id="masterPromptText" class="font-fira text-xs sm:text-sm text-emerald-400 leading-relaxed overflow-x-auto whitespace-pre-wrap select-all custom-scroll max-h-[700px]"># FREE FIRE BADGES &amp; PRIME SYSTEM (OB55) - UNIVERSAL AI INTEGRATION DIRECTIVE
 
 You are an expert full-stack developer integrating the Free Fire Badges &amp; Prime Level (1-8) System (OB55 Engine) into an application (Web, React/Next.js, Vue, PHP, WordPress, Mobile App, Game UI, or Backend).
@@ -531,6 +594,7 @@ If the integrating project renders a dynamic list, badge picker, or user-selecte
 - **Public Headless Delivery**: `/cdn/*`, `/api/*`, and `/badges/*` on jsDelivr are completely public, free, and CORS-enabled (`*`).
 - **Admin-Only Management**: Managing badges (`admin.php`) and accessing this AI Hub (`ai-integration.php`) require Admin authentication. Saving or batch-updating in Admin triggers `generate_all.php`, pushes to GitHub `main`, and purges jsDelivr automatically so `/cdn/ff-badges.js`, `/badges/svg/{id}.svg`, and `/api/v1/badge/{id}.json` stay 100% synced.
 - **Anti-Tamper Note**: Do NOT inject `cdn/turky-guard.js` into third-party consumer apps unless explicit right-click/DevTools blocking is desired (it disables context menu, DevTools shortcuts, and blurs on focus loss for non-admin users).</pre>
+                </div>
             </div>
         </section>
 
@@ -877,6 +941,25 @@ print(get_badge_info("126393684880"))</pre>
 
     </main>
 
+    <!-- Understated Apple Footer -->
+    <footer class="apple-footer mt-auto">
+        <div class="max-w-[1780px] mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2.5">
+                <div class="macos-traffic-lights" aria-hidden="true">
+                    <span class="macos-dot macos-dot-red"></span>
+                    <span class="macos-dot macos-dot-yellow"></span>
+                    <span class="macos-dot macos-dot-green"></span>
+                </div>
+                <span class="font-semibold text-white">TURKY HUB AI Studio</span>
+                <span>· Headless Badge SDK</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="index.php" class="hover:text-red-500 transition">Explorer</a>
+                <a href="admin.php" class="hover:text-red-500 transition">Admin Studio</a>
+            </div>
+        </div>
+    </footer>
+
     <!-- TOAST NOTIFICATION COMPONENT -->
     <div id="aiToast" class="fixed bottom-6 right-6 z-50 bg-[#060a1c] border border-emerald-500/40 text-emerald-300 text-xs font-mono py-3 px-5 rounded-2xl shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300">
         <i class="fas fa-check-circle text-emerald-400"></i>
@@ -887,8 +970,7 @@ print(get_badge_info("126393684880"))</pre>
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('bg-emerald-500', 'text-black', 'shadow-lg', 'shadow-emerald-500/20');
-                btn.classList.add('text-gray-400', 'hover:text-white', 'hover:bg-white/5');
+                btn.classList.remove('active');
             });
 
             const targetContent = document.getElementById('tab-' + tabId);
@@ -896,8 +978,7 @@ print(get_badge_info("126393684880"))</pre>
 
             if (targetContent) targetContent.classList.remove('hidden');
             if (targetBtn) {
-                targetBtn.classList.add('bg-emerald-500', 'text-black', 'shadow-lg', 'shadow-emerald-500/20');
-                targetBtn.classList.remove('text-gray-400', 'hover:text-white', 'hover:bg-white/5');
+                targetBtn.classList.add('active');
             }
         }
 
@@ -954,6 +1035,6 @@ print(get_badge_info("126393684880"))</pre>
     </script>
 
 <?php endif; ?>
-
+<script src="assets/apple-theme.js"></script>
 </body>
 </html>
