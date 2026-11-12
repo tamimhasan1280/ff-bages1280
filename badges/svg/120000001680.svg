@@ -4,9 +4,13 @@
       @keyframes ff_sheen { 0% { transform: translate(-140px, 140px) rotate(45deg); } 100% { transform: translate(140px, -140px) rotate(45deg); } }
       @keyframes ff_star_twinkle { 0%, 100% { transform: scale(0.55) rotate(0deg); opacity: 0.35; } 50% { transform: scale(1.2) rotate(180deg); opacity: 1; } }
       @keyframes ff_bone_pulse { 0% { transform: scale(0.88); opacity: 0.75; } 100% { transform: scale(1.12); opacity: 1; } }
+      @keyframes ff_badge_pulse { 0% { transform: scale(1); } 100% { transform: scale(1.03); } }
+      @keyframes ff_gem_glint { 0%, 68% { transform: scale(0.05) rotate(0deg); opacity: 0; } 78% { transform: scale(1.15) rotate(45deg); opacity: 1; } 88% { transform: scale(1.3) rotate(90deg); opacity: 0.65; } 96%, 100% { transform: scale(0.1) rotate(135deg); opacity: 0; } }
       .sheen-beam { animation: ff_sheen 2.2s infinite linear; }
       .star-anim { transform-box: fill-box; transform-origin: center; animation: ff_star_twinkle 1.8s infinite ease-in-out; }
       .bone-spot { transform-box: fill-box; transform-origin: center; animation: ff_bone_pulse 2s infinite alternate ease-in-out; }
+      .badge-pulse { transform-origin: 100px 100px; animation: ff_badge_pulse 2.6s infinite alternate ease-in-out; }
+      .gem-glint-anim { transform-box: fill-box; transform-origin: center; animation: ff_gem_glint 2.8s infinite ease-in-out; }
     </style>
     <filter id="alphaWhite"><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"/></filter>
     <filter id="badgeGlow" x="-25%" y="-25%" width="150%" height="150%"><feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#3B82F6" flood-opacity="0.65"/></filter>
@@ -23,10 +27,18 @@
   </defs>
   <g id="starsLayer">
   </g>
-  <g filter="url(#badgeGlow)">
-    <use href="#badgeAsset" />
-  </g>
-  <g mask="url(#badgeMask)">
-    <rect class="sheen-beam" x="-60" y="-60" width="320" height="70" fill="url(#sheenGrad)" />
+  <g id="badgeMainGroup" class="badge-pulse">
+    <g filter="url(#badgeGlow)">
+      <use href="#badgeAsset" />
+    </g>
+    <g mask="url(#badgeMask)">
+      <rect class="sheen-beam" x="-60" y="-60" width="320" height="70" fill="url(#sheenGrad)" />
+    </g>
+    <g id="gemGlintLayer" transform="translate(100, 96)">
+      <g class="gem-glint-anim">
+        <circle cx="0" cy="0" r="10" fill="#FFFCE0" opacity="0.55" style="filter:blur(2px);"/>
+        <path d="M0,-14 L2.4,-2.4 L14,0 L2.4,2.4 L0,14 L-2.4,2.4 L-14,0 L-2.4,-2.4 Z" fill="#FFFFFF"/>
+      </g>
+    </g>
   </g>
 </svg>

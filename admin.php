@@ -68,6 +68,32 @@ function generate_ff_id() {
 $success_item = null;
 $error_msg = '';
 
+// Auto-Sync: If source JSON, CSS, or generator changed on disk, regenerate CDN/Explorer/SVGs automatically
+if (file_exists(__DIR__ . '/generate_all.php') && file_exists(__DIR__ . '/api/badges.json')) {
+    $__syncSrc = max(
+        @filemtime(__DIR__ . '/api/badges.json') ?: 0,
+        @filemtime(__DIR__ . '/cdn/prime-badge.css') ?: 0,
+        @filemtime(__DIR__ . '/cdn/ff-badges.css') ?: 0,
+        @filemtime(__DIR__ . '/generate_all.php') ?: 0
+    );
+    $__syncOut = min(
+        @filemtime(__DIR__ . '/cdn/ff-badges.js') ?: 0,
+        @filemtime(__DIR__ . '/index.html') ?: 0
+    );
+    if ($__syncSrc > $__syncOut) {
+        @shell_exec('php ' . escapeshellarg(__DIR__ . '/generate_all.php') . ' 2>&1');
+    }
+}
+
+// Fast non-blocking jsDelivr @main cache purge helper
+function purge_jsdelivr_paths($repo_name, $paths) {
+    $ctx = stream_context_create(['http' => ['timeout' => 1.5, 'ignore_errors' => true]]);
+    foreach ($paths as $p) {
+        $url = "https://purge.jsdelivr.net/gh/{$repo_name}@main/" . ltrim($p, '/');
+        @file_get_contents($url, false, $ctx);
+    }
+}
+
 // Load current badges list and presets early
 $json_file = __DIR__ . '/api/badges.json';
 $v1_json = __DIR__ . '/api/v1/badges.json';
@@ -91,19 +117,28 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
     $hex_glow = trim($_POST['badge_hex_glow'] ?? '#FFD700');
     $size = intval($_POST['badge_size'] ?? 54);
 
-    // Universal Animation Controls
-    $sweep_enabled = !empty($_POST['sweep_enabled']); // Master Sheen / Animation toggle
+    // Master & Individual Animation Controls
+    $master_anim = !empty($_POST['master_anim_enabled']);
+    $sweep_enabled = $master_anim && !empty($_POST['sweep_enabled']);
     $sweep_direction = trim($_POST['sweep_direction'] ?? 'diag_bl_tr');
     $sweep_speed = trim($_POST['sweep_speed'] ?? '2.2s');
-    $star_density = intval($_POST['star_density'] ?? 0);
+    $star_density = $master_anim ? intval($_POST['star_density'] ?? 0) : 0;
     $star_theme = trim($_POST['star_theme'] ?? 'gold');
-    $has_gem_glint = !empty($_POST['has_gem_glint']);
+    $has_gem_glint = $master_anim && !empty($_POST['has_gem_glint']);
     $glow_enabled = !empty($_POST['glow_enabled']);
-    $pulse_enabled = !empty($_POST['pulse_enabled']);
+    $pulse_enabled = $master_anim && !empty($_POST['pulse_enabled']);
 
-    // Multiple Bone Highlights Data
+    // Multiple Bone Highlights Data & Mode
+    $bone_enabled = !empty($_POST['bone_enabled']);
+    $bone_mode = trim($_POST['global_bone_mode'] ?? $_POST['bone_mode'] ?? 'inside');
+    if (!in_array($bone_mode, ['inside', 'dual', 'outer', 'off'], true)) {
+        $bone_mode = 'inside';
+    }
     $bone_data_raw = trim($_POST['bone_data'] ?? '');
-    $bone_data = !empty($bone_data_raw) ? json_decode($bone_data_raw, true) : null;
+    $bone_data = ($bone_enabled && !empty($bone_data_raw)) ? json_decode($bone_data_raw, true) : null;
+    if (!is_array($bone_data) || count($bone_data) === 0) {
+        $bone_data = null;
+    }
 
     // Ensure star_density within 0 to 50
     if ($star_density < 0) $star_density = 0;
@@ -124,10 +159,20 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
     if (empty($name)) {
         $error_msg = 'Please enter a badge name.';
     } else {
+        $existing_badge = null;
+        $lookup_id = !empty($original_id) ? $original_id : $id;
+        foreach ($current_badges as $pb) {
+            if (($pb['id'] ?? '') === $lookup_id) {
+                $existing_badge = $pb;
+                break;
+            }
+        }
+
         $filename = '';
-        
+        $has_uploaded_new = (isset($_FILES['badge_file']) && $_FILES['badge_file']['error'] === UPLOAD_ERR_OK);
+
         // Handle File Upload
-        if (isset($_FILES['badge_file']) && $_FILES['badge_file']['error'] === UPLOAD_ERR_OK) {
+        if ($has_uploaded_new) {
             $ext = strtolower(pathinfo($_FILES['badge_file']['name'], PATHINFO_EXTENSION));
             if (!in_array($ext, ['png', 'svg', 'webp', 'jpg'])) {
                 $ext = 'png';
@@ -143,29 +188,29 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             $filename = trim($_POST['existing_file']);
         }
 
-        // Fallback: If filename is empty and we're editing an existing badge, preserve original file
-        if (empty($filename) && !empty($original_id)) {
-            foreach ($current_badges as $pb) {
-                if ($pb['id'] === $original_id) {
-                    $filename = $pb['file'] ?? '';
-                    break;
-                }
-            }
+        // Fallback: Preserve original file if editing an existing badge
+        if (empty($filename) && $existing_badge) {
+            $filename = $existing_badge['file'] ?? '';
         }
 
         if (empty($filename)) {
-            $filename = 'ff_ui_prime_icon_08.png'; // Sensible default
+            $filename = 'ff_ui_prime_icon_08.png';
         }
 
         $slug = trim(preg_replace('/[^a-z0-9-]+/', '-', strtolower(trim($name))), '-');
         $cat_slug = trim(preg_replace('/[^a-z0-9-]+/', '-', strtolower(trim($category))), '-');
 
-        // Determine badge type: Prime or Standard Image
+        // Determine badge type (preserve svg_code/text_code unless user uploaded a new image file)
         $is_prime = (strpos(strtolower($name), 'prime') !== false || strpos(strtolower($category), 'prime') !== false);
         $prime_lvl = 8;
         if (preg_match('/level\s*(\d+)/i', $name, $matches)) {
             $prime_lvl = intval($matches[1]);
         }
+
+        $existing_type = $existing_badge['type'] ?? '';
+        $preserve_vector = (!$has_uploaded_new && in_array($existing_type, ['svg_code', 'text_code'], true) && $filename === ($existing_badge['file'] ?? ''));
+
+        $final_type = $preserve_vector ? $existing_type : ($is_prime ? 'prime_image' : 'image');
 
         $new_badge = [
             'id' => $id,
@@ -178,16 +223,16 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             'rarity_class' => strtolower($rarity),
             'category' => $category,
             'category_slug' => $cat_slug,
-            'patch' => 'OB55',
-            'patch_slug' => 'ob55',
+            'patch' => $existing_badge['patch'] ?? 'OB55',
+            'patch_slug' => $existing_badge['patch_slug'] ?? 'ob55',
             'file' => $filename,
             'glow_color' => $glow_color,
             'hex_glow' => $hex_glow,
             'glow_enabled' => $glow_enabled,
             'priority' => $priority,
             'default_size' => $size,
-            'type' => $is_prime ? 'prime_image' : 'image',
-            'prime_level' => $is_prime ? $prime_lvl : null,
+            'type' => $final_type,
+            'prime_level' => ($final_type === 'prime_image') ? $prime_lvl : ($is_prime ? $prime_lvl : null),
             'sweep_enabled' => $sweep_enabled,
             'sweep_direction' => $sweep_direction,
             'sweep_speed' => $sweep_speed,
@@ -209,6 +254,15 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             ],
             'direct_url' => "https://cdn.jsdelivr.net/gh/{$REPO_NAME}@main/badges/svg/{$id}.svg"
         ];
+        if ($preserve_vector && isset($existing_badge['svg_code'])) {
+            $new_badge['svg_code'] = $existing_badge['svg_code'];
+        }
+        if ($preserve_vector && isset($existing_badge['text_code'])) {
+            $new_badge['text_code'] = $existing_badge['text_code'];
+        }
+        if (isset($existing_badge['color'])) {
+            $new_badge['color'] = $existing_badge['color'];
+        }
 
         // Filter out old badge if original_id or id existed
         $badges_list = array_filter($current_badges, function($b) use ($id, $original_id) {
@@ -225,10 +279,16 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
         file_put_contents($json_file, $encoded_json);
         file_put_contents($v1_json, $encoded_json);
 
-        // Clean up old single item JSON if original ID changed
+        // Clean up old single item JSON if original ID or slug changed
         if (!empty($original_id) && $original_id !== $id) {
             $old_file = __DIR__ . "/api/v1/badge/{$original_id}.json";
             if (file_exists($old_file)) @unlink($old_file);
+            $old_svg = __DIR__ . "/badges/svg/{$original_id}.svg";
+            if (file_exists($old_svg)) @unlink($old_svg);
+        }
+        if ($existing_badge && !empty($existing_badge['slug']) && $existing_badge['slug'] !== $slug) {
+            $old_slug_file = __DIR__ . "/api/v1/badge/" . $existing_badge['slug'] . ".json";
+            if (file_exists($old_slug_file)) @unlink($old_slug_file);
         }
 
         // Save individual item JSON
@@ -236,9 +296,9 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
         file_put_contents(__DIR__ . "/api/v1/badge/{$id}.json", $single_item_json);
         file_put_contents(__DIR__ . "/api/v1/badge/{$slug}.json", $single_item_json);
 
-        // Regenerate Explorer Pages & JS SDK
+        // Regenerate Explorer Pages, JS SDK, and Animated SVGs
         if (file_exists(__DIR__ . '/generate_all.php')) {
-            shell_exec('php "' . __DIR__ . '/generate_all.php" 2>&1');
+            shell_exec('php ' . escapeshellarg(__DIR__ . '/generate_all.php') . ' 2>&1');
         }
 
         // Mirror to D: drive automatically
@@ -246,9 +306,17 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
             shell_exec('robocopy "' . __DIR__ . '" "D:\\espors update\\ff all vages" /MIR /FFT /Z /NP /R:1 /W:1 >nul 2>&1');
         }
 
-        // Auto Git Commit & Push
-        shell_exec('git -C "' . __DIR__ . '" add . && git -C "' . __DIR__ . '" commit -m "feat(admin): updated badge ' . addslashes($name) . ' (' . $id . ')" >nul 2>&1');
-        shell_exec('git -C "' . __DIR__ . '" push origin main >nul 2>&1');
+        // Auto Git Commit, Push & Purge live jsDelivr cache
+        shell_exec('git -C ' . escapeshellarg(__DIR__) . ' add -A && git -C ' . escapeshellarg(__DIR__) . ' commit -m "feat(admin): updated badge ' . addslashes($name) . ' (' . $id . ')" >nul 2>&1');
+        shell_exec('git -C ' . escapeshellarg(__DIR__) . ' push origin main >nul 2>&1');
+        purge_jsdelivr_paths($REPO_NAME, [
+            "badges/svg/{$id}.svg",
+            "api/v1/badge/{$id}.json",
+            "api/v1/badge/{$slug}.json",
+            "api/badges.json",
+            "api/v1/badges.json",
+            "cdn/ff-badges.js"
+        ]);
 
         $success_item = $new_badge;
         // Refresh $current_badges for display
@@ -260,7 +328,14 @@ if ($is_logged_in && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save
 if ($is_logged_in && isset($_GET['delete'])) {
     $del_id = trim($_GET['delete']);
     $data = json_decode(file_get_contents($json_file), true);
-    
+    $del_slug = '';
+    foreach ($data['badges'] ?? [] as $db_item) {
+        if (($db_item['id'] ?? '') === $del_id) {
+            $del_slug = $db_item['slug'] ?? '';
+            break;
+        }
+    }
+
     $data['badges'] = array_values(array_filter($data['badges'] ?? [], function($b) use ($del_id) {
         return $b['id'] !== $del_id;
     }));
@@ -272,10 +347,19 @@ if ($is_logged_in && isset($_GET['delete'])) {
 
     $old_single = __DIR__ . "/api/v1/badge/{$del_id}.json";
     if (file_exists($old_single)) @unlink($old_single);
+    if (!empty($del_slug)) {
+        $old_slug_path = __DIR__ . "/api/v1/badge/{$del_slug}.json";
+        if (file_exists($old_slug_path)) @unlink($old_slug_path);
+    }
+    $old_svg_path = __DIR__ . "/badges/svg/{$del_id}.svg";
+    if (file_exists($old_svg_path)) @unlink($old_svg_path);
 
-    // Regenerate
+    // Regenerate & Sync
     if (file_exists(__DIR__ . '/generate_all.php')) {
-        shell_exec('php "' . __DIR__ . '/generate_all.php" 2>&1');
+        shell_exec('php ' . escapeshellarg(__DIR__ . '/generate_all.php') . ' 2>&1');
+    }
+    if (is_dir('D:\\espors update\\ff all vages')) {
+        shell_exec('robocopy "' . __DIR__ . '" "D:\\espors update\\ff all vages" /MIR /FFT /Z /NP /R:1 /W:1 >nul 2>&1');
     }
 
     header('Location: admin.php?deleted=1');
@@ -981,7 +1065,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <div class="p-4 sm:p-5 rounded-2xl bg-[#080a18] border border-amber-500/30 space-y-4">
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
                                 <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-amber-300 uppercase tracking-wider font-orbitron">
-                                    <input type="checkbox" id="boneLightCheck" onchange="toggleBoneLighting(this.checked)" checked class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-amber-500 cursor-pointer">
+                                    <input type="checkbox" name="bone_enabled" value="1" id="boneLightCheck" onchange="toggleBoneLighting(this.checked)" checked class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-amber-500 cursor-pointer">
                                     <span>Enable Bone / Focal Accent Highlights</span>
                                 </label>
                                 <button type="button" onclick="addNewBonePoint()" class="px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-black text-xs font-extrabold flex items-center gap-1.5 transition shadow-lg shadow-amber-400/20 cursor-pointer">
@@ -1078,7 +1162,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <div class="p-4 rounded-2xl bg-[#080a18] border border-amber-500/30 space-y-3">
                             <div class="flex items-center justify-between">
                                 <label class="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" name="sweep_enabled" id="masterAnimCheck" value="1" checked onchange="toggleMasterAnimation(this.checked)" class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-amber-500 focus:ring-0 cursor-pointer">
+                                    <input type="checkbox" name="master_anim_enabled" id="masterAnimCheck" value="1" checked onchange="toggleMasterAnimation(this.checked)" class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-amber-500 focus:ring-0 cursor-pointer">
                                     <span class="text-xs font-bold text-white uppercase tracking-wider font-orbitron">Master VFX & Animation Toggle</span>
                                 </label>
                                 <span class="text-[10px] font-mono text-amber-300 bg-amber-400/10 px-2.5 py-0.5 rounded-full border border-amber-400/30">
@@ -1094,7 +1178,7 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                         <div class="p-4 rounded-2xl bg-[#080a18] border border-white/10 space-y-4">
                             <div class="flex items-center justify-between">
                                 <label class="flex items-center gap-2 cursor-pointer text-xs font-bold text-yellow-300 uppercase tracking-wider">
-                                    <input type="checkbox" id="sheenActiveCheck" value="1" checked onchange="toggleSheenSweep(this.checked)" class="rounded bg-gray-800 border-gray-700 text-yellow-500 cursor-pointer">
+                                    <input type="checkbox" name="sweep_enabled" id="sheenActiveCheck" value="1" checked onchange="toggleSheenSweep(this.checked)" class="rounded bg-gray-800 border-gray-700 text-yellow-500 cursor-pointer">
                                     <span>Metallic Sheen Sweep Motion</span>
                                 </label>
                                 <span class="text-[10px] font-mono text-yellow-400">Clipped to Silhouette</span>
@@ -1404,9 +1488,13 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 $bSpd = htmlspecialchars($b['sweep_speed'] ?? '2.2s');
                                 $bTheme = htmlspecialchars($b['star_theme'] ?? 'gold');
                                 $bGlint = !empty($b['has_gem_glint']);
+                                $bGlowOn = !isset($b['glow_enabled']) || !empty($b['glow_enabled']);
+                                $bPulseOn = !isset($b['pulse_enabled']) || !empty($b['pulse_enabled']);
                                 $bGlow = htmlspecialchars($b['glow_color'] ?? 'rgba(255, 215, 0, 0.85)');
-                                $isPrime = (($b['type'] ?? '') === 'prime_image' || !empty($b['prime_level']));
-                                $isFullyStatic = (!$bSweep && $bStars === 0 && !$bGlint);
+                                $bType = $b['type'] ?? 'image';
+                                $isPrime = ($bType === 'prime_image' || !empty($b['prime_level']));
+                                $isFullyStatic = (!$bSweep && $bStars === 0 && !$bGlint && !$bPulseOn);
+                                $pulseCls = $bPulseOn ? 'ff-pulse-on' : 'ff-pulse-off';
                                 $bId = htmlspecialchars($b['id'] ?? '');
                                 $bName = htmlspecialchars($b['name'] ?? 'Untitled');
                                 $bCat = htmlspecialchars($b['category'] ?? 'Custom VIP');
@@ -1418,19 +1506,25 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                                 <!-- Preview Cell -->
                                 <td class="py-3 px-3">
                                     <div class="w-12 h-12 rounded-xl bg-[#080a18] border border-white/5 flex items-center justify-center p-1 relative overflow-hidden">
-                                        <div class="ff-prime-badge-wrap <?= $isFullyStatic ? 'ff-anim-off' : '' ?>" style="width:38px;height:38px;position:relative;background:transparent !important;filter:drop-shadow(0 0 6px <?= $bGlow ?>);">
-                                            <?php if ($bStars > 0 && $bSweep): ?>
+                                        <div class="ff-prime-badge-wrap <?= $pulseCls ?> <?= $isFullyStatic ? 'ff-anim-off' : '' ?>" style="width:38px;height:38px;position:relative;background:transparent !important;<?= $bGlowOn ? "filter:drop-shadow(0 0 6px {$bGlow});" : '' ?>">
+                                            <?php if ($bStars > 0): ?>
                                                 <div class="ff-prime-stars-layer star-theme-<?= $bTheme ?>">
                                                     <?php for ($si = 1; $si <= min($bStars, 16); $si++): ?>
                                                         <svg class="ff-pinpoint-star star-pos-<?= $si ?>" viewBox="0 0 24 24"><path d="M12 0 L13.5 10.5 L24 12 L13.5 13.5 L12 24 L10.5 13.5 L0 12 L10.5 10.5 Z" fill="#FFFCE0"/><circle cx="12" cy="12" r="2" fill="#FFFFFF"/></svg>
                                                     <?php endfor; ?>
                                                 </div>
                                             <?php endif; ?>
-                                            <img src="badges/<?= $bFile ?>" onerror="this.onerror=null; this.src='<?= $img_cdn ?>'" class="ff-badge-img <?= $isFullyStatic ? 'style="animation:none !important;"' : '' ?>" alt="<?= $bName ?>">
-                                            <?php if ($bSweep): ?>
-                                                <span class="ff-badge-shine sweep-dir-<?= $bDir ?> sweep-dir-diag_bl_tr" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('badges/<?= $bFile ?>');mask-image:url('badges/<?= $bFile ?>');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
-                                                    <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:<?= $bSpd ?>;mix-blend-mode:screen;display:block;"></span>
-                                                </span>
+                                            <?php if ($bType === 'svg_code' && !empty($b['svg_code'])): ?>
+                                                <div class="ff-badge-img" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;<?= (!$bPulseOn || $isFullyStatic) ? 'animation:none !important;transform:none !important;' : '' ?>"><?= $b['svg_code'] ?></div>
+                                            <?php elseif ($bType === 'text_code' && !empty($b['text_code'])): ?>
+                                                <div style="<?= (!$bPulseOn || $isFullyStatic) ? 'animation:none !important;' : '' ?>"><?= $b['text_code'] ?></div>
+                                            <?php else: ?>
+                                                <img src="badges/<?= $bFile ?>" onerror="this.onerror=null; this.src='<?= $img_cdn ?>'" class="ff-badge-img" <?= (!$bPulseOn || $isFullyStatic) ? 'style="animation:none !important;transform:none !important;"' : '' ?> alt="<?= $bName ?>">
+                                                <?php if ($bSweep): ?>
+                                                    <span class="ff-badge-shine sweep-dir-<?= $bDir ?>" style="position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('badges/<?= $bFile ?>');mask-image:url('badges/<?= $bFile ?>');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;">
+                                                        <span class="ff-badge-shine-beam" style="position:absolute;top:-100%;left:-100%;width:300%;height:300%;animation-duration:<?= $bSpd ?>;mix-blend-mode:screen;display:block;"></span>
+                                                    </span>
+                                                <?php endif; ?>
                                             <?php endif; ?>
                                             <?php if ($bGlint): ?>
                                                 <div class="ff-gem-glint"></div>
@@ -1669,12 +1763,24 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
         function toggleMasterAnimation(enable) {
             document.getElementById('masterAnimCheck').checked = enable;
             document.getElementById('sheenActiveCheck').checked = enable;
+            const glintEl = document.getElementById('hasGemGlintCheck');
+            const pulseEl = document.getElementById('pulseEnabledCheck');
+            if (!enable) {
+                setStarDensity(0);
+                if (glintEl) glintEl.checked = false;
+                if (pulseEl) pulseEl.checked = false;
+            } else {
+                if (pulseEl) pulseEl.checked = true;
+            }
             updateLivePreviewStudio();
         }
 
-        // Sheen Sweep Toggle
+        // Sheen Sweep Toggle (Independent from stars/glint/pulse)
         function toggleSheenSweep(enable) {
             document.getElementById('sheenActiveCheck').checked = enable;
+            if (enable) {
+                document.getElementById('masterAnimCheck').checked = true;
+            }
             updateLivePreviewStudio();
         }
 
@@ -1745,32 +1851,36 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 }
             }
 
-            // VFX Animation State
-            const hasAnimation = (b.sweep_enabled !== false && b.sweep_enabled !== 'false' && b.sweep_enabled !== 0);
+            // VFX Animation State (Each toggle independent, Master active if any VFX is ON)
+            const sheenOn = (b.sweep_enabled === true || b.sweep_enabled === 'true' || b.sweep_enabled === 1);
+            const starCount = (b.star_density !== undefined) ? parseInt(b.star_density) : (b.prime_level === 8 ? 16 : 0);
+            const glintOn = (b.has_gem_glint === true || b.has_gem_glint === '1' || b.has_gem_glint === 1);
+            const pulseOn = (b.pulse_enabled !== false && b.pulse_enabled !== 'false' && b.pulse_enabled !== 0);
+            const hasAnimation = (sheenOn || starCount > 0 || glintOn || pulseOn);
+
             document.getElementById('masterAnimCheck').checked = hasAnimation;
-            document.getElementById('sheenActiveCheck').checked = hasAnimation;
+            document.getElementById('sheenActiveCheck').checked = sheenOn;
 
             let sDir = b.sweep_direction || 'diag_bl_tr';
             if (sDir === 'diag') sDir = 'diag_bl_tr';
             if (sDir === 'diag_rev') sDir = 'diag_br_tl';
             document.getElementById('sweepDirSelect').value = sDir;
             document.getElementById('sweepSpeedSelect').value = b.sweep_speed || '2.2s';
-            
-            const starCount = (b.star_density !== undefined) ? parseInt(b.star_density) : (b.prime_level === 8 ? 16 : 0);
-            setStarDensity(hasAnimation ? starCount : 0);
+
+            setStarDensity(starCount);
 
             document.getElementById('starThemeSelect').value = b.star_theme || 'gold';
-            document.getElementById('hasGemGlintCheck').checked = hasAnimation && (b.has_gem_glint === true || b.has_gem_glint === '1' || b.has_gem_glint === 1);
-            document.getElementById('pulseEnabledCheck').checked = hasAnimation && (b.pulse_enabled !== false);
+            document.getElementById('hasGemGlintCheck').checked = glintOn;
+            document.getElementById('pulseEnabledCheck').checked = pulseOn;
 
-            // Load Multi-Bone Focal Highlights if present
-            if (b.bone_data && Array.isArray(b.bone_data) && b.bone_data.length > 0) {
+            // Load Multi-Bone Focal Highlights only if configured on badge
+            const boneCheck = document.getElementById('boneLightCheck');
+            if (b.bone_data && Array.isArray(b.bone_data) && b.bone_data.length > 0 && b.bone_mode !== 'off') {
                 activeBones = JSON.parse(JSON.stringify(b.bone_data));
+                if (boneCheck) boneCheck.checked = true;
             } else {
-                activeBones = [
-                    { id: 1, name: 'Crown Apex', x: 50, y: 14, size: 20, color: '#FFD700' },
-                    { id: 2, name: 'Center Gem', x: 50, y: 52, size: 24, color: '#FFFFFF' }
-                ];
+                activeBones = [];
+                if (boneCheck) boneCheck.checked = false;
             }
             if (b.bone_mode) {
                 globalBoneMode = b.bone_mode;
@@ -1812,10 +1922,11 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 return false;
             }
 
-            // Serialize bone data
+            // Serialize bone data only when enabled
             const boneInput = document.getElementById('boneDataJsonInput');
+            const boneCheck = document.getElementById('boneLightCheck');
             if (boneInput) {
-                boneInput.value = JSON.stringify(activeBones);
+                boneInput.value = (!boneCheck || boneCheck.checked) ? JSON.stringify(activeBones) : '[]';
             }
 
             const form = document.getElementById('badgeEditorForm');
@@ -2341,8 +2452,10 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
             const glintHtml = (isMasterAnim && hasGlint) ? '<div class="ff-gem-glint"></div>' : '';
 
             // Image Animation Style
-            const imgStyle = (!isMasterAnim || !hasPulse) ? 'animation:none !important;transform:none !important;' : '';
-            const animOffClass = (!isMasterAnim) ? ' ff-anim-off' : '';
+            const isAnyAnim = isMasterAnim && (isSheenActive || starCount > 0 || hasGlint || hasPulse);
+            const imgStyle = (!isMasterAnim || !hasPulse || !isAnyAnim) ? 'animation:none !important;transform:none !important;' : '';
+            const pulseClass = (isMasterAnim && hasPulse && isAnyAnim) ? ' ff-pulse-on' : ' ff-pulse-off';
+            const animOffClass = (!isAnyAnim) ? ' ff-anim-off' : '';
 
             // COMPUTE PRO COLOR & LIGHTING ADJUSTMENTS (SINGLE CLEAN DECLARATION)
             const valB = parseInt(document.getElementById('sliderBrightness')?.value || 100);
@@ -2431,22 +2544,41 @@ $existing_badge_files = array_values(array_filter(scandir(__DIR__ . '/badges'), 
                 `;
             }
 
-            // Render Live Stage with Image, VFX, Adjustments, Masked Bones, Radiance & Contour Glow
-            stage.innerHTML = `
-                <div class="ff-prime-badge-wrap ff-prime-lvl-8${animOffClass}" style="width:${stageDisplaySize}px;height:${stageDisplaySize}px;position:relative;background:transparent !important;${contourDropFilter}">
-                    ${starsHtml}
-                    <img src="${currentPreviewImg}" class="ff-badge-img" style="${imgStyle} filter:${imgAdjustmentFilter};" alt="Live Preview" onerror="this.onerror=null;this.src='${CDN_BASE + (currentActiveBadge ? currentActiveBadge.file : 'ff_ui_prime_icon_08.png')}';">
-                    ${shineHtml}
-                    ${glintHtml}
-                    ${innerMaskContainerHtml}
-                    ${outerBonesHtml}
-                </div>
-            `;
+            // Render Live Stage with Image / Vector SVG / Fire Text, VFX, Adjustments, Masked Bones, Radiance & Contour Glow
+            const badgeType = currentActiveBadge ? (currentActiveBadge.type || 'image') : 'image';
+            if (badgeType === 'svg_code' && currentActiveBadge && currentActiveBadge.svg_code) {
+                stage.innerHTML = `
+                    <div class="ff-prime-badge-wrap${pulseClass}${animOffClass}" style="width:${stageDisplaySize}px;height:${stageDisplaySize}px;position:relative;background:transparent !important;${contourDropFilter}">
+                        ${starsHtml}
+                        <div class="ff-badge-img" style="${imgStyle} width:100%;height:100%;display:flex;align-items:center;justify-content:center;filter:${imgAdjustmentFilter};">${currentActiveBadge.svg_code}</div>
+                        ${glintHtml}
+                    </div>
+                `;
+            } else if (badgeType === 'text_code' && currentActiveBadge && currentActiveBadge.text_code) {
+                stage.innerHTML = `
+                    <div class="ff-prime-badge-wrap${animOffClass}" style="position:relative;background:transparent !important;${contourDropFilter}">
+                        ${starsHtml}
+                        <div class="scale-150" style="${imgStyle} filter:${imgAdjustmentFilter};">${currentActiveBadge.text_code}</div>
+                        ${glintHtml}
+                    </div>
+                `;
+            } else {
+                stage.innerHTML = `
+                    <div class="ff-prime-badge-wrap ff-prime-lvl-8${pulseClass}${animOffClass}" style="width:${stageDisplaySize}px;height:${stageDisplaySize}px;position:relative;background:transparent !important;${contourDropFilter}">
+                        ${starsHtml}
+                        <img src="${currentPreviewImg}" class="ff-badge-img" style="${imgStyle} filter:${imgAdjustmentFilter};" alt="Live Preview" onerror="this.onerror=null;this.src='${CDN_BASE + (currentActiveBadge ? currentActiveBadge.file : 'ff_ui_prime_icon_08.png')}';">
+                        ${shineHtml}
+                        ${glintHtml}
+                        ${innerMaskContainerHtml}
+                        ${outerBonesHtml}
+                    </div>
+                `;
+            }
 
             // Update Status Badge on top of stage
             const statusBadge = document.getElementById('previewAnimStatusBadge');
             if (statusBadge) {
-                if (isMasterAnim && (isSheenActive || starCount > 0 || hasGlint)) {
+                if (isAnyAnim) {
                     statusBadge.textContent = 'Animation Active';
                     statusBadge.className = 'text-[10px] font-mono text-emerald-300 bg-emerald-400/10 px-2.5 py-0.5 rounded-full border border-emerald-400/30';
                 } else {

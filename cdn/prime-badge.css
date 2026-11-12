@@ -344,6 +344,7 @@
   z-index: 8;
   opacity: 0;
   mix-blend-mode: screen;
+  animation: ffGemSparkleStar 2.8s ease-in-out infinite;
 }
 
 .ff-prime-badge-wrap .ff-gem-glint::before,
@@ -476,9 +477,23 @@
   to { filter: drop-shadow(0 0 8px rgba(255, 235, 100, 0.95)); transform: scale(1.02); }
 }
 
-/* Master Animation Control: Complete Static Freeze & Clean Silhouette */
+/* Universal Floating Pulse for V-Badges & Standard Badges */
+.ff-prime-badge-wrap.ff-pulse-on .ff-badge-img {
+  animation: ffWingsPulseSoft 2.8s ease-in-out infinite alternate;
+}
+
+/* Master & Pulse Animation Control: Complete Static Freeze & Clean Silhouette */
+.ff-pulse-off .ff-badge-img,
+.ff-pulse-off .ff-badge-img svg,
+.ff-pulse-off.ff-prime-lvl-8 .ff-badge-img,
+.ff-pulse-off.ff-prime-lvl-7 .ff-badge-img,
+.ff-pulse-off.ff-prime-lvl-6 .ff-badge-img,
+.ff-pulse-off.ff-prime-lvl-5 .ff-badge-img,
+.ff-pulse-off.ff-prime-lvl-4 .ff-badge-img,
 .ff-anim-off .ff-badge-img,
+.ff-anim-off .ff-badge-img svg,
 .ff-no-anim .ff-badge-img,
+.ff-no-anim .ff-badge-img svg,
 .ff-anim-off.ff-prime-lvl-8 .ff-badge-img,
 .ff-anim-off.ff-prime-lvl-7 .ff-badge-img,
 .ff-anim-off.ff-prime-lvl-6 .ff-badge-img,
@@ -490,11 +505,14 @@
 
 .ff-anim-off .ff-badge-shine,
 .ff-no-anim .ff-badge-shine,
+.ff-anim-off .ff-badge-shine-beam,
 .ff-anim-off .ff-prime-stars-layer,
 .ff-no-anim .ff-prime-stars-layer,
+.ff-anim-off .ff-pinpoint-star,
 .ff-anim-off .ff-gem-glint,
 .ff-no-anim .ff-gem-glint {
   display: none !important;
+  animation: none !important;
 }
 
 

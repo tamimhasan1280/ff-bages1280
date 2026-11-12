@@ -15,7 +15,10 @@
       const isLocalHost = (typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname || ''));
       this.assetPath = options.assetPath ? (options.assetPath.replace(/\/+$/, '') + '/') : (isLocalHost ? 'badges/' : defaultCdnAssets);
       this.cdnFallbackPath = defaultCdnAssets;
-      this.enableTilt = options.tilt !== undefined ? options.tilt : (this.size === 'lg' || this.size === 'xl');
+      this.enableAnim = (options.anim !== false && options.anim !== 'off' && options.anim !== 'false');
+      this.enablePulse = this.enableAnim && (options.pulse !== false && options.pulse !== 'off' && options.pulse !== 'false');
+      this.enableGlow = (options.glow !== false && options.glow !== 'off' && options.glow !== 'false');
+      this.enableTilt = options.tilt !== undefined ? options.tilt : (this.enableAnim && (this.size === 'lg' || this.size === 'xl'));
       
       this.particles = [];
       this.animId = null;
@@ -31,7 +34,8 @@
       // Wrapper
       this.wrapper = document.createElement('div');
       const sizeClass = ['sm', 'md', 'lg', 'xl'].includes(this.size) ? `ff-prime-${this.size}` : '';
-      this.wrapper.className = `ff-prime-badge-wrap ff-prime-lvl-${this.level} ${sizeClass}`;
+      const animCls = this.enableAnim ? (this.enablePulse ? '' : ' ff-pulse-off') : ' ff-anim-off';
+      this.wrapper.className = `ff-prime-badge-wrap ff-prime-lvl-${this.level} ${sizeClass}${animCls}`;
       
       if (!sizeClass && this.size) {
         this.wrapper.style.width = this.size;
@@ -39,7 +43,7 @@
       }
 
       // 1. Pinpoint Diamond Stars Layer (Levels 4 to 8)
-      if (this.level >= 4) {
+      if (this.enableAnim && this.level >= 4) {
         const starsLayer = document.createElement('div');
         starsLayer.className = 'ff-prime-stars-layer';
         
@@ -71,10 +75,16 @@
       this.img.src = fileFullPath;
       this.img.alt = `Free Fire Prime Level ${this.level}`;
       this.img.className = 'ff-badge-img';
+      if (!this.enableGlow) {
+        this.img.style.filter = 'none';
+      }
+      if (!this.enablePulse) {
+        this.img.style.animation = 'none';
+      }
       this.wrapper.appendChild(this.img);
 
       // 3. In-Game Verify Badge Metallic Sheen Sweep (Levels 4 to 8)
-      if (this.level >= 4) {
+      if (this.enableAnim && this.level >= 4) {
         const shine = document.createElement('span');
         shine.className = 'ff-badge-shine';
         shine.style.cssText = `position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:7;-webkit-mask-image:url('${fileFullPath}');mask-image:url('${fileFullPath}');-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;`;
@@ -85,7 +95,7 @@
       }
 
       // 4. Center Gem Specular Glint (Levels 7 & 8)
-      if (this.level >= 7) {
+      if (this.enableAnim && this.level >= 7) {
         const glint = document.createElement('div');
         glint.className = 'ff-gem-glint';
         this.wrapper.appendChild(glint);
@@ -193,7 +203,16 @@
     document.querySelectorAll('[data-ff-prime]').forEach(el => {
       const level = el.getAttribute('data-ff-prime');
       const size = el.getAttribute('data-size') || 'md';
-      new PrimeBadge(el, { level, size });
+      const anim = el.getAttribute('data-anim');
+      const pulse = el.getAttribute('data-pulse');
+      const glow = el.getAttribute('data-glow');
+      new PrimeBadge(el, {
+        level,
+        size,
+        anim: anim !== null ? (anim !== 'off' && anim !== 'false' && anim !== '0') : undefined,
+        pulse: pulse !== null ? (pulse !== 'off' && pulse !== 'false' && pulse !== '0') : undefined,
+        glow: glow !== null ? (glow !== 'off' && glow !== 'false' && glow !== '0') : undefined
+      });
     });
   };
 
